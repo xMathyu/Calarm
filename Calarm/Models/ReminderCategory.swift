@@ -14,6 +14,11 @@ enum ReminderCategory: Int, CaseIterable, Identifiable, Codable, Sendable {
 
     var id: Int { rawValue }
 
+    /// Order shown in the UI. Default (`.reminder`) comes first so the
+    /// most-common choice is easiest to reach. Raw values stay stable for
+    /// persistence — only the presentation order changes here.
+    static let displayOrder: [ReminderCategory] = [.reminder, .event, .birthday, .anniversary, .other]
+
     var localizedTitle: String {
         switch self {
         case .birthday: "Cumpleaños"

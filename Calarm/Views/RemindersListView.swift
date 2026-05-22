@@ -24,7 +24,7 @@ struct RemindersListView: View {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
                             Section("Filtrar") {
-                                ForEach(ReminderCategory.allCases) { category in
+                                ForEach(ReminderCategory.displayOrder) { category in
                                     Toggle(isOn: Binding(
                                         get: { filterCategories.contains(category) },
                                         set: { isOn in

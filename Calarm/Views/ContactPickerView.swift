@@ -31,6 +31,10 @@ struct ContactPickerView: View {
     @State private var searchText = ""
     @State private var authStatus = CNContactStore.authorizationStatus(for: .contacts)
     @State private var isLoading = false
+    /// Set to true when the user explicitly tapped a button that already
+    /// handled the commit/discard decision. Prevents the auto-commit in
+    /// `onDisappear` from firing twice or overriding an explicit cancel.
+    @State private var didHandleDismissExplicitly = false
 
     init(preselected: [SelectedContact] = [], onSelect: @escaping ([SelectedContact]) -> Void) {
         self.preselected = preselected
@@ -94,15 +98,18 @@ struct ContactPickerView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancelar") { dismiss() }
+                    Button("Cancelar") {
+                        didHandleDismissExplicitly = true
+                        dismiss()
+                    }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Listo") {
+                        didHandleDismissExplicitly = true
                         onSelect(selectedContacts)
                         dismiss()
                     }
                     .bold()
-                    .disabled(selectedIDs.isEmpty)
                 }
             }
             .task {
@@ -110,6 +117,12 @@ struct ContactPickerView: View {
                 if (status == .authorized || status == .limited) && allContacts.isEmpty {
                     await loadContacts()
                 }
+            }
+            .onDisappear {
+                // Swipe-down or any other interactive dismissal commits the
+                // current selection — matches the intuitive iOS pattern.
+                guard !didHandleDismissExplicitly else { return }
+                onSelect(selectedContacts)
             }
         }
     }
@@ -194,6 +207,7 @@ struct ContactPickerView: View {
                 }
             }
             .listStyle(.plain)
+            .scrollDismissesKeyboard(.interactively)
             .sensoryFeedback(.selection, trigger: selectedIDs.count)
         }
     }

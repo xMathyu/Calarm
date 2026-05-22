@@ -136,6 +136,7 @@ struct ReminderEditorView: View {
             }
             .navigationTitle(editingReminder == nil ? "Nuevo recordatorio" : "Editar")
             .navigationBarTitleDisplayMode(.inline)
+            .scrollDismissesKeyboard(.interactively)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancelar") { dismiss() }

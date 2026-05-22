@@ -11,7 +11,7 @@ struct CategoryPickerView: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
-                ForEach(ReminderCategory.allCases) { category in
+                ForEach(ReminderCategory.displayOrder) { category in
                     let isSelected = category == selection
                     Button {
                         withAnimation(.snappy) { selection = category }

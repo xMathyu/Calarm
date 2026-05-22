@@ -55,6 +55,7 @@ struct CalarmApp: App {
             .environment(sharedRemindersService)
             .modelContainer(modelContainer)
             .task {
+                UIApplication.shared.installGlobalKeyboardDismissGesture()
                 await syncAllReminders()
                 if settings.teamsDetectionEnabled {
                     bootstrapTeamsCoordinator()
