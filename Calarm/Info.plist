@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CKSharingSupported</key>
+	<true/>
+	<key>NSAlarmKitUsageDescription</key>
+	<string>Calarm necesita programar alarmas para avisarte antes de tus reuniones de Teams.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Calarm accede a tus contactos para que puedas invitarlos a alarmas compartidas.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+</dict>
+</plist>

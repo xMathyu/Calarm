@@ -2,23 +2,36 @@
 //  ContentView.swift
 //  Calarm
 //
-//  Created by Mathyu Cardozo on 13/05/26.
-//
 
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
-}
+    @Environment(AppSettings.self) private var settings
 
-#Preview {
-    ContentView()
+    let alarmScheduler: AlarmScheduler
+    let onTeamsToggleChanged: (Bool) -> Void
+    let teamsCoordinatorProvider: () -> SyncCoordinator?
+
+    var body: some View {
+        TabView {
+            Tab("Alarmas", systemImage: "bell.fill") {
+                RemindersListView()
+            }
+            if settings.teamsDetectionEnabled, let coordinator = teamsCoordinatorProvider() {
+                Tab("Teams", systemImage: "video.fill") {
+                    MeetingsListView()
+                        .environment(coordinator)
+                }
+            }
+            Tab("Ajustes", systemImage: "gearshape") {
+                SettingsView(
+                    alarmScheduler: alarmScheduler,
+                    onTeamsToggleChanged: onTeamsToggleChanged
+                )
+            }
+        }
+        .sheet(isPresented: .constant(!settings.onboardingCompleted)) {
+            OnboardingView(alarmScheduler: alarmScheduler)
+        }
+    }
 }
