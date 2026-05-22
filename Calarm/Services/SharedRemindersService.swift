@@ -78,7 +78,12 @@ final class SharedRemindersService {
         share.publicPermission = .none
 
         do {
-            _ = try await database.modifyRecords(saving: [record, share], deleting: [])
+            let results = try await database.modifyRecords(saving: [record, share], deleting: [])
+            // Return the server-updated share, which has the .url property populated.
+            if case .success(let saved) = results.saveResults[share.recordID],
+               let savedShare = saved as? CKShare {
+                return savedShare
+            }
             return share
         } catch {
             throw SharedRemindersError.shareCreationFailed(error)
@@ -186,6 +191,7 @@ final class SharedRemindersService {
             existing.isEnabled = isEnabled
             existing.recurrenceData = recurrenceData
             existing.updatedAt = Date()
+            existing.isReceivedShare = true
         } else {
             let reminder = Reminder(
                 id: localID,
@@ -200,6 +206,7 @@ final class SharedRemindersService {
                 leadTime: AlarmLeadTime(rawValue: leadTimeSeconds) ?? .atStart,
                 isEnabled: isEnabled
             )
+            reminder.isReceivedShare = true
             context.insert(reminder)
         }
         try context.save()

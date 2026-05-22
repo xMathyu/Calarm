@@ -175,6 +175,7 @@ struct MeetingDetailView: View {
     private func save() async {
         preferences.setLeadTimes(leadTimes, enabled: isEnabled, forEventID: meeting.id)
         await coordinator.sync()
+        Haptics.success()
         dismiss()
     }
 }

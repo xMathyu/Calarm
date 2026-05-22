@@ -37,14 +37,14 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Toggle("Detectar reuniones de Teams", isOn: $settings.teamsDetectionEnabled)
+                    Toggle("Programar alarmas para eventos del calendario", isOn: $settings.teamsDetectionEnabled)
                         .onChange(of: settings.teamsDetectionEnabled) { _, newValue in
                             onTeamsToggleChanged(newValue)
                         }
                 } header: {
-                    Text("Microsoft Teams")
+                    Text("Calendario de Apple")
                 } footer: {
-                    Text("Cuando esté activo, Calarm leerá tu calendario y programará alarmas para reuniones de Teams. Necesita que la cuenta esté sincronizada con Calendario iOS.")
+                    Text("Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte.")
                 }
 
                 Section {

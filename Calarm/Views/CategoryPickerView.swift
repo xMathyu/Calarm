@@ -15,6 +15,7 @@ struct CategoryPickerView: View {
                     let isSelected = category == selection
                     Button {
                         withAnimation(.snappy) { selection = category }
+                        Haptics.selection()
                     } label: {
                         HStack(spacing: 6) {
                             Image(systemName: category.defaultSymbol)

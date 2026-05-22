@@ -154,12 +154,9 @@ struct ReminderEditorView: View {
                     }
                 }
             }
-            // Contact picker sheet
             .sheet(isPresented: $showingContactPicker) {
-                ContactPickerView { contacts in
-                    for contact in contacts where !selectedContacts.contains(where: { $0.id == contact.id }) {
-                        selectedContacts.append(contact)
-                    }
+                ContactPickerView(preselected: selectedContacts) { contacts in
+                    selectedContacts = contacts
                     showingContactPicker = false
                 }
             }
@@ -196,37 +193,79 @@ struct ReminderEditorView: View {
         Section {
             if selectedContacts.isEmpty {
                 Button {
+                    Haptics.light()
                     showingContactPicker = true
                 } label: {
-                    Label("Invitar amigos", systemImage: "person.badge.plus")
-                }
-            } else {
-                ForEach(selectedContacts) { contact in
-                    HStack {
-                        Label(contact.name, systemImage: "person.circle")
-                        Spacer()
-                        Button {
-                            selectedContacts.removeAll { $0.id == contact.id }
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
+                    HStack(spacing: 14) {
+                        ZStack {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [Color.accentColor.opacity(0.9), Color.accentColor.opacity(0.55)],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 40, height: 40)
+                            Image(systemName: "person.badge.plus")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundStyle(.white)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Invitar amigos")
+                                .font(.body.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Text("Comparte este evento por Messages")
+                                .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
-                        .buttonStyle(.plain)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.tertiary)
                     }
+                    .contentShape(Rectangle())
                 }
-                Button {
-                    showingContactPicker = true
-                } label: {
-                    Label("Agregar más", systemImage: "person.badge.plus")
-                }
+                .buttonStyle(.plain)
+            } else {
+                invitedContactsCard
             }
         } header: {
-            Text("Invitar amigos")
+            HStack {
+                Text("Invitar amigos")
+                if !selectedContacts.isEmpty {
+                    Text("\(selectedContacts.count)")
+                        .font(.caption2.weight(.bold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 2)
+                        .background(Capsule().fill(Color.accentColor))
+                }
+            }
         } footer: {
             if !selectedContacts.isEmpty {
-                Text("Al crear, se abrirá Messages con el link para que ellos acepten.")
+                Text("Al crear, se abrirá Messages con el link para que ellos acepten. Toca un avatar para quitarlo.")
             }
         }
+    }
+
+    private var invitedContactsCard: some View {
+        WrapLayout(spacing: 10, lineSpacing: 12) {
+            ForEach(selectedContacts) { contact in
+                InviteeChip(contact: contact) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                        selectedContacts.removeAll { $0.id == contact.id }
+                    }
+                    Haptics.light()
+                }
+            }
+            AddMoreChip {
+                Haptics.light()
+                showingContactPicker = true
+            }
+        }
+        .padding(.vertical, 6)
+        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: selectedContacts)
     }
 
     private func save() async {
@@ -309,5 +348,63 @@ struct ReminderEditorView: View {
         try? modelContext.save()
         Haptics.warning()
         dismiss()
+    }
+}
+
+// MARK: - Invitee chips
+
+private struct InviteeChip: View {
+    let contact: SelectedContact
+    let onRemove: () -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ContactAvatarView(name: contact.name, imageData: contact.imageData, size: 28)
+            Text(firstName)
+                .font(.subheadline.weight(.medium))
+                .lineLimit(1)
+            Button(action: onRemove) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.system(size: 18))
+                    .foregroundStyle(Color(.systemGray2))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Quitar \(contact.name)")
+        }
+        .padding(.leading, 4)
+        .padding(.trailing, 8)
+        .padding(.vertical, 4)
+        .background(
+            Capsule()
+                .fill(Color(.tertiarySystemFill))
+        )
+        .transition(.scale.combined(with: .opacity))
+    }
+
+    private var firstName: String {
+        contact.name.split(separator: " ").first.map(String.init) ?? contact.name
+    }
+}
+
+private struct AddMoreChip: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 6) {
+                Image(systemName: "plus")
+                    .font(.system(size: 14, weight: .bold))
+                Text("Agregar")
+                    .font(.subheadline.weight(.semibold))
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .foregroundStyle(Color.accentColor)
+            .background(
+                Capsule()
+                    .strokeBorder(Color.accentColor.opacity(0.5), style: StrokeStyle(lineWidth: 1.2, dash: [4, 3]))
+            )
+        }
+        .buttonStyle(.plain)
     }
 }

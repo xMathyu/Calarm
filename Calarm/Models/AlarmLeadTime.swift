@@ -34,7 +34,7 @@ enum AlarmLeadTime: Int, CaseIterable, Identifiable, Codable, Sendable {
 
     var shortTitle: String {
         switch self {
-        case .atStart: "0 min"
+        case .atStart: "Al inicio"
         case .min5: "5 min"
         case .min10: "10 min"
         case .min15: "15 min"

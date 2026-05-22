@@ -17,6 +17,7 @@ struct CalarmAlarmMetadata: AlarmMetadata {
     let symbolName: String
     let categoryRaw: Int
     let teamsURLString: String?
+    let location: String?
 
     var teamsURL: URL? {
         guard let s = teamsURLString, !s.isEmpty else { return nil }
@@ -60,7 +61,8 @@ final class AlarmScheduler {
         symbolName: String,
         category: ReminderCategory,
         snooze: SnoozeInterval,
-        teamsURL: URL? = nil
+        teamsURL: URL? = nil,
+        location: String? = nil
     ) async throws -> UUID {
         if let existing = store.alarmID(forOwner: ownerID, fireDate: fireDate) {
             return existing
@@ -74,6 +76,7 @@ final class AlarmScheduler {
             snooze: snooze,
             ownerID: ownerID,
             teamsURL: teamsURL,
+            location: location,
             alarmID: alarmID
         )
         _ = try await manager.schedule(id: alarmID, configuration: configuration)
@@ -99,6 +102,11 @@ final class AlarmScheduler {
                 store.remove(ownerID: ownerID, fireDate: entry.fireDate)
             }
         }
+    }
+
+    /// Returns all stored entries whose ownerID starts with the calendar prefix.
+    func storedEntriesOwnedByCalendar() async -> [(ownerID: String, alarmID: UUID, fireDate: Date)] {
+        store.allEntries().filter { $0.ownerID.hasPrefix(SyncCoordinator.ownerIDPrefix) }
     }
 
     /// Cancels every alarm tracked in the store.
@@ -130,7 +138,8 @@ final class AlarmScheduler {
             title: "Alarma de prueba",
             symbolName: "alarm.fill",
             categoryRaw: ReminderCategory.reminder.rawValue,
-            teamsURLString: nil
+            teamsURLString: nil,
+            location: nil
         )
 
         let attributes = AlarmAttributes(
@@ -161,21 +170,49 @@ final class AlarmScheduler {
         snooze: SnoozeInterval,
         ownerID: String,
         teamsURL: URL?,
+        location: String?,
         alarmID: UUID
     ) -> AlarmManager.AlarmConfiguration<CalarmAlarmMetadata> {
+        let hasLocation = (location?.isEmpty == false) && teamsURL == nil
+
+        // When the event has a physical location, the secondary button navigates to it
+        // (stopping the alarm). Otherwise we keep snooze.
+        let secondaryButton: AlarmButton
+        let secondaryBehavior: AlarmPresentation.Alert.SecondaryButtonBehavior
+        let secondaryIntent: any LiveActivityIntent
+        if hasLocation, let location {
+            secondaryButton = AlarmButton(
+                text: "Ir",
+                textColor: .white,
+                systemImageName: "location.fill"
+            )
+            secondaryBehavior = .custom
+            secondaryIntent = NavigateToEventIntent(alarmID: alarmID.uuidString, locationQuery: location)
+        } else {
+            secondaryButton = AlarmButton(
+                text: "Posponer",
+                textColor: .white,
+                systemImageName: "zzz"
+            )
+            secondaryBehavior = .countdown
+            secondaryIntent = SnoozeAlarmIntent(alarmID: alarmID.uuidString)
+        }
+
+        // Append location to the title so the user sees where to go in the alert UI.
+        let alertTitle: String = {
+            guard hasLocation, let location else { return title }
+            return "\(title) · \(location)"
+        }()
+
         let alertContent = AlarmPresentation.Alert(
-            title: LocalizedStringResource(stringLiteral: title),
+            title: LocalizedStringResource(stringLiteral: alertTitle),
             stopButton: AlarmButton(
                 text: "Detener",
                 textColor: .white,
                 systemImageName: "stop.fill"
             ),
-            secondaryButton: AlarmButton(
-                text: "Posponer",
-                textColor: .white,
-                systemImageName: "zzz"
-            ),
-            secondaryButtonBehavior: .countdown
+            secondaryButton: secondaryButton,
+            secondaryButtonBehavior: secondaryBehavior
         )
 
         let countdownContent = AlarmPresentation.Countdown(
@@ -207,7 +244,8 @@ final class AlarmScheduler {
             title: title,
             symbolName: symbolName,
             categoryRaw: category.rawValue,
-            teamsURLString: teamsURL?.absoluteString
+            teamsURLString: teamsURL?.absoluteString,
+            location: location
         )
 
         let attributes = AlarmAttributes(
@@ -216,7 +254,6 @@ final class AlarmScheduler {
             tintColor: category.tint
         )
 
-        let snoozeIntent = SnoozeAlarmIntent(alarmID: alarmID.uuidString)
         let stopIntent = StopAlarmIntent(alarmID: alarmID.uuidString)
 
         return AlarmManager.AlarmConfiguration(
@@ -224,7 +261,7 @@ final class AlarmScheduler {
             schedule: .fixed(fireDate),
             attributes: attributes,
             stopIntent: stopIntent,
-            secondaryIntent: snoozeIntent,
+            secondaryIntent: secondaryIntent,
             sound: .default
         )
     }

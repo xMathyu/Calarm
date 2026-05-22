@@ -25,6 +25,8 @@ final class Reminder {
     var isEnabled: Bool = true
     var createdAt: Date = Date()
     var updatedAt: Date = Date()
+    /// True when this reminder was received via a CloudKit share (not created locally).
+    var isReceivedShare: Bool = false
 
     init(
         id: UUID = UUID(),

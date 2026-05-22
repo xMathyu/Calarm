@@ -55,16 +55,15 @@ struct MeetingsListView: View {
                 ForEach(groupedMeetings, id: \.day) { group in
                     Section {
                         ForEach(group.meetings) { meeting in
-                            Button {
+                            MeetingRowView(
+                                meeting: meeting,
+                                leadTimes: preferences.activeLeadTimes(forEventID: meeting.id),
+                                alarmsEnabled: settings.alarmsEnabled && preferences.isEnabled(forEventID: meeting.id)
+                            )
+                            .contentShape(Rectangle())
+                            .onTapGesture {
                                 selectedMeeting = meeting
-                            } label: {
-                                MeetingRowView(
-                                    meeting: meeting,
-                                    leadTimes: preferences.leadTimes(forEventID: meeting.id),
-                                    alarmsEnabled: settings.alarmsEnabled
-                                )
                             }
-                            .buttonStyle(.plain)
                         }
                     } header: {
                         Text(headerTitle(for: group.day))

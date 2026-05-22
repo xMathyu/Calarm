@@ -71,7 +71,7 @@ final class SyncCoordinator {
             let snooze = settings.snoozeInterval
 
             for meeting in fetched {
-                let leadTimes = preferences.leadTimes(forEventID: meeting.id)
+                let leadTimes = preferences.activeLeadTimes(forEventID: meeting.id)
                 let fireDates = leadTimes
                     .map { meeting.startDate.addingTimeInterval(-$0.seconds) }
                     .filter { $0 > now }
@@ -89,7 +89,8 @@ final class SyncCoordinator {
                             symbolName: meeting.teamsURL != nil ? "video.fill" : "calendar",
                             category: .event,
                             snooze: snooze,
-                            teamsURL: meeting.teamsURL
+                            teamsURL: meeting.teamsURL,
+                            location: meeting.location
                         )
                     } catch {
                         self.lastError = error.localizedDescription

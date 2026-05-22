@@ -12,7 +12,7 @@ struct Meeting: Identifiable, Hashable, Sendable {
     let title: String
     let startDate: Date
     let endDate: Date
-    let teamsURL: URL
+    let teamsURL: URL?
     let organizer: String?
     let location: String?
 

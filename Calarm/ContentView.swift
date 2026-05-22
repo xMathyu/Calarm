@@ -18,7 +18,7 @@ struct ContentView: View {
                 RemindersListView()
             }
             if settings.teamsDetectionEnabled, let coordinator = teamsCoordinatorProvider() {
-                Tab("Teams", systemImage: "video.fill") {
+                Tab("Calendario", systemImage: "calendar") {
                     MeetingsListView()
                         .environment(coordinator)
                 }
