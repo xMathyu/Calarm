@@ -16,9 +16,9 @@ enum SnoozeInterval: Int, CaseIterable, Identifiable, Codable, Sendable {
 
     var localizedTitle: String {
         switch self {
-        case .min1: "1 minuto"
-        case .min5: "5 minutos"
-        case .min9: "9 minutos"
+        case .min1: String(localized: "1 minuto")
+        case .min5: String(localized: "5 minutos")
+        case .min9: String(localized: "9 minutos")
         }
     }
 }

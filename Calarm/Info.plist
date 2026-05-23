@@ -5,12 +5,19 @@
 	<key>CKSharingSupported</key>
 	<true/>
 	<key>NSAlarmKitUsageDescription</key>
-	<string>Calarm necesita programar alarmas para avisarte antes de tus reuniones de Teams.</string>
+	<string>Calarm necesita programar alarmas para avisarte antes de tus reuniones y recordatorios.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Calarm accede a tus contactos para que puedas invitarlos a alarmas compartidas.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Calarm lee tus eventos del calendario para programar alarmas antes de cada uno y detectar enlaces de Microsoft Teams.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+	</dict>
 </dict>
 </plist>

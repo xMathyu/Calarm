@@ -99,10 +99,11 @@
 				};
 			};
 			buildConfigurationList = 6A070F672FB579BB0003A4DF /* Build configuration list for PBXProject "Calarm" */;
-			developmentRegion = en;
+			developmentRegion = es;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				es,
 				Base,
 			);
 			mainGroup = 6A070F632FB579BB0003A4DF;

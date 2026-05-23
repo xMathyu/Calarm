@@ -17,9 +17,9 @@ enum AppearanceMode: Int, CaseIterable, Identifiable, Sendable {
 
     var localizedTitle: String {
         switch self {
-        case .system: "Automático"
-        case .light: "Claro"
-        case .dark: "Oscuro"
+        case .system: String(localized: "Automático")
+        case .light: String(localized: "Claro")
+        case .dark: String(localized: "Oscuro")
         }
     }
 
@@ -41,6 +41,40 @@ enum AppearanceMode: Int, CaseIterable, Identifiable, Sendable {
     }
 }
 
+/// User-selectable language. `system` follows the iPhone's preferred language.
+enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
+    case system = "system"
+    case spanish = "es"
+    case english = "en"
+
+    var id: String { rawValue }
+
+    var localizedTitle: String {
+        switch self {
+        case .system: String(localized: "Automático")
+        case .spanish: String(localized: "Español")
+        case .english: String(localized: "Inglés")
+        }
+    }
+
+    var flag: String {
+        switch self {
+        case .system: "globe"
+        case .spanish: "globe.europe.africa.fill"
+        case .english: "globe.americas.fill"
+        }
+    }
+
+    /// Language code used by `Bundle.path(forResource:ofType:)`. `nil` for system.
+    var bundleLanguageCode: String? {
+        switch self {
+        case .system: nil
+        case .spanish: "es"
+        case .english: "en"
+        }
+    }
+}
+
 @Observable
 final class AppSettings {
     private let defaults: UserDefaults
@@ -51,6 +85,7 @@ final class AppSettings {
         static let onboardingCompleted = "settings.onboardingCompleted"
         static let teamsDetectionEnabled = "settings.teamsDetectionEnabled"
         static let appearance = "settings.appearance"
+        static let language = "settings.language"
     }
 
     var snoozeInterval: SnoozeInterval {
@@ -73,6 +108,13 @@ final class AppSettings {
         didSet { defaults.set(appearance.rawValue, forKey: Key.appearance) }
     }
 
+    var language: AppLanguage {
+        didSet {
+            defaults.set(language.rawValue, forKey: Key.language)
+            LocalizationManager.shared.apply(language)
+        }
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         let storedSnooze = defaults.object(forKey: Key.snooze) as? Int
@@ -82,5 +124,10 @@ final class AppSettings {
         self.teamsDetectionEnabled = defaults.bool(forKey: Key.teamsDetectionEnabled)
         let storedAppearance = defaults.object(forKey: Key.appearance) as? Int
         self.appearance = storedAppearance.flatMap(AppearanceMode.init(rawValue:)) ?? .system
+        let storedLanguage = defaults.string(forKey: Key.language)
+        let resolvedLanguage = storedLanguage.flatMap(AppLanguage.init(rawValue:)) ?? .system
+        self.language = resolvedLanguage
+        // Apply on launch so the very first frame renders in the right language.
+        LocalizationManager.shared.apply(resolvedLanguage)
     }
 }

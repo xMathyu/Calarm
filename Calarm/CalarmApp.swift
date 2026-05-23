@@ -16,6 +16,7 @@ struct CalarmApp: App {
     @State private var teamsCoordinator: SyncCoordinator?
     @State private var meetingPreferences: MeetingPreferencesStore
     @State private var sharedRemindersService: SharedRemindersService
+    @State private var localization = LocalizationManager.shared
 
     private let alarmScheduler: AlarmScheduler
     private let modelContainer: ModelContainer
@@ -56,6 +57,8 @@ struct CalarmApp: App {
             .modelContainer(modelContainer)
             .preferredColorScheme(settings.appearance.preferredColorScheme)
             .tint(.accentColor)
+            // Forces every Text(...) to re-evaluate after a language switch.
+            .id(localization.revision)
             .task {
                 UIApplication.shared.installGlobalKeyboardDismissGesture()
                 await syncAllReminders()

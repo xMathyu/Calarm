@@ -43,6 +43,14 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    languagePicker(selection: $settings.language)
+                } header: {
+                    sectionHeader("Idioma", systemImage: "character.bubble.fill")
+                } footer: {
+                    Text("El idioma de la app. \"Automático\" sigue el idioma de tu iPhone.")
+                }
+
+                Section {
                     Picker(selection: $settings.snoozeInterval) {
                         ForEach(SnoozeInterval.allCases) { value in
                             Text(value.localizedTitle).tag(value)
@@ -144,6 +152,51 @@ struct SettingsView: View {
                 .font(.caption2)
             Text(title)
         }
+    }
+
+    /// Visual segmented picker for language. Same layout as the appearance
+    /// picker so the two settings feel consistent.
+    private func languagePicker(selection: Binding<AppLanguage>) -> some View {
+        HStack(spacing: DS.Spacing.sm) {
+            ForEach(AppLanguage.allCases) { language in
+                let isSelected = selection.wrappedValue == language
+                Button {
+                    withAnimation(DS.Motion.snappy) {
+                        selection.wrappedValue = language
+                    }
+                    Haptics.selection()
+                } label: {
+                    VStack(spacing: 6) {
+                        Image(systemName: language.flag)
+                            .font(.title3)
+                            .symbolEffect(.bounce, options: .nonRepeating, value: isSelected)
+                        Text(language.localizedTitle)
+                            .font(.caption.weight(.medium))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, DS.Spacing.md)
+                    .foregroundStyle(isSelected ? .white : .primary)
+                    .background(
+                        RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                            .fill(isSelected ? Color.accentColor : Color.dsFill)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                            .strokeBorder(
+                                isSelected ? Color.accentColor : Color.clear,
+                                lineWidth: 1.5
+                            )
+                    )
+                    .scaleEffect(isSelected ? 1.03 : 1.0)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.vertical, DS.Spacing.xs)
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets(top: 0, leading: DS.Spacing.lg, bottom: 0, trailing: DS.Spacing.lg))
     }
 
     /// Visual segmented picker for appearance mode — each option has an icon

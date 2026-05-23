@@ -21,27 +21,27 @@ enum AlarmLeadTime: Int, CaseIterable, Identifiable, Codable, Sendable {
 
     var localizedTitle: String {
         switch self {
-        case .atStart: "Al momento"
-        case .min5: "5 minutos antes"
-        case .min10: "10 minutos antes"
-        case .min15: "15 minutos antes"
-        case .min30: "30 minutos antes"
-        case .hour1: "1 hora antes"
-        case .hour2: "2 horas antes"
-        case .day1: "1 día antes"
+        case .atStart: String(localized: "Al momento")
+        case .min5: String(localized: "5 minutos antes")
+        case .min10: String(localized: "10 minutos antes")
+        case .min15: String(localized: "15 minutos antes")
+        case .min30: String(localized: "30 minutos antes")
+        case .hour1: String(localized: "1 hora antes")
+        case .hour2: String(localized: "2 horas antes")
+        case .day1: String(localized: "1 día antes")
         }
     }
 
     var shortTitle: String {
         switch self {
-        case .atStart: "Al inicio"
-        case .min5: "5 min"
-        case .min10: "10 min"
-        case .min15: "15 min"
-        case .min30: "30 min"
-        case .hour1: "1 h"
-        case .hour2: "2 h"
-        case .day1: "1 día"
+        case .atStart: String(localized: "Al inicio")
+        case .min5: String(localized: "5 min")
+        case .min10: String(localized: "10 min")
+        case .min15: String(localized: "15 min")
+        case .min30: String(localized: "30 min")
+        case .hour1: String(localized: "1 h")
+        case .hour2: String(localized: "2 h")
+        case .day1: String(localized: "1 día")
         }
     }
 }

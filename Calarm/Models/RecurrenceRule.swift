@@ -18,13 +18,13 @@ enum Weekday: Int, CaseIterable, Identifiable, Codable, Hashable, Sendable {
 
     var localizedShort: String {
         switch self {
-        case .sunday: "Dom"
-        case .monday: "Lun"
-        case .tuesday: "Mar"
-        case .wednesday: "Mié"
-        case .thursday: "Jue"
-        case .friday: "Vie"
-        case .saturday: "Sáb"
+        case .sunday: String(localized: "Dom")
+        case .monday: String(localized: "Lun")
+        case .tuesday: String(localized: "Mar")
+        case .wednesday: String(localized: "Mié")
+        case .thursday: String(localized: "Jue")
+        case .friday: String(localized: "Vie")
+        case .saturday: String(localized: "Sáb")
         }
     }
 }
@@ -46,18 +46,26 @@ enum RecurrenceRule: Codable, Hashable, Sendable {
     var localizedSummary: String {
         switch self {
         case .once:
-            return "Una vez"
+            return String(localized: "Una vez")
         case .daily(let n):
-            return n == 1 ? "Cada día" : "Cada \(n) días"
+            return n == 1
+                ? String(localized: "Cada día")
+                : String(localized: "Cada \(n) días")
         case .weekly(let n, let days):
-            let base = n == 1 ? "Cada semana" : "Cada \(n) semanas"
+            let base = n == 1
+                ? String(localized: "Cada semana")
+                : String(localized: "Cada \(n) semanas")
             guard !days.isEmpty else { return base }
             let sorted = days.sorted { $0.rawValue < $1.rawValue }
             return "\(base) (\(sorted.map(\.localizedShort).joined(separator: ", ")))"
         case .monthly(let n):
-            return n == 1 ? "Cada mes" : "Cada \(n) meses"
+            return n == 1
+                ? String(localized: "Cada mes")
+                : String(localized: "Cada \(n) meses")
         case .yearly(let n):
-            return n == 1 ? "Cada año" : "Cada \(n) años"
+            return n == 1
+                ? String(localized: "Cada año")
+                : String(localized: "Cada \(n) años")
         }
     }
 }
