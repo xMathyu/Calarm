@@ -1,3292 +1,3379 @@
 {
-  "sourceLanguage": "es",
-  "version": "1.0",
-  "strings": {
-    "%lld %@": {
-      "shouldTranslate": false
-    },
-    "%@": {
-      "shouldTranslate": false
-    },
-    " sigue la configuración del sistema.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": " follows the system setting."
+  "sourceLanguage" : "es",
+  "strings" : {
+    " sigue la configuración del sistema." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " follows the system setting."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": " sigue la configuración del sistema."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " sigue la configuración del sistema."
+          }
+        }
+      }
+    },
+    "%@ – %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ – %2$@"
           }
         }
       }
+    },
+    "%lld" : {
+
     },
-    "1 día": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 day"
+    "%lld %@" : {
+      "shouldTranslate" : false
+    },
+    "%lld avisos" : {
+
+    },
+    "1 día" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 day"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 día"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 día"
           }
         }
       }
     },
-    "1 día antes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 day before"
+    "1 día antes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 day before"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 día antes"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 día antes"
           }
         }
       }
     },
-    "1 h": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 h"
+    "1 h" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 h"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 h"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 h"
           }
         }
       }
     },
-    "2 h": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "2 h"
+    "1 hora antes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 hour before"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "2 h"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 hora antes"
           }
         }
       }
     },
-    "1 hora antes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 hour before"
+    "1 minuto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 minute"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 hora antes"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 minuto"
           }
         }
       }
     },
-    "2 horas antes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "2 hours before"
+    "2 h" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 h"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "2 horas antes"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 h"
           }
         }
       }
     },
-    "1 minuto": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 minute"
+    "2 horas antes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 hours before"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 minuto"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 horas antes"
           }
         }
       }
     },
-    "5 minutos": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5 minutes"
+    "5 min" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 min"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5 minutos"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 min"
           }
         }
       }
     },
-    "9 minutos": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "9 minutes"
+    "5 minutos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 minutes"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "9 minutos"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 minutos"
           }
         }
       }
     },
-    "5 min": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5 min"
+    "5 minutos antes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 minutes before"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5 min"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 minutos antes"
           }
         }
       }
     },
-    "10 min": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "10 min"
+    "9 minutos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "9 minutes"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "10 min"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "9 minutos"
           }
         }
       }
     },
-    "15 min": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "15 min"
+    "10 min" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 min"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "15 min"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 min"
           }
         }
       }
     },
-    "30 min": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "30 min"
+    "10 minutos antes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 minutes before"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "30 min"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 minutos antes"
           }
         }
       }
     },
-    "5 minutos antes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5 minutes before"
+    "15 min" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "15 min"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5 minutos antes"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "15 min"
           }
         }
       }
     },
-    "10 minutos antes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "10 minutes before"
+    "15 minutos antes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "15 minutes before"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "10 minutos antes"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "15 minutos antes"
           }
         }
       }
     },
-    "15 minutos antes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "15 minutes before"
+    "30 min" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 min"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "15 minutos antes"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 min"
           }
         }
       }
     },
-    "30 minutos antes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "30 minutes before"
+    "30 minutos antes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 minutes before"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "30 minutos antes"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 minutos antes"
           }
         }
       }
     },
-    "Abrir Ajustes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open Settings"
+    "Abre el enlace de la reunión en Microsoft Teams." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the meeting link in Microsoft Teams."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abrir Ajustes"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre el enlace de la reunión en Microsoft Teams."
           }
         }
       }
     },
-    "Acceso a Contactos": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Contact Access"
+    "Abrir Ajustes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acceso a Contactos"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes"
           }
         }
       }
     },
-    "Acerca de": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "About"
+    "Acceso a Contactos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contact Access"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acerca de"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceso a Contactos"
           }
         }
       }
     },
-    "Activa": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Active"
+    "Acerca de" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activa"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de"
           }
         }
       }
     },
-    "Activar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enable"
+    "Activa" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa"
           }
         }
       }
     },
-    "Actualizar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Refresh"
+    "Activar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Actualizar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar"
           }
         }
       }
     },
-    "Agregar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add"
+    "Actualizar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Agregar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizar"
           }
         }
       }
     },
-    "Agregar aviso": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add alert"
+    "Agregar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Agregar aviso"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar"
           }
         }
       }
     },
-    "Ajustes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Settings"
+    "Agregar aviso" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add alert"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajustes"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar aviso"
           }
         }
       }
     },
-    "Al crear, se abrirá Messages con el link para que ellos acepten. Toca un avatar para quitarlo.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "On create, Messages will open with the link for them to accept. Tap an avatar to remove it."
+    "Ajustes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Al crear, se abrirá Messages con el link para que ellos acepten. Toca un avatar para quitarlo."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes"
           }
         }
       }
     },
-    "Al inicio": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "At start"
+    "Al crear, se abrirá Messages con el link para que ellos acepten. Toca un avatar para quitarlo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On create, Messages will open with the link for them to accept. Tap an avatar to remove it."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Al inicio"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al crear, se abrirá Messages con el link para que ellos acepten. Toca un avatar para quitarlo."
           }
         }
       }
     },
-    "Al momento": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "On time"
+    "Al inicio" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At start"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Al momento"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al inicio"
           }
         }
       }
     },
-    "Alarma": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alarm"
+    "Al momento" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On time"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alarma"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al momento"
           }
         }
       }
+    },
+    "Alarm ID" : {
+
     },
-    "Alarma activa": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alarm enabled"
+    "Alarma" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarm"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alarma activa"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarma"
           }
         }
       }
     },
-    "Alarma de prueba": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Test alarm"
+    "Alarma activa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarm enabled"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alarma de prueba"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarma activa"
           }
         }
       }
     },
-    "Alarmas": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alarms"
+    "Alarma de prueba" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test alarm"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alarmas"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarma de prueba"
           }
         }
       }
     },
-    "Alarmas activas": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alarms enabled"
+    "Alarmas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarms"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alarmas activas"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarmas"
           }
         }
       }
     },
-    "Alarmas anuales que se repiten automáticamente.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Annual alarms that repeat automatically."
+    "Alarmas activas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarms enabled"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alarmas anuales que se repiten automáticamente."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarmas activas"
           }
         }
       }
     },
-    "Aniversario": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Anniversary"
+    "Alarmas anuales que se repiten automáticamente." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annual alarms that repeat automatically."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aniversario"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarmas anuales que se repiten automáticamente."
           }
         }
       }
     },
-    "Anual": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yearly"
+    "Aniversario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anniversary"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Anual"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aniversario"
           }
         }
       }
     },
-    "Apariencia": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Appearance"
+    "año" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "year"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apariencia"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "año"
           }
         }
       }
     },
-    "Aunque el iPhone esté en silencio, bloqueado o en Focus.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Even when iPhone is silent, locked, or in Focus."
+    "años" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "years"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aunque el iPhone esté en silencio, bloqueado o en Focus."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "años"
           }
         }
       }
     },
-    "Automático": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automatic"
+    "Anual" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yearly"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automático"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anual"
           }
         }
       }
     },
-    "Autorizado": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Authorized"
+    "Apariencia" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Autorizado"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apariencia"
           }
         }
       }
     },
-    "Aviso": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alert"
+    "Aunque el iPhone esté en silencio, bloqueado o en Focus." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Even when iPhone is silent, locked, or in Focus."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aviso"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aunque el iPhone esté en silencio, bloqueado o en Focus."
           }
         }
       }
     },
-    "Avisos (máximo %lld)": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alerts (max %lld)"
+    "Automático" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatic"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avisos (máximo %lld)"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático"
           }
         }
       }
     },
-    "Bienvenido a Calarm": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Welcome to Calarm"
+    "Autorizado" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authorized"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bienvenido a Calarm"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorizado"
           }
         }
       }
     },
-    "Borrar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete"
+    "Aviso" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alert"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Borrar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aviso"
           }
         }
       }
     },
-    "Borrar recordatorio": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete reminder"
+    "Avisos (máximo %lld)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts (max %lld)"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Borrar recordatorio"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos (máximo %lld)"
           }
         }
       }
     },
-    "Buscar por nombre o teléfono": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Search by name or phone"
+    "Bienvenido a Calarm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to Calarm"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Buscar por nombre o teléfono"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bienvenido a Calarm"
           }
         }
       }
     },
-    "Cada N días, semanas, meses o días específicos.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every N days, weeks, months, or specific days."
+    "Borrar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cada N días, semanas, meses o días específicos."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar"
           }
         }
       }
     },
-    "Cada": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every"
+    "Borrar recordatorio" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete reminder"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cada"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar recordatorio"
           }
         }
       }
     },
-    "Cada día": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Daily"
+    "Buscar por nombre o teléfono" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search by name or phone"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cada día"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar por nombre o teléfono"
           }
         }
       }
     },
-    "Cada semana": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Weekly"
+    "Cada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cada semana"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada"
           }
         }
       }
     },
-    "Cada mes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Monthly"
+    "Cada %lld años" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every %lld years"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cada mes"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada %lld años"
           }
         }
       }
     },
-    "Cada año": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yearly"
+    "Cada %lld días" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every %lld days"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cada año"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada %lld días"
           }
         }
       }
     },
-    "Cada %lld días": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every %lld days"
+    "Cada %lld meses" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every %lld months"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cada %lld días"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada %lld meses"
           }
         }
       }
     },
-    "Cada %lld semanas": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every %lld weeks"
+    "Cada %lld semanas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every %lld weeks"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cada %lld semanas"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada %lld semanas"
           }
         }
       }
     },
-    "Cada %lld meses": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every %lld months"
+    "Cada año" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yearly"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cada %lld meses"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada año"
           }
         }
       }
     },
-    "Cada %lld años": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every %lld years"
+    "Cada día" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cada %lld años"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada día"
           }
         }
       }
     },
-    "Calarm es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calarm is an alarm app for personal events: birthdays, anniversaries, reminders, and more."
+    "Cada mes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calarm es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada mes"
           }
         }
       }
     },
-    "Calarm necesita acceso a tu calendario para detectar reuniones.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calarm needs calendar access to detect meetings."
+    "Cada N días, semanas, meses o días específicos." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every N days, weeks, months, or specific days."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calarm necesita acceso a tu calendario para detectar reuniones."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada N días, semanas, meses o días específicos."
           }
         }
       }
     },
-    "Calendario": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calendar"
+    "Cada semana" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calendario"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada semana"
           }
         }
       }
     },
-    "Calendario de Apple": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Calendar"
+    "Calarm es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm is an alarm app for personal events: birthdays, anniversaries, reminders, and more."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calendario de Apple"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más."
           }
         }
       }
     },
-    "Cambiar foto": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Change photo"
+    "Calarm necesita acceso a tu calendario para detectar reuniones." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm needs calendar access to detect meetings."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cambiar foto"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm necesita acceso a tu calendario para detectar reuniones."
           }
         }
       }
     },
-    "Cancelar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancel"
+    "Calendario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancelar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendario"
           }
         }
       }
     },
-    "Cargando contactos…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Loading contacts…"
+    "Calendario de Apple" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Calendar"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cargando contactos…"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendario de Apple"
           }
         }
       }
     },
-    "Categoría": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Category"
+    "Cambiar foto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change photo"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Categoría"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar foto"
           }
         }
       }
     },
-    "Cerrar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Close"
+    "Cancelar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cerrar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
           }
         }
       }
     },
-    "Claro": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Light"
+    "Cargando contactos…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading contacts…"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Claro"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando contactos…"
           }
         }
       }
     },
-    "Comenzar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Get started"
+    "Categoría" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Comenzar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categoría"
           }
         }
       }
     },
-    "Comparte este evento por Messages": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Share this event via Messages"
+    "Cerrar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Comparte este evento por Messages"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
           }
         }
       }
     },
-    "Compartido": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shared"
+    "Claro" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Compartido"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claro"
           }
         }
       }
     },
-    "Compartido contigo": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shared with you"
+    "Comenzar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get started"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Compartido contigo"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comenzar"
           }
         }
       }
     },
-    "Compartidos conmigo": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shared with me"
+    "Comparte este evento por Messages" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share this event via Messages"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Compartidos conmigo"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte este evento por Messages"
           }
         }
       }
     },
-    "Compartir": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Share"
+    "Compartido" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shared"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Compartir"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartido"
           }
         }
       }
     },
-    "Continuar de todas formas": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continue anyway"
+    "Compartido contigo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shared with you"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continuar de todas formas"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartido contigo"
           }
         }
       }
     },
-    "Crea alarmas para cumpleaños, aniversarios y eventos personales. Suenan aunque tu iPhone esté en silencio.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Create alarms for birthdays, anniversaries, and personal events. They ring even when your iPhone is silent."
+    "Compartidos conmigo" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shared with me"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Crea alarmas para cumpleaños, aniversarios y eventos personales. Suenan aunque tu iPhone esté en silencio."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartidos conmigo"
           }
         }
       }
     },
-    "Crear": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Create"
+    "Compartir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Crear"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir"
           }
         }
       }
     },
-    "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "When on, Calarm reads events from your Calendar app and schedules an alarm 10 minutes before each one. If the event has a Microsoft Teams link, a button appears to join."
+    "Continuar de todas formas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue anyway"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar de todas formas"
           }
         }
       }
     },
-    "Cuando esté apagado, esta alarma no sonará aunque tengas avisos configurados.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "When off, this alarm will not ring even if you have alerts configured."
+    "Crea alarmas para cumpleaños, aniversarios y eventos personales. Suenan aunque tu iPhone esté en silencio." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create alarms for birthdays, anniversaries, and personal events. They ring even when your iPhone is silent."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cuando esté apagado, esta alarma no sonará aunque tengas avisos configurados."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea alarmas para cumpleaños, aniversarios y eventos personales. Suenan aunque tu iPhone esté en silencio."
           }
         }
       }
     },
-    "Cuando tengas eventos agendados en tu app Calendario aparecerán aquí con su alarma programada.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "When you have events scheduled in your Calendar app they will appear here with their alarms."
+    "Crear" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cuando tengas eventos agendados en tu app Calendario aparecerán aquí con su alarma programada."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear"
           }
         }
       }
     },
-    "Cuándo sonar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "When to ring"
+    "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When on, Calarm reads events from your Calendar app and schedules an alarm 10 minutes before each one. If the event has a Microsoft Teams link, a button appears to join."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cuándo sonar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte."
           }
         }
       }
     },
-    "Cumpleaños": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Birthday"
+    "Cuando esté apagado, esta alarma no sonará aunque tengas avisos configurados." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When off, this alarm will not ring even if you have alerts configured."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cumpleaños"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando esté apagado, esta alarma no sonará aunque tengas avisos configurados."
           }
         }
       }
     },
-    "Cumpleaños y aniversarios": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Birthdays and anniversaries"
+    "Cuándo sonar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When to ring"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cumpleaños y aniversarios"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuándo sonar"
           }
         }
       }
     },
-    "Denegado": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Denied"
+    "Cuando tengas eventos agendados en tu app Calendario aparecerán aquí con su alarma programada." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When you have events scheduled in your Calendar app they will appear here with their alarms."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Denegado"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando tengas eventos agendados en tu app Calendario aparecerán aquí con su alarma programada."
           }
         }
       }
     },
-    "Desactivar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Disable"
+    "Cumpleaños" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birthday"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Desactivar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cumpleaños"
           }
         }
       }
     },
-    "Desconocido": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unknown"
+    "Cumpleaños y aniversarios" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birthdays and anniversaries"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Desconocido"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cumpleaños y aniversarios"
           }
         }
       }
     },
-    "Detalles": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Details"
+    "Denegado" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denied"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Detalles"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denegado"
           }
         }
       }
     },
-    "Detener": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stop"
+    "Desactivar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Detener"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivar"
           }
         }
       }
     },
-    "Detener alarma": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stop alarm"
+    "Desconocido" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Detener alarma"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desconocido"
           }
         }
       }
     },
-    "Detiene la alarma de la reunión.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stops the meeting alarm."
+    "Detalles" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Details"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Detiene la alarma de la reunión."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalles"
           }
         }
       }
     },
-    "Detiene la alarma y abre el mapa con direcciones al lugar del evento.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stops the alarm and opens the map with directions to the event."
+    "Detener" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Detiene la alarma y abre el mapa con direcciones al lugar del evento."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detener"
           }
         }
       }
     },
-    "Abre el enlace de la reunión en Microsoft Teams.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Opens the meeting link in Microsoft Teams."
+    "Detener alarma" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop alarm"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abre el enlace de la reunión en Microsoft Teams."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detener alarma"
           }
         }
       }
     },
-    "Pospone la alarma según el intervalo configurado.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Snoozes the alarm based on the configured interval."
+    "Detiene la alarma de la reunión." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stops the meeting alarm."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pospone la alarma según el intervalo configurado."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detiene la alarma de la reunión."
           }
         }
       }
     },
-    "Diagnóstico": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Diagnostics"
+    "Detiene la alarma y abre el mapa con direcciones al lugar del evento." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stops the alarm and opens the map with directions to the event."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Diagnóstico"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detiene la alarma y abre el mapa con direcciones al lugar del evento."
           }
         }
       }
     },
-    "Diaria": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Daily"
+    "día" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "day"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Diaria"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "día"
           }
         }
       }
     },
-    "Días": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Days"
+    "Diagnóstico" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Días"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnóstico"
           }
         }
       }
     },
-    "Dom": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sun"
+    "Diaria" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dom"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diaria"
           }
         }
       }
     },
-    "Editar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Edit"
+    "días" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "days"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Editar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "días"
           }
         }
       }
     },
-    "El calendario no está disponible en este dispositivo.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calendar is not available on this device."
+    "Días" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Days"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El calendario no está disponible en este dispositivo."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Días"
           }
         }
       }
     },
-    "Elegir foto": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose photo"
+    "Dom" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sun"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elegir foto"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dom"
           }
         }
       }
     },
-    "Elige el tema.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose the theme."
+    "Editar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige el tema."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar"
           }
         }
       }
     },
-    "En pausa": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paused"
+    "El calendario no está disponible en este dispositivo." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar is not available on this device."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "En pausa"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El calendario no está disponible en este dispositivo."
           }
         }
       }
     },
-    "Error al aceptar la invitación: %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error accepting invitation: %@"
+    "El idioma de la app. \"Automático\" sigue el idioma de tu iPhone." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App language. \"Automatic\" follows your iPhone's language."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error al aceptar la invitación: %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El idioma de la app. \"Automático\" sigue el idioma de tu iPhone."
           }
         }
       }
     },
-    "Error al compartir": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sharing error"
+    "Elegir foto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose photo"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error al compartir"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elegir foto"
           }
         }
       }
     },
-    "Error al compartir: %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sharing error: %@"
+    "Elige el tema." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the theme."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error al compartir: %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige el tema."
           }
         }
       }
     },
-    "Esta semana": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This week"
+    "Elige el tema. \"Automático\" sigue la configuración del sistema." : {
+
+    },
+    "En pausa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paused"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esta semana"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En pausa"
           }
         }
       }
     },
-    "Evento": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Event"
+    "Error al aceptar la invitación: %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error accepting invitation: %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Evento"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al aceptar la invitación: %@"
           }
         }
       }
     },
-    "Evento sin título": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Untitled event"
+    "Error al compartir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sharing error"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Evento sin título"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al compartir"
           }
         }
       }
     },
-    "Fecha": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Date"
+    "Error al compartir: %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sharing error: %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fecha"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al compartir: %@"
           }
         }
       }
     },
-    "Fecha y hora": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Date and time"
+    "Español" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spanish"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fecha y hora"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Español"
           }
         }
       }
     },
-    "Filtrar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filter"
+    "Esta semana" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This week"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtrar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta semana"
           }
         }
       }
     },
-    "Foto": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Photo"
+    "Evento" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Foto"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evento"
           }
         }
       }
     },
-    "Foto o icono": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Photo or icon"
+    "Evento sin título" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untitled event"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Foto o icono"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evento sin título"
           }
         }
       }
     },
-    "Frecuencia": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Frequency"
+    "Fecha" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Frecuencia"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fecha"
           }
         }
       }
     },
-    "Guardar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save"
+    "Fecha y hora" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date and time"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fecha y hora"
           }
         }
       }
     },
-    "Hora": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Time"
+    "Filtrar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hora"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrar"
           }
         }
       }
     },
-    "Hoy": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Today"
+    "Foto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hoy"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto"
           }
         }
       }
     },
-    "Icono": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Icon"
+    "Foto o icono" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo or icon"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Icono"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto o icono"
           }
         }
       }
     },
-    "Inactiva": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inactive"
+    "Frecuencia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frequency"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inactiva"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frecuencia"
           }
         }
       }
     },
-    "Idioma": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Language"
+    "Guardar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Idioma"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
           }
         }
       }
+    },
+    "hasta %@" : {
+
     },
-    "Español": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Spanish"
+    "Hora" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Español"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora"
           }
         }
       }
     },
-    "Inglés": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "English"
+    "Hoy" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inglés"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoy"
           }
         }
       }
     },
-    "El idioma de la app. \"Automático\" sigue el idioma de tu iPhone.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "App language. \"Automatic\" follows your iPhone's language."
+    "Icono" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El idioma de la app. \"Automático\" sigue el idioma de tu iPhone."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icono"
           }
         }
       }
     },
-    "Información": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Information"
+    "Idioma" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Información"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma"
           }
         }
       }
     },
-    "Inicia sesión en iCloud para compartir alarmas.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign in to iCloud to share alarms."
+    "Inactiva" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inactive"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inicia sesión en iCloud para compartir alarmas."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inactiva"
           }
         }
       }
     },
-    "Inicio": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start"
+    "Información" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inicio"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Información"
           }
         }
       }
     },
-    "Interruptor general. Cuando esté apagado, no sonará ninguna alarma.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Master switch. When off, no alarm will ring."
+    "Inglés" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "English"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interruptor general. Cuando esté apagado, no sonará ninguna alarma."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inglés"
           }
         }
       }
     },
-    "Intervalo de snooze": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Snooze interval"
+    "Inicia sesión en iCloud para compartir alarmas." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to iCloud to share alarms."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Intervalo de snooze"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión en iCloud para compartir alarmas."
           }
         }
       }
     },
-    "Invitar amigos": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Invite friends"
+    "Inicio" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Invitar amigos"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicio"
           }
         }
       }
     },
-    "Ir": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Go"
+    "Interruptor general. Cuando esté apagado, no sonará ninguna alarma." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Master switch. When off, no alarm will ring."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ir"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interruptor general. Cuando esté apagado, no sonará ninguna alarma."
           }
         }
       }
     },
-    "Ir al evento": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Go to event"
+    "Intervalo de snooze" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snooze interval"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ir al evento"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intervalo de snooze"
           }
         }
       }
     },
-    "Jue": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Thu"
+    "Invitar amigos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invite friends"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jue"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invitar amigos"
           }
         }
       }
     },
-    "La alarma sonará en cada uno de estos momentos antes del inicio del evento. Si el evento tiene ubicación, en la alarma aparecerá un botón ‘Ir’ que la detiene y abre Maps con direcciones.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The alarm will ring at each of these moments before the event starts. If the event has a location, a 'Go' button appears on the alarm that stops it and opens Maps with directions."
+    "Ir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La alarma sonará en cada uno de estos momentos antes del inicio del evento. Si el evento tiene ubicación, en la alarma aparecerá un botón ‘Ir’ que la detiene y abre Maps con direcciones."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ir"
           }
         }
       }
     },
-    "Limpiar filtros": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clear filters"
+    "Ir al evento" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to event"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Limpiar filtros"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ir al evento"
           }
         }
       }
     },
-    "Listo": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Done"
+    "Jue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thu"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listo"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jue"
           }
         }
       }
     },
-    "Lun": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mon"
+    "La alarma sonará en cada uno de estos momentos antes del inicio del evento. Si el evento tiene ubicación, en la alarma aparecerá un botón ‘Ir’ que la detiene y abre Maps con direcciones." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The alarm will ring at each of these moments before the event starts. If the event has a location, a 'Go' button appears on the alarm that stops it and opens Maps with directions."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lun"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La alarma sonará en cada uno de estos momentos antes del inicio del evento. Si el evento tiene ubicación, en la alarma aparecerá un botón ‘Ir’ que la detiene y abre Maps con direcciones."
           }
         }
       }
     },
-    "Mar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tue"
+    "Limpiar filtros" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear filters"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpiar filtros"
           }
         }
       }
     },
-    "Mañana": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tomorrow"
+    "Listo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mañana"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo"
           }
         }
       }
     },
-    "Mensual": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Monthly"
+    "Location" : {
+
+    },
+    "Lun" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mon"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mensual"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lun"
           }
         }
       }
     },
-    "Más adelante": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Later"
+    "Mañana" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tomorrow"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Más adelante"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mañana"
           }
         }
       }
     },
-    "Mié": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wed"
+    "Mar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tue"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mié"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mar"
           }
         }
       }
     },
-    "Ningún recordatorio coincide con tus filtros.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No reminder matches your filters."
+    "Más adelante" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Later"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ningún recordatorio coincide con tus filtros."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más adelante"
           }
         }
       }
     },
-    "No se pudo preparar la alarma para compartirla.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Could not prepare the alarm for sharing."
+    "Mensual" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se pudo preparar la alarma para compartirla."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensual"
           }
         }
       }
     },
-    "Notas": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notes"
+    "mes" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "month"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notas"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mes"
           }
         }
       }
     },
-    "Notas (opcional)": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notes (optional)"
+    "meses" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "months"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notas (opcional)"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "meses"
           }
         }
       }
     },
-    "Nueva alarma": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "New alarm"
+    "Mié" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wed"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nueva alarma"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mié"
           }
         }
       }
     },
-    "Nuevo recordatorio": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "New reminder"
+    "Ningún recordatorio coincide con tus filtros." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No reminder matches your filters."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nuevo recordatorio"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ningún recordatorio coincide con tus filtros."
           }
         }
       }
     },
-    "OK": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
+    "No se pudo preparar la alarma para compartirla." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not prepare the alarm for sharing."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo preparar la alarma para compartirla."
           }
         }
       }
     },
-    "Organizador": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Organizer"
+    "Notas" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Organizador"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas"
           }
         }
       }
     },
-    "Oscuro": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dark"
+    "Notas (opcional)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes (optional)"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oscuro"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas (opcional)"
           }
         }
       }
     },
-    "Otro": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Other"
+    "Nueva alarma" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New alarm"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otro"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nueva alarma"
           }
         }
       }
     },
-    "Para invitar amigos a tus eventos, Calarm necesita acceder a tus contactos.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "To invite friends to your events, Calarm needs access to your contacts."
+    "Nuevo recordatorio" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New reminder"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Para invitar amigos a tus eventos, Calarm necesita acceder a tus contactos."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuevo recordatorio"
           }
         }
       }
     },
-    "Pausar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pause"
+    "OK" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pausar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         }
       }
     },
-    "Permiso de alarmas": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alarm permission"
+    "Organizador" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organizer"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permiso de alarmas"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organizador"
           }
         }
       }
     },
-    "Permiso denegado": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permission denied"
+    "Oscuro" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permiso denegado"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oscuro"
           }
         }
       }
     },
-    "Permitir acceso": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allow access"
+    "Otro" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permitir acceso"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otro"
           }
         }
       }
     },
-    "Pon la foto del cumpleañero o un símbolo a cada alarma.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add a birthday photo or a symbol to each alarm."
+    "Para invitar amigos a tus eventos, Calarm necesita acceder a tus contactos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To invite friends to your events, Calarm needs access to your contacts."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pon la foto del cumpleañero o un símbolo a cada alarma."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para invitar amigos a tus eventos, Calarm necesita acceder a tus contactos."
           }
         }
       }
     },
-    "Posponer": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Snooze"
+    "Pausar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Posponer"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausar"
           }
         }
       }
     },
-    "Posponer alarma": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Snooze alarm"
+    "Permiso de alarmas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarm permission"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Posponer alarma"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permiso de alarmas"
           }
         }
       }
     },
-    "Probar alarma en 1 minuto": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Test alarm in 1 minute"
+    "Permiso denegado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permission denied"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Probar alarma en 1 minuto"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permiso denegado"
           }
         }
       }
     },
-    "Programada (%@…). Suena en 1 minuto.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scheduled (%@…). Rings in 1 minute."
+    "Permitir acceso" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow access"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Programada (%@…). Suena en 1 minuto."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir acceso"
           }
         }
       }
     },
-    "Programando…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scheduling…"
+    "Pon la foto del cumpleañero o un símbolo a cada alarma." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a birthday photo or a symbol to each alarm."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Programando…"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pon la foto del cumpleañero o un símbolo a cada alarma."
           }
         }
       }
     },
-    "Programar alarmas para eventos del calendario": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Schedule alarms for calendar events"
+    "Pospone la alarma según el intervalo configurado." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snoozes the alarm based on the configured interval."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Programar alarmas para eventos del calendario"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pospone la alarma según el intervalo configurado."
           }
         }
       }
     },
-    "Próximas ocurrencias": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next occurrences"
+    "Posponer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snooze"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Próximas ocurrencias"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posponer"
           }
         }
       }
     },
-    "Quitar %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Remove %@"
+    "Posponer alarma" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snooze alarm"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quitar %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posponer alarma"
           }
         }
       }
     },
-    "Reanudar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Resume"
+    "Probar alarma en 1 minuto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test alarm in 1 minute"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reanudar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probar alarma en 1 minuto"
           }
         }
       }
     },
-    "Recordatorio": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reminder"
+    "Programada (%@…). Suena en 1 minuto." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scheduled (%@…). Rings in 1 minute."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recordatorio"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programada (%@…). Suena en 1 minuto."
           }
         }
       }
     },
-    "Recurrencia": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recurrence"
+    "Programando…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scheduling…"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recurrencia"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programando…"
           }
         }
       }
     },
-    "Recurrencias avanzadas": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Advanced recurrences"
+    "Programar alarmas para eventos del calendario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule alarms for calendar events"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recurrencias avanzadas"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programar alarmas para eventos del calendario"
           }
         }
       }
     },
-    "Reintentar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Retry"
+    "Próximas ocurrencias" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next occurrences"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reintentar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximas ocurrencias"
           }
         }
       }
     },
-    "Repetir": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Repeat"
+    "Quitar %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Repetir"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar %@"
           }
         }
       }
     },
-    "Restablecer al valor por defecto": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reset to default"
+    "Reanudar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restablecer al valor por defecto"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reanudar"
           }
         }
       }
     },
-    "Semanal": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Weekly"
+    "Recordatorio" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Semanal"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recordatorio"
           }
         }
       }
     },
-    "Sin alarmas": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No alarms"
+    "Recurrencia" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recurrence"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin alarmas"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recurrencia"
           }
         }
       }
     },
-    "Sin avisos. Esta alarma no sonará.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No alerts. This alarm will not ring."
+    "Recurrencias avanzadas" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced recurrences"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin avisos. Esta alarma no sonará."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recurrencias avanzadas"
           }
         }
       }
     },
-    "Sin determinar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Not determined"
+    "Reintentar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retry"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin determinar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar"
           }
         }
       }
     },
-    "Sin eventos próximos": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No upcoming events"
+    "Repetir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeat"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin eventos próximos"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repetir"
           }
         }
       }
     },
-    "Sin ocurrencias futuras": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No future occurrences"
+    "Restablecer al valor por defecto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset to default"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin ocurrencias futuras"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restablecer al valor por defecto"
           }
         }
       }
     },
-    "Sin próxima fecha": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No next date"
+    "Sáb" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sat"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin próxima fecha"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sáb"
           }
         }
       }
     },
-    "Sin resultados": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No results"
+    "semana" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "week"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin resultados"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "semana"
           }
         }
       }
     },
-    "Solicitando permiso de alarmas…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Requesting alarm permission…"
+    "Semanal" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solicitando permiso de alarmas…"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semanal"
           }
         }
       }
     },
-    "Sáb": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sat"
+    "semanas" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "weeks"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sáb"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "semanas"
           }
         }
       }
     },
-    "Símbolo": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Symbol"
+    "Símbolo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Símbolo"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Símbolo"
           }
         }
       }
     },
-    "Suena fuerte": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Loud ring"
+    "Sin alarmas" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No alarms"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Suena fuerte"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin alarmas"
           }
         }
       }
     },
-    "Te invito a '%@' en Calarm": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You're invited to '%@' in Calarm"
+    "Sin avisos. Esta alarma no sonará." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No alerts. This alarm will not ring."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Te invito a '%@' en Calarm"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin avisos. Esta alarma no sonará."
           }
         }
       }
     },
-    "Te invito a '%1$@' en Calarm — acepta aquí: %2$@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You're invited to '%1$@' in Calarm — accept here: %2$@"
+    "Sin determinar" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not determined"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Te invito a '%1$@' en Calarm — acepta aquí: %2$@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin determinar"
           }
         }
       }
     },
-    "Tiempo entre repeticiones cuando pospones una alarma.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Time between repeats when you snooze an alarm."
+    "Sin eventos próximos" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No upcoming events"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tiempo entre repeticiones cuando pospones una alarma."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin eventos próximos"
           }
         }
       }
     },
-    "Tipo": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Type"
+    "Sin ocurrencias futuras" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No future occurrences"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tipo"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin ocurrencias futuras"
           }
         }
       }
     },
-    "Toca + para crear tu primera alarma — cumpleaños, aniversario, recordatorio, lo que necesites.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tap + to create your first alarm — birthday, anniversary, reminder, whatever you need."
+    "Sin próxima fecha" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No next date"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Toca + para crear tu primera alarma — cumpleaños, aniversario, recordatorio, lo que necesites."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin próxima fecha"
           }
         }
       }
     },
-    "Título": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Title"
+    "Sin resultados" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No results"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Título"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin resultados"
           }
         }
       }
     },
-    "Ubicación": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Location"
+    "Solicitando permiso de alarmas…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requesting alarm permission…"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ubicación"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitando permiso de alarmas…"
           }
         }
       }
     },
-    "Una vez": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Once"
+    "Suena fuerte" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loud ring"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Una vez"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suena fuerte"
           }
         }
       }
     },
-    "Unirse a reunión de Teams": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Join Teams meeting"
+    "Te invito a '%@' en Calarm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're invited to '%@' in Calarm"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unirse a reunión de Teams"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te invito a '%@' en Calarm"
           }
         }
       }
     },
-    "Unirse en Teams": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Join in Teams"
+    "Te invito a '%1$@' en Calarm — acepta aquí: %2$@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're invited to '%1$@' in Calarm — accept here: %2$@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unirse en Teams"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te invito a '%1$@' en Calarm — acepta aquí: %2$@"
           }
         }
       }
+    },
+    "Teams URL" : {
+
     },
-    "Ve a Ajustes → Calarm → Contactos y activa el acceso para invitar amigos.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Go to Settings → Calarm → Contacts and enable access to invite friends."
+    "Tiempo entre repeticiones cuando pospones una alarma." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time between repeats when you snooze an alarm."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ve a Ajustes → Calarm → Contactos y activa el acceso para invitar amigos."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiempo entre repeticiones cuando pospones una alarma."
           }
         }
       }
     },
-    "Versión": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Version"
+    "Tipo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Versión"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo"
           }
         }
       }
     },
-    "Vie": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fri"
+    "Título" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vie"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título"
           }
         }
       }
     },
-    "día": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "day"
+    "Toca + para crear tu primera alarma — cumpleaños, aniversario, recordatorio, lo que necesites." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap + to create your first alarm — birthday, anniversary, reminder, whatever you need."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "día"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca + para crear tu primera alarma — cumpleaños, aniversario, recordatorio, lo que necesites."
           }
         }
       }
     },
-    "días": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "days"
+    "Ubicación" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "días"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ubicación"
           }
         }
       }
     },
-    "semana": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "week"
+    "Una vez" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Once"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "semana"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una vez"
           }
         }
       }
     },
-    "semanas": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "weeks"
+    "Unirse a reunión de Teams" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join Teams meeting"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "semanas"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unirse a reunión de Teams"
           }
         }
       }
     },
-    "mes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "month"
+    "Unirse en Teams" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join in Teams"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "mes"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unirse en Teams"
           }
         }
       }
     },
-    "meses": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "months"
+    "Ve a Ajustes → Calarm → Contactos y activa el acceso para invitar amigos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Settings → Calarm → Contacts and enable access to invite friends."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "meses"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ve a Ajustes → Calarm → Contactos y activa el acceso para invitar amigos."
           }
         }
       }
     },
-    "año": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "year"
+    "Versión" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "año"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión"
           }
         }
       }
     },
-    "años": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "years"
+    "Vie" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fri"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "años"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vie"
           }
         }
       }
     }
-  }
+  },
+  "version" : "1.0"
 }
