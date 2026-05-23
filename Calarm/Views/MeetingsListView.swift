@@ -111,11 +111,11 @@ struct MeetingsListView: View {
 
     private func headerTitle(for day: Date) -> String {
         let calendar = Calendar.current
-        if calendar.isDateInToday(day) { return "Hoy" }
-        if calendar.isDateInTomorrow(day) { return "Mañana" }
+        if calendar.isDateInToday(day) { return String(localized: "Hoy") }
+        if calendar.isDateInTomorrow(day) { return String(localized: "Mañana") }
         let formatter = DateFormatter()
         formatter.dateStyle = .full
-        formatter.locale = Locale(identifier: "es_ES")
+        formatter.locale = LocalizationManager.shared.currentLocale
         return formatter.string(from: day).capitalized
     }
 }

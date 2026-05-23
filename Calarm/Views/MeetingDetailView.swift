@@ -18,13 +18,13 @@ struct MeetingDetailView: View {
     @State private var showingPicker = false
     @State private var hasLoaded = false
 
-    private static let dateFormatter: DateFormatter = {
+    private var dateFormatter: DateFormatter {
         let f = DateFormatter()
         f.dateStyle = .full
         f.timeStyle = .short
-        f.locale = Locale(identifier: "es_ES")
+        f.locale = LocalizationManager.shared.currentLocale
         return f
-    }()
+    }
 
     private static let timeFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -39,7 +39,7 @@ struct MeetingDetailView: View {
                 Section {
                     LabeledContent("Inicio") {
                         VStack(alignment: .trailing, spacing: 2) {
-                            Text(Self.dateFormatter.string(from: meeting.startDate))
+                            Text(dateFormatter.string(from: meeting.startDate))
                                 .multilineTextAlignment(.trailing)
                             Text("hasta \(Self.timeFormatter.string(from: meeting.endDate))")
                                 .font(.caption)

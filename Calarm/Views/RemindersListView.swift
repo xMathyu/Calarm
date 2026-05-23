@@ -213,11 +213,11 @@ struct RemindersListView: View {
         }
 
         var result: [Group] = []
-        if !today.isEmpty { result.append(Group(title: "Hoy", items: today)) }
-        if !tomorrow.isEmpty { result.append(Group(title: "Mañana", items: tomorrow)) }
-        if !thisWeek.isEmpty { result.append(Group(title: "Esta semana", items: thisWeek)) }
-        if !later.isEmpty { result.append(Group(title: "Más adelante", items: later)) }
-        if !unscheduled.isEmpty { result.append(Group(title: "Sin próxima fecha", items: unscheduled)) }
+        if !today.isEmpty { result.append(Group(title: String(localized: "Hoy"), items: today)) }
+        if !tomorrow.isEmpty { result.append(Group(title: String(localized: "Mañana"), items: tomorrow)) }
+        if !thisWeek.isEmpty { result.append(Group(title: String(localized: "Esta semana"), items: thisWeek)) }
+        if !later.isEmpty { result.append(Group(title: String(localized: "Más adelante"), items: later)) }
+        if !unscheduled.isEmpty { result.append(Group(title: String(localized: "Sin próxima fecha"), items: unscheduled)) }
         return result
     }
 

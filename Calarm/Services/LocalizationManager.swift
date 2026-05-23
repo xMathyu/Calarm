@@ -47,6 +47,18 @@ final class LocalizationManager: @unchecked Sendable {
         storage.withLock { $0 }
     }
 
+    /// The active locale — reflects the user's manual language override if set,
+    /// otherwise falls back to the system locale. Use this for `DateFormatter`,
+    /// `NumberFormatter`, etc. so date/number formatting matches the rest of
+    /// the localized UI.
+    var currentLocale: Locale {
+        if let bundle = snapshotBundle(),
+           let language = bundle.preferredLocalizations.first {
+            return Locale(identifier: language)
+        }
+        return Locale.current
+    }
+
     /// Installs the Bundle.main swizzle exactly once. Safe to call multiple
     /// times — subsequent calls are no-ops.
     func installSwizzleIfNeeded() {

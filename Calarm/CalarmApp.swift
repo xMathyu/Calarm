@@ -57,6 +57,9 @@ struct CalarmApp: App {
             .modelContainer(modelContainer)
             .preferredColorScheme(settings.appearance.preferredColorScheme)
             .tint(.accentColor)
+            // Drives FormatStyle resolution (dates, numbers) so they match
+            // the language override even when iOS's locale would say otherwise.
+            .environment(\.locale, localization.currentLocale)
             // Forces every Text(...) to re-evaluate after a language switch.
             .id(localization.revision)
             .task {
