@@ -34,6 +34,12 @@ final class LocalizationManager: @unchecked Sendable {
     /// localized text by using it as a SwiftUI `.id(...)`.
     private(set) var revision: Int = 0
 
+    /// The explicit language code the user picked (e.g. "en", "es"), or `nil`
+    /// when in `.system` mode. Used for locale derivation — derive from this
+    /// instead of `bundle.preferredLocalizations`, which can return unexpected
+    /// values depending on the system's preferred-languages list.
+    private(set) var activeLanguageCode: String?
+
     @ObservationIgnored
     private let storage = OSAllocatedUnfairLock<Bundle?>(initialState: nil)
 
@@ -51,12 +57,30 @@ final class LocalizationManager: @unchecked Sendable {
     /// otherwise falls back to the system locale. Use this for `DateFormatter`,
     /// `NumberFormatter`, etc. so date/number formatting matches the rest of
     /// the localized UI.
+    ///
+    /// For overridden languages we pick a sensible regional default so dates
+    /// look right (American English by default produces "June 10, 2026", not
+    /// "10 June 2026" which is the en_001 international form).
     var currentLocale: Locale {
-        if let bundle = snapshotBundle(),
-           let language = bundle.preferredLocalizations.first {
-            return Locale(identifier: language)
+        guard let code = activeLanguageCode else {
+            // `.system` mode — defer entirely to the iPhone's locale.
+            return Locale.current
         }
-        return Locale.current
+        switch code {
+        case "en":
+            return Locale(identifier: "en_US")
+        case "es":
+            // Keep using the system's Spanish region (es_PE, es_MX, es_ES, …)
+            // if it's already Spanish-speaking — Spanish formatting is
+            // essentially identical across regions anyway.
+            if let region = Locale.current.region?.identifier,
+               Locale.current.language.languageCode?.identifier == "es" {
+                return Locale(identifier: "es_\(region)")
+            }
+            return Locale(identifier: "es_ES")
+        default:
+            return Locale(identifier: code)
+        }
     }
 
     /// Installs the Bundle.main swizzle exactly once. Safe to call multiple
@@ -79,8 +103,10 @@ final class LocalizationManager: @unchecked Sendable {
            let path = Bundle.main.path(forResource: code, ofType: "lproj"),
            let bundle = Bundle(path: path) {
             resolved = bundle
+            activeLanguageCode = code
         } else {
             resolved = nil
+            activeLanguageCode = nil
         }
 
         storage.withLock { $0 = resolved }

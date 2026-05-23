@@ -135,7 +135,7 @@ struct RemindersListView: View {
                             }
                         }
                     } header: {
-                        sectionHeader(title: "Compartidos conmigo", count: shared.count, systemImage: "person.2.fill")
+                        sectionHeader(title: String(localized: "Compartidos conmigo"), count: shared.count, systemImage: "person.2.fill")
                     }
                 }
             }

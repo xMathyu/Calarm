@@ -146,7 +146,7 @@ struct SettingsView: View {
         }
     }
 
-    private func sectionHeader(_ title: String, systemImage: String) -> some View {
+    private func sectionHeader(_ title: LocalizedStringKey, systemImage: String) -> some View {
         HStack(spacing: DS.Spacing.xs) {
             Image(systemName: systemImage)
                 .font(.caption2)

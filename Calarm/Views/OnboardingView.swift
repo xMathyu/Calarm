@@ -21,7 +21,7 @@ struct OnboardingView: View {
 
     let alarmScheduler: AlarmScheduler
 
-    private let features: [(symbol: String, title: String, description: String)] = [
+    private let features: [(symbol: String, title: LocalizedStringKey, description: LocalizedStringKey)] = [
         ("birthday.cake.fill", "Cumpleaños y aniversarios", "Alarmas anuales que se repiten automáticamente."),
         ("repeat", "Recurrencias avanzadas", "Cada N días, semanas, meses o días específicos."),
         ("photo.fill", "Foto o icono", "Pon la foto del cumpleañero o un símbolo a cada alarma."),
@@ -100,7 +100,7 @@ struct OnboardingView: View {
         .padding(.horizontal, DS.Spacing.xxxl)
     }
 
-    private func featureRow(symbol: String, title: String, description: String) -> some View {
+    private func featureRow(symbol: String, title: LocalizedStringKey, description: LocalizedStringKey) -> some View {
         HStack(alignment: .top, spacing: DS.Spacing.md) {
             ZStack {
                 Circle()

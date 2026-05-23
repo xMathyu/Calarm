@@ -120,17 +120,24 @@ struct ReminderDetailView: View {
     @ViewBuilder
     private var detailsSection: some View {
         Section {
-            detailRow(icon: "calendar", title: "Fecha", value: reminder.date.formatted(date: .long, time: .omitted))
-            detailRow(icon: "clock", title: "Hora", value: reminder.date.formatted(date: .omitted, time: .shortened))
-            detailRow(icon: "repeat", title: "Recurrencia", value: reminder.recurrence.localizedSummary)
-            detailRow(icon: "bell.badge", title: "Aviso", value: reminder.leadTime.shortTitle)
+            detailRow(icon: "calendar", title: "Fecha",
+                      value: reminder.date.formatted(date: .long, time: .omitted))
+            detailRow(icon: "clock", title: "Hora",
+                      value: reminder.date.formatted(date: .omitted, time: .shortened))
+            detailRow(icon: "repeat", title: "Recurrencia",
+                      value: reminder.recurrence.localizedSummary)
+            detailRow(icon: "bell.badge", title: "Aviso",
+                      value: reminder.leadTime.shortTitle)
             if let notes = reminder.notes, !notes.isEmpty {
-                detailRow(icon: "note.text", title: "Notas", value: notes, allowsMultiline: true)
+                detailRow(icon: "note.text", title: "Notas",
+                          value: notes, allowsMultiline: true)
             }
             detailRow(
                 icon: reminder.isEnabled ? "bell.fill" : "bell.slash.fill",
                 title: "Alarma",
-                value: reminder.isEnabled ? "Activa" : "Inactiva",
+                value: reminder.isEnabled
+                    ? String(localized: "Activa")
+                    : String(localized: "Inactiva"),
                 valueColor: reminder.isEnabled ? .green : .secondary
             )
         } header: {
@@ -142,7 +149,7 @@ struct ReminderDetailView: View {
         }
     }
 
-    private func detailRow(icon: String, title: String, value: String, valueColor: Color = .primary, allowsMultiline: Bool = false) -> some View {
+    private func detailRow(icon: String, title: LocalizedStringKey, value: String, valueColor: Color = .primary, allowsMultiline: Bool = false) -> some View {
         LabeledContent {
             Text(value)
                 .foregroundStyle(valueColor)

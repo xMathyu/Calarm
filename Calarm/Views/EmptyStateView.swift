@@ -7,9 +7,9 @@ import SwiftUI
 
 struct EmptyStateView: View {
     let systemImage: String
-    let title: String
-    let message: String
-    var actionTitle: String? = nil
+    let title: LocalizedStringKey
+    let message: LocalizedStringKey
+    var actionTitle: LocalizedStringKey? = nil
     var action: (() -> Void)? = nil
 
     @State private var animate = false
