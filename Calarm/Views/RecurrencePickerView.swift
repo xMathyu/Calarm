@@ -14,12 +14,23 @@ struct RecurrencePickerView: View {
     @State private var weekdays: Set<Weekday>
 
     enum Kind: String, CaseIterable, Identifiable {
-        case once = "Una vez"
-        case daily = "Diaria"
-        case weekly = "Semanal"
-        case monthly = "Mensual"
-        case yearly = "Anual"
+        case once = "once"
+        case daily = "daily"
+        case weekly = "weekly"
+        case monthly = "monthly"
+        case yearly = "yearly"
+
         var id: String { rawValue }
+
+        var localizedTitle: String {
+            switch self {
+            case .once: String(localized: "Una vez")
+            case .daily: String(localized: "Diaria")
+            case .weekly: String(localized: "Semanal")
+            case .monthly: String(localized: "Mensual")
+            case .yearly: String(localized: "Anual")
+            }
+        }
     }
 
     init(rule: Binding<RecurrenceRule>, baseDate: Date) {
@@ -51,31 +62,39 @@ struct RecurrencePickerView: View {
 
     var body: some View {
         Form {
-            Section("Frecuencia") {
-                Picker("Tipo", selection: $kind) {
+            Section {
+                Picker(selection: $kind) {
                     ForEach(Kind.allCases) { k in
-                        Text(k.rawValue).tag(k)
+                        Text(k.localizedTitle).tag(k)
                     }
+                } label: {
+                    Text("Tipo")
                 }
                 .pickerStyle(.inline)
                 .labelsHidden()
+            } header: {
+                Text("Frecuencia")
             }
 
             if kind != .once {
-                Section("Cada") {
+                Section {
                     Stepper(value: $interval, in: 1...30) {
                         Text("\(interval) \(unitLabel(plural: interval != 1))")
                     }
+                } header: {
+                    Text("Cada")
                 }
             }
 
             if kind == .weekly {
-                Section("Días") {
+                Section {
                     weekdayChips
+                } header: {
+                    Text("Días")
                 }
             }
 
-            Section("Próximas ocurrencias") {
+            Section {
                 let preview = RecurrenceEngine.nextOccurrences(rule: currentRule, baseDate: baseDate, count: 3)
                 if preview.isEmpty {
                     Text("Sin ocurrencias futuras")
@@ -86,6 +105,8 @@ struct RecurrencePickerView: View {
                             .font(.subheadline)
                     }
                 }
+            } header: {
+                Text("Próximas ocurrencias")
             }
         }
         .navigationTitle("Repetir")
@@ -107,10 +128,10 @@ struct RecurrencePickerView: View {
 
     private func unitLabel(plural: Bool) -> String {
         switch kind {
-        case .daily: plural ? "días" : "día"
-        case .weekly: plural ? "semanas" : "semana"
-        case .monthly: plural ? "meses" : "mes"
-        case .yearly: plural ? "años" : "año"
+        case .daily: plural ? String(localized: "días") : String(localized: "día")
+        case .weekly: plural ? String(localized: "semanas") : String(localized: "semana")
+        case .monthly: plural ? String(localized: "meses") : String(localized: "mes")
+        case .yearly: plural ? String(localized: "años") : String(localized: "año")
         case .once: ""
         }
     }

@@ -70,49 +70,67 @@ struct ReminderEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Información") {
+                Section {
                     TextField("Título", text: $title)
                     TextField("Notas (opcional)", text: $notes, axis: .vertical)
                         .lineLimit(1...4)
+                } header: {
+                    Text("Información")
                 }
 
-                Section("Categoría") {
+                Section {
                     CategoryPickerView(selection: $category)
                         .onChange(of: category) { _, newValue in
                             if iconKind == .symbol, !newValue.suggestedSymbols.contains(symbolName) {
                                 symbolName = newValue.defaultSymbol
                             }
                         }
+                } header: {
+                    Text("Categoría")
                 }
 
-                Section("Icono") {
+                Section {
                     IconPickerView(
                         category: category,
                         iconKind: $iconKind,
                         symbolName: $symbolName,
                         photoData: $photoData
                     )
+                } header: {
+                    Text("Icono")
                 }
 
-                Section("Fecha y hora") {
+                Section {
                     DatePicker("Fecha", selection: $date, displayedComponents: [.date, .hourAndMinute])
                         .datePickerStyle(.graphical)
+                } header: {
+                    Text("Fecha y hora")
                 }
 
-                Section("Aviso") {
-                    Picker("Cuándo sonar", selection: $leadTime) {
+                Section {
+                    Picker(selection: $leadTime) {
                         ForEach(AlarmLeadTime.allCases) { value in
                             Text(value.localizedTitle).tag(value)
                         }
+                    } label: {
+                        Text("Cuándo sonar")
                     }
+                } header: {
+                    Text("Aviso")
                 }
 
-                Section("Repetir") {
+                Section {
                     NavigationLink {
                         RecurrencePickerView(rule: $recurrence, baseDate: date)
                     } label: {
-                        LabeledContent("Repetir", value: recurrence.localizedSummary)
+                        LabeledContent {
+                            Text(recurrence.localizedSummary)
+                        } label: {
+                            Text("Repetir")
+                        }
                     }
+                } header: {
+                    Text("Repetir")
                 }
 
                 Section {

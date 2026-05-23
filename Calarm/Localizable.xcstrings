@@ -654,7 +654,6 @@
       }
     },
     "año" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -671,7 +670,6 @@
       }
     },
     "años" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -688,7 +686,6 @@
       }
     },
     "Anual" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1557,7 +1554,6 @@
       }
     },
     "día" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1590,7 +1586,6 @@
       }
     },
     "Diaria" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1607,7 +1602,6 @@
       }
     },
     "días" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2364,7 +2358,6 @@
       }
     },
     "Mensual" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2381,7 +2374,6 @@
       }
     },
     "mes" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2398,7 +2390,6 @@
       }
     },
     "meses" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2961,7 +2952,6 @@
       }
     },
     "semana" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2978,7 +2968,6 @@
       }
     },
     "Semanal" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2995,7 +2984,6 @@
       }
     },
     "semanas" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

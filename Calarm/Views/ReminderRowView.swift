@@ -69,6 +69,8 @@ struct ReminderRowView: View {
             }
         }
         .padding(.vertical, DS.Spacing.xs)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
         .animation(DS.Motion.snappy, value: reminder.isEnabled)
         .accessibilityElement(children: .combine)
     }

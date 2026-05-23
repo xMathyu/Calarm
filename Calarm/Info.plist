@@ -4,6 +4,8 @@
 <dict>
 	<key>CKSharingSupported</key>
 	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSAlarmKitUsageDescription</key>
 	<string>Calarm necesita programar alarmas para avisarte antes de tus reuniones y recordatorios.</string>
 	<key>NSContactsUsageDescription</key>

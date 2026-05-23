@@ -162,7 +162,7 @@ struct ReminderDetailView: View {
 
     @ViewBuilder
     private var shareSection: some View {
-        Section("Compartir") {
+        Section {
             Button {
                 Task { await inviteFriends() }
             } label: {
@@ -175,6 +175,8 @@ struct ReminderDetailView: View {
                 }
             }
             .disabled(isPreparingShare)
+        } header: {
+            Text("Compartir")
         }
     }
 

@@ -23,7 +23,7 @@ struct RemindersListView: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-                            Section("Filtrar") {
+                            Section {
                                 ForEach(ReminderCategory.displayOrder) { category in
                                     Toggle(isOn: Binding(
                                         get: { filterCategories.contains(category) },
@@ -38,6 +38,8 @@ struct RemindersListView: View {
                                 if !filterCategories.isEmpty {
                                     Button("Limpiar filtros") { filterCategories.removeAll() }
                                 }
+                            } header: {
+                                Text("Filtrar")
                             }
                         } label: {
                             Image(systemName: filterCategories.isEmpty
