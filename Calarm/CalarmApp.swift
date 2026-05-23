@@ -54,6 +54,8 @@ struct CalarmApp: App {
             .environment(meetingPreferences)
             .environment(sharedRemindersService)
             .modelContainer(modelContainer)
+            .preferredColorScheme(settings.appearance.preferredColorScheme)
+            .tint(.accentColor)
             .task {
                 UIApplication.shared.installGlobalKeyboardDismissGesture()
                 await syncAllReminders()

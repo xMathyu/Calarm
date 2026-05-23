@@ -47,9 +47,11 @@ struct RemindersListView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
+                            Haptics.light()
                             showingNewEditor = true
                         } label: {
                             Image(systemName: "plus")
+                                .symbolEffect(.bounce, options: .nonRepeating, value: showingNewEditor)
                         }
                     }
                 }
@@ -80,9 +82,10 @@ struct RemindersListView: View {
         } else {
             List {
                 ForEach(groups(from: visible), id: \.title) { group in
-                    Section(group.title) {
+                    Section {
                         ForEach(group.items, id: \.reminder.id) { item in
                             Button {
+                                Haptics.light()
                                 detailReminder = item.reminder
                             } label: {
                                 ReminderRowView(
@@ -90,7 +93,7 @@ struct RemindersListView: View {
                                     nextOccurrence: item.nextOccurrence
                                 )
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(.pressable)
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
                                     Task { await delete(item.reminder) }
@@ -103,13 +106,20 @@ struct RemindersListView: View {
                                 }
                                 .tint(.orange)
                             }
+                            .transition(.asymmetric(
+                                insertion: .scale(scale: 0.95).combined(with: .opacity),
+                                removal: .opacity
+                            ))
                         }
+                    } header: {
+                        sectionHeader(title: group.title, count: group.items.count)
                     }
                 }
                 if !shared.isEmpty {
-                    Section("Compartidos conmigo") {
+                    Section {
                         ForEach(shared) { reminder in
                             Button {
+                                Haptics.light()
                                 detailReminder = reminder
                             } label: {
                                 ReminderRowView(
@@ -117,19 +127,38 @@ struct RemindersListView: View {
                                     nextOccurrence: nextOccurrence(for: reminder)
                                 )
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(.pressable)
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
                                     Task { await delete(reminder) }
                                 } label: { Label("Borrar", systemImage: "trash") }
                             }
                         }
+                    } header: {
+                        sectionHeader(title: "Compartidos conmigo", count: shared.count, systemImage: "person.2.fill")
                     }
                 }
             }
             .listStyle(.insetGrouped)
-            .animation(.snappy, value: reminders.count)
-            .animation(.snappy, value: filterCategories)
+            .animation(DS.Motion.smooth, value: reminders.count)
+            .animation(DS.Motion.smooth, value: filterCategories)
+        }
+    }
+
+    private func sectionHeader(title: String, count: Int, systemImage: String? = nil) -> some View {
+        HStack(spacing: DS.Spacing.xs) {
+            if let systemImage {
+                Image(systemName: systemImage)
+                    .font(.caption2)
+            }
+            Text(title)
+            Text("\(count)")
+                .font(.caption2.weight(.bold))
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 1)
+                .background(Color.dsFill, in: Capsule())
         }
     }
 

@@ -19,12 +19,14 @@ struct MeetingsListView: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
+                            Haptics.light()
                             Task { await coordinator.sync() }
                         } label: {
                             if coordinator.isSyncing {
                                 ProgressView()
                             } else {
                                 Image(systemName: "arrow.clockwise")
+                                    .symbolEffect(.rotate, options: .nonRepeating, value: coordinator.isSyncing)
                             }
                         }
                         .accessibilityLabel("Actualizar")
@@ -55,22 +57,38 @@ struct MeetingsListView: View {
                 ForEach(groupedMeetings, id: \.day) { group in
                     Section {
                         ForEach(group.meetings) { meeting in
-                            MeetingRowView(
-                                meeting: meeting,
-                                leadTimes: preferences.activeLeadTimes(forEventID: meeting.id),
-                                alarmsEnabled: settings.alarmsEnabled && preferences.isEnabled(forEventID: meeting.id)
-                            )
-                            .contentShape(Rectangle())
-                            .onTapGesture {
+                            Button {
+                                Haptics.light()
                                 selectedMeeting = meeting
+                            } label: {
+                                MeetingRowView(
+                                    meeting: meeting,
+                                    leadTimes: preferences.activeLeadTimes(forEventID: meeting.id),
+                                    alarmsEnabled: settings.alarmsEnabled && preferences.isEnabled(forEventID: meeting.id)
+                                )
                             }
+                            .buttonStyle(.pressable)
+                            .transition(.asymmetric(
+                                insertion: .scale(scale: 0.95).combined(with: .opacity),
+                                removal: .opacity
+                            ))
                         }
                     } header: {
-                        Text(headerTitle(for: group.day))
+                        HStack(spacing: DS.Spacing.xs) {
+                            Text(headerTitle(for: group.day))
+                            Text("\(group.meetings.count)")
+                                .font(.caption2.weight(.bold))
+                                .monospacedDigit()
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 1)
+                                .background(Color.dsFill, in: Capsule())
+                        }
                     }
                 }
             }
             .listStyle(.insetGrouped)
+            .animation(DS.Motion.smooth, value: coordinator.meetings.map(\.id))
             // Trigger view refresh when preferences change.
             .id(preferences.revision)
         }

@@ -44,15 +44,19 @@ struct IconPickerView: View {
             ForEach(category.suggestedSymbols, id: \.self) { symbol in
                 let isSelected = symbol == symbolName
                 Button {
-                    symbolName = symbol
+                    withAnimation(DS.Motion.snappy) { symbolName = symbol }
+                    Haptics.selection()
                 } label: {
                     Image(systemName: symbol)
                         .font(.title2)
-                        .foregroundStyle(isSelected ? Color.white : category.tint)
+                        .foregroundStyle(isSelected ? .white : category.tint)
                         .frame(width: 52, height: 52)
                         .background(
                             Circle().fill(isSelected ? category.tint : category.tint.opacity(0.15))
                         )
+                        .scaleEffect(isSelected ? 1.08 : 1.0)
+                        .shadow(color: isSelected ? category.tint.opacity(0.35) : .clear, radius: 8, y: 3)
+                        .symbolEffect(.bounce, options: .nonRepeating, value: isSelected)
                 }
                 .buttonStyle(.plain)
             }

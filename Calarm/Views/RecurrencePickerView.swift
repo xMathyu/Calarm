@@ -120,18 +120,23 @@ struct RecurrencePickerView: View {
             ForEach(Weekday.allCases) { day in
                 let isOn = weekdays.contains(day)
                 Button {
-                    if isOn { weekdays.remove(day) } else { weekdays.insert(day) }
+                    withAnimation(DS.Motion.snappy) {
+                        if isOn { weekdays.remove(day) } else { weekdays.insert(day) }
+                    }
+                    Haptics.selection()
                 } label: {
                     Text(day.localizedShort)
                         .font(.caption.weight(.semibold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
                         .background(
-                            Capsule().fill(isOn ? Color.accentColor : Color.gray.opacity(0.15))
+                            Capsule().fill(isOn ? Color.accentColor : Color.dsFill)
                         )
-                        .foregroundStyle(isOn ? Color.white : Color.primary)
+                        .foregroundStyle(isOn ? .white : .primary)
+                        .scaleEffect(isOn ? 1.05 : 1.0)
                 }
                 .buttonStyle(.plain)
+                .sensoryFeedback(.selection, trigger: isOn)
             }
         }
     }

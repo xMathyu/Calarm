@@ -65,56 +65,91 @@ struct ReminderDetailView: View {
     @ViewBuilder
     private var headerSection: some View {
         Section {
-            HStack(spacing: 16) {
+            HStack(spacing: DS.Spacing.lg) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(reminder.category.tint.opacity(0.15))
-                        .frame(width: 56, height: 56)
+                    RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    reminder.category.tint.opacity(0.30),
+                                    reminder.category.tint.opacity(0.12)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 64, height: 64)
                     if reminder.iconKind == .photo,
                        let data = reminder.photoData,
                        let img = UIImage(data: data) {
                         Image(uiImage: img)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 56, height: 56)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .frame(width: 64, height: 64)
+                            .clipShape(RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous))
                     } else {
                         Image(systemName: reminder.symbolName ?? reminder.category.defaultSymbol)
-                            .font(.title2)
+                            .font(.title)
                             .foregroundStyle(reminder.category.tint)
+                            .symbolEffect(.bounce, options: .nonRepeating)
                     }
                 }
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                     Text(reminder.title)
-                        .font(.headline)
-                    Text(reminder.category.localizedTitle)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.title3.weight(.semibold))
+                        .lineLimit(2)
+                    Label(reminder.category.localizedTitle, systemImage: reminder.category.defaultSymbol)
+                        .labelStyle(.titleAndIcon)
+                        .font(.caption.weight(.medium))
+                        .padding(.horizontal, DS.Spacing.sm)
+                        .padding(.vertical, 3)
+                        .foregroundStyle(reminder.category.tint)
+                        .background(reminder.category.tint.opacity(0.13), in: Capsule())
                     if reminder.isReceivedShare {
                         Label("Compartido contigo", systemImage: "person.2.fill")
-                            .font(.caption)
-                            .foregroundStyle(.blue)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
                     }
                 }
                 Spacer()
             }
-            .padding(.vertical, 4)
+            .padding(.vertical, DS.Spacing.xs)
         }
     }
 
     @ViewBuilder
     private var detailsSection: some View {
-        Section("Detalles") {
-            LabeledContent("Fecha", value: reminder.date.formatted(date: .long, time: .omitted))
-            LabeledContent("Hora", value: reminder.date.formatted(date: .omitted, time: .shortened))
-            LabeledContent("Recurrencia", value: reminder.recurrence.localizedSummary)
-            LabeledContent("Aviso", value: reminder.leadTime.shortTitle)
+        Section {
+            detailRow(icon: "calendar", title: "Fecha", value: reminder.date.formatted(date: .long, time: .omitted))
+            detailRow(icon: "clock", title: "Hora", value: reminder.date.formatted(date: .omitted, time: .shortened))
+            detailRow(icon: "repeat", title: "Recurrencia", value: reminder.recurrence.localizedSummary)
+            detailRow(icon: "bell.badge", title: "Aviso", value: reminder.leadTime.shortTitle)
             if let notes = reminder.notes, !notes.isEmpty {
-                LabeledContent("Notas") {
-                    Text(notes).multilineTextAlignment(.trailing)
-                }
+                detailRow(icon: "note.text", title: "Notas", value: notes, allowsMultiline: true)
             }
-            LabeledContent("Alarma", value: reminder.isEnabled ? "Activa" : "Inactiva")
+            detailRow(
+                icon: reminder.isEnabled ? "bell.fill" : "bell.slash.fill",
+                title: "Alarma",
+                value: reminder.isEnabled ? "Activa" : "Inactiva",
+                valueColor: reminder.isEnabled ? .green : .secondary
+            )
+        } header: {
+            HStack(spacing: DS.Spacing.xs) {
+                Image(systemName: "info.circle.fill")
+                    .font(.caption2)
+                Text("Detalles")
+            }
+        }
+    }
+
+    private func detailRow(icon: String, title: String, value: String, valueColor: Color = .primary, allowsMultiline: Bool = false) -> some View {
+        LabeledContent {
+            Text(value)
+                .foregroundStyle(valueColor)
+                .multilineTextAlignment(.trailing)
+                .lineLimit(allowsMultiline ? nil : 1)
+        } label: {
+            Label(title, systemImage: icon)
         }
     }
 

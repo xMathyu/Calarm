@@ -93,6 +93,7 @@ struct MeetingRowView: View {
                 .foregroundStyle(.secondary)
                 .padding(8)
                 .background(.secondary.opacity(0.15), in: Circle())
+                .symbolEffect(.pulse, options: .nonRepeating, value: alarmsEnabled)
         } else if leadTimes.count == 1, let only = leadTimes.first {
             Label(only.shortTitle, systemImage: "bell.fill")
                 .font(.caption.weight(.semibold))
@@ -101,6 +102,7 @@ struct MeetingRowView: View {
                 .padding(.vertical, 6)
                 .background(.tint.opacity(0.15), in: Capsule())
                 .foregroundStyle(.tint)
+                .symbolEffect(.bounce, options: .nonRepeating, value: leadTimes)
         } else {
             Label("\(leadTimes.count) avisos", systemImage: "bell.badge.fill")
                 .font(.caption.weight(.semibold))
@@ -109,6 +111,7 @@ struct MeetingRowView: View {
                 .padding(.vertical, 6)
                 .background(.tint.opacity(0.15), in: Capsule())
                 .foregroundStyle(.tint)
+                .symbolEffect(.bounce, options: .nonRepeating, value: leadTimes.count)
         }
     }
 
