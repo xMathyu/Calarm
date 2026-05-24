@@ -2251,6 +2251,9 @@
         }
       }
     },
+    "La alarma sonará una vez por cada aviso configurado." : {
+
+    },
     "Limpiar filtros" : {
       "localizations" : {
         "en" : {

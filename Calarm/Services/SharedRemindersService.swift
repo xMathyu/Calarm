@@ -203,7 +203,7 @@ final class SharedRemindersService {
                 symbolName: symbolName?.isEmpty == true ? nil : symbolName,
                 photoData: nil,
                 recurrence: (try? JSONDecoder().decode(RecurrenceRule.self, from: recurrenceData)) ?? .once,
-                leadTime: AlarmLeadTime(rawValue: leadTimeSeconds) ?? .atStart,
+                leadTimes: [AlarmLeadTime(rawValue: leadTimeSeconds) ?? .atStart],
                 isEnabled: isEnabled
             )
             reminder.isReceivedShare = true

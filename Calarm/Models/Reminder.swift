@@ -22,6 +22,11 @@ final class Reminder {
     /// Encoded `RecurrenceRule` (JSON). Empty data decodes to `.once` via getter.
     var recurrenceData: Data = Data()
     var leadTimeSeconds: Int = AlarmLeadTime.atStart.rawValue
+    /// Additional lead times beyond `leadTimeSeconds` (the primary one).
+    /// JSON-encoded `[Int]` of seconds. New field — older CloudKit records
+    /// arrive as empty `Data()` which decodes to `[]`, behaving exactly like a
+    /// single-lead-time reminder.
+    var additionalLeadTimesData: Data = Data()
     var isEnabled: Bool = true
     var createdAt: Date = Date()
     var updatedAt: Date = Date()
@@ -38,7 +43,7 @@ final class Reminder {
         symbolName: String? = nil,
         photoData: Data? = nil,
         recurrence: RecurrenceRule = .once,
-        leadTime: AlarmLeadTime = .atStart,
+        leadTimes: [AlarmLeadTime] = [.atStart],
         isEnabled: Bool = true
     ) {
         self.id = id
@@ -50,11 +55,14 @@ final class Reminder {
         self.symbolName = symbolName ?? category.defaultSymbol
         self.photoData = photoData
         self.recurrenceData = (try? JSONEncoder().encode(recurrence)) ?? Data()
-        self.leadTimeSeconds = leadTime.rawValue
+        self.leadTimeSeconds = AlarmLeadTime.atStart.rawValue
+        self.additionalLeadTimesData = Data()
         self.isEnabled = isEnabled
         let now = Date()
         self.createdAt = now
         self.updatedAt = now
+        // Use the computed setter so the same split logic is applied.
+        self.leadTimes = leadTimes
     }
 
     var category: ReminderCategory {
@@ -75,5 +83,32 @@ final class Reminder {
     var leadTime: AlarmLeadTime {
         get { AlarmLeadTime(rawValue: leadTimeSeconds) ?? .atStart }
         set { leadTimeSeconds = newValue.rawValue }
+    }
+
+    /// All lead times for this reminder (the primary one plus any additional).
+    /// Always returns at least one element (defaulting to `.atStart`), sorted
+    /// by seconds ascending so the closest-to-event alert comes first.
+    var leadTimes: [AlarmLeadTime] {
+        get {
+            var result: Set<AlarmLeadTime> = [leadTime]
+            if !additionalLeadTimesData.isEmpty,
+               let extras = try? JSONDecoder().decode([Int].self, from: additionalLeadTimesData) {
+                for raw in extras {
+                    if let lt = AlarmLeadTime(rawValue: raw) { result.insert(lt) }
+                }
+            }
+            return result.sorted { $0.rawValue < $1.rawValue }
+        }
+        set {
+            let unique = Array(Set(newValue)).sorted { $0.rawValue < $1.rawValue }
+            guard let first = unique.first else {
+                leadTimeSeconds = AlarmLeadTime.atStart.rawValue
+                additionalLeadTimesData = Data()
+                return
+            }
+            leadTimeSeconds = first.rawValue
+            let extras = unique.dropFirst().map(\.rawValue)
+            additionalLeadTimesData = (try? JSONEncoder().encode(Array(extras))) ?? Data()
+        }
     }
 }

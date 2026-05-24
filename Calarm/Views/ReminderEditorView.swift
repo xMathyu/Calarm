@@ -25,8 +25,11 @@ struct ReminderEditorView: View {
     @State private var symbolName: String
     @State private var photoData: Data?
     @State private var recurrence: RecurrenceRule
-    @State private var leadTime: AlarmLeadTime
+    @State private var leadTimes: [AlarmLeadTime]
+    @State private var showingLeadTimePicker = false
     @State private var isEnabled: Bool
+
+    private static let maxLeadTimes = 5
 
     // Sharing on create
     @State private var selectedContacts: [SelectedContact] = []
@@ -50,7 +53,7 @@ struct ReminderEditorView: View {
             _symbolName = State(initialValue: r.symbolName ?? r.category.defaultSymbol)
             _photoData = State(initialValue: r.photoData)
             _recurrence = State(initialValue: r.recurrence)
-            _leadTime = State(initialValue: r.leadTime)
+            _leadTimes = State(initialValue: r.leadTimes)
             _isEnabled = State(initialValue: r.isEnabled)
         } else {
             let initialCategory = ReminderCategory.reminder
@@ -62,7 +65,7 @@ struct ReminderEditorView: View {
             _symbolName = State(initialValue: initialCategory.defaultSymbol)
             _photoData = State(initialValue: nil)
             _recurrence = State(initialValue: .once)
-            _leadTime = State(initialValue: .atStart)
+            _leadTimes = State(initialValue: [.atStart])
             _isEnabled = State(initialValue: true)
         }
     }
@@ -108,15 +111,63 @@ struct ReminderEditorView: View {
                 }
 
                 Section {
-                    Picker(selection: $leadTime) {
-                        ForEach(AlarmLeadTime.allCases) { value in
-                            Text(value.localizedTitle).tag(value)
+                    ForEach(leadTimes) { value in
+                        HStack {
+                            Image(systemName: "bell.fill")
+                                .foregroundStyle(category.tint)
+                            Text(value.localizedTitle)
+                            Spacer()
+                            if leadTimes.count > 1 {
+                                Button {
+                                    withAnimation(DS.Motion.snappy) {
+                                        leadTimes.removeAll { $0 == value }
+                                    }
+                                    Haptics.light()
+                                } label: {
+                                    Image(systemName: "minus.circle.fill")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel(Text("Quitar \(value.localizedTitle)"))
+                            }
                         }
-                    } label: {
-                        Text("Cuándo sonar")
+                        .transition(.opacity)
+                    }
+                    .onDelete { offsets in
+                        // Only allow delete if it would leave at least one entry.
+                        var copy = leadTimes
+                        copy.remove(atOffsets: offsets)
+                        guard !copy.isEmpty else { return }
+                        withAnimation(DS.Motion.snappy) {
+                            leadTimes = copy
+                        }
+                    }
+
+                    if leadTimes.count < Self.maxLeadTimes {
+                        Button {
+                            Haptics.light()
+                            showingLeadTimePicker = true
+                        } label: {
+                            Label("Agregar aviso", systemImage: "plus.circle.fill")
+                                .foregroundStyle(.tint)
+                        }
                     }
                 } header: {
-                    Text("Aviso")
+                    HStack(spacing: DS.Spacing.xs) {
+                        Text("Aviso")
+                        if leadTimes.count > 1 {
+                            Text("\(leadTimes.count)")
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 7)
+                                .padding(.vertical, 2)
+                                .background(Capsule().fill(Color.accentColor))
+                        }
+                    }
+                } footer: {
+                    if leadTimes.count > 1 {
+                        Text("La alarma sonará una vez por cada aviso configurado.")
+                    }
                 }
 
                 Section {
@@ -172,6 +223,15 @@ struct ReminderEditorView: View {
                         }
                     }
                 }
+            }
+            .sheet(isPresented: $showingLeadTimePicker) {
+                LeadTimePickerSheet(excluded: Set(leadTimes)) { picked in
+                    withAnimation(DS.Motion.snappy) {
+                        leadTimes.append(picked)
+                        leadTimes.sort { $0.rawValue < $1.rawValue }
+                    }
+                }
+                .presentationDetents([.medium, .large])
             }
             .sheet(isPresented: $showingContactPicker) {
                 ContactPickerView(preselected: selectedContacts) { contacts in
@@ -301,7 +361,7 @@ struct ReminderEditorView: View {
             existing.symbolName = symbolName
             existing.photoData = iconKind == .photo ? photoData : nil
             existing.recurrence = recurrence
-            existing.leadTime = leadTime
+            existing.leadTimes = leadTimes
             existing.isEnabled = isEnabled
             existing.updatedAt = Date()
             reminder = existing
@@ -315,7 +375,7 @@ struct ReminderEditorView: View {
                 symbolName: symbolName,
                 photoData: iconKind == .photo ? photoData : nil,
                 recurrence: recurrence,
-                leadTime: leadTime,
+                leadTimes: leadTimes,
                 isEnabled: isEnabled
             )
             modelContext.insert(new)

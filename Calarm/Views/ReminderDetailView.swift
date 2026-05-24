@@ -127,7 +127,9 @@ struct ReminderDetailView: View {
             detailRow(icon: "repeat", title: "Recurrencia",
                       value: reminder.recurrence.localizedSummary)
             detailRow(icon: "bell.badge", title: "Aviso",
-                      value: reminder.leadTime.shortTitle)
+                      value: reminder.leadTimes
+                        .map(\.shortTitle)
+                        .joined(separator: " · "))
             if let notes = reminder.notes, !notes.isEmpty {
                 detailRow(icon: "note.text", title: "Notas",
                           value: notes, allowsMultiline: true)

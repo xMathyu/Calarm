@@ -63,11 +63,16 @@ final class ReminderScheduler {
             count: occurrencesPerReminder
         )
 
-        let leadSeconds = reminder.leadTime.seconds
+        // One alarm per (occurrence × leadTime) combo, filtered to future dates.
         let now = Date()
-        let fireDates = occurrences
-            .map { $0.addingTimeInterval(-leadSeconds) }
-            .filter { $0 > now }
+        let leadTimes = reminder.leadTimes
+        var fireDates: [Date] = []
+        for occurrence in occurrences {
+            for leadTime in leadTimes {
+                let fire = occurrence.addingTimeInterval(-leadTime.seconds)
+                if fire > now { fireDates.append(fire) }
+            }
+        }
 
         await scheduler.cancelOrphans(ownerID: ownerID, keepFireDates: Set(fireDates))
 
