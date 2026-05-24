@@ -1,0 +1,31 @@
+name: Release
+
+# Crea automáticamente un GitHub Release cada vez que pusheas un tag con
+# formato `v*` (ej. v1.0.0, v1.0.1, v1.2.0). Apple/Xcode Cloud son
+# independientes de esto — el tag solo registra el changelog en GitHub.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # Genera el changelog automáticamente desde los commits y PRs
+          # entre el tag anterior y el actual.
+          generate_release_notes: true
+          name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
