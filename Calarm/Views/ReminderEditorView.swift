@@ -104,10 +104,36 @@ struct ReminderEditorView: View {
                 }
 
                 Section {
-                    DatePicker("Fecha", selection: $date, displayedComponents: [.date, .hourAndMinute])
-                        .datePickerStyle(.graphical)
+                    DatePicker(selection: $date, displayedComponents: [.date]) {
+                        EmptyView()
+                    }
+                    .datePickerStyle(.graphical)
+                    .labelsHidden()
                 } header: {
-                    Text("Fecha y hora")
+                    HStack(spacing: DS.Spacing.xs) {
+                        Image(systemName: "calendar")
+                            .font(.caption2)
+                        Text("Fecha")
+                    }
+                }
+
+                Section {
+                    DatePicker(selection: $date, displayedComponents: [.hourAndMinute]) {
+                        HStack(spacing: DS.Spacing.sm) {
+                            Image(systemName: "clock.fill")
+                                .foregroundStyle(category.tint)
+                                .font(.title3)
+                            Text("Hora")
+                                .font(.body.weight(.medium))
+                        }
+                    }
+                    .padding(.vertical, DS.Spacing.xs)
+                } header: {
+                    HStack(spacing: DS.Spacing.xs) {
+                        Image(systemName: "clock")
+                            .font(.caption2)
+                        Text("Hora")
+                    }
                 }
 
                 Section {

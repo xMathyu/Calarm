@@ -13,6 +13,7 @@ import CloudKit
 import Foundation
 import Observation
 import SwiftData
+import SwiftUI
 import UIKit
 
 /// Errors thrown while preparing or accepting a share.
@@ -75,6 +76,11 @@ final class SharedRemindersService {
         ))
         share[CKShare.SystemFieldKey.title] = reminder.title as CKRecordValue
         share[CKShare.SystemFieldKey.shareType] = "com.mathyusolutions.calarm.reminder" as CKRecordValue
+        // Custom thumbnail so the rich link preview in iMessage/Mail shows the
+        // reminder's photo or its category icon — not the generic iCloud cloud.
+        if let thumbnail = makeShareThumbnail(for: reminder) {
+            share[CKShare.SystemFieldKey.thumbnailImageData] = thumbnail as CKRecordValue
+        }
         share.publicPermission = .none
 
         do {
@@ -210,5 +216,62 @@ final class SharedRemindersService {
             context.insert(reminder)
         }
         try context.save()
+    }
+
+    // MARK: - Share thumbnail
+
+    /// Produces a square PNG used as the rich-link preview in Messages, Mail,
+    /// AirDrop, etc. Uses the reminder's photo if present, otherwise renders a
+    /// circle with the category's tint + symbol so the preview matches the
+    /// in-app avatar instead of showing Apple's generic iCloud icon.
+    private func makeShareThumbnail(for reminder: Reminder) -> Data? {
+        // Prefer the user-attached photo when available.
+        if reminder.iconKind == .photo,
+           let data = reminder.photoData,
+           let image = UIImage(data: data) {
+            return resized(image, to: 256).pngData()
+        }
+        return renderSymbolThumbnail(
+            symbol: reminder.symbolName ?? reminder.category.defaultSymbol,
+            tint: reminder.category.tint
+        )
+    }
+
+    /// Center-crops + scales `image` to `size × size`. Keeps the thumbnail tight
+    /// to where the subject lives without distortion.
+    private func resized(_ image: UIImage, to size: CGFloat) -> UIImage {
+        let target = CGSize(width: size, height: size)
+        let renderer = UIGraphicsImageRenderer(size: target)
+        return renderer.image { _ in
+            let scale = max(target.width / image.size.width, target.height / image.size.height)
+            let drawSize = CGSize(width: image.size.width * scale, height: image.size.height * scale)
+            let origin = CGPoint(
+                x: (target.width - drawSize.width) / 2,
+                y: (target.height - drawSize.height) / 2
+            )
+            image.draw(in: CGRect(origin: origin, size: drawSize))
+        }
+    }
+
+    /// Renders the SwiftUI category badge to PNG data for use as the share thumbnail.
+    private func renderSymbolThumbnail(symbol: String, tint: Color) -> Data? {
+        let view = ZStack {
+            RoundedRectangle(cornerRadius: 56, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [tint, tint.opacity(0.72)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+            Image(systemName: symbol)
+                .font(.system(size: 128, weight: .semibold))
+                .foregroundStyle(.white)
+        }
+        .frame(width: 256, height: 256)
+
+        let renderer = ImageRenderer(content: view)
+        renderer.scale = 2.0
+        return renderer.uiImage?.pngData()
     }
 }
