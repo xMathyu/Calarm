@@ -98,7 +98,7 @@ struct CreateReminderTool: Tool {
         @Guide(description: "Recurrence. EXACTLY one of: once, daily, weekly, monthly, yearly. CRITICAL — read the user's words: 'every year'/'cada año'/'yearly'/'anual' → yearly. 'every month'/'cada mes' → monthly. 'every week'/'cada semana' → weekly. 'daily'/'cada día'/'todos los días' → daily. Only use 'once' if the user gave a SPECIFIC date with NO recurrence words.")
         let recurrence: String?
 
-        @Guide(description: "Lead times in minutes before. e.g. [0] or [0, 60] or [1440]. Default [0]. Birthdays should often include [0, 1440] (at-start + 1 day before) so user gets a heads-up.")
+        @Guide(description: "Lead times in MINUTES before the alarm. Supported values map to: 0 (at-start), 5, 10, 15, 30, 45, 60 (1h), 120 (2h), 180 (3h), 360 (6h), 720 (12h), 1440 (1 day), 2880 (2 days), 10080 (1 week). Other values snap to the closest. Examples: [0] = at start only, [120] = 2 hours before, [60, 1440] = 1 hour + 1 day before. Birthdays should often include [0, 1440] for at-start + 1 day before.")
         let leadTimesMinutes: [Int]?
     }
 
