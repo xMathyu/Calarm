@@ -23,6 +23,9 @@ struct ContentView: View {
                         .environment(coordinator)
                 }
             }
+            Tab("Asistente", systemImage: "sparkles") {
+                CalarmChatView()
+            }
             Tab("Ajustes", systemImage: "gearshape") {
                 SettingsView(
                     alarmScheduler: alarmScheduler,

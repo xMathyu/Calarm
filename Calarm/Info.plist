@@ -12,6 +12,10 @@
 	<string>Calarm accede a tus contactos para que puedas invitarlos a alarmas compartidas.</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
 	<string>Calarm lee tus eventos del calendario para programar alarmas antes de cada uno y detectar enlaces de Microsoft Teams.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Calarm usa el micrófono para que le hables al asistente con IA y este cree alarmas dictándolas con tu voz.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Calarm transcribe tu voz en el dispositivo para que el asistente con IA entienda lo que le dices.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
