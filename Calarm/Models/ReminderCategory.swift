@@ -19,6 +19,19 @@ enum ReminderCategory: Int, CaseIterable, Identifiable, Codable, Sendable {
     /// persistence — only the presentation order changes here.
     static let displayOrder: [ReminderCategory] = [.reminder, .event, .birthday, .anniversary, .other]
 
+    /// Maps a slug like "birthday" or "EVENT" to the matching category. Used
+    /// when an external system (App Intent, AI parser) hands us a string.
+    static func from(slug: String) -> ReminderCategory? {
+        switch slug.lowercased() {
+        case "birthday": .birthday
+        case "anniversary": .anniversary
+        case "event": .event
+        case "reminder": .reminder
+        case "other": .other
+        default: nil
+        }
+    }
+
     var localizedTitle: String {
         switch self {
         case .birthday: String(localized: "Cumpleaños")

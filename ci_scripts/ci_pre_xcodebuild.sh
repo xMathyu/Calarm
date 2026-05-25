@@ -1,27 +1,58 @@
 #!/bin/sh
 #
-# Xcode Cloud pre-build hook. Runs before `xcodebuild`.
-# Bumps CFBundleVersion (CURRENT_PROJECT_VERSION) to the total count of git
-# commits — same logic as the local Archive scheme pre-action so build numbers
-# stay consistent whether you archive locally or via Xcode Cloud.
+# Xcode Cloud pre-build hook. Sets CURRENT_PROJECT_VERSION to the total count
+# of git commits — keeps build numbers monotonic and consistent with local
+# `xcodebuild -archive` runs.
 #
 
-set -euo pipefail
+set -e  # exit on error; do NOT use -u (CI env vars may be unset)
 
-echo "▸ ci_pre_xcodebuild.sh: setting build number from git commit count"
+echo "════════════════════════════════════════"
+echo "▸ ci_pre_xcodebuild.sh — Calarm build bump"
+echo "════════════════════════════════════════"
+echo "▸ PWD: $(pwd)"
+echo "▸ CI_PRIMARY_REPOSITORY_PATH: ${CI_PRIMARY_REPOSITORY_PATH:-NOT SET}"
+echo "▸ CI_WORKSPACE: ${CI_WORKSPACE:-NOT SET}"
 
-# Xcode Cloud clones the repo with shallow history by default, which makes
-# `git rev-list --count HEAD` return a low/wrong number. Deepen to full history
-# before counting. Ignore failures (e.g. when already complete locally).
-git -C "$CI_PRIMARY_REPOSITORY_PATH" fetch --unshallow 2>/dev/null \
-    || git -C "$CI_PRIMARY_REPOSITORY_PATH" fetch --deepen=10000 2>/dev/null \
+# Locate the repo root. Xcode Cloud uses CI_PRIMARY_REPOSITORY_PATH; fall back
+# to walking up from the script's location for local execution.
+if [ -n "${CI_PRIMARY_REPOSITORY_PATH:-}" ]; then
+    REPO_PATH="$CI_PRIMARY_REPOSITORY_PATH"
+else
+    REPO_PATH="$(cd "$(dirname "$0")/.." && pwd)"
+fi
+echo "▸ Repo path: $REPO_PATH"
+
+# Xcode Cloud clones shallow by default → `rev-list --count` would be tiny.
+# Deepen the history; ignore failures (already-complete clones, no remote, etc).
+git -C "$REPO_PATH" fetch --unshallow 2>/dev/null \
+    || git -C "$REPO_PATH" fetch --deepen=10000 2>/dev/null \
     || true
 
-BUILD_NUMBER=$(git -C "$CI_PRIMARY_REPOSITORY_PATH" rev-list --count HEAD)
-echo "▸ Build number: $BUILD_NUMBER"
+BUILD_NUMBER=$(git -C "$REPO_PATH" rev-list --count HEAD)
+echo "▸ Target build number: $BUILD_NUMBER"
 
-# `agvtool` requires the working directory to contain the .xcodeproj.
-cd "$CI_PRIMARY_REPOSITORY_PATH"
-xcrun agvtool new-version -all "$BUILD_NUMBER"
+# Find the project.pbxproj. Each .xcodeproj contains exactly one.
+PBXPROJ=$(find "$REPO_PATH" -maxdepth 3 -name "project.pbxproj" -type f | head -1)
+if [ -z "$PBXPROJ" ]; then
+    echo "✗ Could not find project.pbxproj under $REPO_PATH"
+    exit 1
+fi
+echo "▸ Found pbxproj: $PBXPROJ"
 
-echo "✓ Build number set to $BUILD_NUMBER"
+# Show current value for sanity.
+echo "▸ Current CURRENT_PROJECT_VERSION lines:"
+grep "CURRENT_PROJECT_VERSION = " "$PBXPROJ" || echo "  (none found)"
+
+# Direct sed replacement — pbxproj is a plain-text plist, safe to edit this way.
+# Pattern matches `CURRENT_PROJECT_VERSION = <anything>;` (number, decimal, or string).
+sed -i.bak -E "s/CURRENT_PROJECT_VERSION = [^;]+;/CURRENT_PROJECT_VERSION = $BUILD_NUMBER;/g" "$PBXPROJ"
+rm -f "$PBXPROJ.bak"
+
+# Verify the change took.
+echo "▸ Updated CURRENT_PROJECT_VERSION lines:"
+grep "CURRENT_PROJECT_VERSION = " "$PBXPROJ" || echo "  (none found)"
+
+UPDATED_COUNT=$(grep -c "CURRENT_PROJECT_VERSION = $BUILD_NUMBER;" "$PBXPROJ" || true)
+echo "✓ Set CURRENT_PROJECT_VERSION = $BUILD_NUMBER in $UPDATED_COUNT build configurations"
+echo "════════════════════════════════════════"

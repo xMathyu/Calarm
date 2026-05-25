@@ -3612,6 +3612,294 @@
           }
         }
       }
+    },
+    "Crear alarma con IA": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create alarm with AI"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crear alarma con IA"
+          }
+        }
+      }
+    },
+    "Describe la alarma en lenguaje natural y Calarm la crea con Apple Intelligence.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Describe the alarm in natural language and Calarm will create it with Apple Intelligence."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Describe la alarma en lenguaje natural y Calarm la crea con Apple Intelligence."
+          }
+        }
+      }
+    },
+    "Instrucción": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instruction"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instrucción"
+          }
+        }
+      }
+    },
+    "Describe la alarma en lenguaje natural": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Describe the alarm in natural language"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Describe la alarma en lenguaje natural"
+          }
+        }
+      }
+    },
+    "Crear alarma con IA: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create alarm with AI: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crear alarma con IA: %@"
+          }
+        }
+      }
+    },
+    "¿Qué quieres recordar?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What do you want to be reminded of?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Qué quieres recordar?"
+          }
+        }
+      }
+    },
+    "Listo, '%@' programada para %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done, '%@' scheduled for %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo, '%@' programada para %@"
+          }
+        }
+      }
+    },
+    "Alarma con IA": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI alarm"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alarma con IA"
+          }
+        }
+      }
+    },
+    "Recuérdame con %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remind me with %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuérdame con %@"
+          }
+        }
+      }
+    },
+    "%@ entiende esto": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ understand this"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ entiende esto"
+          }
+        }
+      }
+    },
+    "Crear alarma con IA en %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create alarm with AI in %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crear alarma con IA en %@"
+          }
+        }
+      }
+    },
+    "Pídele a %@ que cree una alarma": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask %@ to create an alarm"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pídele a %@ que cree una alarma"
+          }
+        }
+      }
+    },
+    "%@ inteligente": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ smart"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ inteligente"
+          }
+        }
+      }
+    },
+    "Apple Intelligence no está disponible: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Intelligence is not available: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Intelligence no está disponible: %@"
+          }
+        }
+      }
+    },
+    "No pude entender la alarma: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I couldn't understand the alarm: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No pude entender la alarma: %@"
+          }
+        }
+      }
+    },
+    "este dispositivo no soporta Apple Intelligence": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "this device doesn't support Apple Intelligence"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "este dispositivo no soporta Apple Intelligence"
+          }
+        }
+      }
+    },
+    "activa Apple Intelligence en Ajustes → Apple Intelligence & Siri": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "enable Apple Intelligence in Settings → Apple Intelligence & Siri"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "activa Apple Intelligence en Ajustes → Apple Intelligence & Siri"
+          }
+        }
+      }
+    },
+    "el modelo aún se está descargando, intenta más tarde": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the model is still downloading, try again later"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "el modelo aún se está descargando, intenta más tarde"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

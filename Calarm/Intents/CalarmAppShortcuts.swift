@@ -29,10 +29,21 @@ struct CalarmAppShortcuts: AppShortcutsProvider {
                 "Agrega una alarma en \(.applicationName)",
                 "\(.applicationName) nueva alarma",
                 "\(.applicationName) crear alarma",
-                "Recuérdame algo en \(.applicationName)",
             ],
             shortTitle: "Nueva alarma",
             systemImageName: "alarm.fill"
+        )
+        AppShortcut(
+            intent: CreateAlarmFromTextIntent(),
+            phrases: [
+                "Recuérdame con \(.applicationName)",
+                "\(.applicationName) entiende esto",
+                "Crear alarma con IA en \(.applicationName)",
+                "Pídele a \(.applicationName) que cree una alarma",
+                "\(.applicationName) inteligente",
+            ],
+            shortTitle: "Alarma con IA",
+            systemImageName: "sparkles"
         )
     }
 
