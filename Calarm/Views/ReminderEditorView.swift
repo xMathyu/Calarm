@@ -29,6 +29,11 @@ struct ReminderEditorView: View {
     @State private var showingLeadTimePicker = false
     @State private var isEnabled: Bool
 
+    // AI suggestion state
+    @State private var pendingSuggestion: AlarmSuggestion?
+    @State private var suggestionTask: Task<Void, Never>?
+    @State private var dismissedSuggestion: Bool = false
+
     private static let maxLeadTimes = 5
 
     // Sharing on create
@@ -79,6 +84,10 @@ struct ReminderEditorView: View {
                         .lineLimit(1...4)
                 } header: {
                     Text("Información")
+                }
+
+                if let suggestion = pendingSuggestion {
+                    suggestionSection(suggestion)
                 }
 
                 Section {
@@ -232,6 +241,13 @@ struct ReminderEditorView: View {
             .navigationTitle(editingReminder == nil ? "Nuevo recordatorio" : "Editar")
             .navigationBarTitleDisplayMode(.inline)
             .scrollDismissesKeyboard(.interactively)
+            .animation(DS.Motion.smooth, value: pendingSuggestion)
+            .onChange(of: title) { _, newValue in
+                scheduleSuggestionFetch(for: newValue)
+            }
+            .onDisappear {
+                suggestionTask?.cancel()
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancelar") { dismiss() }
@@ -444,6 +460,143 @@ struct ReminderEditorView: View {
             isPreparingShare = false
             shareError = error.localizedDescription
         }
+    }
+
+    // MARK: - AI suggestions
+
+    /// Cancels any pending suggestion fetch and starts a new debounced one
+    /// for `title`. Bails out early when the title is too short or the user
+    /// already explicitly dismissed a previous suggestion.
+    private func scheduleSuggestionFetch(for title: String) {
+        suggestionTask?.cancel()
+        pendingSuggestion = nil
+
+        // Don't fight the user after they explicitly dismissed a suggestion.
+        guard !dismissedSuggestion else { return }
+        // Skip when editing an existing reminder — they already chose values.
+        guard editingReminder == nil else { return }
+        let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.count >= 3 else { return }
+
+        suggestionTask = Task {
+            // Debounce 700ms so the model doesn't run on every keystroke.
+            try? await Task.sleep(for: .milliseconds(700))
+            if Task.isCancelled { return }
+
+            let suggestion = await AlarmSuggestionsService.shared.suggest(
+                for: trimmed,
+                locale: LocalizationManager.shared.currentLocale
+            )
+
+            await MainActor.run {
+                guard !Task.isCancelled,
+                      let suggestion,
+                      title.trimmingCharacters(in: .whitespacesAndNewlines) == trimmed
+                else { return }
+                pendingSuggestion = suggestion
+            }
+        }
+    }
+
+    /// Visual banner showing what Calarm AI would set. One tap applies all.
+    @ViewBuilder
+    private func suggestionSection(_ suggestion: AlarmSuggestion) -> some View {
+        Section {
+            VStack(alignment: .leading, spacing: DS.Spacing.md) {
+                HStack(spacing: DS.Spacing.sm) {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(.tint)
+                        .symbolEffect(.bounce, options: .nonRepeating)
+                    Text("Sugerencias de Calarm")
+                        .font(.subheadline.weight(.semibold))
+                    Spacer()
+                    Button {
+                        withAnimation(DS.Motion.snappy) {
+                            dismissedSuggestion = true
+                            pendingSuggestion = nil
+                        }
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Descartar sugerencia")
+                }
+
+                // Mini chips showing what would change
+                WrapLayout(spacing: 6, lineSpacing: 6) {
+                    if let suggestedCategory = ReminderCategory.from(slug: suggestion.category),
+                       suggestedCategory != category {
+                        suggestionChip(
+                            icon: suggestedCategory.defaultSymbol,
+                            label: suggestedCategory.localizedTitle,
+                            tint: suggestedCategory.tint
+                        )
+                    }
+                    let suggestedRecurrence = AlarmSuggestionsService.recurrence(fromSlug: suggestion.recurrence)
+                    if suggestedRecurrence.localizedSummary != recurrence.localizedSummary {
+                        suggestionChip(
+                            icon: "repeat",
+                            label: suggestedRecurrence.localizedSummary,
+                            tint: .accentColor
+                        )
+                    }
+                    let suggestedLeadTimes = AlarmSuggestionsService.leadTimes(fromMinutes: suggestion.leadTimesMinutes)
+                    if Set(suggestedLeadTimes) != Set(leadTimes) {
+                        suggestionChip(
+                            icon: "bell.fill",
+                            label: suggestedLeadTimes.map(\.shortTitle).joined(separator: " · "),
+                            tint: .orange
+                        )
+                    }
+                }
+
+                Button {
+                    applySuggestion(suggestion)
+                } label: {
+                    HStack {
+                        Image(systemName: "wand.and.stars")
+                        Text("Aplicar sugerencias")
+                            .fontWeight(.semibold)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, DS.Spacing.sm)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.regular)
+            }
+            .padding(.vertical, DS.Spacing.xs)
+            .transition(.move(edge: .top).combined(with: .opacity))
+        }
+    }
+
+    private func suggestionChip(icon: String, label: String, tint: Color) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.caption2)
+            Text(label)
+                .font(.caption.weight(.medium))
+                .lineLimit(1)
+        }
+        .padding(.horizontal, DS.Spacing.sm)
+        .padding(.vertical, 4)
+        .foregroundStyle(tint)
+        .background(tint.opacity(0.15), in: Capsule())
+    }
+
+    private func applySuggestion(_ suggestion: AlarmSuggestion) {
+        withAnimation(DS.Motion.snappy) {
+            if let suggestedCategory = ReminderCategory.from(slug: suggestion.category) {
+                category = suggestedCategory
+                if iconKind == .symbol {
+                    symbolName = suggestedCategory.defaultSymbol
+                }
+            }
+            recurrence = AlarmSuggestionsService.recurrence(fromSlug: suggestion.recurrence)
+            leadTimes = AlarmSuggestionsService.leadTimes(fromMinutes: suggestion.leadTimesMinutes)
+            pendingSuggestion = nil
+        }
+        Haptics.success()
     }
 
     private func deleteReminder() async {

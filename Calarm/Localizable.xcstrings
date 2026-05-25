@@ -3900,6 +3900,214 @@
           }
         }
       }
+    },
+    "Sugerencias de Calarm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calarm suggestions"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugerencias de Calarm"
+          }
+        }
+      }
+    },
+    "Descartar sugerencia": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dismiss suggestion"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descartar sugerencia"
+          }
+        }
+      }
+    },
+    "Aplicar sugerencias": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apply suggestions"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aplicar sugerencias"
+          }
+        }
+      }
+    },
+    "Resumen del día": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's briefing"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resumen del día"
+          }
+        }
+      }
+    },
+    "Calarm te dice qué alarmas tienes hoy con un resumen natural.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calarm tells you today's alarms with a natural summary."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calarm te dice qué alarmas tienes hoy con un resumen natural."
+          }
+        }
+      }
+    },
+    "No tienes alarmas para hoy.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have no alarms for today."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No tienes alarmas para hoy."
+          }
+        }
+      }
+    },
+    "Tienes %lld alarmas hoy: %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have %lld alarms today: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tienes %lld alarmas hoy: %@."
+          }
+        }
+      }
+    },
+    "Qué tengo hoy en %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What do I have today in %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qué tengo hoy en %@"
+          }
+        }
+      }
+    },
+    "%@ qué tengo hoy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ what do I have today"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ qué tengo hoy"
+          }
+        }
+      }
+    },
+    "%@ resumen del día": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ today's briefing"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ resumen del día"
+          }
+        }
+      }
+    },
+    "Resumen del día en %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's briefing in %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resumen del día en %@"
+          }
+        }
+      }
+    },
+    "%@ mis alarmas de hoy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ my alarms today"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ mis alarmas de hoy"
+          }
+        }
+      }
+    },
+    "Alarmas de hoy en %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's alarms in %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alarmas de hoy en %@"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -45,6 +45,19 @@ struct CalarmAppShortcuts: AppShortcutsProvider {
             shortTitle: "Alarma con IA",
             systemImageName: "sparkles"
         )
+        AppShortcut(
+            intent: DailyBriefingIntent(),
+            phrases: [
+                "Qué tengo hoy en \(.applicationName)",
+                "\(.applicationName) qué tengo hoy",
+                "\(.applicationName) resumen del día",
+                "Resumen del día en \(.applicationName)",
+                "\(.applicationName) mis alarmas de hoy",
+                "Alarmas de hoy en \(.applicationName)",
+            ],
+            shortTitle: "Resumen del día",
+            systemImageName: "sun.max.fill"
+        )
     }
 
     /// Tint color for the shortcut tile in the Shortcuts app — matches the
