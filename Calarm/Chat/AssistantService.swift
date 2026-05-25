@@ -80,9 +80,11 @@ final class AssistantService {
             let session = ensureSession()
             let stream = session.streamResponse(to: trimmed)
             for try await snapshot in stream {
-                // Each snapshot is the full text so far (not a delta).
+                // Each snapshot is the cumulative response so far. Use `.content`
+                // to get the clean text — `String(describing:)` would dump the
+                // wrapper struct including `rawContent` debug info.
                 if let idx = messages.firstIndex(where: { $0.id == placeholderID }) {
-                    messages[idx].content = String(describing: snapshot)
+                    messages[idx].content = snapshot.content
                 }
             }
         } catch {
