@@ -36,8 +36,32 @@ private enum ToolHelpers {
         return f
     }()
 
+    /// Parses dates the language model may produce. The model sometimes emits
+    /// strict ISO 8601 with an offset (`2026-05-25T14:00:00-05:00`) and
+    /// sometimes a naive variant without timezone (`2026-05-25T14:00:00`).
+    /// The naive form is interpreted as the user's LOCAL time — without this,
+    /// "set alarm at 2pm" in a UTC-5 zone ends up at 9am.
     static func parseDate(_ iso: String) -> Date? {
-        isoFormatter.date(from: iso) ?? ISO8601DateFormatter().date(from: iso)
+        let trimmed = iso.trimmingCharacters(in: .whitespacesAndNewlines)
+        // 1. Strict ISO 8601 with timezone (e.g. "...T14:00:00-05:00" or "...Z")
+        if let date = isoFormatter.date(from: trimmed) { return date }
+
+        // 2. Naive ISO without timezone → interpret as user's local time.
+        let local = DateFormatter()
+        local.locale = Locale(identifier: "en_US_POSIX")
+        local.timeZone = TimeZone.current
+        let naiveFormats = [
+            "yyyy-MM-dd'T'HH:mm:ss",
+            "yyyy-MM-dd'T'HH:mm",
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy-MM-dd HH:mm",
+            "yyyy-MM-dd",
+        ]
+        for format in naiveFormats {
+            local.dateFormat = format
+            if let date = local.date(from: trimmed) { return date }
+        }
+        return nil
     }
 
     static func formatDate(_ date: Date, locale: Locale) -> String {

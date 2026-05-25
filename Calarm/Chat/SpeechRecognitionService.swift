@@ -28,10 +28,63 @@ final class SpeechRecognitionService {
         refreshRecognizer()
     }
 
-    /// Re-creates the recognizer when the language override changes.
+    /// Re-creates the recognizer for the user's language. Apple's
+    /// `SFSpeechRecognizer(locale:)` returns nil for unsupported locales (e.g.
+    /// `es_PE` isn't recognized — only `es_ES`, `es_MX`, etc are), so we walk
+    /// down a fallback chain instead of letting it fall back to en_US.
     func refreshRecognizer() {
-        let locale = LocalizationManager.shared.currentLocale
-        recognizer = SFSpeechRecognizer(locale: locale) ?? SFSpeechRecognizer()
+        let userLocale = LocalizationManager.shared.currentLocale
+        let supported = SFSpeechRecognizer.supportedLocales()
+
+        // 1. Exact match (e.g. es_PE → es_PE if Apple supports it).
+        if let exact = supported.first(where: { $0.identifier == userLocale.identifier }),
+           let r = SFSpeechRecognizer(locale: exact) {
+            recognizer = r
+            return
+        }
+
+        // 2. Same language + same region with different format. e.g. for
+        //    `es_PE` look for any `es_PE` variant; for `es-419` look for `es_419`.
+        let normalizedID = userLocale.identifier
+            .replacingOccurrences(of: "-", with: "_")
+        if let normalized = supported.first(where: { $0.identifier == normalizedID }),
+           let r = SFSpeechRecognizer(locale: normalized) {
+            recognizer = r
+            return
+        }
+
+        // 3. Same language, any region (Spanish from Peru → falls back to es_MX
+        //    or es_ES, whichever Apple has). Prefer the user's region if Apple
+        //    has it for that language.
+        if let langCode = userLocale.language.languageCode?.identifier {
+            let sameLanguage = supported.filter {
+                $0.language.languageCode?.identifier == langCode
+            }
+            // Pick same-region first.
+            if let userRegion = userLocale.region?.identifier,
+               let regionMatch = sameLanguage.first(where: { $0.region?.identifier == userRegion }),
+               let r = SFSpeechRecognizer(locale: regionMatch) {
+                recognizer = r
+                return
+            }
+            // For Spanish specifically, prefer es_MX (Latin American) when
+            // user's region isn't directly supported.
+            if langCode == "es",
+               let mx = sameLanguage.first(where: { $0.identifier == "es_MX" }),
+               let r = SFSpeechRecognizer(locale: mx) {
+                recognizer = r
+                return
+            }
+            // Otherwise any locale that shares the language.
+            if let any = sameLanguage.first,
+               let r = SFSpeechRecognizer(locale: any) {
+                recognizer = r
+                return
+            }
+        }
+
+        // 4. Last resort — system default. Will likely be en_US.
+        recognizer = SFSpeechRecognizer()
     }
 
     /// Requests speech + microphone authorization. Returns true when both granted.
@@ -68,7 +121,10 @@ final class SpeechRecognitionService {
         // Set up the recognition request.
         let request = SFSpeechAudioBufferRecognitionRequest()
         request.shouldReportPartialResults = true
-        request.requiresOnDeviceRecognition = true
+        // Only force on-device when the recognizer has the offline model.
+        // Otherwise Apple's on-device requirement fails silently if the user
+        // hasn't downloaded the offline language pack.
+        request.requiresOnDeviceRecognition = recognizer?.supportsOnDeviceRecognition ?? false
         self.request = request
 
         // Pipe mic buffer into the request.

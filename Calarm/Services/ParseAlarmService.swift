@@ -76,20 +76,31 @@ final class ParseAlarmService {
         }
 
         let now = Date()
-        let isoFormatter = ISO8601DateFormatter()
-        isoFormatter.formatOptions = [.withInternetDateTime]
-        let nowISO = isoFormatter.string(from: now)
+        let tz = TimeZone.current
+        let localFormatter = DateFormatter()
+        localFormatter.locale = Locale(identifier: "en_US_POSIX")
+        localFormatter.timeZone = tz
+        localFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        let nowLocal = localFormatter.string(from: now)
+        let offsetHours = Double(tz.secondsFromGMT(for: now)) / 3600.0
+        let offsetSign = offsetHours >= 0 ? "+" : ""
 
         let instructions = Instructions("""
         You are an alarm parser for the Calarm iOS app. Given a user's natural-language \
         description, extract structured alarm data and respond ONLY with the requested fields.
 
+        Current LOCAL date/time: \(nowLocal)
+        User timezone: \(tz.identifier) (UTC\(offsetSign)\(String(format: "%g", offsetHours)))
+
         Rules:
-        - title: short, in the user's language, suitable for an alarm label. Do NOT include date or time.
-        - dateISO: must be in the future, ISO 8601. If only a time is given, assume today if it hasn't passed, otherwise tomorrow.
-        - category: pick the closest from [birthday, anniversary, event, reminder, other].
-        - recurrence: pick from [once, daily, weekly, monthly, yearly]. Default to once if not specified.
-        - leadTimesMinutes: list of minutes before the event. Examples: [0] for at-start only, [0, 60] for both at-start and 1 hour before, [1440] for 1 day before. Default to [0].
+        - title: short, in the user's language. Do NOT include date or time.
+        - dateISO: ALWAYS in the user's LOCAL timezone using the naive format \
+          "YYYY-MM-DDTHH:MM:SS" (no Z, no timezone offset). When the user says \
+          "a las 2pm" → 14:00:00, NOT 19:00:00. Must be in the future.
+        - If only a time is given, assume today if it hasn't passed, otherwise tomorrow.
+        - category: pick closest from [birthday, anniversary, event, reminder, other].
+        - recurrence: pick from [once, daily, weekly, monthly, yearly]. Default once.
+        - leadTimesMinutes: list of minutes before. [0]=at-start, [0,60]=at-start and 1h before, [1440]=1 day. Default [0].
 
         Be concise. Respect the user's language (Spanish or English).
         """)
@@ -100,7 +111,7 @@ final class ParseAlarmService {
         )
 
         let prompt = """
-        Current date/time: \(nowISO)
+        Current local date/time: \(nowLocal)
         User locale: \(locale.identifier)
         Parse this alarm request and return the structured fields:
         "\(input)"

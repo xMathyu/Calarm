@@ -43,11 +43,9 @@ struct CreateAlarmFromTextIntent: AppIntent {
             locale: LocalizationManager.shared.currentLocale
         )
 
-        // Map AI output → typed domain values.
-        let isoFormatter = ISO8601DateFormatter()
-        isoFormatter.formatOptions = [.withInternetDateTime]
-        let resolvedDate = isoFormatter.date(from: parsed.dateISO)
-            ?? ISO8601DateFormatter().date(from: parsed.dateISO)
+        // Map AI output → typed domain values. The shared helper handles both
+        // strict ISO (with timezone) and naive forms (interpreted as local).
+        let resolvedDate = Self.parseAIDate(parsed.dateISO)
             ?? Date().addingTimeInterval(60 * 60)
 
         let category = ReminderCategory.from(slug: parsed.category) ?? .reminder
@@ -86,6 +84,24 @@ struct CreateAlarmFromTextIntent: AppIntent {
     }
 
     // MARK: - Mappers
+
+    /// Parses ISO 8601 dates from the AI, interpreting timezone-less strings
+    /// as the user's local time (Apple's on-device model often omits offset).
+    private static func parseAIDate(_ raw: String) -> Date? {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        let strict = ISO8601DateFormatter()
+        strict.formatOptions = [.withInternetDateTime]
+        if let date = strict.date(from: trimmed) { return date }
+
+        let local = DateFormatter()
+        local.locale = Locale(identifier: "en_US_POSIX")
+        local.timeZone = TimeZone.current
+        for fmt in ["yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm"] {
+            local.dateFormat = fmt
+            if let date = local.date(from: trimmed) { return date }
+        }
+        return nil
+    }
 
     private static func recurrence(fromSlug slug: String) -> RecurrenceRule {
         switch slug.lowercased() {
