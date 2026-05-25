@@ -89,16 +89,16 @@ struct CreateReminderTool: Tool {
         @Guide(description: "Short, clear title for the alarm. Don't include the date or time.")
         let title: String
 
-        @Guide(description: "When the alarm fires, ISO 8601 like 2026-03-15T08:00:00. Must be in the future.")
+        @Guide(description: "When the alarm fires, naive ISO 8601 in the user's LOCAL time (no Z, no offset): YYYY-MM-DDTHH:MM:SS. Must be in the future. For birthdays/anniversaries with no time specified, use 09:00:00.")
         let dateISO: String
 
-        @Guide(description: "Category. One of: birthday, anniversary, event, reminder, other. Default reminder.")
+        @Guide(description: "Category. EXACTLY one of: birthday, anniversary, event, reminder, other. Match birthdays (cumpleaños) → birthday, anniversaries (aniversarios) → anniversary, meetings → event, generic → reminder.")
         let category: String?
 
-        @Guide(description: "Recurrence. One of: once, daily, weekly, monthly, yearly. Default once.")
+        @Guide(description: "Recurrence. EXACTLY one of: once, daily, weekly, monthly, yearly. CRITICAL — read the user's words: 'every year'/'cada año'/'yearly'/'anual' → yearly. 'every month'/'cada mes' → monthly. 'every week'/'cada semana' → weekly. 'daily'/'cada día'/'todos los días' → daily. Only use 'once' if the user gave a SPECIFIC date with NO recurrence words.")
         let recurrence: String?
 
-        @Guide(description: "Lead times in minutes before. e.g. [0] or [0, 60] or [1440]. Default [0].")
+        @Guide(description: "Lead times in minutes before. e.g. [0] or [0, 60] or [1440]. Default [0]. Birthdays should often include [0, 1440] (at-start + 1 day before) so user gets a heads-up.")
         let leadTimesMinutes: [Int]?
     }
 
