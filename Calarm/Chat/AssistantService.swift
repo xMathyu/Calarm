@@ -158,10 +158,10 @@ final class AssistantService {
 
         ## Recurrence detection — CRITICAL
         Read the user's full message for recurrence hints and map them:
-          • "every year" / "cada año" / "yearly" / "annual" / "anual" → yearly
-          • "every month" / "cada mes" / "monthly" / "mensual" → monthly
-          • "every week" / "cada semana" / "weekly" / "semanal" → weekly
-          • "every day" / "cada día" / "daily" / "diaria" / "todos los días" → daily
+          • "every year" / "cada año" / "todos los años" / "yearly" / "annual" / "anual" / "anualmente" → yearly
+          • "every month" / "cada mes" / "todos los meses" / "monthly" / "mensual" / "mensualmente" → monthly
+          • "every week" / "cada semana" / "todas las semanas" / "weekly" / "semanal" / "semanalmente" → weekly
+          • "every day" / "cada día" / "todos los días" / "daily" / "diaria" / "diariamente" → daily
           • Only choose "once" if the user gave a SPECIFIC date with NO recurrence words.
         Example: "Mom's birthday March 15 every year" → yearly (NOT once!).
         Example: "Cumple de mamá el 15 de marzo todos los años" → yearly.
