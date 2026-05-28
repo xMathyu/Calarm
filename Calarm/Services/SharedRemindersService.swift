@@ -96,6 +96,15 @@ final class SharedRemindersService {
         }
     }
 
+    /// Returns the existing `CKShare` for a reminder WITHOUT creating one, or
+    /// `nil` if it hasn't been shared yet. Lets the detail view decide whether
+    /// to offer "manage sharing".
+    func existingShare(for reminder: Reminder) async -> CKShare? {
+        let zoneID = CKRecordZone.ID(zoneName: Self.sharingZoneName, ownerName: CKCurrentUserDefaultName)
+        let recordID = CKRecord.ID(recordName: reminder.id.uuidString, zoneID: zoneID)
+        return try? await fetchExistingShare(for: recordID)
+    }
+
     /// Returns participants currently associated with the share (for the RSVP UI).
     func participants(of share: CKShare) -> [CKShare.Participant] {
         share.participants
@@ -161,7 +170,43 @@ final class SharedRemindersService {
         record["leadTimeSeconds"] = reminder.leadTimeSeconds as CKRecordValue
         record["isEnabled"] = (reminder.isEnabled ? 1 : 0) as CKRecordValue
         record["recurrenceData"] = reminder.recurrenceData as CKRecordValue
+        // Carry the custom category (if any) denormalized so the recipient can
+        // reconstruct it — they won't have it in their own catalog.
+        if let cid = reminder.customCategoryID {
+            record["customCategoryID"] = cid.uuidString as CKRecordValue
+            if let cat = CategoryStore.shared?.customCategory(id: cid) {
+                record["customCategoryName"] = cat.name as CKRecordValue
+                record["customCategoryColorHex"] = cat.colorHex as CKRecordValue
+                record["customCategoryIconKindRaw"] = cat.iconKindRaw as CKRecordValue
+                record["customCategoryIconValue"] = cat.iconValue as CKRecordValue
+            }
+        }
         return record
+    }
+
+    /// Ensures the recipient has a local `CustomCategory` matching a shared one
+    /// (deduped by id), so the received reminder renders with its real color/icon.
+    private func ensureCustomCategory(from record: CKRecord, in context: ModelContext) -> UUID? {
+        guard let cidString = record["customCategoryID"] as? String,
+              let cid = UUID(uuidString: cidString) else { return nil }
+        let descriptor = FetchDescriptor<CustomCategory>(predicate: #Predicate { $0.id == cid })
+        let name = (record["customCategoryName"] as? String) ?? "Categoría"
+        let colorHex = (record["customCategoryColorHex"] as? String) ?? "#AF52DE"
+        let iconKindRaw = (record["customCategoryIconKindRaw"] as? Int) ?? ReminderIconKind.symbol.rawValue
+        let iconValue = (record["customCategoryIconValue"] as? String) ?? "star.fill"
+        if let existing = try? context.fetch(descriptor).first {
+            existing.name = name
+            existing.colorHex = colorHex
+            existing.iconKindRaw = iconKindRaw
+            existing.iconValue = iconValue
+        } else {
+            context.insert(CustomCategory(
+                id: cid, name: name, colorHex: colorHex,
+                iconKind: ReminderIconKind(rawValue: iconKindRaw) ?? .symbol,
+                iconValue: iconValue
+            ))
+        }
+        return cid
     }
 
     @MainActor
@@ -183,6 +228,7 @@ final class SharedRemindersService {
         let recurrenceData = (record["recurrenceData"] as? Data) ?? Data()
 
         let context = modelContainer.mainContext
+        let customCategoryID = ensureCustomCategory(from: record, in: context)
         // Use the record's name as the local UUID to avoid duplicates if accepted twice.
         let localID = UUID(uuidString: record.recordID.recordName) ?? UUID()
         let descriptor = FetchDescriptor<Reminder>(predicate: #Predicate { $0.id == localID })
@@ -191,6 +237,7 @@ final class SharedRemindersService {
             existing.notes = notes?.isEmpty == true ? nil : notes
             existing.date = date
             existing.categoryRaw = categoryRaw
+            existing.customCategoryID = customCategoryID
             existing.iconKindRaw = iconKindRaw
             existing.symbolName = symbolName?.isEmpty == true ? nil : symbolName
             existing.leadTimeSeconds = leadTimeSeconds
@@ -212,10 +259,12 @@ final class SharedRemindersService {
                 leadTimes: [AlarmLeadTime(rawValue: leadTimeSeconds) ?? .atStart],
                 isEnabled: isEnabled
             )
+            reminder.customCategoryID = customCategoryID
             reminder.isReceivedShare = true
             context.insert(reminder)
         }
         try context.save()
+        CategoryStore.shared?.reload()
     }
 
     // MARK: - Share thumbnail
@@ -225,16 +274,23 @@ final class SharedRemindersService {
     /// circle with the category's tint + symbol so the preview matches the
     /// in-app avatar instead of showing Apple's generic iCloud icon.
     private func makeShareThumbnail(for reminder: Reminder) -> Data? {
+        let tint = reminder.category.tint
         // Prefer the user-attached photo when available.
         if reminder.iconKind == .photo,
            let data = reminder.photoData,
            let image = UIImage(data: data) {
             return resized(image, to: 256).pngData()
         }
-        return renderSymbolThumbnail(
-            symbol: reminder.symbolName ?? reminder.category.defaultSymbol,
-            tint: reminder.category.tint
-        )
+        if reminder.iconKind == .emoji, let emoji = reminder.symbolName, !emoji.isEmpty {
+            return renderIconThumbnail(tint: tint) {
+                Text(emoji).font(.system(size: 150))
+            }
+        }
+        return renderIconThumbnail(tint: tint) {
+            Image(systemName: reminder.symbolName ?? reminder.category.defaultSymbol)
+                .font(.system(size: 128, weight: .semibold))
+                .foregroundStyle(.white)
+        }
     }
 
     /// Center-crops + scales `image` to `size × size`. Keeps the thumbnail tight
@@ -253,8 +309,9 @@ final class SharedRemindersService {
         }
     }
 
-    /// Renders the SwiftUI category badge to PNG data for use as the share thumbnail.
-    private func renderSymbolThumbnail(symbol: String, tint: Color) -> Data? {
+    /// Renders a tinted square badge with arbitrary icon content (SF Symbol or
+    /// emoji) to PNG data for use as the share thumbnail.
+    private func renderIconThumbnail<Content: View>(tint: Color, @ViewBuilder content: () -> Content) -> Data? {
         let view = ZStack {
             RoundedRectangle(cornerRadius: 56, style: .continuous)
                 .fill(
@@ -264,9 +321,7 @@ final class SharedRemindersService {
                         endPoint: .bottomTrailing
                     )
                 )
-            Image(systemName: symbol)
-                .font(.system(size: 128, weight: .semibold))
-                .foregroundStyle(.white)
+            content()
         }
         .frame(width: 256, height: 256)
 

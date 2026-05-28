@@ -63,7 +63,7 @@ struct MeetingRowView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.glassProminent)
-                .tint(.accentColor)
+                .tint(.appAccent)
             } else if let location = meeting.location, !location.isEmpty {
                 Button {
                     openMaps(query: location)

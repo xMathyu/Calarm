@@ -18,13 +18,13 @@ enum Weekday: Int, CaseIterable, Identifiable, Codable, Hashable, Sendable {
 
     var localizedShort: String {
         switch self {
-        case .sunday: String(localized: "Dom")
-        case .monday: String(localized: "Lun")
-        case .tuesday: String(localized: "Mar")
-        case .wednesday: String(localized: "Mié")
-        case .thursday: String(localized: "Jue")
-        case .friday: String(localized: "Vie")
-        case .saturday: String(localized: "Sáb")
+        case .sunday: appLocalized("Dom")
+        case .monday: appLocalized("Lun")
+        case .tuesday: appLocalized("Mar")
+        case .wednesday: appLocalized("Mié")
+        case .thursday: appLocalized("Jue")
+        case .friday: appLocalized("Vie")
+        case .saturday: appLocalized("Sáb")
         }
     }
 }
@@ -46,26 +46,26 @@ enum RecurrenceRule: Codable, Hashable, Sendable {
     var localizedSummary: String {
         switch self {
         case .once:
-            return String(localized: "Una vez")
+            return appLocalized("Una vez")
         case .daily(let n):
             return n == 1
-                ? String(localized: "Cada día")
-                : String(localized: "Cada \(n) días")
+                ? appLocalized("Cada día")
+                : appLocalized("Cada \(n) días")
         case .weekly(let n, let days):
             let base = n == 1
-                ? String(localized: "Cada semana")
-                : String(localized: "Cada \(n) semanas")
+                ? appLocalized("Cada semana")
+                : appLocalized("Cada \(n) semanas")
             guard !days.isEmpty else { return base }
             let sorted = days.sorted { $0.rawValue < $1.rawValue }
             return "\(base) (\(sorted.map(\.localizedShort).joined(separator: ", ")))"
         case .monthly(let n):
             return n == 1
-                ? String(localized: "Cada mes")
-                : String(localized: "Cada \(n) meses")
+                ? appLocalized("Cada mes")
+                : appLocalized("Cada \(n) meses")
         case .yearly(let n):
             return n == 1
-                ? String(localized: "Cada año")
-                : String(localized: "Cada \(n) años")
+                ? appLocalized("Cada año")
+                : appLocalized("Cada \(n) años")
         }
     }
 }

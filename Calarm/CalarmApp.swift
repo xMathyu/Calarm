@@ -16,6 +16,7 @@ struct CalarmApp: App {
     @State private var teamsCoordinator: SyncCoordinator?
     @State private var meetingPreferences: MeetingPreferencesStore
     @State private var sharedRemindersService: SharedRemindersService
+    @State private var categoryStore: CategoryStore
     @State private var localization = LocalizationManager.shared
 
     private let alarmScheduler: AlarmScheduler
@@ -38,6 +39,7 @@ struct CalarmApp: App {
         self._teamsCoordinator = State(initialValue: nil)
         self._meetingPreferences = State(initialValue: meetingPreferences)
         self._sharedRemindersService = State(initialValue: SharedRemindersService(modelContainer: modelContainer))
+        self._categoryStore = State(initialValue: CategoryStore(context: modelContainer.mainContext))
         self.alarmScheduler = alarmScheduler
         self.calendarSource = calendarSource
         self.modelContainer = modelContainer
@@ -54,9 +56,10 @@ struct CalarmApp: App {
             .environment(reminderScheduler)
             .environment(meetingPreferences)
             .environment(sharedRemindersService)
+            .environment(categoryStore)
             .modelContainer(modelContainer)
             .preferredColorScheme(settings.appearance.preferredColorScheme)
-            .tint(.accentColor)
+            .tint(settings.accentColor)
             // Drives FormatStyle resolution (dates, numbers) so they match
             // the language override even when iOS's locale would say otherwise.
             .environment(\.locale, localization.currentLocale)
@@ -111,7 +114,7 @@ struct CalarmApp: App {
     /// Builds the SwiftData container. Tries iCloud-synced (private database) first;
     /// falls back to local-only if CloudKit isn't configured for the build.
     private static func makeModelContainer() -> ModelContainer {
-        let schema = Schema([Reminder.self])
+        let schema = Schema([Reminder.self, CustomCategory.self])
         let configuration = ModelConfiguration(
             schema: schema,
             cloudKitDatabase: .automatic

@@ -7,7 +7,9 @@
 //  stays consistent and is easy to tune globally.
 //
 
+import Observation
 import SwiftUI
+import UIKit
 
 enum DS {
 
@@ -62,6 +64,42 @@ extension Color {
 
     /// Soft surface tint, e.g. for chip backgrounds.
     static var dsFill: Color { Color(.tertiarySystemFill) }
+
+    /// Creates a color from a hex string like `#FF6633` or `FF6633`.
+    /// Returns nil for malformed input.
+    init?(hex: String) {
+        var s = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        if s.hasPrefix("#") { s.removeFirst() }
+        guard s.count == 6, let value = UInt64(s, radix: 16) else { return nil }
+        self = Color(
+            red: Double((value >> 16) & 0xFF) / 255,
+            green: Double((value >> 8) & 0xFF) / 255,
+            blue: Double(value & 0xFF) / 255
+        )
+    }
+
+    /// `#RRGGBB` string from the color's resolved sRGB components, or nil if
+    /// it can't be represented in RGB.
+    func toHex() -> String? {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        guard UIColor(self).getRed(&r, green: &g, blue: &b, alpha: &a) else { return nil }
+        return String(format: "#%02X%02X%02X",
+                      Int(round(r * 255)), Int(round(g * 255)), Int(round(b * 255)))
+    }
+
+    /// The app's resolved accent color (the user's custom choice, or the asset
+    /// default). Prefer this over `Color.accentColor` for explicit fills and
+    /// gradients so they follow the user's theme — `.tint` only colors controls.
+    static var appAccent: Color { Theme.shared.accent }
+}
+
+/// Holds the app-wide accent color so deep views (and non-view code) can read
+/// the user's custom accent. Mirrored from `AppSettings.accentColor`.
+@Observable
+final class Theme {
+    static let shared = Theme()
+    var accent: Color = .accentColor
+    private init() {}
 }
 
 // MARK: - Press-feedback button style
@@ -109,7 +147,7 @@ extension View {
 
 struct HeroIcon: View {
     let systemName: String
-    var tint: Color = .accentColor
+    var tint: Color = .appAccent
     var size: CGFloat = DS.AvatarSize.hero
 
     var body: some View {

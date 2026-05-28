@@ -145,7 +145,7 @@ final class AlarmScheduler {
         let attributes = AlarmAttributes(
             presentation: presentation,
             metadata: metadata,
-            tintColor: Color.accentColor
+            tintColor: Color.appAccent
         )
 
         let configuration = AlarmManager.AlarmConfiguration.alarm(

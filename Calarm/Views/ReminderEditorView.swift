@@ -4,7 +4,6 @@
 //
 
 import CloudKit
-import MessageUI
 import SwiftData
 import SwiftUI
 
@@ -13,6 +12,7 @@ struct ReminderEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ReminderScheduler.self) private var reminderScheduler
     @Environment(SharedRemindersService.self) private var sharedService
+    @Environment(CategoryStore.self) private var categoryStore
 
     // nil = creating new; otherwise editing existing
     let editingReminder: Reminder?
@@ -20,7 +20,7 @@ struct ReminderEditorView: View {
     @State private var title: String
     @State private var notes: String
     @State private var date: Date
-    @State private var category: ReminderCategory
+    @State private var categorySelection: CategorySelection
     @State private var iconKind: ReminderIconKind
     @State private var symbolName: String
     @State private var photoData: Data?
@@ -37,14 +37,8 @@ struct ReminderEditorView: View {
     private static let maxLeadTimes = 5
 
     // Sharing on create
-    @State private var selectedContacts: [SelectedContact] = []
-    @State private var showingContactPicker = false
     @State private var isPreparingShare = false
-    @State private var messageRecipients: [String] = []
-    @State private var messageBody: String = ""
-    @State private var showingMessageCompose = false
-    @State private var shareURL: URL?
-    @State private var showingFallbackShare = false
+    @State private var pendingInvite: InviteDelivery?
     @State private var shareError: String?
 
     init(editing reminder: Reminder? = nil) {
@@ -53,7 +47,11 @@ struct ReminderEditorView: View {
             _title = State(initialValue: r.title)
             _notes = State(initialValue: r.notes ?? "")
             _date = State(initialValue: r.date)
-            _category = State(initialValue: r.category)
+            if let cid = r.customCategoryID {
+                _categorySelection = State(initialValue: .custom(cid))
+            } else {
+                _categorySelection = State(initialValue: .builtin(r.category))
+            }
             _iconKind = State(initialValue: r.iconKind)
             _symbolName = State(initialValue: r.symbolName ?? r.category.defaultSymbol)
             _photoData = State(initialValue: r.photoData)
@@ -65,7 +63,7 @@ struct ReminderEditorView: View {
             _title = State(initialValue: "")
             _notes = State(initialValue: "")
             _date = State(initialValue: Date().addingTimeInterval(60 * 60))
-            _category = State(initialValue: initialCategory)
+            _categorySelection = State(initialValue: .builtin(initialCategory))
             _iconKind = State(initialValue: .symbol)
             _symbolName = State(initialValue: initialCategory.defaultSymbol)
             _photoData = State(initialValue: nil)
@@ -73,6 +71,16 @@ struct ReminderEditorView: View {
             _leadTimes = State(initialValue: [.atStart])
             _isEnabled = State(initialValue: true)
         }
+    }
+
+    /// Resolved presentation for the current selection (built-in or custom).
+    private var style: CategoryStyle { categoryStore.style(for: categorySelection) }
+
+    /// SF Symbols suggested in the icon picker — the built-in category's set, or
+    /// a generic set for custom categories.
+    private var suggestedSymbols: [String] {
+        if case .builtin(let c) = categorySelection { return c.suggestedSymbols }
+        return ReminderCategory.other.suggestedSymbols
     }
 
     var body: some View {
@@ -91,11 +99,13 @@ struct ReminderEditorView: View {
                 }
 
                 Section {
-                    CategoryPickerView(selection: $category)
-                        .onChange(of: category) { _, newValue in
-                            if iconKind == .symbol, !newValue.suggestedSymbols.contains(symbolName) {
-                                symbolName = newValue.defaultSymbol
-                            }
+                    CategoryPickerView(selection: $categorySelection)
+                        .onChange(of: categorySelection) { _, _ in
+                            // Default the icon to the newly-picked category's icon;
+                            // the user can still override it below.
+                            let s = style
+                            iconKind = s.iconKind
+                            symbolName = s.iconValue
                         }
                 } header: {
                     Text("Categoría")
@@ -103,7 +113,9 @@ struct ReminderEditorView: View {
 
                 Section {
                     IconPickerView(
-                        category: category,
+                        tint: style.color,
+                        suggestedSymbols: suggestedSymbols,
+                        defaultSymbol: style.iconKind == .symbol ? style.iconValue : "star.fill",
                         iconKind: $iconKind,
                         symbolName: $symbolName,
                         photoData: $photoData
@@ -130,7 +142,7 @@ struct ReminderEditorView: View {
                     DatePicker(selection: $date, displayedComponents: [.hourAndMinute]) {
                         HStack(spacing: DS.Spacing.sm) {
                             Image(systemName: "clock.fill")
-                                .foregroundStyle(category.tint)
+                                .foregroundStyle(style.color)
                                 .font(.title3)
                             Text("Hora")
                                 .font(.body.weight(.medium))
@@ -149,7 +161,7 @@ struct ReminderEditorView: View {
                     ForEach(leadTimes) { value in
                         HStack {
                             Image(systemName: "bell.fill")
-                                .foregroundStyle(category.tint)
+                                .foregroundStyle(style.color)
                             Text(value.localizedTitle)
                             Spacer()
                             if leadTimes.count > 1 {
@@ -196,7 +208,7 @@ struct ReminderEditorView: View {
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 7)
                                 .padding(.vertical, 2)
-                                .background(Capsule().fill(Color.accentColor))
+                                .background(Capsule().fill(Color.appAccent))
                         }
                     }
                 } footer: {
@@ -275,29 +287,9 @@ struct ReminderEditorView: View {
                 }
                 .presentationDetents([.medium, .large])
             }
-            .sheet(isPresented: $showingContactPicker) {
-                ContactPickerView(preselected: selectedContacts) { contacts in
-                    selectedContacts = contacts
-                    showingContactPicker = false
-                }
-            }
-            // Messages pre-filled with recipients and share link — user just taps Enviar
-            .sheet(isPresented: $showingMessageCompose, onDismiss: { dismiss() }) {
-                MessageComposeView(
-                    recipients: messageRecipients,
-                    body: messageBody
-                ) { showingMessageCompose = false }
-            }
-            // Fallback: generic share sheet when Messages isn't available
-            .sheet(isPresented: $showingFallbackShare, onDismiss: { dismiss() }) {
-                if let url = shareURL {
-                    ShareLink(
-                        item: url,
-                        message: Text("Te invito a '\(title)' en Calarm")
-                    )
-                    .padding()
-                }
-            }
+            // Shared invite delivery (Messages, with generic share fallback).
+            // Closing it dismisses the editor — the reminder is already saved.
+            .inviteDelivery($pendingInvite) { dismiss() }
             .alert("Error al compartir", isPresented: Binding(
                 get: { shareError != nil },
                 set: { if !$0 { shareError = nil } }
@@ -312,84 +304,54 @@ struct ReminderEditorView: View {
     @ViewBuilder
     private var inviteSection: some View {
         Section {
-            if selectedContacts.isEmpty {
-                Button {
-                    Haptics.light()
-                    showingContactPicker = true
-                } label: {
-                    HStack(spacing: 14) {
-                        ZStack {
-                            Circle()
-                                .fill(
-                                    LinearGradient(
-                                        colors: [Color.accentColor.opacity(0.9), Color.accentColor.opacity(0.55)],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
+            Button {
+                Haptics.light()
+                Task { await save(thenInvite: true) }
+            } label: {
+                HStack(spacing: 14) {
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.appAccent.opacity(0.9), Color.appAccent.opacity(0.55)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
                                 )
-                                .frame(width: 40, height: 40)
-                            Image(systemName: "person.badge.plus")
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundStyle(.white)
-                        }
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Invitar amigos")
-                                .font(.body.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Text("Comparte este evento por Messages")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer()
+                            )
+                            .frame(width: 40, height: 40)
+                        Image(systemName: "person.badge.plus")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(.white)
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Invitar amigos")
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(.primary)
+                        Text("Comparte el link por Messages")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    if isPreparingShare {
+                        ProgressView()
+                    } else {
                         Image(systemName: "chevron.right")
                             .font(.footnote.weight(.semibold))
                             .foregroundStyle(.tertiary)
                     }
-                    .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
-            } else {
-                invitedContactsCard
+                .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
+            .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty || isPreparingShare)
         } header: {
-            HStack {
-                Text("Invitar amigos")
-                if !selectedContacts.isEmpty {
-                    Text("\(selectedContacts.count)")
-                        .font(.caption2.weight(.bold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 2)
-                        .background(Capsule().fill(Color.accentColor))
-                }
-            }
+            Text("Invitar amigos")
         } footer: {
-            if !selectedContacts.isEmpty {
-                Text("Al crear, se abrirá Messages con el link para que ellos acepten. Toca un avatar para quitarlo.")
-            }
+            Text("Se guardará la alarma y se abrirá Messages con el link para que tus invitados la acepten.")
         }
     }
 
-    private var invitedContactsCard: some View {
-        WrapLayout(spacing: 10, lineSpacing: 12) {
-            ForEach(selectedContacts) { contact in
-                InviteeChip(contact: contact) {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                        selectedContacts.removeAll { $0.id == contact.id }
-                    }
-                    Haptics.light()
-                }
-            }
-            AddMoreChip {
-                Haptics.light()
-                showingContactPicker = true
-            }
-        }
-        .padding(.vertical, 6)
-        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: selectedContacts)
-    }
-
-    private func save() async {
+    private func save(thenInvite: Bool = false) async {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedTitle.isEmpty else { return }
 
@@ -398,7 +360,7 @@ struct ReminderEditorView: View {
             existing.title = trimmedTitle
             existing.notes = notes.isEmpty ? nil : notes
             existing.date = date
-            existing.category = category
+            categoryStore.apply(categorySelection, to: existing)
             existing.iconKind = iconKind
             existing.symbolName = symbolName
             existing.photoData = iconKind == .photo ? photoData : nil
@@ -412,7 +374,6 @@ struct ReminderEditorView: View {
                 title: trimmedTitle,
                 notes: notes.isEmpty ? nil : notes,
                 date: date,
-                category: category,
                 iconKind: iconKind,
                 symbolName: symbolName,
                 photoData: iconKind == .photo ? photoData : nil,
@@ -420,6 +381,7 @@ struct ReminderEditorView: View {
                 leadTimes: leadTimes,
                 isEnabled: isEnabled
             )
+            categoryStore.apply(categorySelection, to: new)
             modelContext.insert(new)
             reminder = new
         }
@@ -428,12 +390,12 @@ struct ReminderEditorView: View {
         await reminderScheduler.syncAlarms(for: reminder)
         Haptics.success()
 
-        guard editingReminder == nil, !selectedContacts.isEmpty else {
+        guard thenInvite else {
             dismiss()
             return
         }
 
-        // Prepare share and open Messages pre-filled with recipients
+        // Prepare the share and hand off to the shared invite delivery (Messages).
         isPreparingShare = true
         do {
             let share = try await sharedService.prepareShare(for: reminder)
@@ -444,18 +406,7 @@ struct ReminderEditorView: View {
                 return
             }
 
-            let phones = selectedContacts.flatMap { $0.phoneNumbers }.filter { !$0.isEmpty }
-            let inviteText = "Te invito a '\(trimmedTitle)' en Calarm — acepta aquí: \(url.absoluteString)"
-
-            if MFMessageComposeViewController.canSendText(), !phones.isEmpty {
-                messageRecipients = phones
-                messageBody = inviteText
-                showingMessageCompose = true
-            } else {
-                // Fallback: generic share sheet (AirDrop, Mail, WhatsApp, etc.)
-                shareURL = url
-                showingFallbackShare = true
-            }
+            pendingInvite = InviteDelivery(title: trimmedTitle, url: url)
         } catch {
             isPreparingShare = false
             shareError = error.localizedDescription
@@ -525,12 +476,13 @@ struct ReminderEditorView: View {
 
                 // Mini chips showing what would change
                 WrapLayout(spacing: 6, lineSpacing: 6) {
-                    if let suggestedCategory = ReminderCategory.from(slug: suggestion.category),
-                       suggestedCategory != category {
+                    if let suggestedSelection = categoryStore.resolve(slug: suggestion.category),
+                       suggestedSelection != categorySelection {
+                        let s = categoryStore.style(for: suggestedSelection)
                         suggestionChip(
-                            icon: suggestedCategory.defaultSymbol,
-                            label: suggestedCategory.localizedTitle,
-                            tint: suggestedCategory.tint
+                            icon: "tag.fill",
+                            label: s.title,
+                            tint: s.color
                         )
                     }
                     let suggestedRecurrence = AlarmSuggestionsService.recurrence(fromSlug: suggestion.recurrence)
@@ -538,7 +490,7 @@ struct ReminderEditorView: View {
                         suggestionChip(
                             icon: "repeat",
                             label: suggestedRecurrence.localizedSummary,
-                            tint: .accentColor
+                            tint: .appAccent
                         )
                     }
                     let suggestedLeadTimes = AlarmSuggestionsService.leadTimes(fromMinutes: suggestion.leadTimesMinutes)
@@ -586,11 +538,9 @@ struct ReminderEditorView: View {
 
     private func applySuggestion(_ suggestion: AlarmSuggestion) {
         withAnimation(DS.Motion.snappy) {
-            if let suggestedCategory = ReminderCategory.from(slug: suggestion.category) {
-                category = suggestedCategory
-                if iconKind == .symbol {
-                    symbolName = suggestedCategory.defaultSymbol
-                }
+            if let suggestedSelection = categoryStore.resolve(slug: suggestion.category) {
+                // The categorySelection onChange handler updates the icon to match.
+                categorySelection = suggestedSelection
             }
             recurrence = AlarmSuggestionsService.recurrence(fromSlug: suggestion.recurrence)
             leadTimes = AlarmSuggestionsService.leadTimes(fromMinutes: suggestion.leadTimesMinutes)
@@ -606,63 +556,5 @@ struct ReminderEditorView: View {
         try? modelContext.save()
         Haptics.warning()
         dismiss()
-    }
-}
-
-// MARK: - Invitee chips
-
-private struct InviteeChip: View {
-    let contact: SelectedContact
-    let onRemove: () -> Void
-
-    var body: some View {
-        HStack(spacing: 8) {
-            ContactAvatarView(name: contact.name, imageData: contact.imageData, size: 28)
-            Text(firstName)
-                .font(.subheadline.weight(.medium))
-                .lineLimit(1)
-            Button(action: onRemove) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 18))
-                    .foregroundStyle(Color(.systemGray2))
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Quitar \(contact.name)")
-        }
-        .padding(.leading, 4)
-        .padding(.trailing, 8)
-        .padding(.vertical, 4)
-        .background(
-            Capsule()
-                .fill(Color(.tertiarySystemFill))
-        )
-        .transition(.scale.combined(with: .opacity))
-    }
-
-    private var firstName: String {
-        contact.name.split(separator: " ").first.map(String.init) ?? contact.name
-    }
-}
-
-private struct AddMoreChip: View {
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: "plus")
-                    .font(.system(size: 14, weight: .bold))
-                Text("Agregar")
-                    .font(.subheadline.weight(.semibold))
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .foregroundStyle(Color.accentColor)
-            .background(
-                Capsule()
-                    .strokeBorder(Color.accentColor.opacity(0.5), style: StrokeStyle(lineWidth: 1.2, dash: [4, 3]))
-            )
-        }
-        .buttonStyle(.plain)
     }
 }

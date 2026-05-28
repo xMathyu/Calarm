@@ -34,11 +34,11 @@ enum ReminderCategory: Int, CaseIterable, Identifiable, Codable, Sendable {
 
     var localizedTitle: String {
         switch self {
-        case .birthday: String(localized: "Cumpleaños")
-        case .anniversary: String(localized: "Aniversario")
-        case .event: String(localized: "Evento")
-        case .reminder: String(localized: "Recordatorio")
-        case .other: String(localized: "Otro")
+        case .birthday: appLocalized("Cumpleaños")
+        case .anniversary: appLocalized("Aniversario")
+        case .event: appLocalized("Evento")
+        case .reminder: appLocalized("Recordatorio")
+        case .other: appLocalized("Otro")
         }
     }
 

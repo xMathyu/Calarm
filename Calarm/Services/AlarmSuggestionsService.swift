@@ -47,9 +47,15 @@ final class AlarmSuggestionsService {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard trimmed.count >= 3 else { return nil }
 
+        let customNames = (CategoryStore.shared?.customCategories.map(\.name) ?? [])
+            .filter { !$0.isEmpty }
+        let categoryLine = customNames.isEmpty
+            ? "- category: pick the single best fit from [birthday, anniversary, event, reminder, other]"
+            : "- category: pick the single best fit from the built-ins [birthday, anniversary, event, reminder, other] OR one of the user's CUSTOM categories (output the exact name): [\(customNames.joined(separator: ", "))]. Prefer a custom category when it clearly matches the title."
+
         let instructions = Instructions("""
         You analyze short alarm titles and predict the most natural defaults for them.
-        - category: pick the single best fit from [birthday, anniversary, event, reminder, other]
+        \(categoryLine)
         - recurrence: pick the single best fit from [once, daily, weekly, monthly, yearly]
         - leadTimesMinutes: list of minutes-before. Birthdays and anniversaries → [0, 1440] (at-start + 1 day before). Meetings/events → [0, 15]. Pills/medication → [0]. Default [0].
         - confidence: how confident you are. Title like 'Cumpleaños de Ana' → 0.95. Title like 'reunión' → 0.6. Title like 'cosa' → 0.2.

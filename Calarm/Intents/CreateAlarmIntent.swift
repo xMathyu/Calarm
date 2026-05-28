@@ -89,7 +89,7 @@ struct CreateAlarmIntent: AppIntent {
     /// Builds a `ModelContainer` configured identically to `CalarmApp` so the
     /// intent writes to the same SwiftData store the app reads from.
     private static func makeSharedContainer() throws -> ModelContainer {
-        let schema = Schema([Reminder.self])
+        let schema = Schema([Reminder.self, CustomCategory.self])
         let cloudConfig = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
         do {
             return try ModelContainer(for: schema, configurations: cloudConfig)

@@ -133,7 +133,7 @@ struct CreateAlarmFromTextIntent: AppIntent {
     // MARK: - Shared container
 
     private static func makeSharedContainer() throws -> ModelContainer {
-        let schema = Schema([Reminder.self])
+        let schema = Schema([Reminder.self, CustomCategory.self])
         let cloudConfig = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
         do {
             return try ModelContainer(for: schema, configurations: cloudConfig)

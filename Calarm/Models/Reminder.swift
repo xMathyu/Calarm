@@ -16,6 +16,9 @@ final class Reminder {
     var notes: String? = nil
     var date: Date = Date()
     var categoryRaw: Int = ReminderCategory.reminder.rawValue
+    /// Set when this reminder uses a user-created `CustomCategory`. `nil` means
+    /// it uses the built-in `categoryRaw`. Additive/optional for CloudKit compat.
+    var customCategoryID: UUID? = nil
     var iconKindRaw: Int = ReminderIconKind.symbol.rawValue
     var symbolName: String? = nil
     @Attribute(.externalStorage) var photoData: Data? = nil

@@ -113,3 +113,19 @@ final class LocalizationManager: @unchecked Sendable {
         revision &+= 1
     }
 }
+
+/// Localizes `key` honoring the active in-app language override.
+///
+/// `String(localized:)` resolves against the *system* localization and does NOT
+/// go through the `Bundle.main` class swizzle that `LocalizationManager`
+/// installs (only `localizedString(forKey:value:table:)`, which backs
+/// `Text(...)`/`NSLocalizedString`, is intercepted). So plain `String(localized:)`
+/// silently ignores the user's manual language pick and falls back to the device
+/// language — which is why some labels stayed English while `Text(...)` switched.
+///
+/// Always use this helper instead of `String(localized:)` for runtime-localized
+/// strings so they stay consistent with the rest of the UI after a switch.
+func appLocalized(_ key: String.LocalizationValue) -> String {
+    let bundle = LocalizationManager.shared.snapshotBundle() ?? .main
+    return String(localized: key, bundle: bundle)
+}

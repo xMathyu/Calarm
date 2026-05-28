@@ -94,7 +94,7 @@ struct MeetingDetailView: View {
                         ForEach(leadTimes) { value in
                             HStack {
                                 Image(systemName: "bell.fill")
-                                    .foregroundStyle(isEnabled ? Color.accentColor : Color.secondary)
+                                    .foregroundStyle(isEnabled ? Color.appAccent : Color.secondary)
                                 Text(value.localizedTitle)
                                     .foregroundStyle(isEnabled ? Color.primary : Color.secondary)
                                 Spacer()

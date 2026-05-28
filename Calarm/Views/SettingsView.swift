@@ -42,6 +42,20 @@ struct SettingsView: View {
                     Text("Elige el tema. \"Automático\" sigue la configuración del sistema.")
                 }
 
+                accentColorSection
+
+                Section {
+                    NavigationLink {
+                        CategoryManagementView()
+                    } label: {
+                        Label("Categorías", systemImage: "tag.fill")
+                    }
+                } header: {
+                    sectionHeader("Categorías", systemImage: "square.grid.2x2.fill")
+                } footer: {
+                    Text("Crea categorías propias con su color y emoji o ícono.")
+                }
+
                 Section {
                     languagePicker(selection: $settings.language)
                 } header: {
@@ -146,6 +160,70 @@ struct SettingsView: View {
         }
     }
 
+    /// Lets the user pick the app's accent color: a curated palette plus a
+    /// free ColorPicker, with a reset to the default. Only tints app chrome —
+    /// categories keep their own colors.
+    @ViewBuilder
+    private var accentColorSection: some View {
+        let columns = Array(repeating: GridItem(.flexible(), spacing: DS.Spacing.md), count: 5)
+        let currentHex = (settings.accentColorHex ?? AppSettings.accentPresets[0]).uppercased()
+        Section {
+            LazyVGrid(columns: columns, spacing: DS.Spacing.md) {
+                ForEach(AppSettings.accentPresets, id: \.self) { hex in
+                    let isSelected = hex.uppercased() == currentHex
+                    Button {
+                        withAnimation(DS.Motion.snappy) {
+                            settings.accentColorHex = (hex == AppSettings.accentPresets[0]) ? nil : hex
+                        }
+                        Haptics.selection()
+                    } label: {
+                        Circle()
+                            .fill(Color(hex: hex) ?? .accentColor)
+                            .frame(width: 34, height: 34)
+                            .overlay {
+                                if isSelected {
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 14, weight: .bold))
+                                        .foregroundStyle(.white)
+                                }
+                            }
+                            .overlay {
+                                Circle().strokeBorder(.primary.opacity(isSelected ? 0.5 : 0), lineWidth: 2)
+                            }
+                            .scaleEffect(isSelected ? 1.12 : 1.0)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.vertical, DS.Spacing.xs)
+
+            ColorPicker(selection: accentColorBinding, supportsOpacity: false) {
+                Label("Personalizado", systemImage: "eyedropper.halffull")
+            }
+
+            if settings.accentColorHex != nil {
+                Button(role: .destructive) {
+                    withAnimation(DS.Motion.snappy) { settings.accentColorHex = nil }
+                    Haptics.light()
+                } label: {
+                    Label("Restablecer color", systemImage: "arrow.uturn.backward")
+                }
+            }
+        } header: {
+            sectionHeader("Color de la app", systemImage: "paintbrush.fill")
+        } footer: {
+            Text("Tinta botones, acentos y resaltados. Las categorías mantienen sus propios colores.")
+        }
+    }
+
+    private var accentColorBinding: Binding<Color> {
+        Binding(
+            get: { settings.accentColor },
+            set: { settings.accentColorHex = $0.toHex() }
+        )
+    }
+
     private func sectionHeader(_ title: LocalizedStringKey, systemImage: String) -> some View {
         HStack(spacing: DS.Spacing.xs) {
             Image(systemName: systemImage)
@@ -180,12 +258,12 @@ struct SettingsView: View {
                     .foregroundStyle(isSelected ? .white : .primary)
                     .background(
                         RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                            .fill(isSelected ? Color.accentColor : Color.dsFill)
+                            .fill(isSelected ? Color.appAccent : Color.dsFill)
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
                             .strokeBorder(
-                                isSelected ? Color.accentColor : Color.clear,
+                                isSelected ? Color.appAccent : Color.clear,
                                 lineWidth: 1.5
                             )
                     )
@@ -223,12 +301,12 @@ struct SettingsView: View {
                     .foregroundStyle(isSelected ? .white : .primary)
                     .background(
                         RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                            .fill(isSelected ? Color.accentColor : Color.dsFill)
+                            .fill(isSelected ? Color.appAccent : Color.dsFill)
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
                             .strokeBorder(
-                                isSelected ? Color.accentColor : Color.clear,
+                                isSelected ? Color.appAccent : Color.clear,
                                 lineWidth: 1.5
                             )
                     )

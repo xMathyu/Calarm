@@ -22,6 +22,24 @@ private enum ToolHelpers {
         return ReminderCategory.from(slug: slug) ?? .reminder
     }
 
+    /// Applies a category string (built-in slug OR a custom category name) to a
+    /// reminder, syncing its icon to the category default.
+    @MainActor
+    static func applyCategory(_ slug: String?, to reminder: Reminder) {
+        if let store = CategoryStore.shared, let slug, let selection = store.resolve(slug: slug) {
+            store.apply(selection, to: reminder)
+            let style = store.style(for: selection)
+            reminder.iconKind = style.iconKind
+            reminder.symbolName = style.iconValue
+        } else {
+            let builtin = category(fromSlug: slug)
+            reminder.category = builtin
+            reminder.customCategoryID = nil
+            reminder.iconKind = .symbol
+            reminder.symbolName = builtin.defaultSymbol
+        }
+    }
+
     static func recurrence(fromSlug slug: String?) -> RecurrenceRule {
         AlarmSuggestionsService.recurrence(fromSlug: slug ?? "once")
     }
@@ -92,7 +110,7 @@ struct CreateReminderTool: Tool {
         @Guide(description: "When the alarm fires, naive ISO 8601 in the user's LOCAL time (no Z, no offset): YYYY-MM-DDTHH:MM:SS. Must be in the future. For birthdays/anniversaries with no time specified, use 09:00:00.")
         let dateISO: String
 
-        @Guide(description: "Category. EXACTLY one of: birthday, anniversary, event, reminder, other. Match birthdays (cumpleaños) → birthday, anniversaries (aniversarios) → anniversary, meetings → event, generic → reminder.")
+        @Guide(description: "Category. A built-in (birthday, anniversary, event, reminder, other) OR the EXACT name of one of the user's custom categories listed in the instructions. Match birthdays (cumpleaños) → birthday, anniversaries → anniversary, meetings → event, generic → reminder. Prefer a custom category when the user's intent clearly matches one.")
         let category: String?
 
         @Guide(description: "Recurrence. EXACTLY one of: once, daily, weekly, monthly, yearly. CRITICAL — read the user's words: 'every year'/'cada año'/'todos los años'/'yearly'/'anual' → yearly. 'every month'/'cada mes'/'todos los meses' → monthly. 'every week'/'cada semana'/'todas las semanas' → weekly. 'daily'/'cada día'/'todos los días' → daily. Only use 'once' if the user gave a SPECIFIC date with NO recurrence words. Example: 'Cumple de mamá el 28 de febrero todos los años' → yearly (NEVER once).")
@@ -111,10 +129,10 @@ struct CreateReminderTool: Tool {
         let reminder = Reminder(
             title: arguments.title,
             date: date,
-            category: ToolHelpers.category(fromSlug: arguments.category),
             recurrence: ToolHelpers.recurrence(fromSlug: arguments.recurrence),
             leadTimes: ToolHelpers.leadTimes(fromMinutes: arguments.leadTimesMinutes)
         )
+        ToolHelpers.applyCategory(arguments.category, to: reminder)
         let context = modelContainer.mainContext
         context.insert(reminder)
         try context.save()
@@ -250,7 +268,7 @@ struct UpdateReminderTool: Tool {
         @Guide(description: "New date ISO 8601, or null to keep current.")
         let dateISO: String?
 
-        @Guide(description: "New category slug, or null to keep current.")
+        @Guide(description: "New category: a built-in slug (birthday, anniversary, event, reminder, other) or the exact name of a custom category from the instructions. Null to keep current.")
         let category: String?
 
         @Guide(description: "New recurrence slug, or null to keep current.")
@@ -278,9 +296,8 @@ struct UpdateReminderTool: Tool {
         if let dateISO = arguments.dateISO, let date = ToolHelpers.parseDate(dateISO) {
             reminder.date = date
         }
-        if let cat = arguments.category, let typed = ReminderCategory.from(slug: cat) {
-            reminder.category = typed
-            reminder.symbolName = typed.defaultSymbol
+        if let cat = arguments.category {
+            ToolHelpers.applyCategory(cat, to: reminder)
         }
         if let rec = arguments.recurrence {
             reminder.recurrence = ToolHelpers.recurrence(fromSlug: rec)

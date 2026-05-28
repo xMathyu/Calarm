@@ -6,8 +6,11 @@
 import SwiftUI
 
 struct ReminderRowView: View {
+    @Environment(CategoryStore.self) private var categoryStore
     let reminder: Reminder
     let nextOccurrence: Date?
+
+    private var style: CategoryStyle { categoryStore.style(for: reminder) }
 
     var body: some View {
         HStack(spacing: DS.Spacing.md) {
@@ -33,7 +36,7 @@ struct ReminderRowView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 } else {
-                    Text(reminder.category.localizedTitle)
+                    Text(style.title)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -46,8 +49,8 @@ struct ReminderRowView: View {
                                 .font(.caption2.weight(.medium))
                                 .padding(.horizontal, DS.Spacing.sm)
                                 .padding(.vertical, 3)
-                                .foregroundStyle(reminder.category.tint)
-                                .background(reminder.category.tint.opacity(0.13), in: Capsule())
+                                .foregroundStyle(style.color)
+                                .background(style.color.opacity(0.13), in: Capsule())
                         }
                         if reminder.isReceivedShare {
                             Label("Compartido", systemImage: "person.2.fill")
@@ -75,43 +78,17 @@ struct ReminderRowView: View {
         .accessibilityElement(children: .combine)
     }
 
-    @ViewBuilder
     private var avatar: some View {
-        ZStack {
-            Circle()
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            reminder.category.tint.opacity(0.28),
-                            reminder.category.tint.opacity(0.12)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .frame(width: DS.AvatarSize.md, height: DS.AvatarSize.md)
-
-            switch reminder.iconKind {
-            case .photo:
-                if let data = reminder.photoData, let img = UIImage(data: data) {
-                    Image(uiImage: img)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: DS.AvatarSize.md, height: DS.AvatarSize.md)
-                        .clipShape(Circle())
-                } else {
-                    Image(systemName: reminder.symbolName ?? reminder.category.defaultSymbol)
-                        .font(.title3)
-                        .foregroundStyle(reminder.category.tint)
-                        .symbolEffect(.bounce, options: .nonRepeating, value: reminder.isEnabled)
-                }
-            case .symbol:
-                Image(systemName: reminder.symbolName ?? reminder.category.defaultSymbol)
-                    .font(.title3)
-                    .foregroundStyle(reminder.category.tint)
-                    .symbolEffect(.bounce, options: .nonRepeating, value: reminder.isEnabled)
-            }
-        }
+        ReminderIconView(
+            iconKind: reminder.iconKind,
+            iconValue: reminder.symbolName,
+            photoData: reminder.photoData,
+            fallbackSymbol: style.iconKind == .symbol ? style.iconValue : "bell.fill",
+            tint: style.color,
+            size: DS.AvatarSize.md,
+            shape: .circle,
+            bounceValue: reminder.isEnabled
+        )
     }
 
     private func timeChip(for date: Date) -> some View {
@@ -122,7 +99,7 @@ struct ReminderRowView: View {
             Text(date, format: .dateTime.hour().minute())
                 .font(.subheadline.weight(.semibold))
                 .monospacedDigit()
-                .foregroundStyle(isWithinNextDay ? reminder.category.tint : .primary)
+                .foregroundStyle(isWithinNextDay ? style.color : .primary)
             if !calendar.isDateInToday(date) && !calendar.isDateInTomorrow(date) {
                 Text(date, format: .dateTime.day().month(.abbreviated))
                     .font(.caption2)
@@ -133,7 +110,7 @@ struct ReminderRowView: View {
         .padding(.vertical, DS.Spacing.xs)
         .background(
             isWithinNextDay
-                ? reminder.category.tint.opacity(0.10)
+                ? style.color.opacity(0.10)
                 : Color.dsFill,
             in: RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
         )

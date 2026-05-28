@@ -74,8 +74,8 @@ struct OnboardingView: View {
     private var backgroundGradient: some View {
         LinearGradient(
             colors: [
-                Color.accentColor.opacity(0.12),
-                Color.accentColor.opacity(0.02),
+                Color.appAccent.opacity(0.12),
+                Color.appAccent.opacity(0.02),
                 Color(.systemBackground)
             ],
             startPoint: .top,
@@ -104,7 +104,7 @@ struct OnboardingView: View {
         HStack(alignment: .top, spacing: DS.Spacing.md) {
             ZStack {
                 Circle()
-                    .fill(Color.accentColor.opacity(0.15))
+                    .fill(Color.appAccent.opacity(0.15))
                     .frame(width: 36, height: 36)
                 Image(systemName: symbol)
                     .font(.subheadline.weight(.semibold))

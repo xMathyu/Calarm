@@ -17,9 +17,9 @@ enum AppearanceMode: Int, CaseIterable, Identifiable, Sendable {
 
     var localizedTitle: String {
         switch self {
-        case .system: String(localized: "Automático")
-        case .light: String(localized: "Claro")
-        case .dark: String(localized: "Oscuro")
+        case .system: appLocalized("Automático")
+        case .light: appLocalized("Claro")
+        case .dark: appLocalized("Oscuro")
         }
     }
 
@@ -51,9 +51,9 @@ enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
 
     var localizedTitle: String {
         switch self {
-        case .system: String(localized: "Automático")
-        case .spanish: String(localized: "Español")
-        case .english: String(localized: "Inglés")
+        case .system: appLocalized("Automático")
+        case .spanish: appLocalized("Español")
+        case .english: appLocalized("Inglés")
         }
     }
 
@@ -86,7 +86,22 @@ final class AppSettings {
         static let teamsDetectionEnabled = "settings.teamsDetectionEnabled"
         static let appearance = "settings.appearance"
         static let language = "settings.language"
+        static let accentColorHex = "settings.accentColorHex"
     }
+
+    /// Curated accent presets shown in Settings. First is the app default.
+    static let accentPresets: [String] = [
+        "#FF6633", // default orange
+        "#007AFF", // blue
+        "#5856D6", // indigo
+        "#AF52DE", // purple
+        "#FF2D55", // pink
+        "#FF3B30", // red
+        "#34C759", // green
+        "#00C7BE", // teal
+        "#FFCC00", // yellow
+        "#8E8E93", // gray
+    ]
 
     var snoozeInterval: SnoozeInterval {
         didSet { defaults.set(snoozeInterval.rawValue, forKey: Key.snooze) }
@@ -115,6 +130,23 @@ final class AppSettings {
         }
     }
 
+    /// User-chosen accent color as a hex string, or nil to use the app default.
+    var accentColorHex: String? {
+        didSet {
+            if let hex = accentColorHex {
+                defaults.set(hex, forKey: Key.accentColorHex)
+            } else {
+                defaults.removeObject(forKey: Key.accentColorHex)
+            }
+            Theme.shared.accent = accentColor
+        }
+    }
+
+    /// Resolved accent color — the custom one if set, otherwise the asset default.
+    var accentColor: Color {
+        accentColorHex.flatMap(Color.init(hex:)) ?? .accentColor
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         let storedSnooze = defaults.object(forKey: Key.snooze) as? Int
@@ -124,10 +156,13 @@ final class AppSettings {
         self.teamsDetectionEnabled = defaults.bool(forKey: Key.teamsDetectionEnabled)
         let storedAppearance = defaults.object(forKey: Key.appearance) as? Int
         self.appearance = storedAppearance.flatMap(AppearanceMode.init(rawValue:)) ?? .system
+        self.accentColorHex = defaults.string(forKey: Key.accentColorHex)
         let storedLanguage = defaults.string(forKey: Key.language)
         let resolvedLanguage = storedLanguage.flatMap(AppLanguage.init(rawValue:)) ?? .system
         self.language = resolvedLanguage
         // Apply on launch so the very first frame renders in the right language.
         LocalizationManager.shared.apply(resolvedLanguage)
+        // Seed the global theme so the first frame uses the saved accent.
+        Theme.shared.accent = accentColor
     }
 }

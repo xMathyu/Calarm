@@ -24,11 +24,11 @@ struct RecurrencePickerView: View {
 
         var localizedTitle: String {
             switch self {
-            case .once: String(localized: "Una vez")
-            case .daily: String(localized: "Diaria")
-            case .weekly: String(localized: "Semanal")
-            case .monthly: String(localized: "Mensual")
-            case .yearly: String(localized: "Anual")
+            case .once: appLocalized("Una vez")
+            case .daily: appLocalized("Diaria")
+            case .weekly: appLocalized("Semanal")
+            case .monthly: appLocalized("Mensual")
+            case .yearly: appLocalized("Anual")
             }
         }
     }
@@ -128,10 +128,10 @@ struct RecurrencePickerView: View {
 
     private func unitLabel(plural: Bool) -> String {
         switch kind {
-        case .daily: plural ? String(localized: "días") : String(localized: "día")
-        case .weekly: plural ? String(localized: "semanas") : String(localized: "semana")
-        case .monthly: plural ? String(localized: "meses") : String(localized: "mes")
-        case .yearly: plural ? String(localized: "años") : String(localized: "año")
+        case .daily: plural ? appLocalized("días") : appLocalized("día")
+        case .weekly: plural ? appLocalized("semanas") : appLocalized("semana")
+        case .monthly: plural ? appLocalized("meses") : appLocalized("mes")
+        case .yearly: plural ? appLocalized("años") : appLocalized("año")
         case .once: ""
         }
     }
@@ -151,7 +151,7 @@ struct RecurrencePickerView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
                         .background(
-                            Capsule().fill(isOn ? Color.accentColor : Color.dsFill)
+                            Capsule().fill(isOn ? Color.appAccent : Color.dsFill)
                         )
                         .foregroundStyle(isOn ? .white : .primary)
                         .scaleEffect(isOn ? 1.05 : 1.0)

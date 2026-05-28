@@ -11,13 +11,19 @@ import UIKit
 struct ReminderDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(SharedRemindersService.self) private var sharedService
+    @Environment(CategoryStore.self) private var categoryStore
 
     let reminder: Reminder
 
+    private var style: CategoryStyle { categoryStore.style(for: reminder) }
+
     @State private var showingEditor = false
     @State private var isPreparingShare = false
-    @State private var preparedShare: CKShare?
-    @State private var showingShareSheet = false
+    @State private var pendingInvite: InviteDelivery?
+    /// The existing CloudKit share, if this reminder is already shared. Drives
+    /// whether "Gestionar compartido" is offered.
+    @State private var existingShare: CKShare?
+    @State private var showingManageSheet = false
     @State private var errorMessage: String?
 
     var body: some View {
@@ -43,14 +49,21 @@ struct ReminderDetailView: View {
             .sheet(isPresented: $showingEditor) {
                 ReminderEditorView(editing: reminder)
             }
-            .sheet(isPresented: $showingShareSheet, onDismiss: { preparedShare = nil }) {
-                if let share = preparedShare {
+            // Single sheet: opens Messages with the link — same flow as create.
+            .inviteDelivery($pendingInvite) {
+                Task { await refreshShare() }
+            }
+            // Native CloudKit management sheet (add/remove people, permissions,
+            // stop sharing) — only reachable once a share exists.
+            .sheet(isPresented: $showingManageSheet, onDismiss: { Task { await refreshShare() } }) {
+                if let share = existingShare {
                     CloudSharingView(
                         share: share,
                         container: CKContainer(identifier: sharedService.containerIdentifier)
-                    ) { showingShareSheet = false }
+                    ) { showingManageSheet = false }
                 }
             }
+            .task { await refreshShare() }
             .alert("Error al compartir", isPresented: Binding(
                 get: { errorMessage != nil },
                 set: { if !$0 { errorMessage = nil } }
@@ -66,45 +79,28 @@ struct ReminderDetailView: View {
     private var headerSection: some View {
         Section {
             HStack(spacing: DS.Spacing.lg) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    reminder.category.tint.opacity(0.30),
-                                    reminder.category.tint.opacity(0.12)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: 64, height: 64)
-                    if reminder.iconKind == .photo,
-                       let data = reminder.photoData,
-                       let img = UIImage(data: data) {
-                        Image(uiImage: img)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 64, height: 64)
-                            .clipShape(RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous))
-                    } else {
-                        Image(systemName: reminder.symbolName ?? reminder.category.defaultSymbol)
-                            .font(.title)
-                            .foregroundStyle(reminder.category.tint)
-                            .symbolEffect(.bounce, options: .nonRepeating)
-                    }
-                }
+                ReminderIconView(
+                    iconKind: reminder.iconKind,
+                    iconValue: reminder.symbolName,
+                    photoData: reminder.photoData,
+                    fallbackSymbol: style.iconKind == .symbol ? style.iconValue : "bell.fill",
+                    tint: style.color,
+                    size: 64,
+                    shape: .roundedRect(DS.Radius.md)
+                )
                 VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                     Text(reminder.title)
                         .font(.title3.weight(.semibold))
                         .lineLimit(2)
-                    Label(reminder.category.localizedTitle, systemImage: reminder.category.defaultSymbol)
-                        .labelStyle(.titleAndIcon)
-                        .font(.caption.weight(.medium))
-                        .padding(.horizontal, DS.Spacing.sm)
-                        .padding(.vertical, 3)
-                        .foregroundStyle(reminder.category.tint)
-                        .background(reminder.category.tint.opacity(0.13), in: Capsule())
+                    HStack(spacing: 4) {
+                        CategoryGlyph(iconKind: style.iconKind, iconValue: style.iconValue)
+                        Text(style.title)
+                    }
+                    .font(.caption.weight(.medium))
+                    .padding(.horizontal, DS.Spacing.sm)
+                    .padding(.vertical, 3)
+                    .foregroundStyle(style.color)
+                    .background(style.color.opacity(0.13), in: Capsule())
                     if reminder.isReceivedShare {
                         Label("Compartido contigo", systemImage: "person.2.fill")
                             .font(.caption2)
@@ -138,8 +134,8 @@ struct ReminderDetailView: View {
                 icon: reminder.isEnabled ? "bell.fill" : "bell.slash.fill",
                 title: "Alarma",
                 value: reminder.isEnabled
-                    ? String(localized: "Activa")
-                    : String(localized: "Inactiva"),
+                    ? appLocalized("Activa")
+                    : appLocalized("Inactiva"),
                 valueColor: reminder.isEnabled ? .green : .secondary
             )
         } header: {
@@ -166,7 +162,8 @@ struct ReminderDetailView: View {
     private var shareSection: some View {
         Section {
             Button {
-                Task { await inviteFriends() }
+                Haptics.light()
+                Task { await invite() }
             } label: {
                 HStack {
                     Label("Invitar amigos", systemImage: "person.badge.plus")
@@ -177,20 +174,44 @@ struct ReminderDetailView: View {
                 }
             }
             .disabled(isPreparingShare)
+
+            // Only offered once the reminder is actually shared — lets the owner
+            // manage participants, permissions, or stop sharing.
+            if existingShare != nil {
+                Button {
+                    Haptics.light()
+                    showingManageSheet = true
+                } label: {
+                    Label("Gestionar compartido", systemImage: "person.2.badge.gearshape")
+                }
+            }
         } header: {
             Text("Compartir")
         }
     }
 
+    /// Prepares the share and opens Messages with the link — recipients are
+    /// chosen in Messages, so this is a single sheet.
     @MainActor
-    private func inviteFriends() async {
+    private func invite() async {
         isPreparingShare = true
         defer { isPreparingShare = false }
         do {
-            preparedShare = try await sharedService.prepareShare(for: reminder)
-            showingShareSheet = true
+            let share = try await sharedService.prepareShare(for: reminder)
+            existingShare = share
+            guard let url = share.url else {
+                errorMessage = SharedRemindersError.shareUnavailable.errorDescription
+                return
+            }
+            pendingInvite = InviteDelivery(title: reminder.title, url: url)
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    /// Refreshes whether this reminder currently has a share (without creating one).
+    @MainActor
+    private func refreshShare() async {
+        existingShare = await sharedService.existingShare(for: reminder)
     }
 }

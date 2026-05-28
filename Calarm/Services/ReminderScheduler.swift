@@ -82,7 +82,9 @@ final class ReminderScheduler {
                     ownerID: ownerID,
                     fireDate: fireDate,
                     title: reminder.title,
-                    symbolName: reminder.symbolName ?? reminder.category.defaultSymbol,
+                    // AlarmKit expects an SF Symbol name — fall back to the
+                    // category symbol when the reminder uses an emoji/photo icon.
+                    symbolName: (reminder.iconKind == .symbol ? reminder.symbolName : nil) ?? reminder.category.defaultSymbol,
                     category: reminder.category,
                     snooze: settings.snoozeInterval,
                     teamsURL: nil

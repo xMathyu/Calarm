@@ -137,7 +137,7 @@ struct RemindersListView: View {
                             }
                         }
                     } header: {
-                        sectionHeader(title: String(localized: "Compartidos conmigo"), count: shared.count, systemImage: "person.2.fill")
+                        sectionHeader(title: appLocalized("Compartidos conmigo"), count: shared.count, systemImage: "person.2.fill")
                     }
                 }
             }
@@ -215,11 +215,11 @@ struct RemindersListView: View {
         }
 
         var result: [Group] = []
-        if !today.isEmpty { result.append(Group(title: String(localized: "Hoy"), items: today)) }
-        if !tomorrow.isEmpty { result.append(Group(title: String(localized: "Mañana"), items: tomorrow)) }
-        if !thisWeek.isEmpty { result.append(Group(title: String(localized: "Esta semana"), items: thisWeek)) }
-        if !later.isEmpty { result.append(Group(title: String(localized: "Más adelante"), items: later)) }
-        if !unscheduled.isEmpty { result.append(Group(title: String(localized: "Sin próxima fecha"), items: unscheduled)) }
+        if !today.isEmpty { result.append(Group(title: appLocalized("Hoy"), items: today)) }
+        if !tomorrow.isEmpty { result.append(Group(title: appLocalized("Mañana"), items: tomorrow)) }
+        if !thisWeek.isEmpty { result.append(Group(title: appLocalized("Esta semana"), items: thisWeek)) }
+        if !later.isEmpty { result.append(Group(title: appLocalized("Más adelante"), items: later)) }
+        if !unscheduled.isEmpty { result.append(Group(title: appLocalized("Sin próxima fecha"), items: unscheduled)) }
         return result
     }
 

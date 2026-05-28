@@ -81,7 +81,7 @@ struct CalarmChatView: View {
             ScrollView {
                 VStack(spacing: DS.Spacing.xxl) {
                     Spacer(minLength: DS.Spacing.xxxl)
-                    HeroIcon(systemName: "sparkles", tint: .accentColor)
+                    HeroIcon(systemName: "sparkles", tint: .appAccent)
                     VStack(spacing: DS.Spacing.sm) {
                         Text("¿En qué te ayudo?")
                             .font(.title2.bold())
@@ -102,16 +102,16 @@ struct CalarmChatView: View {
     private func samplePrompts(_ assistant: AssistantService) -> some View {
         VStack(spacing: DS.Spacing.sm) {
             samplePrompt(icon: "calendar",
-                         text: String(localized: "¿Qué tengo hoy?"),
+                         text: appLocalized("¿Qué tengo hoy?"),
                          assistant: assistant)
             samplePrompt(icon: "birthday.cake.fill",
-                         text: String(localized: "Cumple de mi mamá el 15 de marzo cada año"),
+                         text: appLocalized("Cumple de mi mamá el 15 de marzo cada año"),
                          assistant: assistant)
             samplePrompt(icon: "magnifyingglass",
-                         text: String(localized: "¿Cuántos cumpleaños hay este mes?"),
+                         text: appLocalized("¿Cuántos cumpleaños hay este mes?"),
                          assistant: assistant)
             samplePrompt(icon: "bell.badge",
-                         text: String(localized: "Pon una alarma mañana a las 8am para el pastillero"),
+                         text: appLocalized("Pon una alarma mañana a las 8am para el pastillero"),
                          assistant: assistant)
         }
         .padding(.horizontal, DS.Spacing.lg)
@@ -221,7 +221,7 @@ struct CalarmChatView: View {
                 .font(.title3)
                 .foregroundStyle(.white)
                 .frame(width: 38, height: 38)
-                .background(Circle().fill(Color.accentColor))
+                .background(Circle().fill(Color.appAccent))
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Hablar")
@@ -250,7 +250,7 @@ struct CalarmChatView: View {
                 .font(.title3.weight(.bold))
                 .foregroundStyle(.white)
                 .frame(width: 38, height: 38)
-                .background(Circle().fill(Color.accentColor))
+                .background(Circle().fill(Color.appAccent))
         }
         .buttonStyle(.plain)
         .disabled(assistant.isResponding || inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -340,7 +340,7 @@ private struct ChatBubbleView: View {
             .foregroundStyle(.white)
             .padding(.horizontal, DS.Spacing.md)
             .padding(.vertical, DS.Spacing.sm)
-            .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .background(Color.appAccent, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .textSelection(.enabled)
     }
 
@@ -359,7 +359,7 @@ private struct ChatBubbleView: View {
             Circle()
                 .fill(
                     LinearGradient(
-                        colors: [Color.accentColor, Color.accentColor.opacity(0.6)],
+                        colors: [Color.appAccent, Color.appAccent.opacity(0.6)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )

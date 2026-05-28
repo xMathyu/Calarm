@@ -42,11 +42,11 @@ final class AssistantService {
         switch SystemLanguageModel.default.availability {
         case .available: return nil
         case .unavailable(.deviceNotEligible):
-            return String(localized: "este dispositivo no soporta Apple Intelligence")
+            return appLocalized("este dispositivo no soporta Apple Intelligence")
         case .unavailable(.appleIntelligenceNotEnabled):
-            return String(localized: "activa Apple Intelligence en Ajustes → Apple Intelligence & Siri")
+            return appLocalized("activa Apple Intelligence en Ajustes → Apple Intelligence & Siri")
         case .unavailable(.modelNotReady):
-            return String(localized: "el modelo aún se está descargando, intenta más tarde")
+            return appLocalized("el modelo aún se está descargando, intenta más tarde")
         case .unavailable(let reason):
             return "\(reason)"
         }
@@ -132,6 +132,12 @@ final class AssistantService {
         let offsetHours = Double(tz.secondsFromGMT(for: now)) / 3600.0
         let offsetSign = offsetHours >= 0 ? "+" : ""
 
+        let customNames = (CategoryStore.shared?.customCategories.map(\.name) ?? [])
+            .filter { !$0.isEmpty }
+        let customCategoriesText = customNames.isEmpty
+            ? "The user has no custom categories — use only the built-in ones."
+            : "The user's CUSTOM categories — pass the EXACT name as the category value when the user's intent matches one: " + customNames.joined(separator: ", ") + "."
+
         let instructions = Instructions("""
         You are Calarm, an AI assistant inside an iOS alarms-and-reminders app. \
         Help the user create, find, update, and delete alarms by calling the \
@@ -171,6 +177,8 @@ final class AssistantService {
           • Anniversary/aniversario → anniversary
           • Meeting/event/reunión/cita → event
           • Generic reminder/recordatorio → reminder
+          • \(customCategoriesText)
+          • Prefer a custom category over a built-in one when the user's request clearly matches it.
 
         ## Default time when only a date is given
           • Birthdays & anniversaries → 09:00:00 (9am) — not midnight.

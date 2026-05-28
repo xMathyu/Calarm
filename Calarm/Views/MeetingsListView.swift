@@ -111,8 +111,8 @@ struct MeetingsListView: View {
 
     private func headerTitle(for day: Date) -> String {
         let calendar = Calendar.current
-        if calendar.isDateInToday(day) { return String(localized: "Hoy") }
-        if calendar.isDateInTomorrow(day) { return String(localized: "Mañana") }
+        if calendar.isDateInToday(day) { return appLocalized("Hoy") }
+        if calendar.isDateInTomorrow(day) { return appLocalized("Mañana") }
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         formatter.locale = LocalizationManager.shared.currentLocale
