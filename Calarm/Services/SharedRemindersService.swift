@@ -66,6 +66,17 @@ final class SharedRemindersService {
 
         // Fetch existing share for this record if it already exists.
         if let existingShare = try? await fetchExistingShare(for: recordID) {
+            // Shares created before public-link support used `.none`, which denies
+            // anyone opening the invite link ("Item Unavailable / no permission").
+            // Upgrade such a share in place so re-sharing an old alarm just works.
+            if existingShare.publicPermission == .none {
+                existingShare.publicPermission = .readOnly
+                if let results = try? await database.modifyRecords(saving: [existingShare], deleting: []),
+                   case .success(let saved) = results.saveResults[existingShare.recordID],
+                   let savedShare = saved as? CKShare {
+                    return savedShare
+                }
+            }
             return existingShare
         }
 
@@ -165,13 +176,27 @@ final class SharedRemindersService {
 
     private func makeRecord(from reminder: Reminder, recordID: CKRecord.ID) -> CKRecord {
         let record = CKRecord(recordType: "CalarmSharedReminder", recordID: recordID)
-        // Everything the recipient needs travels inside a single versioned JSON
-        // envelope (the `payload` Bytes field). Adding a new shared property means
-        // adding a field to `SharePayload` and bumping its version — never another
-        // CloudKit schema change / Production deploy.
+        // Authoritative copy: a single versioned JSON envelope (the `payload` Bytes
+        // field). Adding a new shared property means adding a field to `SharePayload`
+        // and bumping its version — never another CloudKit schema change.
         if let data = try? JSONEncoder().encode(makePayload(from: reminder)) {
             record["payload"] = data as CKRecordValue
         }
+        // Also mirror the core values into the original discrete columns. These
+        // already exist in the schema; they're a FROZEN compatibility layer (never
+        // extended) that lets an older app build — one that predates `payload` — still
+        // import the share during a version rollout. New builds prefer `payload`, so
+        // the evolving extras (custom category, multiple lead times) live only there.
+        record["id"] = reminder.id.uuidString as CKRecordValue
+        record["title"] = reminder.title as CKRecordValue
+        record["notes"] = (reminder.notes ?? "") as CKRecordValue
+        record["date"] = reminder.date as CKRecordValue
+        record["categoryRaw"] = reminder.categoryRaw as CKRecordValue
+        record["iconKindRaw"] = reminder.iconKindRaw as CKRecordValue
+        record["symbolName"] = (reminder.symbolName ?? "") as CKRecordValue
+        record["leadTimeSeconds"] = reminder.leadTimeSeconds as CKRecordValue
+        record["isEnabled"] = (reminder.isEnabled ? 1 : 0) as CKRecordValue
+        record["recurrenceData"] = reminder.recurrenceData as CKRecordValue
         return record
     }
 
