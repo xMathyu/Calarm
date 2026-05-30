@@ -4,6 +4,7 @@
 //
 
 import CloudKit
+import os
 import SwiftData
 import SwiftUI
 
@@ -68,6 +69,11 @@ struct CalarmApp: App {
             .task {
                 UIApplication.shared.installGlobalKeyboardDismissGesture()
                 await syncAllReminders()
+                // Ingest a share accepted before the UI subscribed (e.g. a cold
+                // launch straight from the invite link).
+                if let pending = appDelegate.pendingShareMetadata {
+                    await acceptIncomingShare(pending)
+                }
                 if settings.teamsDetectionEnabled {
                     bootstrapTeamsCoordinator()
                 }
@@ -78,14 +84,35 @@ struct CalarmApp: App {
                     Task { await teamsCoordinator?.sync() }
                 }
             }
-            .onChange(of: appDelegate.acceptedShareVersion) { _, version in
-                guard version > 0, let metadata = appDelegate.pendingShareMetadata else { return }
-                Task { @MainActor in
-                    try? await sharedRemindersService.acceptShare(metadata: metadata)
-                    appDelegate.pendingShareMetadata = nil
-                    await syncAllReminders()
-                }
+            // Reliable handoff for share acceptance (see AppDelegate): the system
+            // callback posts this notification, which we always receive here.
+            .onReceive(NotificationCenter.default.publisher(for: .calarmDidAcceptShare)) { note in
+                guard let metadata = note.object as? CKShare.Metadata else { return }
+                Task { await acceptIncomingShare(metadata) }
             }
+            .alert(
+                "No se pudo aceptar la invitación",
+                isPresented: Binding(
+                    get: { sharedRemindersService.acceptErrorMessage != nil },
+                    set: { if !$0 { sharedRemindersService.clearAcceptError() } }
+                )
+            ) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(sharedRemindersService.acceptErrorMessage ?? "")
+            }
+        }
+    }
+
+    @MainActor
+    private func acceptIncomingShare(_ metadata: CKShare.Metadata) async {
+        do {
+            try await sharedRemindersService.acceptShare(metadata: metadata)
+            appDelegate.clearPendingShareMetadata()
+            await syncAllReminders()
+        } catch {
+            // `acceptShare` already recorded `acceptErrorMessage` for the alert.
+            AppDelegate.log.error("Share ingest failed: \(error.localizedDescription)")
         }
     }
 

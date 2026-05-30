@@ -12,6 +12,7 @@
 import CloudKit
 import Foundation
 import Observation
+import os
 import SwiftData
 import SwiftUI
 import UIKit
@@ -47,11 +48,20 @@ final class SharedRemindersService {
 
     /// Latest error message surfaced to the UI when an operation fails.
     private(set) var lastErrorMessage: String?
+    /// Set when accepting an incoming invitation fails, so the app can alert the
+    /// user instead of leaving them staring at a list that never updates.
+    private(set) var acceptErrorMessage: String?
+
+    private static let log = Logger(subsystem: "MathyuSolutions.Calarm", category: "sharing")
 
     init(modelContainer: ModelContainer, containerIdentifier: String = "iCloud.MathyuSolutions.Calarm") {
         self.modelContainer = modelContainer
         self.containerIdentifier = containerIdentifier
         self.cloudKitContainer = CKContainer(identifier: containerIdentifier)
+    }
+
+    func clearAcceptError() {
+        acceptErrorMessage = nil
     }
 
     // MARK: - Owner side
@@ -141,11 +151,17 @@ final class SharedRemindersService {
     /// Accepts an incoming share invitation, fetches the shared record, and creates a local
     /// `Reminder` row marked as shared.
     func acceptShare(metadata: CKShare.Metadata) async throws {
+        Self.log.info("acceptShare: accepting invitation")
         do {
             _ = try await cloudKitContainer.accept(metadata)
             try await ingestSharedRecord(from: metadata)
+            acceptErrorMessage = nil
+            Self.log.info("acceptShare: ingested shared reminder OK")
         } catch {
-            throw SharedRemindersError.acceptFailed(error)
+            let wrapped = SharedRemindersError.acceptFailed(error)
+            acceptErrorMessage = wrapped.errorDescription
+            Self.log.error("acceptShare failed: \(error.localizedDescription, privacy: .public)")
+            throw wrapped
         }
     }
 
@@ -295,9 +311,30 @@ final class SharedRemindersService {
 
     @MainActor
     private func ingestSharedRecord(from metadata: CKShare.Metadata) async throws {
-        guard let rootRecordID = metadata.hierarchicalRootRecordID else { return }
+        // `hierarchicalRootRecordID` is the modern accessor; fall back to the
+        // deprecated `rootRecordID` so we always resolve the shared record's ID.
+        let rootRecordID = metadata.hierarchicalRootRecordID ?? metadata.rootRecordID
         let database = cloudKitContainer.sharedCloudDatabase
-        guard let record = try? await database.record(for: rootRecordID) else { return }
+
+        // Right after accepting, the shared record can take a moment to appear in
+        // the shared database. Retry a few times before giving up so the reminder
+        // doesn't silently fail to import.
+        var fetched: CKRecord?
+        for attempt in 1...5 {
+            do {
+                fetched = try await database.record(for: rootRecordID)
+                break
+            } catch {
+                Self.log.info("Fetch shared record attempt \(attempt) failed: \(error.localizedDescription, privacy: .public)")
+                if attempt < 5 {
+                    try? await Task.sleep(nanoseconds: 600_000_000) // 0.6s
+                }
+            }
+        }
+        guard let record = fetched else {
+            Self.log.error("Shared record unavailable after retries for \(rootRecordID.recordName, privacy: .public)")
+            throw SharedRemindersError.shareUnavailable
+        }
 
         let payload = decodePayload(from: record)
         let context = modelContainer.mainContext
