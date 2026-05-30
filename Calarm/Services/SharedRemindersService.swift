@@ -81,7 +81,12 @@ final class SharedRemindersService {
         if let thumbnail = makeShareThumbnail(for: reminder) {
             share[CKShare.SystemFieldKey.thumbnailImageData] = thumbnail as CKRecordValue
         }
-        share.publicPermission = .none
+        // Anyone who receives the invite link must be able to open it. We deliver
+        // the raw share URL over Messages / the share sheet without adding each
+        // recipient as an explicit participant, so the share has to grant access
+        // to public (link-based) users. With `.none`, link recipients are denied
+        // with "Item Unavailable / you don't have permission to open it".
+        share.publicPermission = .readOnly
 
         do {
             let results = try await database.modifyRecords(saving: [record, share], deleting: [])
