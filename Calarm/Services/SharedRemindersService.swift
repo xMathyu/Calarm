@@ -165,49 +165,103 @@ final class SharedRemindersService {
 
     private func makeRecord(from reminder: Reminder, recordID: CKRecord.ID) -> CKRecord {
         let record = CKRecord(recordType: "CalarmSharedReminder", recordID: recordID)
-        record["id"] = reminder.id.uuidString as CKRecordValue
-        record["title"] = reminder.title as CKRecordValue
-        record["notes"] = (reminder.notes ?? "") as CKRecordValue
-        record["date"] = reminder.date as CKRecordValue
-        record["categoryRaw"] = reminder.categoryRaw as CKRecordValue
-        record["iconKindRaw"] = reminder.iconKindRaw as CKRecordValue
-        record["symbolName"] = (reminder.symbolName ?? "") as CKRecordValue
-        record["leadTimeSeconds"] = reminder.leadTimeSeconds as CKRecordValue
-        record["isEnabled"] = (reminder.isEnabled ? 1 : 0) as CKRecordValue
-        record["recurrenceData"] = reminder.recurrenceData as CKRecordValue
-        // Carry the custom category (if any) denormalized so the recipient can
-        // reconstruct it — they won't have it in their own catalog.
-        if let cid = reminder.customCategoryID {
-            record["customCategoryID"] = cid.uuidString as CKRecordValue
-            if let cat = CategoryStore.shared?.customCategory(id: cid) {
-                record["customCategoryName"] = cat.name as CKRecordValue
-                record["customCategoryColorHex"] = cat.colorHex as CKRecordValue
-                record["customCategoryIconKindRaw"] = cat.iconKindRaw as CKRecordValue
-                record["customCategoryIconValue"] = cat.iconValue as CKRecordValue
-            }
+        // Everything the recipient needs travels inside a single versioned JSON
+        // envelope (the `payload` Bytes field). Adding a new shared property means
+        // adding a field to `SharePayload` and bumping its version — never another
+        // CloudKit schema change / Production deploy.
+        if let data = try? JSONEncoder().encode(makePayload(from: reminder)) {
+            record["payload"] = data as CKRecordValue
         }
         return record
     }
 
+    /// Builds the current-version envelope from a reminder. Denormalizes the
+    /// custom category (color/icon) so the recipient — who won't have it in their
+    /// own catalog — can reconstruct it.
+    private func makePayload(from reminder: Reminder) -> SharePayload {
+        var custom: SharePayload.CustomCategoryInfo?
+        if let cid = reminder.customCategoryID,
+           let cat = CategoryStore.shared?.customCategory(id: cid) {
+            custom = SharePayload.CustomCategoryInfo(
+                id: cid.uuidString,
+                name: cat.name,
+                colorHex: cat.colorHex,
+                iconKindRaw: cat.iconKindRaw,
+                iconValue: cat.iconValue
+            )
+        }
+        return SharePayload(
+            version: SharePayload.currentVersion,
+            id: reminder.id.uuidString,
+            title: reminder.title,
+            notes: reminder.notes,
+            date: reminder.date,
+            categoryRaw: reminder.categoryRaw,
+            iconKindRaw: reminder.iconKindRaw,
+            symbolName: reminder.symbolName,
+            // Carry ALL lead times — the legacy per-field format dropped extras.
+            leadTimeSeconds: reminder.leadTimes.map(\.rawValue),
+            isEnabled: reminder.isEnabled,
+            recurrenceData: reminder.recurrenceData,
+            customCategory: custom
+        )
+    }
+
+    /// Reads the versioned envelope, falling back to the legacy per-field layout
+    /// for any shares created before the envelope existed.
+    private func decodePayload(from record: CKRecord) -> SharePayload {
+        if let data = record["payload"] as? Data,
+           let payload = try? JSONDecoder().decode(SharePayload.self, from: data) {
+            return payload
+        }
+        return legacyPayload(from: record)
+    }
+
+    /// Reconstructs an envelope from the old per-field record layout.
+    private func legacyPayload(from record: CKRecord) -> SharePayload {
+        var custom: SharePayload.CustomCategoryInfo?
+        if let cidString = record["customCategoryID"] as? String {
+            custom = SharePayload.CustomCategoryInfo(
+                id: cidString,
+                name: (record["customCategoryName"] as? String) ?? "Categoría",
+                colorHex: (record["customCategoryColorHex"] as? String) ?? "#AF52DE",
+                iconKindRaw: (record["customCategoryIconKindRaw"] as? Int) ?? ReminderIconKind.symbol.rawValue,
+                iconValue: (record["customCategoryIconValue"] as? String) ?? "star.fill"
+            )
+        }
+        return SharePayload(
+            version: 0,
+            id: (record["id"] as? String) ?? record.recordID.recordName,
+            title: (record["title"] as? String) ?? "",
+            notes: record["notes"] as? String,
+            date: (record["date"] as? Date) ?? Date(),
+            categoryRaw: (record["categoryRaw"] as? Int) ?? ReminderCategory.event.rawValue,
+            iconKindRaw: (record["iconKindRaw"] as? Int) ?? ReminderIconKind.symbol.rawValue,
+            symbolName: record["symbolName"] as? String,
+            leadTimeSeconds: [(record["leadTimeSeconds"] as? Int) ?? AlarmLeadTime.atStart.rawValue],
+            isEnabled: ((record["isEnabled"] as? Int) ?? 1) == 1,
+            recurrenceData: (record["recurrenceData"] as? Data) ?? Data(),
+            customCategory: custom
+        )
+    }
+
     /// Ensures the recipient has a local `CustomCategory` matching a shared one
     /// (deduped by id), so the received reminder renders with its real color/icon.
-    private func ensureCustomCategory(from record: CKRecord, in context: ModelContext) -> UUID? {
-        guard let cidString = record["customCategoryID"] as? String,
-              let cid = UUID(uuidString: cidString) else { return nil }
+    private func ensureCustomCategory(_ info: SharePayload.CustomCategoryInfo?, in context: ModelContext) -> UUID? {
+        guard let info, let cid = UUID(uuidString: info.id) else { return nil }
         let descriptor = FetchDescriptor<CustomCategory>(predicate: #Predicate { $0.id == cid })
-        let name = (record["customCategoryName"] as? String) ?? "Categoría"
-        let colorHex = (record["customCategoryColorHex"] as? String) ?? "#AF52DE"
-        let iconKindRaw = (record["customCategoryIconKindRaw"] as? Int) ?? ReminderIconKind.symbol.rawValue
-        let iconValue = (record["customCategoryIconValue"] as? String) ?? "star.fill"
+        let name = info.name.isEmpty ? "Categoría" : info.name
+        let colorHex = info.colorHex.isEmpty ? "#AF52DE" : info.colorHex
+        let iconValue = info.iconValue.isEmpty ? "star.fill" : info.iconValue
         if let existing = try? context.fetch(descriptor).first {
             existing.name = name
             existing.colorHex = colorHex
-            existing.iconKindRaw = iconKindRaw
+            existing.iconKindRaw = info.iconKindRaw
             existing.iconValue = iconValue
         } else {
             context.insert(CustomCategory(
                 id: cid, name: name, colorHex: colorHex,
-                iconKind: ReminderIconKind(rawValue: iconKindRaw) ?? .symbol,
+                iconKind: ReminderIconKind(rawValue: info.iconKindRaw) ?? .symbol,
                 iconValue: iconValue
             ))
         }
@@ -220,56 +274,43 @@ final class SharedRemindersService {
         let database = cloudKitContainer.sharedCloudDatabase
         guard let record = try? await database.record(for: rootRecordID) else { return }
 
-        // Convert the shared CKRecord into a local Reminder copy (read-only by convention;
-        // changes flow back to CloudKit owner if needed via subsequent commits).
-        let title = (record["title"] as? String) ?? ""
-        let notes = record["notes"] as? String
-        let date = (record["date"] as? Date) ?? Date()
-        let categoryRaw = (record["categoryRaw"] as? Int) ?? ReminderCategory.event.rawValue
-        let iconKindRaw = (record["iconKindRaw"] as? Int) ?? ReminderIconKind.symbol.rawValue
-        let symbolName = record["symbolName"] as? String
-        let leadTimeSeconds = (record["leadTimeSeconds"] as? Int) ?? AlarmLeadTime.atStart.rawValue
-        let isEnabled = ((record["isEnabled"] as? Int) ?? 1) == 1
-        let recurrenceData = (record["recurrenceData"] as? Data) ?? Data()
-
+        let payload = decodePayload(from: record)
         let context = modelContainer.mainContext
-        let customCategoryID = ensureCustomCategory(from: record, in: context)
-        // Use the record's name as the local UUID to avoid duplicates if accepted twice.
-        let localID = UUID(uuidString: record.recordID.recordName) ?? UUID()
+        let customCategoryID = ensureCustomCategory(payload.customCategory, in: context)
+
+        // Reuse the record name as the local UUID so accepting twice updates the
+        // reminder in place instead of duplicating it.
+        let localID = UUID(uuidString: record.recordID.recordName)
+            ?? UUID(uuidString: payload.id)
+            ?? UUID()
         let descriptor = FetchDescriptor<Reminder>(predicate: #Predicate { $0.id == localID })
+        let reminder: Reminder
         if let existing = try context.fetch(descriptor).first {
-            existing.title = title
-            existing.notes = notes?.isEmpty == true ? nil : notes
-            existing.date = date
-            existing.categoryRaw = categoryRaw
-            existing.customCategoryID = customCategoryID
-            existing.iconKindRaw = iconKindRaw
-            existing.symbolName = symbolName?.isEmpty == true ? nil : symbolName
-            existing.leadTimeSeconds = leadTimeSeconds
-            existing.isEnabled = isEnabled
-            existing.recurrenceData = recurrenceData
-            existing.updatedAt = Date()
-            existing.isReceivedShare = true
+            reminder = existing
         } else {
-            let reminder = Reminder(
-                id: localID,
-                title: title,
-                notes: notes?.isEmpty == true ? nil : notes,
-                date: date,
-                category: ReminderCategory(rawValue: categoryRaw) ?? .event,
-                iconKind: ReminderIconKind(rawValue: iconKindRaw) ?? .symbol,
-                symbolName: symbolName?.isEmpty == true ? nil : symbolName,
-                photoData: nil,
-                recurrence: (try? JSONDecoder().decode(RecurrenceRule.self, from: recurrenceData)) ?? .once,
-                leadTimes: [AlarmLeadTime(rawValue: leadTimeSeconds) ?? .atStart],
-                isEnabled: isEnabled
-            )
-            reminder.customCategoryID = customCategoryID
-            reminder.isReceivedShare = true
+            reminder = Reminder(id: localID)
             context.insert(reminder)
         }
+        apply(payload, to: reminder, customCategoryID: customCategoryID)
         try context.save()
         CategoryStore.shared?.reload()
+    }
+
+    /// Copies an envelope onto a local reminder, marking it as a received share.
+    private func apply(_ payload: SharePayload, to reminder: Reminder, customCategoryID: UUID?) {
+        reminder.title = payload.title
+        reminder.notes = payload.notes?.isEmpty == true ? nil : payload.notes
+        reminder.date = payload.date
+        reminder.categoryRaw = payload.categoryRaw
+        reminder.customCategoryID = customCategoryID
+        reminder.iconKindRaw = payload.iconKindRaw
+        reminder.symbolName = payload.symbolName?.isEmpty == true ? nil : payload.symbolName
+        reminder.recurrenceData = payload.recurrenceData
+        let leadTimes = payload.leadTimeSeconds.compactMap { AlarmLeadTime(rawValue: $0) }
+        reminder.leadTimes = leadTimes.isEmpty ? [.atStart] : leadTimes
+        reminder.isEnabled = payload.isEnabled
+        reminder.updatedAt = Date()
+        reminder.isReceivedShare = true
     }
 
     // MARK: - Share thumbnail
@@ -333,5 +374,41 @@ final class SharedRemindersService {
         let renderer = ImageRenderer(content: view)
         renderer.scale = 2.0
         return renderer.uiImage?.pngData()
+    }
+}
+
+/// Versioned JSON envelope for everything a shared reminder carries, stored in a
+/// single CloudKit `payload` (Bytes) field on `CalarmSharedReminder`.
+///
+/// This is the schema-stable contract for sharing: adding a new shared property
+/// means adding a field here and bumping `currentVersion` — never another
+/// CloudKit schema change / Production deploy. Add future fields as **optionals**
+/// so payloads written by an older sender still decode on a newer recipient
+/// (the synthesized decoder treats a missing key for a non-optional as an error).
+private struct SharePayload: Codable {
+    static let currentVersion = 1
+
+    var version: Int
+    var id: String
+    var title: String
+    var notes: String?
+    var date: Date
+    var categoryRaw: Int
+    var iconKindRaw: Int
+    var symbolName: String?
+    /// All lead times (raw seconds). The legacy per-field format carried only one.
+    var leadTimeSeconds: [Int]
+    var isEnabled: Bool
+    /// Opaque encoded `RecurrenceRule`, decoded with the recipient's own decoder
+    /// so a future rule-shape change can't break the rest of the payload.
+    var recurrenceData: Data
+    var customCategory: CustomCategoryInfo?
+
+    struct CustomCategoryInfo: Codable {
+        var id: String
+        var name: String
+        var colorHex: String
+        var iconKindRaw: Int
+        var iconValue: String
     }
 }
