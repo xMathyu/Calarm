@@ -153,7 +153,7 @@ final class AppSettings {
         self.snoozeInterval = storedSnooze.flatMap(SnoozeInterval.init(rawValue:)) ?? .min5
         self.alarmsEnabled = defaults.object(forKey: Key.alarmsEnabled) as? Bool ?? true
         self.onboardingCompleted = defaults.bool(forKey: Key.onboardingCompleted)
-        self.teamsDetectionEnabled = defaults.bool(forKey: Key.teamsDetectionEnabled)
+        self.teamsDetectionEnabled = defaults.object(forKey: Key.teamsDetectionEnabled) as? Bool ?? true
         let storedAppearance = defaults.object(forKey: Key.appearance) as? Int
         self.appearance = storedAppearance.flatMap(AppearanceMode.init(rawValue:)) ?? .system
         self.accentColorHex = defaults.string(forKey: Key.accentColorHex)

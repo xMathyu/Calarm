@@ -117,49 +117,6 @@ final class AlarmScheduler {
         store.clearAll()
     }
 
-    /// Test alarm used by the diagnostic UI.
-    @discardableResult
-    func scheduleTestAlarm(in seconds: TimeInterval = 60) async throws -> UUID {
-        let alarmID = UUID()
-        let fireDate = Date().addingTimeInterval(seconds)
-
-        let alertContent = AlarmPresentation.Alert(
-            title: "Alarma de prueba",
-            stopButton: AlarmButton(
-                text: "Detener",
-                textColor: .white,
-                systemImageName: "stop.fill"
-            )
-        )
-        let presentation = AlarmPresentation(alert: alertContent)
-
-        let metadata = CalarmAlarmMetadata(
-            ownerID: "test-\(alarmID.uuidString)",
-            title: "Alarma de prueba",
-            symbolName: "alarm.fill",
-            categoryRaw: ReminderCategory.reminder.rawValue,
-            teamsURLString: nil,
-            location: nil
-        )
-
-        let attributes = AlarmAttributes(
-            presentation: presentation,
-            metadata: metadata,
-            tintColor: Color.appAccent
-        )
-
-        let configuration = AlarmManager.AlarmConfiguration.alarm(
-            schedule: .fixed(fireDate),
-            attributes: attributes,
-            stopIntent: nil,
-            secondaryIntent: nil,
-            sound: .default
-        )
-
-        _ = try await manager.schedule(id: alarmID, configuration: configuration)
-        return alarmID
-    }
-
     // MARK: - Private
 
     private func makeConfiguration(

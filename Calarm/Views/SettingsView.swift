@@ -12,14 +12,6 @@ struct SettingsView: View {
     let alarmScheduler: AlarmScheduler
     let onTeamsToggleChanged: (Bool) -> Void
 
-    @State private var testAlarmResult: TestResult?
-    @State private var isSchedulingTest = false
-
-    private enum TestResult {
-        case success(String)
-        case failure(String)
-    }
-
     var body: some View {
         @Bindable var settings = settings
 
@@ -106,35 +98,6 @@ struct SettingsView: View {
                     } label: {
                         Label("Permiso de alarmas", systemImage: "lock.shield.fill")
                     }
-
-                    Button {
-                        Task { await runTestAlarm() }
-                    } label: {
-                        if isSchedulingTest {
-                            HStack {
-                                ProgressView()
-                                    .controlSize(.small)
-                                Text("Programando…")
-                            }
-                        } else {
-                            Label("Probar alarma en 1 minuto", systemImage: "bell.badge.fill")
-                                .symbolEffect(.bounce, options: .nonRepeating, value: testAlarmResult.map { _ in true })
-                        }
-                    }
-                    .disabled(isSchedulingTest)
-
-                    if let testAlarmResult {
-                        switch testAlarmResult {
-                        case .success(let msg):
-                            Label(msg, systemImage: "checkmark.circle.fill")
-                                .font(.caption)
-                                .foregroundStyle(.green)
-                        case .failure(let msg):
-                            Label(msg, systemImage: "xmark.octagon.fill")
-                                .font(.caption)
-                                .foregroundStyle(.red)
-                        }
-                    }
                 } header: {
                     sectionHeader("Diagnóstico", systemImage: "stethoscope")
                 }
@@ -155,7 +118,6 @@ struct SettingsView: View {
             }
             .formStyle(.grouped)
             .navigationTitle("Ajustes")
-            .animation(DS.Motion.snappy, value: testAlarmResult.map { _ in true })
             .animation(DS.Motion.snappy, value: alarmScheduler.authorizationState)
         }
     }
@@ -338,21 +300,6 @@ struct SettingsView: View {
         }
     }
 
-    private func runTestAlarm() async {
-        isSchedulingTest = true
-        Haptics.light()
-        defer { isSchedulingTest = false }
-        _ = try? await alarmScheduler.requestAuthorization()
-        do {
-            let id = try await alarmScheduler.scheduleTestAlarm(in: 60)
-            testAlarmResult = .success("Programada (\(id.uuidString.prefix(8))…). Suena en 1 minuto.")
-            Haptics.success()
-        } catch {
-            let ns = error as NSError
-            testAlarmResult = .failure("\(ns.domain) code \(ns.code): \(ns.localizedDescription)")
-            Haptics.error()
-        }
-    }
 }
 
 private extension Bundle {
