@@ -344,27 +344,71 @@ final class SharedRemindersService {
         }
         ShareDiagnostics.log("ingest: record OK (payload=\(record["payload"] != nil))")
 
-        let payload = decodePayload(from: record)
         let context = modelContainer.mainContext
-        let customCategoryID = ensureCustomCategory(payload.customCategory, in: context)
+        let title = applyRecord(record, in: context)
+        try context.save()
+        CategoryStore.shared?.reload()
+        ShareDiagnostics.log("✅ ingest: reminder guardado '\(title)'")
+    }
 
-        // Reuse the record name as the local UUID so accepting twice updates the
+    /// Scans the shared database for `CalarmSharedReminder` records and imports
+    /// any found. This is the RELIABLE path: it runs on launch / activation and
+    /// doesn't depend on the `userDidAcceptCloudKitShareWith` callback, which iOS
+    /// frequently fails to deliver to SwiftUI apps. Accepting a share (tapping
+    /// "Open") makes the owner's zone appear in the recipient's shared database,
+    /// so we just read whatever is there.
+    func importAllSharedReminders() async {
+        let database = cloudKitContainer.sharedCloudDatabase
+        do {
+            let zones = try await database.allRecordZones()
+            ShareDiagnostics.log("scan: \(zones.count) zona(s) compartida(s)")
+            let context = modelContainer.mainContext
+            var imported = 0
+            for zone in zones {
+                let changes = try await database.recordZoneChanges(inZoneWith: zone.zoneID, since: nil)
+                for modResult in changes.modificationResultsByID.values {
+                    guard case .success(let modification) = modResult else { continue }
+                    let record = modification.record
+                    guard record.recordType == "CalarmSharedReminder" else { continue }
+                    _ = applyRecord(record, in: context)
+                    imported += 1
+                }
+            }
+            if imported > 0 {
+                try? context.save()
+                CategoryStore.shared?.reload()
+                ShareDiagnostics.log("✅ scan: \(imported) recordatorio(s) importado(s)")
+            } else {
+                ShareDiagnostics.log("scan: sin recordatorios compartidos")
+            }
+        } catch {
+            Self.log.error("importAllSharedReminders failed: \(error.localizedDescription, privacy: .public)")
+            ShareDiagnostics.log("❌ scan error: \(error.localizedDescription)")
+        }
+    }
+
+    /// Upserts a shared `CalarmSharedReminder` CKRecord into a local `Reminder`
+    /// (marked as a received share). Caller is responsible for saving the context.
+    /// Returns the reminder title for logging.
+    @discardableResult
+    private func applyRecord(_ record: CKRecord, in context: ModelContext) -> String {
+        let payload = decodePayload(from: record)
+        let customCategoryID = ensureCustomCategory(payload.customCategory, in: context)
+        // Reuse the record name as the local UUID so importing twice updates the
         // reminder in place instead of duplicating it.
         let localID = UUID(uuidString: record.recordID.recordName)
             ?? UUID(uuidString: payload.id)
             ?? UUID()
         let descriptor = FetchDescriptor<Reminder>(predicate: #Predicate { $0.id == localID })
         let reminder: Reminder
-        if let existing = try context.fetch(descriptor).first {
+        if let existing = try? context.fetch(descriptor).first {
             reminder = existing
         } else {
             reminder = Reminder(id: localID)
             context.insert(reminder)
         }
         apply(payload, to: reminder, customCategoryID: customCategoryID)
-        try context.save()
-        CategoryStore.shared?.reload()
-        ShareDiagnostics.log("✅ ingest: reminder guardado '\(payload.title)'")
+        return payload.title
     }
 
     /// Copies an envelope onto a local reminder, marking it as a received share.

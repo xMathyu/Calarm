@@ -75,6 +75,10 @@ struct CalarmApp: App {
                     ShareDiagnostics.log("🧊 pendiente en arranque")
                     await acceptIncomingShare(pending)
                 }
+                // Reliable fallback: scan the shared DB for received reminders,
+                // since the acceptance callback is unreliable in SwiftUI.
+                await sharedRemindersService.importAllSharedReminders()
+                await syncAllReminders()
                 if settings.teamsDetectionEnabled {
                     bootstrapTeamsCoordinator()
                 }
@@ -83,6 +87,12 @@ struct CalarmApp: App {
                 if newPhase == .active, settings.onboardingCompleted {
                     Task { await syncAllReminders() }
                     Task { await teamsCoordinator?.sync() }
+                    // Re-scan on foreground — this is when a freshly accepted
+                    // share's zone shows up ("Calarm se abre sola" after Open).
+                    Task {
+                        await sharedRemindersService.importAllSharedReminders()
+                        await syncAllReminders()
+                    }
                 }
             }
             // Reliable handoff for share acceptance (see AppDelegate): the system
