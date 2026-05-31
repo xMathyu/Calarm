@@ -152,15 +152,19 @@ final class SharedRemindersService {
     /// `Reminder` row marked as shared.
     func acceptShare(metadata: CKShare.Metadata) async throws {
         Self.log.info("acceptShare: accepting invitation")
+        ShareDiagnostics.log("▶️ acceptShare: aceptando…")
         do {
             _ = try await cloudKitContainer.accept(metadata)
+            ShareDiagnostics.log("✅ accept() OK")
             try await ingestSharedRecord(from: metadata)
             acceptErrorMessage = nil
             Self.log.info("acceptShare: ingested shared reminder OK")
+            ShareDiagnostics.log("✅ ingesta completa")
         } catch {
             let wrapped = SharedRemindersError.acceptFailed(error)
             acceptErrorMessage = wrapped.errorDescription
             Self.log.error("acceptShare failed: \(error.localizedDescription, privacy: .public)")
+            ShareDiagnostics.log("❌ acceptShare error: \(error.localizedDescription)")
             throw wrapped
         }
     }
@@ -315,6 +319,7 @@ final class SharedRemindersService {
         // deprecated `rootRecordID` so we always resolve the shared record's ID.
         let rootRecordID = metadata.hierarchicalRootRecordID ?? metadata.rootRecordID
         let database = cloudKitContainer.sharedCloudDatabase
+        ShareDiagnostics.log("ingest: rootRecord=\(rootRecordID.recordName)")
 
         // Right after accepting, the shared record can take a moment to appear in
         // the shared database. Retry a few times before giving up so the reminder
@@ -326,6 +331,7 @@ final class SharedRemindersService {
                 break
             } catch {
                 Self.log.info("Fetch shared record attempt \(attempt) failed: \(error.localizedDescription, privacy: .public)")
+                ShareDiagnostics.log("ingest: fetch intento \(attempt) falló: \(error.localizedDescription)")
                 if attempt < 5 {
                     try? await Task.sleep(nanoseconds: 600_000_000) // 0.6s
                 }
@@ -333,8 +339,10 @@ final class SharedRemindersService {
         }
         guard let record = fetched else {
             Self.log.error("Shared record unavailable after retries for \(rootRecordID.recordName, privacy: .public)")
+            ShareDiagnostics.log("❌ ingest: record no disponible tras 5 intentos")
             throw SharedRemindersError.shareUnavailable
         }
+        ShareDiagnostics.log("ingest: record OK (payload=\(record["payload"] != nil))")
 
         let payload = decodePayload(from: record)
         let context = modelContainer.mainContext
@@ -356,6 +364,7 @@ final class SharedRemindersService {
         apply(payload, to: reminder, customCategoryID: customCategoryID)
         try context.save()
         CategoryStore.shared?.reload()
+        ShareDiagnostics.log("✅ ingest: reminder guardado '\(payload.title)'")
     }
 
     /// Copies an envelope onto a local reminder, marking it as a received share.

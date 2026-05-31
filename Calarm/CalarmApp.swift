@@ -72,6 +72,7 @@ struct CalarmApp: App {
                 // Ingest a share accepted before the UI subscribed (e.g. a cold
                 // launch straight from the invite link).
                 if let pending = appDelegate.pendingShareMetadata {
+                    ShareDiagnostics.log("🧊 pendiente en arranque")
                     await acceptIncomingShare(pending)
                 }
                 if settings.teamsDetectionEnabled {
@@ -87,6 +88,7 @@ struct CalarmApp: App {
             // Reliable handoff for share acceptance (see AppDelegate): the system
             // callback posts this notification, which we always receive here.
             .onReceive(NotificationCenter.default.publisher(for: .calarmDidAcceptShare)) { note in
+                ShareDiagnostics.log("🔔 notificación recibida")
                 guard let metadata = note.object as? CKShare.Metadata else { return }
                 Task { await acceptIncomingShare(metadata) }
             }

@@ -49,6 +49,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 
     func receiveAcceptedShare(_ metadata: CKShare.Metadata, source: String) {
         Self.log.info("Accepted CloudKit share via \(source, privacy: .public)")
+        ShareDiagnostics.log("📥 Invitación recibida (\(source))")
         pendingShareMetadata = metadata
         NotificationCenter.default.post(name: .calarmDidAcceptShare, object: metadata)
     }
@@ -70,6 +71,7 @@ final class ShareSceneDelegate: NSObject, UIWindowSceneDelegate {
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
+        ShareDiagnostics.log("🔌 scene conectada (share=\(connectionOptions.cloudKitShareMetadata != nil))")
         if let metadata = connectionOptions.cloudKitShareMetadata {
             appDelegate?.receiveAcceptedShare(metadata, source: "scene-cold")
         }

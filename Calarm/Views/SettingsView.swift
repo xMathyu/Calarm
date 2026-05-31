@@ -98,6 +98,11 @@ struct SettingsView: View {
                     } label: {
                         Label("Permiso de alarmas", systemImage: "lock.shield.fill")
                     }
+                    NavigationLink {
+                        ShareDiagnosticsView()
+                    } label: {
+                        Label("Compartir: diagnóstico", systemImage: "square.and.arrow.up.trianglebadge.exclamationmark")
+                    }
                 } header: {
                     sectionHeader("Diagnóstico", systemImage: "stethoscope")
                 }
