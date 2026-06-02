@@ -19,6 +19,7 @@ struct IconPickerView: View {
     @Binding var photoData: Data?
 
     @State private var photoItem: PhotosPickerItem?
+    @State private var showingCustomEmojiPicker = false
 
     private static let commonEmojis = [
         "🎉", "⭐️", "❤️", "🔥", "✅", "⏰",
@@ -94,7 +95,15 @@ struct IconPickerView: View {
                 ForEach(Self.commonEmojis, id: \.self) { emoji in
                     emojiButton(emoji)
                 }
+                customEmojiButton
             }
+        }
+        .sheet(isPresented: $showingCustomEmojiPicker) {
+            CustomEmojiPickerSheet(initialEmoji: selectedEmoji, tint: tint) { emoji in
+                withAnimation(DS.Motion.snappy) { symbolName = emoji }
+                Haptics.selection()
+            }
+            .presentationDetents([.height(260), .medium])
         }
     }
 
@@ -123,6 +132,27 @@ struct IconPickerView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(emoji))
+    }
+
+    private var customEmojiButton: some View {
+        Button {
+            showingCustomEmojiPicker = true
+        } label: {
+            Image(systemName: "plus")
+                .font(.system(size: 19, weight: .semibold))
+                .foregroundStyle(tint)
+                .frame(width: 44, height: 44)
+                .background(
+                    RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
+                        .fill(Color.dsFill)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
+                        .strokeBorder(tint.opacity(0.3), lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Emoji personalizado"))
     }
 
     private var symbolGrid: some View {
@@ -184,5 +214,94 @@ struct IconPickerView: View {
                 .foregroundStyle(.secondary)
             }
         }
+    }
+}
+
+private struct CustomEmojiPickerSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    let tint: Color
+    let onSelect: (String) -> Void
+
+    @State private var draftEmoji: String
+    @State private var inputText = ""
+    @FocusState private var isInputFocused: Bool
+
+    init(initialEmoji: String, tint: Color, onSelect: @escaping (String) -> Void) {
+        self.tint = tint
+        self.onSelect = onSelect
+        _draftEmoji = State(initialValue: isEmojiIcon(initialEmoji) ? initialEmoji : "🎉")
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: DS.Spacing.lg) {
+                Text(draftEmoji)
+                    .font(.system(size: 56))
+                    .frame(width: 88, height: 88)
+                    .background(
+                        RoundedRectangle(cornerRadius: DS.Radius.lg, style: .continuous)
+                            .fill(tint.opacity(0.15))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DS.Radius.lg, style: .continuous)
+                            .strokeBorder(tint.opacity(0.35), lineWidth: 1)
+                    )
+
+                TextField("Emoji", text: $inputText)
+                    .font(.system(size: 36))
+                    .multilineTextAlignment(.center)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .frame(width: 110, height: 58)
+                    .background(
+                        RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                            .fill(Color.dsFill)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                            .strokeBorder(Color.dsDivider.opacity(0.7), lineWidth: 1)
+                    )
+                    .focused($isInputFocused)
+                    .onChange(of: inputText) { _, newValue in
+                        guard let emoji = newValue.lastEmojiCluster else { return }
+                        draftEmoji = emoji
+                        if inputText != emoji {
+                            inputText = emoji
+                        }
+                    }
+            }
+            .padding(.horizontal, DS.Spacing.lg)
+            .padding(.top, DS.Spacing.md)
+            .navigationTitle("Emoji personalizado")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Listo") {
+                        onSelect(draftEmoji)
+                        dismiss()
+                    }
+                }
+            }
+            .task {
+                isInputFocused = true
+            }
+        }
+    }
+}
+
+private extension String {
+    var lastEmojiCluster: String? {
+        var latestEmoji: String?
+        for character in self {
+            let candidate = String(character)
+            if isEmojiIcon(candidate) {
+                latestEmoji = candidate
+            }
+        }
+        return latestEmoji
     }
 }
