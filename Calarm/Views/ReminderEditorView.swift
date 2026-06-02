@@ -101,6 +101,7 @@ struct ReminderEditorView: View {
     private var moreOptionsSummary: String {
         [
             recurrence.localizedSummary,
+            leadTimesSummary,
             isEnabled ? appLocalized("Activa") : appLocalized("Inactiva")
         ].joined(separator: " · ")
     }
@@ -127,7 +128,17 @@ struct ReminderEditorView: View {
 
                 scheduleSection
                 categorySection
-                moreOptionsSection
+
+                moreOptionsToggleSection
+                if showingMoreOptions {
+                    recurrenceSection
+                    statusSection
+                    leadTimesSection
+                    iconSection
+                    if editingReminder == nil {
+                        inviteAdvancedSection
+                    }
+                }
 
                 if editingReminder != nil {
                     deleteSection
@@ -270,33 +281,18 @@ struct ReminderEditorView: View {
     }
 
     @ViewBuilder
-    private var moreOptionsSection: some View {
+    private var moreOptionsToggleSection: some View {
         Section {
-            DisclosureGroup(isExpanded: $showingMoreOptions) {
-                VStack(alignment: .leading, spacing: DS.Spacing.lg) {
-                    recurrenceRow
-                    Divider()
-                    Toggle(isOn: $isEnabled) {
-                        Label(
-                            "Alarma activa",
-                            systemImage: isEnabled ? "bell.fill" : "bell.slash.fill"
-                        )
-                    }
-                    Divider()
-                    leadTimesEditor
-                    Divider()
-                    iconEditor
-
-                    if editingReminder == nil {
-                        Divider()
-                        inviteRow
-                    }
+            Button {
+                withAnimation(DS.Motion.smooth) {
+                    showingMoreOptions.toggle()
                 }
-                .padding(.top, DS.Spacing.sm)
+                Haptics.light()
             } label: {
                 HStack(spacing: DS.Spacing.md) {
                     Image(systemName: "slider.horizontal.3")
                         .foregroundStyle(style.color)
+                        .frame(width: 26)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Más opciones")
                             .foregroundStyle(.primary)
@@ -305,28 +301,84 @@ struct ReminderEditorView: View {
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
+                    Spacer()
+                    Image(systemName: showingMoreOptions ? "chevron.up" : "chevron.down")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.tertiary)
                 }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    @ViewBuilder
+    private var recurrenceSection: some View {
+        Section {
+            NavigationLink {
+                RecurrencePickerView(rule: $recurrence, baseDate: date)
+            } label: {
+                LabeledContent {
+                    Text(recurrence.localizedSummary)
+                        .foregroundStyle(.secondary)
+                } label: {
+                    Label("Repetir", systemImage: "repeat")
+                }
+            }
+        } header: {
+            Text("Repetición")
+        }
+    }
+
+    @ViewBuilder
+    private var statusSection: some View {
+        Section {
+            Toggle(isOn: $isEnabled) {
+                Label(
+                    "Alarma activa",
+                    systemImage: isEnabled ? "bell.fill" : "bell.slash.fill"
+                )
             }
         }
     }
 
-    private var recurrenceRow: some View {
-        NavigationLink {
-            RecurrencePickerView(rule: $recurrence, baseDate: date)
-        } label: {
-            LabeledContent {
-                Text(recurrence.localizedSummary)
-                    .foregroundStyle(.secondary)
-            } label: {
-                Label("Repetir", systemImage: "repeat")
+    @ViewBuilder
+    private var leadTimesSection: some View {
+        Section {
+            leadTimesEditor
+        } header: {
+            Text("Avisos")
+        } footer: {
+            if leadTimes.count > 1 {
+                Text("La alarma sonará una vez por cada aviso configurado.")
             }
+        }
+    }
+
+    @ViewBuilder
+    private var iconSection: some View {
+        Section {
+            iconEditor
+        } header: {
+            Text("Icono")
+        }
+    }
+
+    @ViewBuilder
+    private var inviteAdvancedSection: some View {
+        Section {
+            inviteRow
+        } header: {
+            Text("Compartir")
+        } footer: {
+            Text("Se guardará la alarma y se abrirá Messages con el link para que tus invitados la acepten.")
         }
     }
 
     private var leadTimesEditor: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.sm) {
             HStack {
-                Label("Avisos", systemImage: "bell.badge")
+                Label("Avisos configurados", systemImage: "bell.badge")
                 Spacer()
                 Text(leadTimesSummary)
                     .font(.subheadline)
@@ -369,8 +421,6 @@ struct ReminderEditorView: View {
 
     private var iconEditor: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.md) {
-            Label("Icono", systemImage: "sparkles")
-                .font(.subheadline.weight(.medium))
             IconPickerView(
                 tint: style.color,
                 suggestedSymbols: suggestedSymbols,
