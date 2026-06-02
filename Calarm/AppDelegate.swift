@@ -8,27 +8,38 @@ import UIKit
 import os
 
 extension Notification.Name {
-    /// Posted when the user accepts a CloudKit share invitation. The notification's
-    /// `object` is the `CKShare.Metadata` to ingest.
+    /// Posted when a CloudKit share invitation's metadata is captured. The
+    /// notification's `object` is the `CKShare.Metadata`.
     static let calarmDidAcceptShare = Notification.Name("CalarmDidAcceptShare")
 }
 
-/// Handles system callbacks that SwiftUI scenes cannot intercept directly —
-/// notably CloudKit share acceptance when the user taps an invitation link.
+/// Single, delegate-independent capture point for an incoming CloudKit share.
 ///
-/// SwiftUI apps are scene-based, and iOS delivers share acceptance to the *scene*
-/// delegate (`windowScene(_:userDidAcceptCloudKitShareWith:)`); the app-delegate
-/// callback frequently never fires. We therefore install `ShareSceneDelegate` and
-/// route everything through `receiveAcceptedShare`, which both stores the metadata
-/// (for a cold launch before the UI is ready) and posts `.calarmDidAcceptShare`.
-final class AppDelegate: NSObject, UIApplicationDelegate {
+/// iOS delivers share metadata to SwiftUI apps inconsistently — sometimes via the
+/// scene's `connectionOptions` (cold launch), sometimes `windowScene(_:userDidAccept…)`,
+/// sometimes the app delegate. Every channel funnels here. We deliberately do NOT
+/// route through `UIApplication.shared.delegate as? AppDelegate` (that returned nil
+/// during cold-launch scene connection, silently dropping the metadata).
+enum PendingShare {
     static let log = Logger(subsystem: "MathyuSolutions.Calarm", category: "sharing")
 
-    /// Most recent accepted-share metadata, kept until the UI ingests it. Read on
-    /// launch in case acceptance arrived before any view subscribed to the
-    /// notification (e.g. a cold launch straight from the invite link).
-    private(set) var pendingShareMetadata: CKShare.Metadata?
+    /// Metadata awaiting accept/ingest. Read on launch by `CalarmApp`. Touched only
+    /// on the main thread (delegate callbacks + the launch `.task`).
+    nonisolated(unsafe) private(set) static var metadata: CKShare.Metadata?
 
+    static func store(_ metadata: CKShare.Metadata, source: String) {
+        log.info("Captured share metadata via \(source, privacy: .public)")
+        ShareDiagnostics.log("📥 Invitación recibida (\(source))")
+        self.metadata = metadata
+        NotificationCenter.default.post(name: .calarmDidAcceptShare, object: metadata)
+    }
+
+    static func clear() { metadata = nil }
+}
+
+/// Installs the scene delegate (the only channel that reliably sees share metadata
+/// on cold launch) and catches the app-delegate acceptance callback as a fallback.
+final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
         _ application: UIApplication,
         configurationForConnecting connectingSceneSession: UISceneSession,
@@ -39,32 +50,17 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         return config
     }
 
-    /// Fallback for the rare case iOS routes acceptance to the app delegate.
     func application(
         _ application: UIApplication,
         userDidAcceptCloudKitShareWith cloudKitShareMetadata: CKShare.Metadata
     ) {
-        receiveAcceptedShare(cloudKitShareMetadata, source: "appDelegate")
-    }
-
-    func receiveAcceptedShare(_ metadata: CKShare.Metadata, source: String) {
-        Self.log.info("Accepted CloudKit share via \(source, privacy: .public)")
-        ShareDiagnostics.log("📥 Invitación recibida (\(source))")
-        pendingShareMetadata = metadata
-        NotificationCenter.default.post(name: .calarmDidAcceptShare, object: metadata)
-    }
-
-    func clearPendingShareMetadata() {
-        pendingShareMetadata = nil
+        PendingShare.store(cloudKitShareMetadata, source: "appDelegate")
     }
 }
 
-/// Scene delegate whose sole job is to capture CloudKit share acceptance. It
-/// deliberately does NOT create or assign a `UIWindow` — SwiftUI's `WindowGroup`
-/// keeps full ownership of rendering, so adding this delegate is non-destructive.
+/// Captures CloudKit share acceptance. Does NOT create a window — SwiftUI's
+/// `WindowGroup` keeps full ownership of rendering.
 final class ShareSceneDelegate: NSObject, UIWindowSceneDelegate {
-    private var appDelegate: AppDelegate? { UIApplication.shared.delegate as? AppDelegate }
-
     /// Cold launch: the app was opened directly from the invitation link.
     func scene(
         _ scene: UIScene,
@@ -73,7 +69,7 @@ final class ShareSceneDelegate: NSObject, UIWindowSceneDelegate {
     ) {
         ShareDiagnostics.log("🔌 scene conectada (share=\(connectionOptions.cloudKitShareMetadata != nil))")
         if let metadata = connectionOptions.cloudKitShareMetadata {
-            appDelegate?.receiveAcceptedShare(metadata, source: "scene-cold")
+            PendingShare.store(metadata, source: "scene-cold")
         }
     }
 
@@ -82,6 +78,6 @@ final class ShareSceneDelegate: NSObject, UIWindowSceneDelegate {
         _ windowScene: UIWindowScene,
         userDidAcceptCloudKitShareWith cloudKitShareMetadata: CKShare.Metadata
     ) {
-        appDelegate?.receiveAcceptedShare(cloudKitShareMetadata, source: "scene")
+        PendingShare.store(cloudKitShareMetadata, source: "scene")
     }
 }

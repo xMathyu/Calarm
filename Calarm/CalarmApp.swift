@@ -69,9 +69,9 @@ struct CalarmApp: App {
             .task {
                 UIApplication.shared.installGlobalKeyboardDismissGesture()
                 await syncAllReminders()
-                // Ingest a share accepted before the UI subscribed (e.g. a cold
-                // launch straight from the invite link).
-                if let pending = appDelegate.pendingShareMetadata {
+                // Accept + ingest a share captured before the UI subscribed
+                // (e.g. a cold launch straight from the invite link).
+                if let pending = PendingShare.metadata {
                     ShareDiagnostics.log("🧊 pendiente en arranque")
                     await acceptIncomingShare(pending)
                 }
@@ -120,11 +120,11 @@ struct CalarmApp: App {
     private func acceptIncomingShare(_ metadata: CKShare.Metadata) async {
         do {
             try await sharedRemindersService.acceptShare(metadata: metadata)
-            appDelegate.clearPendingShareMetadata()
+            PendingShare.clear()
             await syncAllReminders()
         } catch {
             // `acceptShare` already recorded `acceptErrorMessage` for the alert.
-            AppDelegate.log.error("Share ingest failed: \(error.localizedDescription)")
+            PendingShare.log.error("Share ingest failed: \(error.localizedDescription)")
         }
     }
 
