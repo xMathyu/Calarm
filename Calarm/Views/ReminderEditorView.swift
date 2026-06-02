@@ -29,6 +29,7 @@ struct ReminderEditorView: View {
     @State private var recurrence: RecurrenceRule
     @State private var leadTimes: [AlarmLeadTime]
     @State private var showingLeadTimePicker = false
+    @State private var showingMoreOptions = false
     @State private var isEnabled: Bool
 
     // AI suggestion state
@@ -85,174 +86,54 @@ struct ReminderEditorView: View {
         return ReminderCategory.other.suggestedSymbols
     }
 
+    private var fallbackSymbol: String {
+        style.iconKind == .symbol ? style.iconValue : "star.fill"
+    }
+
+    private var isTitleEmpty: Bool {
+        title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private var leadTimesSummary: String {
+        leadTimes.map(\.shortTitle).joined(separator: " · ")
+    }
+
+    private var moreOptionsSummary: String {
+        [
+            recurrence.localizedSummary,
+            isEnabled ? appLocalized("Activa") : appLocalized("Inactiva")
+        ].joined(separator: " · ")
+    }
+
+    private var primaryLeadTime: Binding<AlarmLeadTime> {
+        Binding {
+            leadTimes.first ?? .atStart
+        } set: { newValue in
+            withAnimation(DS.Motion.snappy) {
+                leadTimes = [newValue]
+            }
+            Haptics.selection()
+        }
+    }
+
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    TextField("Título", text: $title)
-                    TextField("Notas (opcional)", text: $notes, axis: .vertical)
-                        .lineLimit(1...4)
-                } header: {
-                    Text("Información")
-                }
+                titleSection
 
                 if let suggestion = pendingSuggestion {
                     suggestionSection(suggestion)
                 }
 
-                Section {
-                    CategoryPickerView(selection: $categorySelection)
-                        .onChange(of: categorySelection) { _, _ in
-                            // Default the icon to the newly-picked category's icon;
-                            // the user can still override it below.
-                            let s = style
-                            iconKind = s.iconKind
-                            symbolName = s.iconValue
-                        }
-                } header: {
-                    Text("Categoría")
-                }
-
-                Section {
-                    IconPickerView(
-                        tint: style.color,
-                        suggestedSymbols: suggestedSymbols,
-                        defaultSymbol: style.iconKind == .symbol ? style.iconValue : "star.fill",
-                        iconKind: $iconKind,
-                        symbolName: $symbolName,
-                        photoData: $photoData
-                    )
-                } header: {
-                    Text("Icono")
-                }
-
-                Section {
-                    DatePicker(selection: $date, displayedComponents: [.date]) {
-                        EmptyView()
-                    }
-                    .datePickerStyle(.graphical)
-                    .labelsHidden()
-                } header: {
-                    HStack(spacing: DS.Spacing.xs) {
-                        Image(systemName: "calendar")
-                            .font(.caption2)
-                        Text("Fecha")
-                    }
-                }
-
-                Section {
-                    DatePicker(selection: $date, displayedComponents: [.hourAndMinute]) {
-                        HStack(spacing: DS.Spacing.sm) {
-                            Image(systemName: "clock.fill")
-                                .foregroundStyle(style.color)
-                                .font(.title3)
-                            Text("Hora")
-                                .font(.body.weight(.medium))
-                        }
-                    }
-                    .padding(.vertical, DS.Spacing.xs)
-                } header: {
-                    HStack(spacing: DS.Spacing.xs) {
-                        Image(systemName: "clock")
-                            .font(.caption2)
-                        Text("Hora")
-                    }
-                }
-
-                Section {
-                    ForEach(leadTimes) { value in
-                        HStack {
-                            Image(systemName: "bell.fill")
-                                .foregroundStyle(style.color)
-                            Text(value.localizedTitle)
-                            Spacer()
-                            if leadTimes.count > 1 {
-                                Button {
-                                    withAnimation(DS.Motion.snappy) {
-                                        leadTimes.removeAll { $0 == value }
-                                    }
-                                    Haptics.light()
-                                } label: {
-                                    Image(systemName: "minus.circle.fill")
-                                        .foregroundStyle(.secondary)
-                                }
-                                .buttonStyle(.plain)
-                                .accessibilityLabel(Text("Quitar \(value.localizedTitle)"))
-                            }
-                        }
-                        .transition(.opacity)
-                    }
-                    .onDelete { offsets in
-                        // Only allow delete if it would leave at least one entry.
-                        var copy = leadTimes
-                        copy.remove(atOffsets: offsets)
-                        guard !copy.isEmpty else { return }
-                        withAnimation(DS.Motion.snappy) {
-                            leadTimes = copy
-                        }
-                    }
-
-                    if leadTimes.count < Self.maxLeadTimes {
-                        Button {
-                            Haptics.light()
-                            showingLeadTimePicker = true
-                        } label: {
-                            Label("Agregar aviso", systemImage: "plus.circle.fill")
-                                .foregroundStyle(.tint)
-                        }
-                    }
-                } header: {
-                    HStack(spacing: DS.Spacing.xs) {
-                        Text("Aviso")
-                        if leadTimes.count > 1 {
-                            Text("\(leadTimes.count)")
-                                .font(.caption2.weight(.bold))
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 7)
-                                .padding(.vertical, 2)
-                                .background(Capsule().fill(Color.appAccent))
-                        }
-                    }
-                } footer: {
-                    if leadTimes.count > 1 {
-                        Text("La alarma sonará una vez por cada aviso configurado.")
-                    }
-                }
-
-                Section {
-                    NavigationLink {
-                        RecurrencePickerView(rule: $recurrence, baseDate: date)
-                    } label: {
-                        LabeledContent {
-                            Text(recurrence.localizedSummary)
-                        } label: {
-                            Text("Repetir")
-                        }
-                    }
-                } header: {
-                    Text("Repetir")
-                }
-
-                Section {
-                    Toggle("Alarma activa", isOn: $isEnabled)
-                }
-
-                // Contact picker — only when creating new reminders
-                if editingReminder == nil {
-                    inviteSection
-                }
+                scheduleSection
+                categorySection
+                moreOptionsSection
 
                 if editingReminder != nil {
-                    Section {
-                        Button(role: .destructive) {
-                            Task { await deleteReminder() }
-                        } label: {
-                            Label("Borrar recordatorio", systemImage: "trash")
-                        }
-                    }
+                    deleteSection
                 }
             }
-            .navigationTitle(editingReminder == nil ? "Nuevo recordatorio" : "Editar")
+            .navigationTitle(editingReminder == nil ? "Nueva alarma" : "Editar alarma")
             .navigationBarTitleDisplayMode(.inline)
             .scrollDismissesKeyboard(.interactively)
             .animation(DS.Motion.smooth, value: pendingSuggestion)
@@ -274,7 +155,7 @@ struct ReminderEditorView: View {
                             Button(editingReminder == nil ? "Crear" : "Guardar") {
                                 Task { await save() }
                             }
-                            .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
+                            .disabled(isTitleEmpty)
                             .bold()
                         }
                     }
@@ -304,53 +185,242 @@ struct ReminderEditorView: View {
     }
 
     @ViewBuilder
-    private var inviteSection: some View {
+    private var titleSection: some View {
         Section {
-            Button {
-                Haptics.light()
-                Task { await save(thenInvite: true) }
-            } label: {
-                HStack(spacing: 14) {
-                    ZStack {
-                        Circle()
-                            .fill(
-                                LinearGradient(
-                                    colors: [Color.appAccent.opacity(0.9), Color.appAccent.opacity(0.55)],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
-                            .frame(width: 40, height: 40)
-                        Image(systemName: "person.badge.plus")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundStyle(.white)
+            HStack(alignment: .top, spacing: DS.Spacing.md) {
+                ReminderIconView(
+                    iconKind: iconKind,
+                    iconValue: symbolName,
+                    photoData: photoData,
+                    fallbackSymbol: fallbackSymbol,
+                    tint: style.color,
+                    size: 56,
+                    shape: .roundedRect(DS.Radius.md),
+                    bounceValue: isEnabled
+                )
+
+                VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+                    TextField("Título", text: $title)
+                        .font(.title3.weight(.semibold))
+                    TextField("Notas (opcional)", text: $notes, axis: .vertical)
+                        .lineLimit(1...3)
+                }
+            }
+            .padding(.vertical, DS.Spacing.xs)
+        }
+    }
+
+    @ViewBuilder
+    private var scheduleSection: some View {
+        Section {
+            DatePicker(selection: $date, displayedComponents: [.date]) {
+                Label("Fecha", systemImage: "calendar")
+            }
+            .datePickerStyle(.compact)
+
+            DatePicker(selection: $date, displayedComponents: [.hourAndMinute]) {
+                Label("Hora", systemImage: "clock.fill")
+            }
+            .datePickerStyle(.compact)
+
+            if leadTimes.count == 1 {
+                Picker(selection: primaryLeadTime) {
+                    ForEach(AlarmLeadTime.allCases) { value in
+                        Text(value.localizedTitle).tag(value)
                     }
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Invitar amigos")
-                            .font(.body.weight(.medium))
-                            .foregroundStyle(.primary)
-                        Text("Comparte el link por Messages")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                } label: {
+                    Label("Aviso", systemImage: "bell.fill")
+                }
+                .pickerStyle(.menu)
+            } else {
+                Button {
+                    withAnimation(DS.Motion.snappy) {
+                        showingMoreOptions = true
                     }
-                    Spacer()
-                    if isPreparingShare {
-                        ProgressView()
-                    } else {
-                        Image(systemName: "chevron.right")
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(.tertiary)
+                    Haptics.light()
+                } label: {
+                    LabeledContent {
+                        Text(leadTimesSummary)
+                    } label: {
+                        Label("Aviso", systemImage: "bell.fill")
                     }
                 }
-                .contentShape(Rectangle())
+                .buttonStyle(.plain)
+                .foregroundStyle(.primary)
             }
-            .buttonStyle(.plain)
-            .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty || isPreparingShare)
         } header: {
-            Text("Invitar amigos")
-        } footer: {
-            Text("Se guardará la alarma y se abrirá Messages con el link para que tus invitados la acepten.")
+            Text("Cuándo")
         }
+    }
+
+    @ViewBuilder
+    private var categorySection: some View {
+        Section {
+            CategoryPickerView(selection: $categorySelection)
+                .onChange(of: categorySelection) { _, _ in
+                    // Default the icon to the newly-picked category's icon;
+                    // the user can still override it below.
+                    let s = style
+                    iconKind = s.iconKind
+                    symbolName = s.iconValue
+                }
+        } header: {
+            Text("Categoría")
+        }
+    }
+
+    @ViewBuilder
+    private var moreOptionsSection: some View {
+        Section {
+            DisclosureGroup(isExpanded: $showingMoreOptions) {
+                VStack(alignment: .leading, spacing: DS.Spacing.lg) {
+                    recurrenceRow
+                    Divider()
+                    Toggle(isOn: $isEnabled) {
+                        Label(
+                            "Alarma activa",
+                            systemImage: isEnabled ? "bell.fill" : "bell.slash.fill"
+                        )
+                    }
+                    Divider()
+                    leadTimesEditor
+                    Divider()
+                    iconEditor
+
+                    if editingReminder == nil {
+                        Divider()
+                        inviteRow
+                    }
+                }
+                .padding(.top, DS.Spacing.sm)
+            } label: {
+                HStack(spacing: DS.Spacing.md) {
+                    Image(systemName: "slider.horizontal.3")
+                        .foregroundStyle(style.color)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Más opciones")
+                            .foregroundStyle(.primary)
+                        Text(moreOptionsSummary)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+            }
+        }
+    }
+
+    private var recurrenceRow: some View {
+        NavigationLink {
+            RecurrencePickerView(rule: $recurrence, baseDate: date)
+        } label: {
+            LabeledContent {
+                Text(recurrence.localizedSummary)
+                    .foregroundStyle(.secondary)
+            } label: {
+                Label("Repetir", systemImage: "repeat")
+            }
+        }
+    }
+
+    private var leadTimesEditor: some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+            HStack {
+                Label("Avisos", systemImage: "bell.badge")
+                Spacer()
+                Text(leadTimesSummary)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+
+            ForEach(leadTimes) { value in
+                HStack {
+                    Text(value.localizedTitle)
+                    Spacer()
+                    if leadTimes.count > 1 {
+                        Button {
+                            removeLeadTime(value)
+                        } label: {
+                            Image(systemName: "minus.circle.fill")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("Quitar \(value.localizedTitle)"))
+                    }
+                }
+                .font(.subheadline)
+                .padding(.vertical, 2)
+                .transition(.opacity)
+            }
+
+            if leadTimes.count < Self.maxLeadTimes {
+                Button {
+                    Haptics.light()
+                    showingLeadTimePicker = true
+                } label: {
+                    Label("Agregar aviso", systemImage: "plus.circle.fill")
+                }
+                .font(.subheadline.weight(.medium))
+                .padding(.top, DS.Spacing.xs)
+            }
+        }
+    }
+
+    private var iconEditor: some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            Label("Icono", systemImage: "sparkles")
+                .font(.subheadline.weight(.medium))
+            IconPickerView(
+                tint: style.color,
+                suggestedSymbols: suggestedSymbols,
+                defaultSymbol: fallbackSymbol,
+                iconKind: $iconKind,
+                symbolName: $symbolName,
+                photoData: $photoData
+            )
+        }
+    }
+
+    private var inviteRow: some View {
+        Button {
+            Haptics.light()
+            Task { await save(thenInvite: true) }
+        } label: {
+            HStack(spacing: DS.Spacing.md) {
+                Label("Invitar amigos", systemImage: "person.badge.plus")
+                Spacer()
+                if isPreparingShare {
+                    ProgressView()
+                } else {
+                    Image(systemName: "chevron.right")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(isTitleEmpty || isPreparingShare)
+    }
+
+    @ViewBuilder
+    private var deleteSection: some View {
+        Section {
+            Button(role: .destructive) {
+                Task { await deleteReminder() }
+            } label: {
+                Label("Borrar alarma", systemImage: "trash")
+            }
+        }
+    }
+
+    private func removeLeadTime(_ value: AlarmLeadTime) {
+        guard leadTimes.count > 1 else { return }
+        withAnimation(DS.Motion.snappy) {
+            leadTimes.removeAll { $0 == value }
+        }
+        Haptics.light()
     }
 
     private func save(thenInvite: Bool = false) async {
