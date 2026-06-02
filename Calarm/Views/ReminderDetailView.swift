@@ -271,11 +271,11 @@ struct ReminderDetailView: View {
         defer { isPreparingShare = false }
         do {
             let share = try await sharedService.prepareShare(for: reminder)
-            existingShare = share
             guard let url = share.url else {
-                errorMessage = SharedRemindersError.shareUnavailable.errorDescription
+                errorMessage = SharedRemindersError.shareURLUnavailable.errorDescription
                 return
             }
+            existingShare = share
             pendingInvite = InviteDelivery(title: reminder.title, url: url)
         } catch {
             errorMessage = error.localizedDescription

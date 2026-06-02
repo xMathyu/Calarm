@@ -413,7 +413,7 @@ struct ReminderEditorView: View {
             isPreparingShare = false
 
             guard let url = share.url else {
-                dismiss()
+                shareError = SharedRemindersError.shareURLUnavailable.errorDescription
                 return
             }
 

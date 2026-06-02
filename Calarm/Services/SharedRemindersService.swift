@@ -21,6 +21,7 @@ import UIKit
 enum SharedRemindersError: LocalizedError {
     case noCloudKitAccount
     case shareUnavailable
+    case shareURLUnavailable
     case shareCreationFailed(any Error)
     case acceptFailed(any Error)
 
@@ -30,6 +31,8 @@ enum SharedRemindersError: LocalizedError {
             return "Inicia sesión en iCloud para compartir alarmas."
         case .shareUnavailable:
             return "No se pudo preparar la alarma para compartirla."
+        case .shareURLUnavailable:
+            return "iCloud preparó el compartido, pero no devolvió un enlace de invitación. Intenta nuevamente."
         case .shareCreationFailed(let error):
             return "Error al compartir: \(error.localizedDescription)"
         case .acceptFailed(let error):
@@ -90,55 +93,57 @@ final class SharedRemindersService {
     /// Prepares (creating if needed) a `CKShare` for the given reminder and returns it
     /// together with the shared record's CKRecord. Used by ShareLink's preparation handler.
     func prepareShare(for reminder: Reminder) async throws -> CKShare {
-        // Convert the reminder to a CKRecord stored in a dedicated, shareable zone.
-        let zone = try await ensureSharingZone()
-        let recordID = CKRecord.ID(recordName: reminder.id.uuidString, zoneID: zone.zoneID)
-        let database = cloudKitContainer.privateCloudDatabase
-
-        // Fetch existing share for this record if it already exists.
-        if let existingShare = try? await fetchExistingShare(for: recordID) {
-            // Shares created before public-link support used `.none`, which denies
-            // anyone opening the invite link ("Item Unavailable / no permission").
-            // Upgrade such a share in place so re-sharing an old alarm just works.
-            if existingShare.publicPermission == .none {
-                existingShare.publicPermission = .readOnly
-                if let results = try? await database.modifyRecords(saving: [existingShare], deleting: []),
-                   case .success(let saved) = results.saveResults[existingShare.recordID],
-                   let savedShare = saved as? CKShare {
-                    return savedShare
-                }
-            }
-            return existingShare
-        }
-
-        let record = makeRecord(from: reminder, recordID: recordID)
-        let share = CKShare(rootRecord: record, shareID: CKRecord.ID(
-            recordName: "share-\(reminder.id.uuidString)",
-            zoneID: zone.zoneID
-        ))
-        share[CKShare.SystemFieldKey.title] = reminder.title as CKRecordValue
-        share[CKShare.SystemFieldKey.shareType] = "com.mathyusolutions.calarm.reminder" as CKRecordValue
-        // Custom thumbnail so the rich link preview in iMessage/Mail shows the
-        // reminder's photo or its category icon — not the generic iCloud cloud.
-        if let thumbnail = makeShareThumbnail(for: reminder) {
-            share[CKShare.SystemFieldKey.thumbnailImageData] = thumbnail as CKRecordValue
-        }
-        // Anyone who receives the invite link must be able to open it. We deliver
-        // the raw share URL over Messages / the share sheet without adding each
-        // recipient as an explicit participant, so the share has to grant access
-        // to public (link-based) users. With `.none`, link recipients are denied
-        // with "Item Unavailable / you don't have permission to open it".
-        share.publicPermission = .readOnly
-
         do {
-            let results = try await database.modifyRecords(saving: [record, share], deleting: [])
-            // Return the server-updated share, which has the .url property populated.
-            if case .success(let saved) = results.saveResults[share.recordID],
-               let savedShare = saved as? CKShare {
-                return savedShare
+            try await ensureCloudKitAccountAvailable()
+            ShareDiagnostics.log("↗️ preparando share '\(reminder.title)'")
+
+            // Convert the reminder to a CKRecord stored in a dedicated, shareable zone.
+            let zone = try await ensureSharingZone()
+            let recordID = CKRecord.ID(recordName: reminder.id.uuidString, zoneID: zone.zoneID)
+            let database = cloudKitContainer.privateCloudDatabase
+
+            let record: CKRecord
+            if let existingRecord = try await fetchRootRecord(for: recordID) {
+                if let existingShare = try await fetchShare(attachedTo: existingRecord, database: database) {
+                    let readyShare = try await prepareExistingShareForInvite(existingShare, database: database)
+                    ShareDiagnostics.log("✅ share existente listo (url=\(readyShare.url != nil))")
+                    return readyShare
+                }
+                record = existingRecord
+                writeFields(from: reminder, to: record)
+                ShareDiagnostics.log("↻ root record existente sin share; creando share")
+            } else {
+                record = makeRecord(from: reminder, recordID: recordID)
             }
-            return share
+
+            let share = CKShare(rootRecord: record, shareID: CKRecord.ID(
+                recordName: "share-\(reminder.id.uuidString)",
+                zoneID: zone.zoneID
+            ))
+            share[CKShare.SystemFieldKey.title] = reminder.title as CKRecordValue
+            share[CKShare.SystemFieldKey.shareType] = "com.mathyusolutions.calarm.reminder" as CKRecordValue
+            // Custom thumbnail so the rich link preview in iMessage/Mail shows the
+            // reminder's photo or its category icon — not the generic iCloud cloud.
+            if let thumbnail = makeShareThumbnail(for: reminder) {
+                share[CKShare.SystemFieldKey.thumbnailImageData] = thumbnail as CKRecordValue
+            }
+            // Anyone who receives the invite link must be able to open it. We deliver
+            // the raw share URL over Messages / the share sheet without adding each
+            // recipient as an explicit participant, so the share has to grant access
+            // to public (link-based) users. With `.none`, link recipients are denied
+            // with "Item Unavailable / you don't have permission to open it".
+            share.publicPermission = .readOnly
+
+            let results = try await database.modifyRecords(saving: [record, share], deleting: [])
+            let savedShare = try savedShare(from: results.saveResults, id: share.recordID)
+            let readyShare = try await shareWithInviteURL(savedShare, database: database)
+            ShareDiagnostics.log("✅ share creado (url=\(readyShare.url != nil))")
+            return readyShare
+        } catch let error as SharedRemindersError {
+            ShareDiagnostics.log("❌ preparar share: \(error.localizedDescription)")
+            throw error
         } catch {
+            ShareDiagnostics.log("❌ preparar share: \(Self.diagnosticDescription(for: error))")
             throw SharedRemindersError.shareCreationFailed(error)
         }
     }
@@ -280,6 +285,25 @@ final class SharedRemindersService {
 
     private static let sharingZoneName = "SharedRemindersZone"
 
+    private func ensureCloudKitAccountAvailable() async throws {
+        do {
+            switch try await cloudKitContainer.accountStatus() {
+            case .available:
+                return
+            case .noAccount, .restricted:
+                throw SharedRemindersError.noCloudKitAccount
+            case .couldNotDetermine, .temporarilyUnavailable:
+                throw SharedRemindersError.shareUnavailable
+            @unknown default:
+                throw SharedRemindersError.shareUnavailable
+            }
+        } catch let error as SharedRemindersError {
+            throw error
+        } catch {
+            throw SharedRemindersError.shareCreationFailed(error)
+        }
+    }
+
     private func ensureSharingZone() async throws -> CKRecordZone {
         let zoneID = CKRecordZone.ID(zoneName: Self.sharingZoneName, ownerName: CKCurrentUserDefaultName)
         let database = cloudKitContainer.privateCloudDatabase
@@ -294,11 +318,93 @@ final class SharedRemindersService {
         }
     }
 
+    private func prepareExistingShareForInvite(_ share: CKShare, database: CKDatabase) async throws -> CKShare {
+        // Shares created before public-link support used `.none`, which denies
+        // anyone opening the invite link ("Item Unavailable / no permission").
+        // Upgrade such a share in place so re-sharing an old alarm just works.
+        if share.publicPermission == .none {
+            share.publicPermission = .readOnly
+            let results = try await database.modifyRecords(saving: [share], deleting: [])
+            let savedShare = try savedShare(from: results.saveResults, id: share.recordID)
+            return try await shareWithInviteURL(savedShare, database: database)
+        }
+        return try await shareWithInviteURL(share, database: database)
+    }
+
+    private func fetchRootRecord(for recordID: CKRecord.ID) async throws -> CKRecord? {
+        let database = cloudKitContainer.privateCloudDatabase
+        do {
+            return try await database.record(for: recordID)
+        } catch {
+            if Self.isCKError(error, .unknownItem) {
+                return nil
+            }
+            throw error
+        }
+    }
+
+    private func fetchShare(attachedTo record: CKRecord, database: CKDatabase) async throws -> CKShare? {
+        guard let shareReference = record.share else { return nil }
+        do {
+            return try await database.record(for: shareReference.recordID) as? CKShare
+        } catch {
+            if Self.isCKError(error, .unknownItem) {
+                ShareDiagnostics.log("⚠️ root record apunta a un share inexistente")
+                return nil
+            }
+            throw error
+        }
+    }
+
+    private func savedShare(from saveResults: [CKRecord.ID: Result<CKRecord, any Error>], id: CKRecord.ID) throws -> CKShare {
+        guard let result = saveResults[id] else {
+            ShareDiagnostics.log("❌ guardar share: CloudKit no devolvió resultado")
+            throw SharedRemindersError.shareUnavailable
+        }
+        switch result {
+        case .success(let saved):
+            guard let share = saved as? CKShare else {
+                ShareDiagnostics.log("❌ guardar share: resultado no es CKShare")
+                throw SharedRemindersError.shareUnavailable
+            }
+            return share
+        case .failure(let error):
+            ShareDiagnostics.log("❌ guardar share: \(Self.diagnosticDescription(for: error))")
+            throw SharedRemindersError.shareCreationFailed(error)
+        }
+    }
+
+    private func shareWithInviteURL(_ share: CKShare, database: CKDatabase) async throws -> CKShare {
+        if share.url != nil { return share }
+
+        if let fetched = try? await database.record(for: share.recordID) as? CKShare,
+           fetched.url != nil {
+            ShareDiagnostics.log("↻ share URL recuperado tras refetch")
+            return fetched
+        }
+
+        ShareDiagnostics.log("⚠️ share guardado sin URL")
+        throw SharedRemindersError.shareURLUnavailable
+    }
+
     private func fetchExistingShare(for recordID: CKRecord.ID) async throws -> CKShare? {
         let database = cloudKitContainer.privateCloudDatabase
-        guard let record = try? await database.record(for: recordID) else { return nil }
-        guard let shareReference = record.share else { return nil }
-        return try? await database.record(for: shareReference.recordID) as? CKShare
+        guard let record = try await fetchRootRecord(for: recordID) else { return nil }
+        return try await fetchShare(attachedTo: record, database: database)
+    }
+
+    private static func isCKError(_ error: Error, _ code: CKError.Code) -> Bool {
+        let nsError = error as NSError
+        return nsError.domain == CKError.errorDomain && nsError.code == code.rawValue
+    }
+
+    private static func diagnosticDescription(for error: Error) -> String {
+        let nsError = error as NSError
+        if nsError.domain == CKError.errorDomain,
+           let code = CKError.Code(rawValue: nsError.code) {
+            return "\(code): \(nsError.localizedDescription)"
+        }
+        return "\(nsError.domain) \(nsError.code): \(nsError.localizedDescription)"
     }
 
     private func makeRecord(from reminder: Reminder, recordID: CKRecord.ID) -> CKRecord {
