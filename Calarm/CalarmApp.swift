@@ -17,6 +17,7 @@ struct CalarmApp: App {
     @State private var teamsCoordinator: SyncCoordinator?
     @State private var meetingPreferences: MeetingPreferencesStore
     @State private var sharedRemindersService: SharedRemindersService
+    @State private var delegationService: DelegationService
     @State private var categoryStore: CategoryStore
     @State private var localization = LocalizationManager.shared
 
@@ -39,7 +40,9 @@ struct CalarmApp: App {
         self._reminderScheduler = State(initialValue: reminderScheduler)
         self._teamsCoordinator = State(initialValue: nil)
         self._meetingPreferences = State(initialValue: meetingPreferences)
-        self._sharedRemindersService = State(initialValue: SharedRemindersService(modelContainer: modelContainer))
+        let sharedRemindersService = SharedRemindersService(modelContainer: modelContainer)
+        self._sharedRemindersService = State(initialValue: sharedRemindersService)
+        self._delegationService = State(initialValue: DelegationService(modelContainer: modelContainer, sharing: sharedRemindersService, scheduler: reminderScheduler))
         self._categoryStore = State(initialValue: CategoryStore(context: modelContainer.mainContext))
         self.alarmScheduler = alarmScheduler
         self.calendarSource = calendarSource
@@ -57,6 +60,7 @@ struct CalarmApp: App {
             .environment(reminderScheduler)
             .environment(meetingPreferences)
             .environment(sharedRemindersService)
+            .environment(delegationService)
             .environment(categoryStore)
             .modelContainer(modelContainer)
             .preferredColorScheme(settings.appearance.preferredColorScheme)
@@ -79,6 +83,17 @@ struct CalarmApp: App {
                 // since the acceptance callback is unreliable in SwiftUI.
                 await sharedRemindersService.importAllSharedReminders()
                 await syncAllReminders()
+                // Subscribe so owner edits/deletes arrive via silent push (the
+                // scan above stays as a fallback if a push is missed).
+                await sharedRemindersService.ensureSharedSubscription()
+                // Delegation sync: pull helper changes (they ring here), push our
+                // own changes up, and subscribe for future helper edits.
+                if settings.delegationEnabled {
+                    await delegationService.ensurePrincipalSubscription()
+                    await delegationService.pullPrincipalChanges()
+                    await delegationService.reconcileUp()
+                    await syncAllReminders()
+                }
                 if settings.teamsDetectionEnabled {
                     bootstrapTeamsCoordinator()
                 }
@@ -93,6 +108,13 @@ struct CalarmApp: App {
                         await sharedRemindersService.importAllSharedReminders()
                         await syncAllReminders()
                     }
+                    if settings.delegationEnabled {
+                        Task {
+                            await delegationService.pullPrincipalChanges()
+                            await delegationService.reconcileUp()
+                            await syncAllReminders()
+                        }
+                    }
                 }
             }
             // Reliable handoff for share acceptance (see AppDelegate): the system
@@ -101,6 +123,29 @@ struct CalarmApp: App {
                 ShareDiagnostics.log("🔔 notificación recibida")
                 guard let metadata = note.object as? CKShare.Metadata else { return }
                 Task { await acceptIncomingShare(metadata) }
+            }
+            // Silent CloudKit push: a per-record share changed, OR (for a principal)
+            // a trusted helper edited/deleted one of their alarms in the
+            // delegation zone. Re-sync both paths.
+            .onReceive(NotificationCenter.default.publisher(for: .calarmSharedDataChanged)) { _ in
+                Task {
+                    await sharedRemindersService.importAllSharedReminders()
+                    if settings.delegationEnabled {
+                        await delegationService.pullPrincipalChanges()
+                    }
+                    await syncAllReminders()
+                }
+            }
+            // A reminder was created/edited outside the main editor (AI assistant).
+            // Mirror it up to trusted helpers.
+            .onReceive(NotificationCenter.default.publisher(for: .calarmLocalRemindersChanged)) { _ in
+                guard settings.delegationEnabled else { return }
+                Task { await delegationService.reconcileUp() }
+            }
+            // A reminder was deleted outside the main editor; remove its zone record.
+            .onReceive(NotificationCenter.default.publisher(for: .calarmReminderDeleted)) { note in
+                guard settings.delegationEnabled, let id = note.object as? UUID else { return }
+                Task { await delegationService.deleteZoneRecord(forReminderID: id) }
             }
             .alert(
                 "No se pudo aceptar la invitación",
@@ -118,6 +163,15 @@ struct CalarmApp: App {
 
     @MainActor
     private func acceptIncomingShare(_ metadata: CKShare.Metadata) async {
+        // A DELEGATION share (the whole-list, read/write kind) must NOT be ingested
+        // into local SwiftData — that would make the principal's alarms ring on this
+        // helper's phone. Route it to DelegationService, which only records access.
+        let shareType = metadata.share[CKShare.SystemFieldKey.shareType] as? String
+        if shareType == DelegationService.shareType {
+            await delegationService.acceptDelegationShare(metadata: metadata)
+            PendingShare.clear()
+            return
+        }
         do {
             try await sharedRemindersService.acceptShare(metadata: metadata)
             PendingShare.clear()

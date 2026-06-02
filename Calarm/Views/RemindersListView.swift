@@ -9,6 +9,9 @@ import SwiftUI
 struct RemindersListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ReminderScheduler.self) private var reminderScheduler
+    @Environment(SharedRemindersService.self) private var sharedService
+    @Environment(DelegationService.self) private var delegation
+    @Environment(AppSettings.self) private var settings
 
     @Query(sort: [SortDescriptor(\Reminder.date)]) private var reminders: [Reminder]
 
@@ -224,10 +227,20 @@ struct RemindersListView: View {
     }
 
     private func delete(_ reminder: Reminder) async {
+        // If the owner is deleting a shared reminder, also remove it from CloudKit
+        // so participants' copies are reconciled away on their next sync/push.
+        let wasOwnedShare = !reminder.isReceivedShare
+        let id = reminder.id
         await reminderScheduler.cancelAlarms(for: reminder)
         modelContext.delete(reminder)
         try? modelContext.save()
         Haptics.warning()
+        if wasOwnedShare {
+            await sharedService.deleteSharedRecord(forReminderID: id)
+            if settings.delegationEnabled {
+                await delegation.deleteZoneRecord(forReminderID: id)
+            }
+        }
     }
 
     private func toggleEnabled(_ reminder: Reminder) async {
@@ -235,6 +248,11 @@ struct RemindersListView: View {
         reminder.updatedAt = Date()
         try? modelContext.save()
         await reminderScheduler.syncAlarms(for: reminder)
+        // Propagate the on/off change to participants if this reminder is shared.
+        await sharedService.pushUpdateIfShared(reminder)
+        if settings.delegationEnabled, !reminder.isReceivedShare {
+            await delegation.pushReminder(reminder)
+        }
         Haptics.light()
     }
 }

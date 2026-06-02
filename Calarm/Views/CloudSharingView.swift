@@ -12,12 +12,15 @@ import UIKit
 struct CloudSharingView: UIViewControllerRepresentable {
     let share: CKShare
     let container: CKContainer
+    /// Permissions offered in the share UI. Reminder shares are read-only; the
+    /// delegation share needs read/write so trusted helpers can edit the list.
+    var availablePermissions: UICloudSharingController.PermissionOptions = [.allowPrivate, .allowReadOnly]
     var onDismiss: () -> Void = {}
 
     func makeUIViewController(context: Context) -> UICloudSharingController {
         let controller = UICloudSharingController(share: share, container: container)
         controller.delegate = context.coordinator
-        controller.availablePermissions = [.allowPrivate, .allowReadOnly]
+        controller.availablePermissions = availablePermissions
         return controller
     }
 

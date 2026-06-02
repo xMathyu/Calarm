@@ -58,6 +58,18 @@ struct CalarmAppShortcuts: AppShortcutsProvider {
             shortTitle: "Resumen del día",
             systemImageName: "sun.max.fill"
         )
+        AppShortcut(
+            intent: NextAlarmIntent(),
+            phrases: [
+                "Cuál es mi próxima alarma en \(.applicationName)",
+                "\(.applicationName) cuál es mi próxima alarma",
+                "\(.applicationName) próxima alarma",
+                "Próxima alarma en \(.applicationName)",
+                "\(.applicationName) cuándo es mi siguiente alarma",
+            ],
+            shortTitle: "Próxima alarma",
+            systemImageName: "clock.fill"
+        )
     }
 
     /// Tint color for the shortcut tile in the Shortcuts app — matches the

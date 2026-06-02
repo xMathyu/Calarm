@@ -29,13 +29,17 @@ struct CreateAlarmIntent: AppIntent {
     @Parameter(title: "Categoría")
     var category: ReminderCategoryAppEnum?
 
+    @Parameter(title: "Aviso", description: "Con cuánta anticipación avisar")
+    var leadTime: AlarmLeadTimeAppEnum?
+
+    @Parameter(title: "Repetición", description: "Cada cuánto se repite")
+    var recurrence: RecurrenceAppEnum?
+
     static var parameterSummary: some ParameterSummary {
-        When(\.$category, .hasAnyValue) {
-            Summary("Crear alarma \(\.$titleParam) para \(\.$date)") {
-                \.$category
-            }
-        } otherwise: {
-            Summary("Crear alarma \(\.$titleParam) para \(\.$date)")
+        Summary("Crear alarma \(\.$titleParam) para \(\.$date)") {
+            \.$category
+            \.$leadTime
+            \.$recurrence
         }
     }
 
@@ -47,6 +51,8 @@ struct CreateAlarmIntent: AppIntent {
         }
 
         let resolvedCategory = category?.category ?? .reminder
+        let resolvedLeadTime = leadTime?.leadTime ?? .atStart
+        let resolvedRecurrence = recurrence?.rule(basedOn: date) ?? .once
 
         // Match the main app's SwiftData configuration so the reminder appears
         // in the list and syncs to iCloud the same way as one created manually.
@@ -57,7 +63,8 @@ struct CreateAlarmIntent: AppIntent {
             title: trimmed,
             date: date,
             category: resolvedCategory,
-            leadTimes: [.atStart]
+            recurrence: resolvedRecurrence,
+            leadTimes: [resolvedLeadTime]
         )
         context.insert(reminder)
         try context.save()
@@ -79,6 +86,9 @@ struct CreateAlarmIntent: AppIntent {
         formatter.locale = LocalizationManager.shared.currentLocale
         let formattedDate = formatter.string(from: date)
 
+        // Keep the dialog a single localizable string (it already has an English
+        // translation in the catalog); the recurrence/lead time are applied to the
+        // alarm even though the spoken confirmation stays concise.
         return .result(
             dialog: "Listo, alarma '\(trimmed)' creada para \(formattedDate)"
         )

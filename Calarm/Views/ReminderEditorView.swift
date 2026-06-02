@@ -12,6 +12,8 @@ struct ReminderEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ReminderScheduler.self) private var reminderScheduler
     @Environment(SharedRemindersService.self) private var sharedService
+    @Environment(DelegationService.self) private var delegation
+    @Environment(AppSettings.self) private var settings
     @Environment(CategoryStore.self) private var categoryStore
 
     // nil = creating new; otherwise editing existing
@@ -390,6 +392,15 @@ struct ReminderEditorView: View {
         await reminderScheduler.syncAlarms(for: reminder)
         Haptics.success()
 
+        // If editing an already-shared reminder, push the change to participants.
+        if editingReminder != nil {
+            await sharedService.pushUpdateIfShared(reminder)
+        }
+        // Mirror create/edit to trusted helpers if delegation is on.
+        if settings.delegationEnabled {
+            await delegation.pushReminder(reminder)
+        }
+
         guard thenInvite else {
             dismiss()
             return
@@ -551,10 +562,15 @@ struct ReminderEditorView: View {
 
     private func deleteReminder() async {
         guard let r = editingReminder else { return }
+        let id = r.id
+        let wasOwned = !r.isReceivedShare
         await reminderScheduler.cancelAlarms(for: r)
         modelContext.delete(r)
         try? modelContext.save()
         Haptics.warning()
+        if wasOwned, settings.delegationEnabled {
+            await delegation.deleteZoneRecord(forReminderID: id)
+        }
         dismiss()
     }
 }

@@ -84,6 +84,7 @@ final class AppSettings {
         static let alarmsEnabled = "settings.alarmsEnabled"
         static let onboardingCompleted = "settings.onboardingCompleted"
         static let teamsDetectionEnabled = "settings.teamsDetectionEnabled"
+        static let delegationEnabled = "settings.delegationEnabled"
         static let appearance = "settings.appearance"
         static let language = "settings.language"
         static let accentColorHex = "settings.accentColorHex"
@@ -117,6 +118,12 @@ final class AppSettings {
 
     var teamsDetectionEnabled: Bool {
         didSet { defaults.set(teamsDetectionEnabled, forKey: Key.teamsDetectionEnabled) }
+    }
+
+    /// When on, trusted helpers the user invites can see and manage all of this
+    /// user's alarms (the "Personas de confianza" / delegation feature).
+    var delegationEnabled: Bool {
+        didSet { defaults.set(delegationEnabled, forKey: Key.delegationEnabled) }
     }
 
     var appearance: AppearanceMode {
@@ -154,6 +161,7 @@ final class AppSettings {
         self.alarmsEnabled = defaults.object(forKey: Key.alarmsEnabled) as? Bool ?? true
         self.onboardingCompleted = defaults.bool(forKey: Key.onboardingCompleted)
         self.teamsDetectionEnabled = defaults.object(forKey: Key.teamsDetectionEnabled) as? Bool ?? true
+        self.delegationEnabled = defaults.object(forKey: Key.delegationEnabled) as? Bool ?? false
         let storedAppearance = defaults.object(forKey: Key.appearance) as? Int
         self.appearance = storedAppearance.flatMap(AppearanceMode.init(rawValue:)) ?? .system
         self.accentColorHex = defaults.string(forKey: Key.accentColorHex)

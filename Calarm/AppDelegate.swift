@@ -11,6 +11,15 @@ extension Notification.Name {
     /// Posted when a CloudKit share invitation's metadata is captured. The
     /// notification's `object` is the `CKShare.Metadata`.
     static let calarmDidAcceptShare = Notification.Name("CalarmDidAcceptShare")
+    /// Posted when a silent CloudKit push says the shared database changed (owner
+    /// edited/deleted a shared reminder), so the recipient should re-sync.
+    static let calarmSharedDataChanged = Notification.Name("CalarmSharedDataChanged")
+    /// Posted by code paths that create/edit reminders outside the main editor
+    /// (e.g. the AI assistant tools) so delegation can mirror the change up.
+    static let calarmLocalRemindersChanged = Notification.Name("CalarmLocalRemindersChanged")
+    /// Posted when a reminder is deleted outside the main editor; `object` is the
+    /// deleted reminder's UUID, so delegation can remove its zone record.
+    static let calarmReminderDeleted = Notification.Name("CalarmReminderDeleted")
 }
 
 /// Single, delegate-independent capture point for an incoming CloudKit share.
@@ -42,6 +51,15 @@ enum PendingShare {
 final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
         _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        // Needed to receive CloudKit's silent push when a shared reminder changes.
+        application.registerForRemoteNotifications()
+        return true
+    }
+
+    func application(
+        _ application: UIApplication,
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
@@ -55,6 +73,18 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         userDidAcceptCloudKitShareWith cloudKitShareMetadata: CKShare.Metadata
     ) {
         PendingShare.store(cloudKitShareMetadata, source: "appDelegate")
+    }
+
+    /// Silent CloudKit push: the shared database changed. Ask the app to re-sync.
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
+        PendingShare.log.info("Remote notification (CloudKit) received")
+        ShareDiagnostics.log("🔔 push CloudKit recibido")
+        NotificationCenter.default.post(name: .calarmSharedDataChanged, object: nil)
+        completionHandler(.newData)
     }
 }
 

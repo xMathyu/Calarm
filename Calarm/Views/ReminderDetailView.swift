@@ -23,6 +23,10 @@ struct ReminderDetailView: View {
     /// The existing CloudKit share, if this reminder is already shared. Drives
     /// whether "Gestionar compartido" is offered.
     @State private var existingShare: CKShare?
+    /// People invited to this reminder (owner side), with acceptance status.
+    @State private var participants: [ShareParticipantInfo] = []
+    /// Who shared this reminder with me (recipient side).
+    @State private var sharedBy: SharedByPerson?
     @State private var showingManageSheet = false
     @State private var errorMessage: String?
 
@@ -31,7 +35,9 @@ struct ReminderDetailView: View {
             List {
                 headerSection
                 detailsSection
-                if !reminder.isReceivedShare {
+                if reminder.isReceivedShare {
+                    sharedBySection
+                } else {
                     shareSection
                 }
             }
@@ -105,6 +111,7 @@ struct ReminderDetailView: View {
                         Label("Compartido contigo", systemImage: "person.2.fill")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
+                            .accessibilityHidden(true)
                     }
                 }
                 Spacer()
@@ -188,6 +195,72 @@ struct ReminderDetailView: View {
         } header: {
             Text("Compartir")
         }
+
+        // Who has joined this shared reminder (owner side).
+        if !participants.isEmpty {
+            Section {
+                ForEach(participants) { person in
+                    participantRow(person)
+                }
+            } header: {
+                HStack(spacing: DS.Spacing.xs) {
+                    Image(systemName: "person.2.fill").font(.caption2)
+                    Text("Personas")
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var sharedBySection: some View {
+        Section {
+            if let sharedBy {
+                HStack(spacing: DS.Spacing.md) {
+                    PersonAvatarView(name: sharedBy.name, email: sharedBy.email, phone: sharedBy.phone, size: 44)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(sharedBy.name)
+                            .font(.subheadline.weight(.semibold))
+                        Text("Te compartió esta alarma")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.vertical, 2)
+            } else {
+                Label("Compartido contigo", systemImage: "person.2.fill")
+                    .foregroundStyle(.secondary)
+            }
+        } header: {
+            Text("Compartido")
+        }
+    }
+
+    private func participantRow(_ person: ShareParticipantInfo) -> some View {
+        HStack(spacing: DS.Spacing.md) {
+            PersonAvatarView(name: person.name, email: person.email, phone: person.phone, size: 36)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(person.name)
+                    .font(.subheadline)
+                    .lineLimit(1)
+                Text(person.statusLabel)
+                    .font(.caption)
+                    .foregroundStyle(statusColor(person.status))
+            }
+            Spacer()
+            if person.status == .accepted {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+            }
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func statusColor(_ status: CKShare.ParticipantAcceptanceStatus) -> Color {
+        switch status {
+        case .accepted: return .green
+        case .pending: return .orange
+        default: return .secondary
+        }
     }
 
     /// Prepares the share and opens Messages with the link — recipients are
@@ -209,9 +282,15 @@ struct ReminderDetailView: View {
         }
     }
 
-    /// Refreshes whether this reminder currently has a share (without creating one).
+    /// Refreshes share state: who shared it (recipient) or who joined (owner).
     @MainActor
     private func refreshShare() async {
-        existingShare = await sharedService.existingShare(for: reminder)
+        if reminder.isReceivedShare {
+            sharedBy = ShareOwnerStore.get(reminder.id)
+            return
+        }
+        let share = await sharedService.existingShare(for: reminder)
+        existingShare = share
+        participants = share.map { sharedService.participantInfos(of: $0).filter { !$0.isOwner } } ?? []
     }
 }

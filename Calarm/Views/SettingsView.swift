@@ -49,6 +49,23 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    NavigationLink {
+                        DelegationSettingsView()
+                    } label: {
+                        Label("Personas de confianza", systemImage: "person.2.badge.key.fill")
+                    }
+                    NavigationLink {
+                        DelegationHelperView()
+                    } label: {
+                        Label("Listas que administro", systemImage: "person.crop.circle.badge.checkmark")
+                    }
+                } header: {
+                    sectionHeader("Delegación", systemImage: "person.badge.key.fill")
+                } footer: {
+                    Text("Deja que personas de confianza administren tus alarmas, o administra las de alguien que te invitó.")
+                }
+
+                Section {
                     languagePicker(selection: $settings.language)
                 } header: {
                     sectionHeader("Idioma", systemImage: "character.bubble.fill")

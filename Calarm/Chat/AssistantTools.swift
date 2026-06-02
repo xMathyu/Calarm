@@ -137,6 +137,7 @@ struct CreateReminderTool: Tool {
         context.insert(reminder)
         try context.save()
         await scheduler.syncAlarms(for: reminder)
+        NotificationCenter.default.post(name: .calarmLocalRemindersChanged, object: nil)
 
         let dateStr = ToolHelpers.formatDate(date, locale: LocalizationManager.shared.currentLocale)
         return "Created reminder '\(arguments.title)' for \(dateStr). ID: \(reminder.id.uuidString)"
@@ -311,6 +312,7 @@ struct UpdateReminderTool: Tool {
         reminder.updatedAt = Date()
         try context.save()
         await scheduler.syncAlarms(for: reminder)
+        NotificationCenter.default.post(name: .calarmLocalRemindersChanged, object: nil)
 
         return "Updated reminder '\(reminder.title)'."
     }
@@ -344,9 +346,11 @@ struct DeleteReminderTool: Tool {
             return "Error: reminder not found with id \(arguments.id)"
         }
         let titleCopy = reminder.title
+        let deletedID = reminder.id
         await scheduler.cancelAlarms(for: reminder)
         context.delete(reminder)
         try context.save()
+        NotificationCenter.default.post(name: .calarmReminderDeleted, object: deletedID)
         return "Deleted reminder '\(titleCopy)'."
     }
 }

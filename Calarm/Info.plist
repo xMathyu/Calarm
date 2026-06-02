@@ -10,6 +10,8 @@
 	<string>Calarm necesita programar alarmas para avisarte antes de tus reuniones y recordatorios.</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
 	<string>Calarm lee tus eventos del calendario para programar alarmas antes de cada uno y detectar enlaces de Microsoft Teams.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Calarm usa tus contactos para mostrar la foto de quienes comparten alarmas contigo. Si no das acceso, se muestran sus iniciales.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Calarm usa el micrófono para que le hables al asistente con IA y este cree alarmas dictándolas con tu voz.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
