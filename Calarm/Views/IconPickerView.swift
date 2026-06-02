@@ -19,8 +19,15 @@ struct IconPickerView: View {
     @Binding var photoData: Data?
 
     @State private var photoItem: PhotosPickerItem?
-    @State private var emojiText: String = ""
-    @FocusState private var emojiFieldFocused: Bool
+
+    private static let commonEmojis = [
+        "🎉", "⭐️", "❤️", "🔥", "✅", "⏰",
+        "📅", "💼", "📚", "🎓", "💡", "📝",
+        "🏃", "💪", "🧘", "💊", "🩺", "🦷",
+        "☕️", "🍔", "🛒", "💰", "🏠", "🚗",
+        "✈️", "🌙", "☀️", "🌱", "🎵", "🎮",
+        "🎨", "📸", "🎂", "🎁", "⚽️", "🐶"
+    ]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -58,68 +65,36 @@ struct IconPickerView: View {
             switch newKind {
             case .emoji:
                 if !isEmojiIcon(symbolName) { symbolName = "🎉" }
-                syncEmojiTextWithSelection()
-                emojiFieldFocused = true
             case .symbol:
                 if isEmojiIcon(symbolName) { symbolName = defaultSymbol }
-                emojiText = ""
             case .photo:
                 break
-            }
-        }
-        .onChange(of: symbolName) { _, _ in
-            if iconKind == .emoji {
-                syncEmojiTextWithSelection()
-            }
-        }
-        .onChange(of: emojiFieldFocused) { _, isFocused in
-            guard iconKind == .emoji else { return }
-            if isFocused {
-                emojiText = ""
-            } else {
-                syncEmojiTextWithSelection()
             }
         }
     }
 
     private var emojiSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            HStack(spacing: DS.Spacing.md) {
                 Text(selectedEmoji)
                     .font(.system(size: 40))
-                    .frame(width: 56, height: 56)
-                    .background(Circle().fill(tint.opacity(0.15)))
-
-                TextField("Emoji", text: $emojiText)
-                    .font(.system(size: 32))
-                    .lineLimit(1)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 72, height: 56)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .focused($emojiFieldFocused)
-                    .onChange(of: emojiText) { _, newValue in
-                        applyEmojiInput(newValue)
-                    }
-
-                Button {
-                    emojiFieldFocused = true
-                } label: {
-                    Image(systemName: "keyboard")
-                        .font(.title3)
-                        .frame(width: 44, height: 44)
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(tint)
-                .accessibilityLabel("Elegir emoji")
-
+                    .frame(width: 64, height: 64)
+                    .background(
+                        RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                            .fill(tint.opacity(0.15))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                            .strokeBorder(tint.opacity(0.35), lineWidth: 1)
+                    )
                 Spacer()
             }
-            .padding(10)
-            .background(Color.dsFill, in: RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous))
-        }
-        .onAppear {
-            syncEmojiTextWithSelection()
+
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 6), spacing: 10) {
+                ForEach(Self.commonEmojis, id: \.self) { emoji in
+                    emojiButton(emoji)
+                }
+            }
         }
     }
 
@@ -127,31 +102,27 @@ struct IconPickerView: View {
         isEmojiIcon(symbolName) ? symbolName : "🎉"
     }
 
-    private func syncEmojiTextWithSelection() {
-        let emoji = selectedEmoji
-        if emojiText != emoji {
-            emojiText = emoji
-        }
-    }
-
-    private func applyEmojiInput(_ value: String) {
-        guard let emoji = value.lastEmojiCluster else {
-            if value.isEmpty {
-                return
-            }
-            syncEmojiTextWithSelection()
-            return
-        }
-
-        if emoji != symbolName {
-            withAnimation(DS.Motion.snappy) {
-                symbolName = emoji
-            }
+    private func emojiButton(_ emoji: String) -> some View {
+        let isSelected = emoji == selectedEmoji
+        return Button {
+            withAnimation(DS.Motion.snappy) { symbolName = emoji }
             Haptics.selection()
+        } label: {
+            Text(emoji)
+                .font(.system(size: 26))
+                .frame(width: 44, height: 44)
+                .background(
+                    RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
+                        .fill(isSelected ? tint.opacity(0.22) : Color.dsFill)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
+                        .strokeBorder(isSelected ? tint : .clear, lineWidth: 2)
+                )
+                .scaleEffect(isSelected ? 1.06 : 1)
         }
-        if emojiText != emoji {
-            emojiText = emoji
-        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(emoji))
     }
 
     private var symbolGrid: some View {
@@ -213,18 +184,5 @@ struct IconPickerView: View {
                 .foregroundStyle(.secondary)
             }
         }
-    }
-}
-
-private extension String {
-    var lastEmojiCluster: String? {
-        var result: String?
-        for character in self {
-            let candidate = String(character)
-            if isEmojiIcon(candidate) {
-                result = candidate
-            }
-        }
-        return result
     }
 }
