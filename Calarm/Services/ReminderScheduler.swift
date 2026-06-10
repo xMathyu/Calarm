@@ -46,7 +46,11 @@ final class ReminderScheduler {
     }
 
     func cancelAlarms(forReminderID id: UUID) async {
-        await scheduler.cancelAll(ownerID: "reminder:\(id.uuidString)")
+        await scheduler.cancelAll(ownerID: Self.ownerID(forReminderID: id))
+    }
+
+    static func ownerID(forReminderID id: UUID) -> String {
+        "reminder:\(id.uuidString)"
     }
 
     private func applyReminder(_ reminder: Reminder) async {
@@ -96,6 +100,6 @@ final class ReminderScheduler {
     }
 
     private func ownerID(for reminder: Reminder) -> String {
-        "reminder:\(reminder.id.uuidString)"
+        Self.ownerID(forReminderID: reminder.id)
     }
 }

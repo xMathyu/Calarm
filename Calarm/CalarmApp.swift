@@ -73,6 +73,11 @@ struct CalarmApp: App {
             .task {
                 UIApplication.shared.installGlobalKeyboardDismissGesture()
                 await syncAllReminders()
+                // Cancel system alarms that no longer belong to anything: tracked
+                // entries whose reminder was deleted, and alarms AlarmKit still has
+                // but the store never knew about (pre-v2 formats). Without this,
+                // a lost entry means the alarm rings forever with no way to stop it.
+                await reconcileOrphanAlarms()
                 // Accept + ingest a share captured before the UI subscribed
                 // (e.g. a cold launch straight from the invite link).
                 if let pending = PendingShare.metadata {
@@ -179,6 +184,18 @@ struct CalarmApp: App {
         } catch {
             // `acceptShare` already recorded `acceptErrorMessage` for the alert.
             PendingShare.log.error("Share ingest failed: \(error.localizedDescription)")
+        }
+    }
+
+    @MainActor
+    private func reconcileOrphanAlarms() async {
+        let context = modelContainer.mainContext
+        let descriptor = FetchDescriptor<Reminder>()
+        let reminders = (try? context.fetch(descriptor)) ?? []
+        let validOwnerIDs = Set(reminders.map { ReminderScheduler.ownerID(forReminderID: $0.id) })
+        await alarmScheduler.reconcileWithSystem { ownerID in
+            // Calendar-owned alarms are reconciled by SyncCoordinator itself.
+            ownerID.hasPrefix(SyncCoordinator.ownerIDPrefix) || validOwnerIDs.contains(ownerID)
         }
     }
 

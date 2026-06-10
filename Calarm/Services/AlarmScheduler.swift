@@ -109,6 +109,27 @@ final class AlarmScheduler {
         store.allEntries().filter { $0.ownerID.hasPrefix(SyncCoordinator.ownerIDPrefix) }
     }
 
+    /// Reconciles the system's scheduled alarms against the store and the app's data.
+    ///
+    /// Two kinds of orphans are removed:
+    /// 1. Store entries whose owner no longer exists (`isValidOwner` returns false) —
+    ///    e.g. the reminder was deleted but a cancellation failed silently.
+    /// 2. System alarms the store doesn't know about — e.g. scheduled by an old app
+    ///    version with a pre-v2 store format. Without this they ring forever because
+    ///    no normal flow can ever reach them.
+    func reconcileWithSystem(isValidOwner: (String) -> Bool) async {
+        for entry in store.allEntries() where !isValidOwner(entry.ownerID) {
+            try? manager.cancel(id: entry.alarmID)
+            store.remove(ownerID: entry.ownerID, fireDate: entry.fireDate)
+        }
+
+        guard let systemAlarms = try? manager.alarms else { return }
+        let knownIDs = Set(store.allEntries().map(\.alarmID))
+        for alarm in systemAlarms where !knownIDs.contains(alarm.id) {
+            try? manager.cancel(id: alarm.id)
+        }
+    }
+
     /// Cancels every alarm tracked in the store.
     func cancelAllStored() async {
         for entry in store.allEntries() {
