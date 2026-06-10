@@ -3,6 +3,7 @@
 //  Calarm
 //
 
+import AppIntents
 import CloudKit
 import os
 import SwiftData
@@ -47,6 +48,11 @@ struct CalarmApp: App {
         self.alarmScheduler = alarmScheduler
         self.calendarSource = calendarSource
         self.modelContainer = modelContainer
+
+        // Re-register the Siri phrases on every launch so the system picks up
+        // changes to CalarmAppShortcuts (and AppShortcuts.xcstrings) without
+        // requiring a reinstall.
+        CalarmAppShortcuts.updateAppShortcutParameters()
     }
 
     var body: some Scene {
