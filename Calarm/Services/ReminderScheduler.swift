@@ -91,7 +91,7 @@ final class ReminderScheduler {
                     symbolName: (reminder.iconKind == .symbol ? reminder.symbolName : nil) ?? reminder.category.defaultSymbol,
                     category: reminder.category,
                     snooze: settings.snoozeInterval,
-                    teamsURL: nil
+                    meetingURL: nil
                 )
             } catch {
                 lastError = error.localizedDescription

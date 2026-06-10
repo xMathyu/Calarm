@@ -86,10 +86,10 @@ final class SyncCoordinator {
                             ownerID: ownerID,
                             fireDate: fireDate,
                             title: meeting.title,
-                            symbolName: meeting.teamsURL != nil ? "video.fill" : "calendar",
+                            symbolName: meeting.meetingLink != nil ? "video.fill" : "calendar",
                             category: .event,
                             snooze: snooze,
-                            teamsURL: meeting.teamsURL,
+                            meetingURL: meeting.meetingLink?.url,
                             location: meeting.location
                         )
                     } catch {

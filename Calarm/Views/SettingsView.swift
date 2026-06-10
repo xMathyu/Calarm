@@ -99,7 +99,7 @@ struct SettingsView: View {
                 } header: {
                     sectionHeader("Calendario de Apple", systemImage: "calendar")
                 } footer: {
-                    Text("Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte.")
+                    Text("Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.")
                 }
 
                 Section {

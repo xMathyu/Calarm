@@ -49,7 +49,7 @@ struct MeetingDetailView: View {
                     if let organizer = meeting.organizer {
                         LabeledContent("Organizador", value: organizer)
                     }
-                    if let location = meeting.location, !location.isEmpty, meeting.teamsURL == nil {
+                    if let location = meeting.location, !location.isEmpty, meeting.meetingLink == nil {
                         Button {
                             openMaps(query: location)
                         } label: {
@@ -69,12 +69,12 @@ struct MeetingDetailView: View {
                     Text(meeting.title).font(.headline).textCase(nil)
                 }
 
-                if let teamsURL = meeting.teamsURL {
+                if let link = meeting.meetingLink {
                     Section {
                         Button {
-                            openURL(teamsURL)
+                            openURL(link.url)
                         } label: {
-                            Label("Unirse en Teams", systemImage: "video.fill")
+                            Label("Unirse en \(link.provider.displayName)", systemImage: "video.fill")
                         }
                     }
                 }

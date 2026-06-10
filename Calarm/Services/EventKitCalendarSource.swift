@@ -52,8 +52,8 @@ final class EventKitCalendarSource: CalendarSource, @unchecked Sendable {
             // or informational entries the user doesn't want as alarms.
             if event.isAllDay { return nil }
 
-            // Detect optional Teams URL to enable a "Join in Teams" button when present.
-            let teamsURL = TeamsMeetingDetector.extractTeamsURL(
+            // Detect an optional Teams/Zoom/Google Meet link to enable a join button.
+            let meetingLink = MeetingLinkDetector.extractMeetingLink(
                 url: event.url,
                 location: event.location,
                 notes: event.notes
@@ -64,7 +64,7 @@ final class EventKitCalendarSource: CalendarSource, @unchecked Sendable {
                 title: event.title ?? "Evento sin título",
                 startDate: startDate,
                 endDate: endDate,
-                teamsURL: teamsURL,
+                meetingLink: meetingLink,
                 organizer: event.organizer?.name,
                 location: event.location
             )

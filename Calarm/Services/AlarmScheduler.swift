@@ -16,10 +16,12 @@ struct CalarmAlarmMetadata: AlarmMetadata {
     let title: String
     let symbolName: String
     let categoryRaw: Int
+    /// Join link of the meeting (Teams, Zoom or Google Meet). The stored key keeps its
+    /// legacy `teamsURLString` name so metadata of already-scheduled alarms still decodes.
     let teamsURLString: String?
     let location: String?
 
-    var teamsURL: URL? {
+    var meetingURL: URL? {
         guard let s = teamsURLString, !s.isEmpty else { return nil }
         return URL(string: s)
     }
@@ -61,7 +63,7 @@ final class AlarmScheduler {
         symbolName: String,
         category: ReminderCategory,
         snooze: SnoozeInterval,
-        teamsURL: URL? = nil,
+        meetingURL: URL? = nil,
         location: String? = nil
     ) async throws -> UUID {
         if let existing = store.alarmID(forOwner: ownerID, fireDate: fireDate) {
@@ -75,7 +77,7 @@ final class AlarmScheduler {
             fireDate: fireDate,
             snooze: snooze,
             ownerID: ownerID,
-            teamsURL: teamsURL,
+            meetingURL: meetingURL,
             location: location,
             alarmID: alarmID
         )
@@ -147,11 +149,11 @@ final class AlarmScheduler {
         fireDate: Date,
         snooze: SnoozeInterval,
         ownerID: String,
-        teamsURL: URL?,
+        meetingURL: URL?,
         location: String?,
         alarmID: UUID
     ) -> AlarmManager.AlarmConfiguration<CalarmAlarmMetadata> {
-        let hasLocation = (location?.isEmpty == false) && teamsURL == nil
+        let hasLocation = (location?.isEmpty == false) && meetingURL == nil
 
         // When the event has a physical location, the secondary button navigates to it
         // (stopping the alarm). Otherwise we keep snooze.
@@ -222,7 +224,7 @@ final class AlarmScheduler {
             title: title,
             symbolName: symbolName,
             categoryRaw: category.rawValue,
-            teamsURLString: teamsURL?.absoluteString,
+            teamsURLString: meetingURL?.absoluteString,
             location: location
         )
 

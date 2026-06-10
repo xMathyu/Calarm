@@ -54,11 +54,11 @@ struct MeetingRowView: View {
                 alarmBadge
             }
 
-            if let teamsURL = meeting.teamsURL {
+            if let link = meeting.meetingLink {
                 Button {
-                    openURL(teamsURL)
+                    openURL(link.url)
                 } label: {
-                    Label("Unirse en Teams", systemImage: "video.fill")
+                    Label("Unirse en \(link.provider.displayName)", systemImage: "video.fill")
                         .font(.subheadline.weight(.semibold))
                         .frame(maxWidth: .infinity)
                 }
