@@ -9,23 +9,14 @@ import AppIntents
 import Foundation
 import SwiftUI
 
-/// Static metadata travelling with each AlarmKit alarm. Used by the optional widget extension
-/// (Live Activity) and by app-side handlers.
-struct CalarmAlarmMetadata: AlarmMetadata {
-    let ownerID: String
-    let title: String
-    let symbolName: String
-    let categoryRaw: Int
-    /// Join link of the meeting (Teams, Zoom or Google Meet). The stored key keeps its
-    /// legacy `teamsURLString` name so metadata of already-scheduled alarms still decodes.
-    let teamsURLString: String?
-    let location: String?
+// `CalarmAlarmMetadata` lives in its own file (Models/CalarmAlarmMetadata.swift)
+// so it can be shared, as the SAME type, with the widget extension that renders
+// the AlarmKit Live Activity (countdown). ActivityKit matches activities by the
+// attributes type, so the struct must compile into both targets.
 
-    var meetingURL: URL? {
-        guard let s = teamsURLString, !s.isEmpty else { return nil }
-        return URL(string: s)
-    }
-
+extension CalarmAlarmMetadata {
+    /// App-side convenience. Kept out of the shared file so the widget target
+    /// doesn't have to depend on `ReminderCategory`.
     var category: ReminderCategory? {
         ReminderCategory(rawValue: categoryRaw)
     }

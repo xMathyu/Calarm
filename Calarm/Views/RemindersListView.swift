@@ -231,6 +231,11 @@ struct RemindersListView: View {
         // so participants' copies are reconciled away on their next sync/push.
         let wasOwnedShare = !reminder.isReceivedShare
         let id = reminder.id
+        // Remember a deleted invitation so the shared-DB scan doesn't re-import it
+        // on the next launch while the owner's record still exists (bug: reappears).
+        if reminder.isReceivedShare {
+            DeletedSharesStore.add(id)
+        }
         await reminderScheduler.cancelAlarms(for: reminder)
         modelContext.delete(reminder)
         try? modelContext.save()

@@ -1,6 +1,22 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
+    "${applicationName} agenda una alarma" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} schedule an alarm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} agenda una alarma"
+          }
+        }
+      }
+    },
     "${applicationName} crear alarma" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -65,6 +81,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "${applicationName} entiende esto"
+          }
+        }
+      }
+    },
+    "${applicationName} pon una alarma" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} set an alarm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} pon una alarma"
           }
         }
       }

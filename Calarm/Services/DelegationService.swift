@@ -426,6 +426,9 @@ final class DelegationService {
         do {
             _ = try await cloudKitContainer.accept(metadata)
             ShareDiagnostics.log("🤝 delegación aceptada de \(SharedRemindersService.displayName(metadata.ownerIdentity))")
+            // Nudge any open "Listas que administro" view (and the share sync paths)
+            // to reload now that this device can see the principal's zone.
+            NotificationCenter.default.post(name: .calarmSharedDataChanged, object: nil)
         } catch {
             lastErrorMessage = SharedRemindersError.acceptFailed(error).errorDescription
             ShareDiagnostics.log("❌ aceptar delegación: \(error.localizedDescription)")

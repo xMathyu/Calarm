@@ -349,6 +349,22 @@
         }
       }
     },
+    "10 minutos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 minutes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 minutos"
+          }
+        }
+      }
+    },
     "10 minutos antes" : {
       "localizations" : {
         "en" : {
@@ -5175,6 +5191,22 @@
         }
       }
     },
+    "¿A qué hora?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At what time?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿A qué hora?"
+          }
+        }
+      }
+    },
     "¿Cómo quieres llamar a la alarma?" : {
       "localizations" : {
         "en" : {
@@ -5187,6 +5219,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¿Cómo quieres llamar a la alarma?"
+          }
+        }
+      }
+    },
+    "¿Cómo se llama la alarma?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's the alarm called?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cómo se llama la alarma?"
           }
         }
       }

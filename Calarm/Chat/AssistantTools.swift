@@ -347,6 +347,10 @@ struct DeleteReminderTool: Tool {
         }
         let titleCopy = reminder.title
         let deletedID = reminder.id
+        // Tombstone a deleted invitation so the shared-DB scan doesn't re-import it.
+        if reminder.isReceivedShare {
+            DeletedSharesStore.add(deletedID)
+        }
         await scheduler.cancelAlarms(for: reminder)
         context.delete(reminder)
         try context.save()

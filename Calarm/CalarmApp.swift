@@ -177,8 +177,19 @@ struct CalarmApp: App {
         // A DELEGATION share (the whole-list, read/write kind) must NOT be ingested
         // into local SwiftData — that would make the principal's alarms ring on this
         // helper's phone. Route it to DelegationService, which only records access.
+        //
+        // Detect it two ways, because the custom `shareType` field doesn't always
+        // survive in the accept metadata: (1) the shareType matches, or (2) the share
+        // is ZONE-WIDE (no root record). A per-record reminder share always has a
+        // root record; the delegation share is zone-wide and has none. Routing a
+        // zone-wide share to the per-record path would fail to ingest (there's no
+        // root record to fetch) — exactly the "no funciona invitarme a controlar tus
+        // alarmas" symptom.
         let shareType = metadata.share[CKShare.SystemFieldKey.shareType] as? String
-        if shareType == DelegationService.shareType {
+        let rootRecordID = metadata.hierarchicalRootRecordID ?? (metadata.rootRecordID as CKRecord.ID?)
+        let isZoneWideShare = rootRecordID == nil
+        if shareType == DelegationService.shareType || isZoneWideShare {
+            ShareDiagnostics.log("🤝 ruteo a delegación (tipo=\(shareType ?? "nil"), zoneWide=\(isZoneWideShare))")
             await delegationService.acceptDelegationShare(metadata: metadata)
             PendingShare.clear()
             return

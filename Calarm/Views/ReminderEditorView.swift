@@ -684,6 +684,10 @@ struct ReminderEditorView: View {
         guard let r = editingReminder else { return }
         let id = r.id
         let wasOwned = !r.isReceivedShare
+        // Tombstone a deleted invitation so the shared-DB scan doesn't re-import it.
+        if r.isReceivedShare {
+            DeletedSharesStore.add(id)
+        }
         await reminderScheduler.cancelAlarms(for: r)
         modelContext.delete(r)
         try? modelContext.save()

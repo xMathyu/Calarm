@@ -14,17 +14,21 @@ import SwiftData
 struct CreateAlarmIntent: AppIntent {
     static let title: LocalizedStringResource = "Crear alarma"
     static let description = IntentDescription(
-        "Crea una nueva alarma en Calarm con título y hora.",
+        "Crea una nueva alarma en Calarm. Solo la hora es necesaria; el nombre es opcional.",
         categoryName: "Alarmas"
     )
     /// Run silently (no Calarm UI). The result dialog is what Siri speaks back.
     static let openAppWhenRun: Bool = false
 
-    @Parameter(title: "Título", description: "Para qué es la alarma")
-    var titleParam: String
-
+    // Both optional so Siri never blocks on a missing name and can still fill the
+    // time from the spoken phrase ("…a las 4pm"). When neither is given (bare
+    // "pon una alarma en Calarm"), `perform()` asks for the time first, then the
+    // name — see below.
     @Parameter(title: "Hora", kind: .dateTime)
-    var date: Date
+    var date: Date?
+
+    @Parameter(title: "Título", description: "Para qué es la alarma (opcional)")
+    var titleParam: String?
 
     @Parameter(title: "Categoría")
     var category: ReminderCategoryAppEnum?
@@ -45,14 +49,37 @@ struct CreateAlarmIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        let trimmed = titleParam.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else {
-            throw $titleParam.needsValueError("¿Cómo quieres llamar a la alarma?")
+        // The time is the only thing we truly need. If the user didn't say one,
+        // ask for it now (Siri prompt). We remember whether we had to ask, to
+        // decide below whether to also prompt for the name.
+        let timeWasGiven = (date != nil)
+        let resolvedDate: Date
+        if let date {
+            resolvedDate = date
+        } else {
+            resolvedDate = try await $date.requestValue("¿A qué hora?")
+        }
+
+        // The name is optional:
+        //  • Given inline ("…con nombre Examen") → use it.
+        //  • Bare invocation (we had to ask the time) → guide the user and ask the
+        //    name too, but accept a blank answer.
+        //  • Time given inline but no name → just default it, don't nag.
+        let providedTitle = titleParam?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmed: String
+        if let providedTitle, !providedTitle.isEmpty {
+            trimmed = providedTitle
+        } else if !timeWasGiven {
+            let asked = (try? await $titleParam.requestValue("¿Cómo se llama la alarma?")) ?? ""
+            let askedTrimmed = asked.trimmingCharacters(in: .whitespacesAndNewlines)
+            trimmed = askedTrimmed.isEmpty ? appLocalized("Alarma") : askedTrimmed
+        } else {
+            trimmed = appLocalized("Alarma")
         }
 
         let resolvedCategory = category?.category ?? .reminder
         let resolvedLeadTime = leadTime?.leadTime ?? .atStart
-        let resolvedRecurrence = recurrence?.rule(basedOn: date) ?? .once
+        let resolvedRecurrence = recurrence?.rule(basedOn: resolvedDate) ?? .once
 
         // Match the main app's SwiftData configuration so the reminder appears
         // in the list and syncs to iCloud the same way as one created manually.
@@ -61,7 +88,7 @@ struct CreateAlarmIntent: AppIntent {
 
         let reminder = Reminder(
             title: trimmed,
-            date: date,
+            date: resolvedDate,
             category: resolvedCategory,
             recurrence: resolvedRecurrence,
             leadTimes: [resolvedLeadTime]
@@ -84,7 +111,7 @@ struct CreateAlarmIntent: AppIntent {
         formatter.dateStyle = .short
         formatter.timeStyle = .short
         formatter.locale = LocalizationManager.shared.currentLocale
-        let formattedDate = formatter.string(from: date)
+        let formattedDate = formatter.string(from: resolvedDate)
 
         // Keep the dialog a single localizable string (it already has an English
         // translation in the catalog); the recurrence/lead time are applied to the

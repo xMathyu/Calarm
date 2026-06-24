@@ -64,6 +64,29 @@ Primera versión de Calarm:
 • Detección automática de reuniones de Teams
 ```
 
+## What's New (1.0.3)
+
+Español:
+```
+• Reuniones: el botón "Unirse" ahora funciona con Microsoft Teams, Zoom y Google Meet, y siempre abre el enlace correcto
+• Siri en español e inglés: di "Pon una alarma en Calarm" o "Set an alarm in Calarm"
+• Personas de confianza: comparte tu lista para que alguien más te ayude a administrar tus alarmas
+• Categorías personalizadas con color e icono propios
+• Nuevo selector de emojis para el icono de tus alarmas
+• Editor de alarmas renovado y más fácil de usar
+• Mejoras de estabilidad: las alarmas eliminadas ya no vuelven a sonar
+```
+
+Inglés:
+```
+• Meetings: the "Join" button now works with Microsoft Teams, Zoom and Google Meet, and always opens the right link
+• Siri in English and Spanish: say "Set an alarm in Calarm" or "Pon una alarma en Calarm"
+• Trusted helpers: share your list so someone else can help manage your alarms
+• Custom categories with their own color and icon
+• New emoji picker for your alarm icons
+• Stability fixes: deleted alarms no longer ring again
+```
+
 ---
 
 ## Privacy
@@ -98,6 +121,18 @@ Primera versión de Calarm:
 ## Marketing
 
 ### Promotional Text (170 char, editable sin re-revisión de App)
+
+Español (146 char):
+```
+Alarmas que suenan aunque tu iPhone esté en silencio. Ahora con comandos de Siri y botón para unirte a tus reuniones de Teams, Zoom y Google Meet.
+```
+
+Inglés (139 char):
+```
+Alarms that ring even when your iPhone is silenced. Now with Siri commands and a join button for your Teams, Zoom and Google Meet meetings.
+```
+
+Anterior (1.0.0):
 ```
 Alarmas inteligentes que suenan aunque tu iPhone esté en silencio. Cumpleaños recurrentes, recordatorios y eventos del calendario en una sola app.
 ```

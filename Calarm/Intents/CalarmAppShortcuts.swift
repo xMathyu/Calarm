@@ -29,6 +29,11 @@ struct CalarmAppShortcuts: AppShortcutsProvider {
                 "Agrega una alarma en \(.applicationName)",
                 "\(.applicationName) nueva alarma",
                 "\(.applicationName) crear alarma",
+                // App-name-leading variants. When the app name comes first, Siri
+                // routes to Calarm far more reliably than when "pon una alarma…"
+                // leads (which the system's built-in alarm domain tends to grab).
+                "\(.applicationName) pon una alarma",
+                "\(.applicationName) agenda una alarma",
             ],
             shortTitle: "Nueva alarma",
             systemImageName: "alarm.fill"

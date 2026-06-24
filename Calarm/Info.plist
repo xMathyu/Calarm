@@ -14,6 +14,8 @@
 	<string>Calarm usa tus contactos para mostrar la foto de quienes comparten alarmas contigo. Si no das acceso, se muestran sus iniciales.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Calarm usa el micrófono para que le hables al asistente con IA y este cree alarmas dictándolas con tu voz.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Calarm transcribe tu voz en el dispositivo para que el asistente con IA entienda lo que le dices.</string>
 	<key>UIBackgroundModes</key>

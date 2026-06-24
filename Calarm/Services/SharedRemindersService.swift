@@ -567,7 +567,13 @@ final class SharedRemindersService {
     private func ingestSharedRecord(from metadata: CKShare.Metadata) async throws {
         // `hierarchicalRootRecordID` is the modern accessor; fall back to the
         // deprecated `rootRecordID` so we always resolve the shared record's ID.
-        let rootRecordID = metadata.hierarchicalRootRecordID ?? metadata.rootRecordID
+        // A zone-wide share (delegation) has neither — bail out instead of crashing
+        // on the implicitly-unwrapped `rootRecordID`. Such shares are routed to
+        // DelegationService upstream; this is just a safety net.
+        guard let rootRecordID = metadata.hierarchicalRootRecordID ?? (metadata.rootRecordID as CKRecord.ID?) else {
+            ShareDiagnostics.log("❌ ingest: share sin root record (¿zone-wide?)")
+            throw SharedRemindersError.shareUnavailable
+        }
         let database = cloudKitContainer.sharedCloudDatabase
         ShareDiagnostics.log("ingest: rootRecord=\(rootRecordID.recordName)")
 
@@ -596,6 +602,9 @@ final class SharedRemindersService {
 
         let context = modelContainer.mainContext
         let applied = applyRecord(record, owner: Self.owner(from: metadata), in: context)
+        // Re-accepting an invitation the user had deleted should bring it back, so
+        // clear any tombstone for it.
+        DeletedSharesStore.remove(applied.id)
         try context.save()
         CategoryStore.shared?.reload()
         ShareDiagnostics.log("✅ ingest: reminder guardado '\(applied.title)'")
@@ -614,6 +623,7 @@ final class SharedRemindersService {
             ShareDiagnostics.log("scan: \(zones.count) zona(s) compartida(s)")
             let context = modelContainer.mainContext
             var imported = 0
+            var skipped = 0
             var presentIDs: Set<UUID> = []
             for zone in zones {
                 // SAFETY: never ingest the delegation zone here. Those records are
@@ -626,8 +636,15 @@ final class SharedRemindersService {
                     guard case .success(let modification) = modResult else { continue }
                     let record = modification.record
                     guard record.recordType == "CalarmSharedReminder" else { continue }
-                    let applied = applyRecord(record, owner: nil, in: context)
-                    presentIDs.insert(applied.id)
+                    let recordID = candidateLocalID(for: record)
+                    presentIDs.insert(recordID)
+                    // Skip invitations the recipient deleted — re-importing them
+                    // would make a deleted share reappear on every launch.
+                    if DeletedSharesStore.contains(recordID) {
+                        skipped += 1
+                        continue
+                    }
+                    applyRecord(record, owner: nil, in: context)
                     imported += 1
                 }
             }
@@ -636,15 +653,26 @@ final class SharedRemindersService {
                 CategoryStore.shared?.reload()
                 ShareDiagnostics.log("✅ scan: \(imported) recordatorio(s) importado(s)")
             } else {
-                ShareDiagnostics.log("scan: sin recordatorios compartidos")
+                ShareDiagnostics.log("scan: sin recordatorios compartidos\(skipped > 0 ? " (\(skipped) borrado(s) ignorado(s))" : "")")
             }
             // Scan completed without error → safe to remove copies the owner
             // deleted or unshared (their record is no longer present).
             reconcileDeletedShares(presentIDs: presentIDs, in: context)
+            // Drop tombstones whose owner record is gone, so a fresh re-invite with
+            // the same id can be accepted again.
+            DeletedSharesStore.prune(presentIDs: presentIDs)
         } catch {
             Self.log.error("importAllSharedReminders failed: \(error.localizedDescription, privacy: .public)")
             ShareDiagnostics.log("❌ scan error: \(error.localizedDescription)")
         }
+    }
+
+    /// The local `Reminder` id a shared record maps to, using the same resolution
+    /// as `applyRecord` (record name first, then the payload id). Used to test a
+    /// record against the deleted-invitation tombstones before importing it.
+    private func candidateLocalID(for record: CKRecord) -> UUID {
+        if let id = UUID(uuidString: record.recordID.recordName) { return id }
+        return UUID(uuidString: decodePayload(from: record).id) ?? UUID()
     }
 
     /// Upserts a shared `CalarmSharedReminder` CKRecord into a local `Reminder`

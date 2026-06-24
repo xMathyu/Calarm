@@ -157,7 +157,7 @@ final class AppSettings {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         let storedSnooze = defaults.object(forKey: Key.snooze) as? Int
-        self.snoozeInterval = storedSnooze.flatMap(SnoozeInterval.init(rawValue:)) ?? .min5
+        self.snoozeInterval = storedSnooze.flatMap(SnoozeInterval.init(rawValue:)) ?? .default
         self.alarmsEnabled = defaults.object(forKey: Key.alarmsEnabled) as? Bool ?? true
         self.onboardingCompleted = defaults.bool(forKey: Key.onboardingCompleted)
         self.teamsDetectionEnabled = defaults.object(forKey: Key.teamsDetectionEnabled) as? Bool ?? true
