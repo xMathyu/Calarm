@@ -4172,7 +4172,20 @@
       }
     },
     "Para qué es la alarma (opcional)" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What the alarm is for (optional)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para qué es la alarma (opcional)"
+          }
+        }
+      }
     },
     "Pausar" : {
       "localizations" : {

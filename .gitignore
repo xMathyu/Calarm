@@ -1,0 +1,7 @@
+# Xcode / build artifacts (never commit)
+artif*-from-xcode/
+*.ipa
+*.xcarchive
+DerivedData/
+build/
+.DS_Store
