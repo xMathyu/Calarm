@@ -2,6 +2,7 @@
   "sourceLanguage" : "es",
   "strings" : {
     "${applicationName} agenda una alarma" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -85,22 +86,6 @@
         }
       }
     },
-    "${applicationName} pon una alarma" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "${applicationName} set an alarm"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "${applicationName} pon una alarma"
-          }
-        }
-      }
-    },
     "${applicationName} inteligente" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -148,6 +133,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "${applicationName} nueva alarma"
+          }
+        }
+      }
+    },
+    "${applicationName} pon una alarma" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} set an alarm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} pon una alarma"
           }
         }
       }
