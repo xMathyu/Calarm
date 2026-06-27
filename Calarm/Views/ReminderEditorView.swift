@@ -27,9 +27,12 @@ struct ReminderEditorView: View {
     @State private var symbolName: String
     @State private var photoData: Data?
     @State private var recurrence: RecurrenceRule
+    /// Extra schedules (different day/time) beyond the primary `date`/`recurrence`.
+    @State private var additionalSchedules: [AlarmSchedule]
     @State private var leadTimes: [AlarmLeadTime]
     @State private var showingLeadTimePicker = false
     @State private var showingMoreOptions = false
+    @State private var showingIconPicker = false
     @State private var isEnabled: Bool
 
     // AI suggestion state
@@ -43,6 +46,13 @@ struct ReminderEditorView: View {
     @State private var isPreparingShare = false
     @State private var pendingInvite: InviteDelivery?
     @State private var shareError: String?
+
+    // Sharing for an EXISTING alarm (tap-to-edit replaced the old detail view):
+    // owner sees invite/manage/participants; recipient sees who shared it.
+    @State private var existingShare: CKShare?
+    @State private var participants: [ShareParticipantInfo] = []
+    @State private var sharedBy: SharedByPerson?
+    @State private var showingManageSheet = false
 
     init(editing reminder: Reminder? = nil) {
         self.editingReminder = reminder
@@ -59,6 +69,7 @@ struct ReminderEditorView: View {
             _symbolName = State(initialValue: r.symbolName ?? r.category.defaultSymbol)
             _photoData = State(initialValue: r.photoData)
             _recurrence = State(initialValue: r.recurrence)
+            _additionalSchedules = State(initialValue: r.additionalSchedules)
             _leadTimes = State(initialValue: r.leadTimes)
             _isEnabled = State(initialValue: r.isEnabled)
         } else {
@@ -71,6 +82,7 @@ struct ReminderEditorView: View {
             _symbolName = State(initialValue: initialCategory.defaultSymbol)
             _photoData = State(initialValue: nil)
             _recurrence = State(initialValue: .once)
+            _additionalSchedules = State(initialValue: [])
             _leadTimes = State(initialValue: [.atStart])
             _isEnabled = State(initialValue: true)
         }
@@ -131,20 +143,26 @@ struct ReminderEditorView: View {
 
                 moreOptionsToggleSection
                 if showingMoreOptions {
-                    recurrenceSection
                     statusSection
                     leadTimesSection
-                    iconSection
                     if editingReminder == nil {
                         inviteAdvancedSection
                     }
                 }
 
-                if editingReminder != nil {
+                if let editing = editingReminder {
+                    if editing.isReceivedShare {
+                        sharedBySection
+                    } else {
+                        existingShareSection
+                    }
                     deleteSection
                 }
             }
-            .navigationTitle(editingReminder == nil ? "Nueva alarma" : "Editar alarma")
+            // appLocalized so the in-app language override applies — a `cond ? a : b`
+            // of string literals resolves to a plain String, which navigationTitle
+            // shows verbatim (no localization) otherwise.
+            .navigationTitle(appLocalized(editingReminder == nil ? "Nueva alarma" : "Editar alarma"))
             .navigationBarTitleDisplayMode(.inline)
             .scrollDismissesKeyboard(.interactively)
             .animation(DS.Motion.smooth, value: pendingSuggestion)
@@ -181,17 +199,48 @@ struct ReminderEditorView: View {
                 }
                 .presentationDetents([.medium, .large])
             }
-            // Shared invite delivery (Messages, with generic share fallback).
-            // Closing it dismisses the editor — the reminder is already saved.
-            .inviteDelivery($pendingInvite) { dismiss() }
+            .sheet(isPresented: $showingIconPicker) {
+                NavigationStack {
+                    Form {
+                        Section {
+                            iconEditor
+                        }
+                    }
+                    .navigationTitle(appLocalized("Icono"))
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Listo") { showingIconPicker = false }
+                        }
+                    }
+                }
+                .presentationDetents([.medium, .large])
+            }
+            // Shared invite delivery (Messages, with generic share fallback). For a
+            // NEW alarm this closes the editor (the reminder was just saved); when
+            // sharing an EXISTING one we stay and refresh who has access.
+            .inviteDelivery($pendingInvite) {
+                if editingReminder == nil { dismiss() }
+                else { Task { await refreshShare() } }
+            }
+            // Native CloudKit sharing management for an already-shared alarm.
+            .sheet(isPresented: $showingManageSheet, onDismiss: { Task { await refreshShare() } }) {
+                if let share = existingShare {
+                    CloudSharingView(
+                        share: share,
+                        container: CKContainer(identifier: sharedService.containerIdentifier)
+                    ) { showingManageSheet = false }
+                }
+            }
             .alert("Error al compartir", isPresented: Binding(
                 get: { shareError != nil },
                 set: { if !$0 { shareError = nil } }
             )) {
-                Button("OK") { shareError = nil; dismiss() }
+                Button("OK") { shareError = nil; if editingReminder == nil { dismiss() } }
             } message: {
                 Text(shareError ?? "")
             }
+            .task { await refreshShare() }
         }
     }
 
@@ -199,16 +248,32 @@ struct ReminderEditorView: View {
     private var titleSection: some View {
         Section {
             HStack(alignment: .top, spacing: DS.Spacing.md) {
-                ReminderIconView(
-                    iconKind: iconKind,
-                    iconValue: symbolName,
-                    photoData: photoData,
-                    fallbackSymbol: fallbackSymbol,
-                    tint: style.color,
-                    size: 56,
-                    shape: .roundedRect(DS.Radius.md),
-                    bounceValue: isEnabled
-                )
+                // Tap the icon to change it directly (no longer buried in "More options").
+                Button {
+                    Haptics.light()
+                    showingIconPicker = true
+                } label: {
+                    ReminderIconView(
+                        iconKind: iconKind,
+                        iconValue: symbolName,
+                        photoData: photoData,
+                        fallbackSymbol: fallbackSymbol,
+                        tint: style.color,
+                        size: 56,
+                        shape: .roundedRect(DS.Radius.md),
+                        bounceValue: isEnabled
+                    )
+                    .overlay(alignment: .bottomTrailing) {
+                        Image(systemName: "pencil.circle.fill")
+                            .font(.body)
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(.white, style.color)
+                            .background(Circle().fill(Color(.systemBackground)).padding(1))
+                            .offset(x: 5, y: 5)
+                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text(appLocalized("Cambiar icono")))
 
                 VStack(alignment: .leading, spacing: DS.Spacing.sm) {
                     TextField("Título", text: $title)
@@ -223,45 +288,104 @@ struct ReminderEditorView: View {
 
     @ViewBuilder
     private var scheduleSection: some View {
+        // Primary schedule (date + time + recurrence).
         Section {
-            DatePicker(selection: $date, displayedComponents: [.date]) {
-                Label("Fecha", systemImage: "calendar")
-            }
-            .datePickerStyle(.compact)
+            schedulePickers(date: $date, recurrence: $recurrence)
+        } header: {
+            Text(additionalSchedules.isEmpty ? appLocalized("Cuándo") : "\(appLocalized("Horario")) 1")
+        }
 
-            DatePicker(selection: $date, displayedComponents: [.hourAndMinute]) {
-                Label("Hora", systemImage: "clock.fill")
-            }
-            .datePickerStyle(.compact)
-
-            if leadTimes.count == 1 {
-                Picker(selection: primaryLeadTime) {
-                    ForEach(AlarmLeadTime.allCases) { value in
-                        Text(value.localizedTitle).tag(value)
-                    }
-                } label: {
-                    Label("Aviso", systemImage: "bell.fill")
-                }
-                .pickerStyle(.menu)
-            } else {
-                Button {
+        // Additional schedules — same alarm, different day/time.
+        ForEach($additionalSchedules) { $sched in
+            Section {
+                schedulePickers(date: $sched.date, recurrence: $sched.recurrence)
+                Button(role: .destructive) {
                     withAnimation(DS.Motion.snappy) {
-                        showingMoreOptions = true
+                        additionalSchedules.removeAll { $0.id == sched.id }
                     }
                     Haptics.light()
                 } label: {
-                    LabeledContent {
-                        Text(leadTimesSummary)
-                    } label: {
-                        Label("Aviso", systemImage: "bell.fill")
-                    }
+                    Label("Quitar horario", systemImage: "trash")
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(.primary)
+            } header: {
+                Text("\(appLocalized("Horario")) \((additionalSchedules.firstIndex { $0.id == sched.id } ?? 0) + 2)")
             }
-        } header: {
-            Text("Cuándo")
         }
+
+        // Add another schedule + the (shared) lead time.
+        Section {
+            Button {
+                Haptics.light()
+                withAnimation(DS.Motion.snappy) {
+                    additionalSchedules.append(AlarmSchedule(date: newScheduleDate(), recurrence: .once))
+                }
+            } label: {
+                Label("Agregar horario", systemImage: "calendar.badge.plus")
+            }
+            avisoControl
+        } footer: {
+            Text("Agrega días y horas distintos para la misma alarma (p. ej. lunes y sábado).")
+        }
+    }
+
+    /// The date + time + recurrence controls for one schedule, bound to the given state.
+    @ViewBuilder
+    private func schedulePickers(date: Binding<Date>, recurrence: Binding<RecurrenceRule>) -> some View {
+        DatePicker(selection: date, displayedComponents: [.date]) {
+            Label("Fecha", systemImage: "calendar")
+        }
+        .datePickerStyle(.compact)
+
+        DatePicker(selection: date, displayedComponents: [.hourAndMinute]) {
+            Label("Hora", systemImage: "clock.fill")
+        }
+        .datePickerStyle(.compact)
+
+        NavigationLink {
+            RecurrencePickerView(rule: recurrence, baseDate: date.wrappedValue)
+        } label: {
+            LabeledContent {
+                Text(recurrence.wrappedValue.localizedSummary)
+                    .foregroundStyle(.secondary)
+            } label: {
+                Label("Repetir", systemImage: "repeat")
+            }
+        }
+    }
+
+    /// Lead-time control, shared across all schedules. Simple picker for a single
+    /// lead time; otherwise a shortcut into "More options" where they're edited.
+    @ViewBuilder
+    private var avisoControl: some View {
+        if leadTimes.count == 1 {
+            Picker(selection: primaryLeadTime) {
+                ForEach(AlarmLeadTime.allCases) { value in
+                    Text(value.localizedTitle).tag(value)
+                }
+            } label: {
+                Label("Aviso", systemImage: "bell.fill")
+            }
+            .pickerStyle(.menu)
+        } else {
+            Button {
+                withAnimation(DS.Motion.snappy) { showingMoreOptions = true }
+                Haptics.light()
+            } label: {
+                LabeledContent {
+                    Text(leadTimesSummary)
+                } label: {
+                    Label("Aviso", systemImage: "bell.fill")
+                }
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.primary)
+        }
+    }
+
+    /// A sensible default for a freshly-added schedule: the day after the primary
+    /// date, same time, so the user just tweaks it.
+    private func newScheduleDate() -> Date {
+        Calendar.current.date(byAdding: .day, value: 1, to: date) ?? date
     }
 
     @ViewBuilder
@@ -313,24 +437,6 @@ struct ReminderEditorView: View {
     }
 
     @ViewBuilder
-    private var recurrenceSection: some View {
-        Section {
-            NavigationLink {
-                RecurrencePickerView(rule: $recurrence, baseDate: date)
-            } label: {
-                LabeledContent {
-                    Text(recurrence.localizedSummary)
-                        .foregroundStyle(.secondary)
-                } label: {
-                    Label("Repetir", systemImage: "repeat")
-                }
-            }
-        } header: {
-            Text("Repetición")
-        }
-    }
-
-    @ViewBuilder
     private var statusSection: some View {
         Section {
             Toggle(isOn: $isEnabled) {
@@ -352,15 +458,6 @@ struct ReminderEditorView: View {
             if leadTimes.count > 1 {
                 Text("La alarma sonará una vez por cada aviso configurado.")
             }
-        }
-    }
-
-    @ViewBuilder
-    private var iconSection: some View {
-        Section {
-            iconEditor
-        } header: {
-            Text("Icono")
         }
     }
 
@@ -465,6 +562,136 @@ struct ReminderEditorView: View {
         }
     }
 
+    // MARK: - Sharing (existing alarm)
+
+    /// Owner-side: invite people, manage an existing share, and see who joined.
+    @ViewBuilder
+    private var existingShareSection: some View {
+        Section {
+            Button {
+                Haptics.light()
+                Task { await inviteExisting() }
+            } label: {
+                HStack {
+                    Label("Invitar amigos", systemImage: "person.badge.plus")
+                    Spacer()
+                    if isPreparingShare { ProgressView() }
+                }
+            }
+            .disabled(isPreparingShare || isTitleEmpty)
+
+            if existingShare != nil {
+                Button {
+                    Haptics.light()
+                    showingManageSheet = true
+                } label: {
+                    Label("Gestionar compartido", systemImage: "person.2.badge.gearshape")
+                }
+            }
+        } header: {
+            Text("Compartir")
+        }
+
+        if !participants.isEmpty {
+            Section {
+                ForEach(participants) { person in
+                    participantRow(person)
+                }
+            } header: {
+                HStack(spacing: DS.Spacing.xs) {
+                    Image(systemName: "person.2.fill").font(.caption2)
+                    Text("Personas")
+                }
+            }
+        }
+    }
+
+    /// Recipient-side: who shared this alarm with me.
+    @ViewBuilder
+    private var sharedBySection: some View {
+        Section {
+            if let sharedBy {
+                HStack(spacing: DS.Spacing.md) {
+                    PersonAvatarView(name: sharedBy.name, email: sharedBy.email, phone: sharedBy.phone, size: 44)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(sharedBy.name)
+                            .font(.subheadline.weight(.semibold))
+                        Text("Te compartió esta alarma")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.vertical, 2)
+            } else {
+                Label("Compartido contigo", systemImage: "person.2.fill")
+                    .foregroundStyle(.secondary)
+            }
+        } header: {
+            Text("Compartido")
+        }
+    }
+
+    private func participantRow(_ person: ShareParticipantInfo) -> some View {
+        HStack(spacing: DS.Spacing.md) {
+            PersonAvatarView(name: person.name, email: person.email, phone: person.phone, size: 36)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(person.name)
+                    .font(.subheadline)
+                    .lineLimit(1)
+                Text(person.statusLabel)
+                    .font(.caption)
+                    .foregroundStyle(statusColor(person.status))
+            }
+            Spacer()
+            if person.status == .accepted {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+            }
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func statusColor(_ status: CKShare.ParticipantAcceptanceStatus) -> Color {
+        switch status {
+        case .accepted: return .green
+        case .pending: return .orange
+        default: return .secondary
+        }
+    }
+
+    /// Loads share state for an existing alarm: who shared it (recipient) or who
+    /// has joined (owner). No-op for a brand-new alarm.
+    @MainActor
+    private func refreshShare() async {
+        guard let r = editingReminder else { return }
+        if r.isReceivedShare {
+            sharedBy = ShareOwnerStore.get(r.id)
+            return
+        }
+        let share = await sharedService.existingShare(for: r)
+        existingShare = share
+        participants = share.map { sharedService.participantInfos(of: $0).filter { !$0.isOwner } } ?? []
+    }
+
+    /// Prepares the share for an existing alarm and hands off to Messages.
+    @MainActor
+    private func inviteExisting() async {
+        guard let r = editingReminder else { return }
+        isPreparingShare = true
+        defer { isPreparingShare = false }
+        do {
+            let share = try await sharedService.prepareShare(for: r)
+            guard let url = share.url else {
+                shareError = SharedRemindersError.shareURLUnavailable.errorDescription
+                return
+            }
+            existingShare = share
+            pendingInvite = InviteDelivery(title: r.title, url: url)
+        } catch {
+            shareError = error.localizedDescription
+        }
+    }
+
     private func removeLeadTime(_ value: AlarmLeadTime) {
         guard leadTimes.count > 1 else { return }
         withAnimation(DS.Motion.snappy) {
@@ -487,6 +714,7 @@ struct ReminderEditorView: View {
             existing.symbolName = symbolName
             existing.photoData = iconKind == .photo ? photoData : nil
             existing.recurrence = recurrence
+            existing.additionalSchedules = additionalSchedules
             existing.leadTimes = leadTimes
             existing.isEnabled = isEnabled
             existing.updatedAt = Date()
@@ -503,6 +731,7 @@ struct ReminderEditorView: View {
                 leadTimes: leadTimes,
                 isEnabled: isEnabled
             )
+            new.additionalSchedules = additionalSchedules
             categoryStore.apply(categorySelection, to: new)
             modelContext.insert(new)
             reminder = new

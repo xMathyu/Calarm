@@ -1003,6 +1003,22 @@
         }
       }
     },
+    "Agrega días y horas distintos para la misma alarma (p. ej. lunes y sábado)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add different days and times for the same alarm (e.g. Monday and Saturday)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agrega días y horas distintos para la misma alarma (p. ej. lunes y sábado)."
+          }
+        }
+      }
+    },
     "Agregar aviso" : {
       "localizations" : {
         "en" : {
@@ -1015,6 +1031,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Agregar aviso"
+          }
+        }
+      }
+    },
+    "Agregar horario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add schedule"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar horario"
           }
         }
       }
@@ -1498,6 +1530,22 @@
       }
     },
     "Borrar alarma" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete alarm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar alarma"
+          }
+        }
+      }
+    },
+    "Borrar alarma" : {
 
     },
     "Borrar categoría" : {
@@ -1819,6 +1867,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cambiar foto"
+          }
+        }
+      }
+    },
+    "Cambiar icono" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change icon"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar icono"
           }
         }
       }
@@ -2375,7 +2439,20 @@
       }
     },
     "Cuándo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuándo"
+          }
+        }
+      }
     },
     "Cuando alguien te invite como persona de confianza y aceptes la invitación, sus alarmas aparecerán aquí." : {
 
@@ -2857,6 +2934,22 @@
       }
     },
     "Editar alarma" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit alarm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar alarma"
+          }
+        }
+      }
+    },
+    "Editar alarma" : {
 
     },
     "Editar categoría" : {
@@ -3325,6 +3418,22 @@
         }
       }
     },
+    "Horario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horario"
+          }
+        }
+      }
+    },
     "Hoy" : {
       "localizations" : {
         "en" : {
@@ -3755,6 +3864,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Más adelante"
+          }
+        }
+      }
+    },
+    "Más opciones" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More options"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más opciones"
           }
         }
       }
@@ -4559,6 +4684,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quitar %@"
+          }
+        }
+      }
+    },
+    "Quitar horario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove schedule"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar horario"
           }
         }
       }

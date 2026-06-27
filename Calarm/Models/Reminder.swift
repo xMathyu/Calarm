@@ -30,6 +30,11 @@ final class Reminder {
     /// arrive as empty `Data()` which decodes to `[]`, behaving exactly like a
     /// single-lead-time reminder.
     var additionalLeadTimesData: Data = Data()
+    /// Extra (date+recurrence) schedules beyond the primary `date`/`recurrence`,
+    /// JSON-encoded `[AlarmSchedule]`. Lets one alarm fire on different days/times
+    /// (e.g. training Mon+Fri 5pm AND Sat 11am). New field — older CloudKit records
+    /// arrive as empty `Data()` which decodes to `[]` (single-schedule behavior).
+    var additionalSchedulesData: Data = Data()
     var isEnabled: Bool = true
     var createdAt: Date = Date()
     var updatedAt: Date = Date()
@@ -81,6 +86,27 @@ final class Reminder {
     var recurrence: RecurrenceRule {
         get { (try? JSONDecoder().decode(RecurrenceRule.self, from: recurrenceData)) ?? .once }
         set { recurrenceData = (try? JSONEncoder().encode(newValue)) ?? Data() }
+    }
+
+    /// Additional schedules beyond the primary `date`/`recurrence`. Empty by default.
+    var additionalSchedules: [AlarmSchedule] {
+        get {
+            guard !additionalSchedulesData.isEmpty,
+                  let arr = try? JSONDecoder().decode([AlarmSchedule].self, from: additionalSchedulesData)
+            else { return [] }
+            return arr
+        }
+        set {
+            additionalSchedulesData = newValue.isEmpty
+                ? Data()
+                : ((try? JSONEncoder().encode(newValue)) ?? Data())
+        }
+    }
+
+    /// Every schedule this alarm fires on: the primary one (from `date` +
+    /// `recurrence`) followed by any additional schedules.
+    var allSchedules: [AlarmSchedule] {
+        [AlarmSchedule(id: id, date: date, recurrence: recurrence)] + additionalSchedules
     }
 
     var leadTime: AlarmLeadTime {

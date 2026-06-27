@@ -18,6 +18,11 @@ final class ReminderScheduler {
     private let settings: AppSettings
     private let occurrencesPerReminder: Int
 
+    /// Upper bound on concurrently-scheduled AlarmKit alarms per reminder across all
+    /// of its schedules × lead times. Keeps multi-schedule alarms from exhausting the
+    /// system's pending-alarm budget; the soonest are kept and the rest reprogrammed later.
+    private static let maxScheduledFireDates = 32
+
     init(scheduler: AlarmScheduler, settings: AppSettings, occurrencesPerReminder: Int = 12) {
         self.scheduler = scheduler
         self.settings = settings
@@ -61,22 +66,28 @@ final class ReminderScheduler {
             return
         }
 
-        let occurrences = RecurrenceEngine.nextOccurrences(
-            rule: reminder.recurrence,
-            baseDate: reminder.date,
-            count: occurrencesPerReminder
-        )
-
-        // One alarm per (occurrence × leadTime) combo, filtered to future dates.
+        // One alarm per (schedule × occurrence × leadTime) combo, filtered to the
+        // future. A reminder can have several schedules (different day/time), so we
+        // union the occurrences of all of them.
         let now = Date()
         let leadTimes = reminder.leadTimes
-        var fireDates: [Date] = []
-        for occurrence in occurrences {
-            for leadTime in leadTimes {
-                let fire = occurrence.addingTimeInterval(-leadTime.seconds)
-                if fire > now { fireDates.append(fire) }
+        var fireSet: Set<Date> = []
+        for schedule in reminder.allSchedules {
+            let occurrences = RecurrenceEngine.nextOccurrences(
+                rule: schedule.recurrence,
+                baseDate: schedule.date,
+                count: occurrencesPerReminder
+            )
+            for occurrence in occurrences {
+                for leadTime in leadTimes {
+                    let fire = occurrence.addingTimeInterval(-leadTime.seconds)
+                    if fire > now { fireSet.insert(fire) }
+                }
             }
         }
+        // Cap the total so many schedules can't blow past AlarmKit's pending-alarm
+        // budget; keep the soonest. Far-future ones get scheduled on a later sync.
+        let fireDates = Array(fireSet.sorted().prefix(Self.maxScheduledFireDates))
 
         await scheduler.cancelOrphans(ownerID: ownerID, keepFireDates: Set(fireDates))
 

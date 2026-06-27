@@ -78,6 +78,12 @@ struct CalarmApp: App {
             .id(localization.revision)
             .task {
                 UIApplication.shared.installGlobalKeyboardDismissGesture()
+                // Bring up the calendar coordinator FIRST so the "Calendario" tab
+                // appears immediately on launch, instead of after the CloudKit work
+                // below finishes (which made the tab show up several seconds late).
+                if settings.teamsDetectionEnabled {
+                    bootstrapTeamsCoordinator()
+                }
                 await syncAllReminders()
                 // Cancel system alarms that no longer belong to anything: tracked
                 // entries whose reminder was deleted, and alarms AlarmKit still has
@@ -104,9 +110,6 @@ struct CalarmApp: App {
                     await delegationService.pullPrincipalChanges()
                     await delegationService.reconcileUp()
                     await syncAllReminders()
-                }
-                if settings.teamsDetectionEnabled {
-                    bootstrapTeamsCoordinator()
                 }
             }
             .onChange(of: scenePhase) { _, newPhase in

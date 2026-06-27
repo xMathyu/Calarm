@@ -16,7 +16,7 @@ struct RemindersListView: View {
     @Query(sort: [SortDescriptor(\Reminder.date)]) private var reminders: [Reminder]
 
     @State private var showingNewEditor = false
-    @State private var detailReminder: Reminder?
+    @State private var editorReminder: Reminder?
     @State private var filterCategories: Set<ReminderCategory> = []
 
     var body: some View {
@@ -63,8 +63,8 @@ struct RemindersListView: View {
                 .sheet(isPresented: $showingNewEditor) {
                     ReminderEditorView(editing: nil)
                 }
-                .sheet(item: $detailReminder) { reminder in
-                    ReminderDetailView(reminder: reminder)
+                .sheet(item: $editorReminder) { reminder in
+                    ReminderEditorView(editing: reminder)
                 }
         }
     }
@@ -91,7 +91,7 @@ struct RemindersListView: View {
                         ForEach(group.items, id: \.reminder.id) { item in
                             Button {
                                 Haptics.light()
-                                detailReminder = item.reminder
+                                editorReminder = item.reminder
                             } label: {
                                 ReminderRowView(
                                     reminder: item.reminder,
@@ -125,7 +125,7 @@ struct RemindersListView: View {
                         ForEach(shared) { reminder in
                             Button {
                                 Haptics.light()
-                                detailReminder = reminder
+                                editorReminder = reminder
                             } label: {
                                 ReminderRowView(
                                     reminder: reminder,
@@ -181,7 +181,10 @@ struct RemindersListView: View {
     }
 
     private func nextOccurrence(for reminder: Reminder) -> Date? {
-        RecurrenceEngine.nextOccurrences(rule: reminder.recurrence, baseDate: reminder.date, count: 1).first
+        // Earliest upcoming occurrence across all of the alarm's schedules.
+        reminder.allSchedules
+            .compactMap { RecurrenceEngine.nextOccurrences(rule: $0.recurrence, baseDate: $0.date, count: 1).first }
+            .min()
     }
 
     private struct Group {

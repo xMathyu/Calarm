@@ -2,9 +2,9 @@
 //  ContactInviteFlow.swift
 //  Calarm
 //
-//  Shared "invite people via Messages" delivery used by BOTH the create
-//  (ReminderEditorView) and detail (ReminderDetailView) flows, so the invite
-//  experience and wording are identical in both. Prepare a `CKShare`, then drive
+//  Shared "invite people via Messages" delivery used by the alarm editor
+//  (ReminderEditorView), for both creating and sharing an existing alarm, so the
+//  invite experience and wording are identical. Prepare a `CKShare`, then drive
 //  this to open Messages with the link pre-filled — the user picks recipients
 //  right in the Messages "To:" field, so there's a single sheet (no separate
 //  contact picker step).

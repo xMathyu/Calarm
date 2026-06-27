@@ -489,7 +489,12 @@ final class SharedRemindersService {
             customCategory: custom,
             updatedAt: reminder.updatedAt,
             isDeleted: nil,
-            photoThumbnail: photoThumbnailData(from: reminder)
+            photoThumbnail: photoThumbnailData(from: reminder),
+            additionalSchedules: reminder.additionalSchedules.isEmpty
+                ? nil
+                : reminder.additionalSchedules.map {
+                    SharePayload.ScheduleInfo(date: $0.date, recurrenceData: $0.recurrenceData)
+                }
         )
     }
 
@@ -741,6 +746,10 @@ final class SharedRemindersService {
         // Photo icon: carry the shared thumbnail (nil clears it for non-photo).
         reminder.photoData = payload.photoThumbnail
         reminder.recurrenceData = payload.recurrenceData
+        reminder.additionalSchedules = (payload.additionalSchedules ?? []).map {
+            let rule = (try? JSONDecoder().decode(RecurrenceRule.self, from: $0.recurrenceData)) ?? .once
+            return AlarmSchedule(date: $0.date, recurrence: rule)
+        }
         let leadTimes = payload.leadTimeSeconds.compactMap { AlarmLeadTime(rawValue: $0) }
         reminder.leadTimes = leadTimes.isEmpty ? [.atStart] : leadTimes
         reminder.isEnabled = payload.isEnabled
@@ -850,6 +859,10 @@ struct SharePayload: Codable {
     /// the `payload` Bytes field (no CKAsset / schema change). Optional/absent for
     /// non-photo reminders.
     var photoThumbnail: Data? = nil
+    /// v3: extra (date+recurrence) schedules beyond the primary one, so a multi-
+    /// schedule alarm keeps all its days/times on recipients and helpers. Optional/
+    /// absent = single-schedule (older senders).
+    var additionalSchedules: [ScheduleInfo]? = nil
 
     struct CustomCategoryInfo: Codable {
         var id: String
@@ -857,5 +870,11 @@ struct SharePayload: Codable {
         var colorHex: String
         var iconKindRaw: Int
         var iconValue: String
+    }
+
+    /// One extra schedule in the payload (mirrors `AlarmSchedule` minus its id).
+    struct ScheduleInfo: Codable {
+        var date: Date
+        var recurrenceData: Data
     }
 }
