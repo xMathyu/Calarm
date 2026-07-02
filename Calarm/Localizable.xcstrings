@@ -324,7 +324,20 @@
       }
     },
     "¿Desactivar delegación?" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn off delegation?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Desactivar delegación?"
+          }
+        }
+      }
     },
     "¿En qué te ayudo?" : {
       "localizations" : {
@@ -569,6 +582,12 @@
     },
     "%lld avisos" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld alerts"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1108,10 +1127,36 @@
       }
     },
     "Acepta una invitación y vuelve aquí para ver el trazo del proceso." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accept an invitation and come back here to see the process trace."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acepta una invitación y vuelve aquí para ver el trazo del proceso."
+          }
+        }
+      }
     },
     "Aceptó" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accepted"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceptó"
+          }
+        }
+      }
     },
     "Acerca de" : {
       "localizations" : {
@@ -1497,7 +1542,20 @@
       }
     },
     "Alguien" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Someone"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alguien"
+          }
+        }
+      }
     },
     "Aniversario" : {
       "localizations" : {
@@ -1645,7 +1703,20 @@
       }
     },
     "Aún no has invitado a nadie." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You haven't invited anyone yet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no has invitado a nadie."
+          }
+        }
+      }
     },
     "Aunque el iPhone esté en silencio, bloqueado o en Focus." : {
       "localizations" : {
@@ -1697,7 +1768,20 @@
       }
     },
     "Avisar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisar"
+          }
+        }
+      }
     },
     "Aviso" : {
       "localizations" : {
@@ -1715,9 +1799,6 @@
         }
       }
     },
-    "Avisos" : {
-
-    },
     "Avisos (máximo %lld)" : {
       "localizations" : {
         "en" : {
@@ -1733,9 +1814,6 @@
           }
         }
       }
-    },
-    "Avisos configurados" : {
-
     },
     "Bienvenido a Calarm" : {
       "localizations" : {
@@ -2270,7 +2348,20 @@
       }
     },
     "Comparte el enlace por Mensajes. Al aceptarlo, esa persona podrá administrar tus alarmas." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share the link over Messages. Once they accept, that person will be able to manage your alarms."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte el enlace por Mensajes. Al aceptarlo, esa persona podrá administrar tus alarmas."
+          }
+        }
+      }
     },
     "Comparte el link por Messages" : {
       "extractionState" : "stale",
@@ -2371,7 +2462,20 @@
       }
     },
     "Compartir: diagnóstico" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sharing: diagnostics"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir: diagnóstico"
+          }
+        }
+      }
     },
     "Con cuánta anticipación avisar" : {
       "localizations" : {
@@ -2406,7 +2510,20 @@
       }
     },
     "Copiar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar"
+          }
+        }
+      }
     },
     "Crea alarmas para cumpleaños, aniversarios y eventos personales. Suenan aunque tu iPhone esté en silencio." : {
       "localizations" : {
@@ -2556,6 +2673,12 @@
     },
     "Crear alarma ${titleParam} para ${date}" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create alarm ${titleParam} for ${date}"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2616,6 +2739,12 @@
     },
     "Crear alarma con IA: ${instruction}" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create alarm with AI: ${instruction}"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2692,7 +2821,20 @@
       }
     },
     "Cuando alguien te invite como persona de confianza y aceptes la invitación, sus alarmas aparecerán aquí." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When someone invites you as a trusted helper and you accept the invitation, their alarms will appear here."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando alguien te invite como persona de confianza y aceptes la invitación, sus alarmas aparecerán aquí."
+          }
+        }
+      }
     },
     "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte." : {
       "extractionState" : "stale",
@@ -2824,13 +2966,52 @@
       }
     },
     "De arriba (más antiguo) a abajo (más reciente). Mantén presionado para copiar una línea, o usa “Copiar”." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Top (oldest) to bottom (newest). Press and hold to copy a line, or use “Copy”."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De arriba (más antiguo) a abajo (más reciente). Mantén presionado para copiar una línea, o usa “Copiar”."
+          }
+        }
+      }
     },
     "Deja que personas de confianza administren tus alarmas, o administra las de alguien que te invitó." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Let trusted helpers manage your alarms, or manage the alarms of someone who invited you."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deja que personas de confianza administren tus alarmas, o administra las de alguien que te invitó."
+          }
+        }
+      }
     },
     "Delegación" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delegation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delegación"
+          }
+        }
+      }
     },
     "Denegado" : {
       "extractionState" : "stale",
@@ -3286,6 +3467,12 @@
     },
     "Elige el tema. \"Automático\" sigue la configuración del sistema." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the theme. \"Automatic\" follows the system setting."
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3295,7 +3482,20 @@
       }
     },
     "Eliminado" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Removed"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminado"
+          }
+        }
+      }
     },
     "Emoji" : {
       "localizations" : {
@@ -3312,9 +3512,6 @@
           }
         }
       }
-    },
-    "Emoji personalizado" : {
-
     },
     "En pausa" : {
       "localizations" : {
@@ -3349,7 +3546,20 @@
       }
     },
     "Error" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        }
+      }
     },
     "Error al aceptar la invitación: %@" : {
       "extractionState" : "stale",
@@ -3628,6 +3838,12 @@
     },
     "hasta %@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "until %@"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3863,7 +4079,20 @@
       }
     },
     "Invitar persona de confianza" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invite a trusted helper"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invitar persona de confianza"
+          }
+        }
+      }
     },
     "Ir" : {
       "localizations" : {
@@ -3962,10 +4191,36 @@
       }
     },
     "Las personas que invites podrán ver, crear, editar y borrar TODAS tus alarmas en tu nombre. Lo que ellas programen sonará en tu teléfono. Tú puedes revocar el acceso en cualquier momento." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "People you invite will be able to see, create, edit, and delete ALL your alarms on your behalf. Whatever they schedule will ring on your phone. You can revoke access at any time."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las personas que invites podrán ver, crear, editar y borrar TODAS tus alarmas en tu nombre. Lo que ellas programen sonará en tu teléfono. Tú puedes revocar el acceso en cualquier momento."
+          }
+        }
+      }
     },
     "Limpiar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpiar"
+          }
+        }
+      }
     },
     "Limpiar filtros" : {
       "localizations" : {
@@ -3984,7 +4239,20 @@
       }
     },
     "Listas que administro" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lists I manage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listas que administro"
+          }
+        }
+      }
     },
     "Listo" : {
       "localizations" : {
@@ -4238,7 +4506,20 @@
       }
     },
     "No se pudo aceptar la invitación" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't accept the invitation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo aceptar la invitación"
+          }
+        }
+      }
     },
     "No se pudo preparar la alarma para compartirla." : {
       "extractionState" : "stale",
@@ -4566,7 +4847,20 @@
       }
     },
     "Pendiente" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pending"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pendiente"
+          }
+        }
+      }
     },
     "Permiso de alarmas" : {
       "localizations" : {
@@ -4618,7 +4912,20 @@
       }
     },
     "Permitir personas de confianza" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow trusted helpers"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir personas de confianza"
+          }
+        }
+      }
     },
     "Personalizado" : {
       "localizations" : {
@@ -4637,13 +4944,52 @@
       }
     },
     "Personas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "People"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personas"
+          }
+        }
+      }
     },
     "Personas con acceso" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "People with access"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personas con acceso"
+          }
+        }
+      }
     },
     "Personas de confianza" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trusted helpers"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personas de confianza"
+          }
+        }
+      }
     },
     "Pídele a %@ que cree una alarma" : {
       "extractionState" : "stale",
@@ -5170,7 +5516,20 @@
       }
     },
     "Revocar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revoke"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revocar"
+          }
+        }
+      }
     },
     "Sáb" : {
       "localizations" : {
@@ -5350,10 +5709,36 @@
       }
     },
     "Sin eventos todavía" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No events yet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin eventos todavía"
+          }
+        }
+      }
     },
     "Sin listas para administrar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No lists to manage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin listas para administrar"
+          }
+        }
+      }
     },
     "Sin ocurrencias futuras" : {
       "localizations" : {
@@ -5452,7 +5837,20 @@
       }
     },
     "Te compartió esta alarma" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shared this alarm with you"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te compartió esta alarma"
+          }
+        }
+      }
     },
     "Te invito a '%@' en Calarm" : {
       "localizations" : {
@@ -5611,7 +6009,20 @@
       }
     },
     "Toca + para crear una alarma para %@." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap + to create an alarm for %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca + para crear una alarma para %@."
+          }
+        }
+      }
     },
     "Toca un emoji o escribe el tuyo abajo." : {
       "extractionState" : "stale",
@@ -5647,7 +6058,20 @@
       }
     },
     "Tus personas de confianza dejarán de ver y administrar tus alarmas. Tus alarmas siguen intactas." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your trusted helpers will no longer see or manage your alarms. Your alarms stay intact."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus personas de confianza dejarán de ver y administrar tus alarmas. Tus alarmas siguen intactas."
+          }
+        }
+      }
     },
     "Ubicación" : {
       "localizations" : {
