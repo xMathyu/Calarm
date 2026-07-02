@@ -1,0 +1,15 @@
+{
+  "originHash" : "4845271d9c1acad1a63ff048eb28e3588367945b6ee32fe92183b693ebd23411",
+  "pins" : [
+    {
+      "identity" : "elegant-emoji-picker",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Finalet/Elegant-Emoji-Picker",
+      "state" : {
+        "branch" : "main",
+        "revision" : "ceff7ebc438b32faef65db16dab7d8ac3c7e7c2e"
+      }
+    }
+  ],
+  "version" : 3
+}

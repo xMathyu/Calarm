@@ -106,24 +106,22 @@ struct ReminderEditorView: View {
         title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
-    private var leadTimesSummary: String {
-        leadTimes.map(\.shortTitle).joined(separator: " · ")
-    }
-
     private var moreOptionsSummary: String {
-        [
-            recurrence.localizedSummary,
-            leadTimesSummary,
-            isEnabled ? appLocalized("Activa") : appLocalized("Inactiva")
-        ].joined(separator: " · ")
+        isEnabled ? appLocalized("Activa") : appLocalized("Inactiva")
     }
 
-    private var primaryLeadTime: Binding<AlarmLeadTime> {
+    /// Binding for one aviso row: replaces that value in place, merging
+    /// duplicates and keeping the list ascending (soonest lead time first).
+    private func leadTimeBinding(for value: AlarmLeadTime) -> Binding<AlarmLeadTime> {
         Binding {
-            leadTimes.first ?? .atStart
+            value
         } set: { newValue in
             withAnimation(DS.Motion.snappy) {
-                leadTimes = [newValue]
+                var updated = leadTimes
+                if let index = updated.firstIndex(of: value) {
+                    updated[index] = newValue
+                }
+                leadTimes = Array(Set(updated)).sorted { $0.rawValue < $1.rawValue }
             }
             Haptics.selection()
         }
@@ -144,7 +142,6 @@ struct ReminderEditorView: View {
                 moreOptionsToggleSection
                 if showingMoreOptions {
                     statusSection
-                    leadTimesSection
                     if editingReminder == nil {
                         inviteAdvancedSection
                     }
@@ -324,7 +321,11 @@ struct ReminderEditorView: View {
             }
             avisoControl
         } footer: {
-            Text("Agrega días y horas distintos para la misma alarma (p. ej. lunes y sábado).")
+            if leadTimes.count > 1 {
+                Text("La alarma sonará una vez por cada aviso configurado.")
+            } else {
+                Text("Agrega días y horas distintos para la misma alarma (p. ej. lunes y sábado).")
+            }
         }
     }
 
@@ -353,32 +354,45 @@ struct ReminderEditorView: View {
         }
     }
 
-    /// Lead-time control, shared across all schedules. Simple picker for a single
-    /// lead time; otherwise a shortcut into "More options" where they're edited.
+    /// Lead-time controls, shared across all schedules and edited right here —
+    /// one picker row per aviso, plus add/remove, so nothing hides in "More options".
     @ViewBuilder
     private var avisoControl: some View {
-        if leadTimes.count == 1 {
-            Picker(selection: primaryLeadTime) {
-                ForEach(AlarmLeadTime.allCases) { value in
-                    Text(value.localizedTitle).tag(value)
-                }
-            } label: {
-                Label("Aviso", systemImage: "bell.fill")
-            }
-            .pickerStyle(.menu)
-        } else {
-            Button {
-                withAnimation(DS.Motion.snappy) { showingMoreOptions = true }
-                Haptics.light()
-            } label: {
-                LabeledContent {
-                    Text(leadTimesSummary)
+        ForEach(Array(leadTimes.enumerated()), id: \.element) { index, value in
+            HStack {
+                Picker(selection: leadTimeBinding(for: value)) {
+                    ForEach(AlarmLeadTime.allCases) { option in
+                        Text(option.localizedTitle).tag(option)
+                    }
                 } label: {
-                    Label("Aviso", systemImage: "bell.fill")
+                    Label {
+                        Text(index == 0 ? appLocalized("Aviso") : "\(appLocalized("Aviso")) \(index + 1)")
+                    } icon: {
+                        Image(systemName: index == 0 ? "bell.fill" : "bell.badge")
+                    }
+                }
+                .pickerStyle(.menu)
+
+                if leadTimes.count > 1 {
+                    Button {
+                        removeLeadTime(value)
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Quitar \(value.localizedTitle)"))
                 }
             }
-            .buttonStyle(.plain)
-            .foregroundStyle(.primary)
+        }
+
+        if leadTimes.count < Self.maxLeadTimes {
+            Button {
+                Haptics.light()
+                showingLeadTimePicker = true
+            } label: {
+                Label("Agregar aviso", systemImage: "plus.circle.fill")
+            }
         }
     }
 
@@ -449,19 +463,6 @@ struct ReminderEditorView: View {
     }
 
     @ViewBuilder
-    private var leadTimesSection: some View {
-        Section {
-            leadTimesEditor
-        } header: {
-            Text("Avisos")
-        } footer: {
-            if leadTimes.count > 1 {
-                Text("La alarma sonará una vez por cada aviso configurado.")
-            }
-        }
-    }
-
-    @ViewBuilder
     private var inviteAdvancedSection: some View {
         Section {
             inviteRow
@@ -469,50 +470,6 @@ struct ReminderEditorView: View {
             Text("Compartir")
         } footer: {
             Text("Se guardará la alarma y se abrirá Messages con el link para que tus invitados la acepten.")
-        }
-    }
-
-    private var leadTimesEditor: some View {
-        VStack(alignment: .leading, spacing: DS.Spacing.sm) {
-            HStack {
-                Label("Avisos configurados", systemImage: "bell.badge")
-                Spacer()
-                Text(leadTimesSummary)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
-
-            ForEach(leadTimes) { value in
-                HStack {
-                    Text(value.localizedTitle)
-                    Spacer()
-                    if leadTimes.count > 1 {
-                        Button {
-                            removeLeadTime(value)
-                        } label: {
-                            Image(systemName: "minus.circle.fill")
-                                .foregroundStyle(.secondary)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(Text("Quitar \(value.localizedTitle)"))
-                    }
-                }
-                .font(.subheadline)
-                .padding(.vertical, 2)
-                .transition(.opacity)
-            }
-
-            if leadTimes.count < Self.maxLeadTimes {
-                Button {
-                    Haptics.light()
-                    showingLeadTimePicker = true
-                } label: {
-                    Label("Agregar aviso", systemImage: "plus.circle.fill")
-                }
-                .font(.subheadline.weight(.medium))
-                .padding(.top, DS.Spacing.xs)
-            }
         }
     }
 

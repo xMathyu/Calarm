@@ -3,6 +3,7 @@
 //  Calarm
 //
 
+import ElegantEmojiPicker
 import PhotosUI
 import SwiftUI
 
@@ -19,15 +20,18 @@ struct IconPickerView: View {
     @Binding var photoData: Data?
 
     @State private var photoItem: PhotosPickerItem?
-    @State private var showingCustomEmojiPicker = false
+    @State private var showingEmojiPicker = false
+    @State private var pickedEmoji: Emoji?
 
+    // Last selection per tab, so switching Symbol ↔ Emoji round-trips without
+    // losing what the user picked (symbolName can only hold one at a time).
+    @State private var lastEmoji: String?
+    @State private var lastSymbol: String?
+
+    /// Quick one-tap picks; the full searchable picker covers everything else.
     private static let commonEmojis = [
         "🎉", "⭐️", "❤️", "🔥", "✅", "⏰",
-        "📅", "💼", "📚", "🎓", "💡", "📝",
-        "🏃", "💪", "🧘", "💊", "🩺", "🦷",
-        "☕️", "🍔", "🛒", "💰", "🏠", "🚗",
-        "✈️", "🌙", "☀️", "🌱", "🎵", "🎮",
-        "🎨", "📸", "🎂", "🎁", "⚽️", "🐶"
+        "📅", "💼", "💊", "🎂", "🎁", "✈️"
     ]
 
     var body: some View {
@@ -43,14 +47,21 @@ struct IconPickerView: View {
             }
             .pickerStyle(.segmented)
 
-            switch iconKind {
-            case .symbol:
-                symbolGrid
-            case .emoji:
-                emojiSection
-            case .photo:
-                photoSection
+            Group {
+                switch iconKind {
+                case .symbol:
+                    symbolGrid
+                case .emoji:
+                    emojiSection
+                case .photo:
+                    photoSection
+                }
             }
+            // Swap tabs without animating the structural change: animating it
+            // inside a Form row leaves the row with a stale height and the
+            // content pushed down under a large empty gap.
+            .id(iconKind)
+            .transaction { $0.animation = nil }
         }
         .onChange(of: photoItem) { _, newItem in
             Task {
@@ -61,13 +72,22 @@ struct IconPickerView: View {
             }
         }
         // Keep `symbolName` valid for the active kind: an emoji for the emoji
-        // tab, an SF Symbol for the symbol tab.
-        .onChange(of: iconKind) { _, newKind in
+        // tab, an SF Symbol for the symbol tab. Stash the outgoing value and
+        // restore it when the user comes back to that tab.
+        .onChange(of: iconKind) { oldKind, newKind in
+            switch oldKind {
+            case .emoji:
+                if isEmojiIcon(symbolName) { lastEmoji = symbolName }
+            case .symbol:
+                if !isEmojiIcon(symbolName) { lastSymbol = symbolName }
+            case .photo:
+                break
+            }
             switch newKind {
             case .emoji:
-                if !isEmojiIcon(symbolName) { symbolName = "🎉" }
+                if !isEmojiIcon(symbolName) { symbolName = lastEmoji ?? "🎉" }
             case .symbol:
-                if isEmojiIcon(symbolName) { symbolName = defaultSymbol }
+                if isEmojiIcon(symbolName) { symbolName = lastSymbol ?? defaultSymbol }
             case .photo:
                 break
             }
@@ -91,20 +111,74 @@ struct IconPickerView: View {
                 Spacer()
             }
 
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 6), spacing: 10) {
-                ForEach(Self.commonEmojis, id: \.self) { emoji in
-                    emojiButton(emoji)
-                }
-                customEmojiButton
+            // Eager rows instead of LazyVGrid: lazy grids inside a Form row
+            // misreport their height when the tab content changes, leaving a
+            // large empty gap above the picker.
+            eagerGrid(cellCount: Self.commonEmojis.count, columns: 6, hSpacing: 8, vSpacing: 10) { index in
+                emojiButton(Self.commonEmojis[index])
             }
+
+            allEmojisButton
         }
-        .sheet(isPresented: $showingCustomEmojiPicker) {
-            CustomEmojiPickerSheet(initialEmoji: selectedEmoji, tint: tint) { emoji in
-                withAnimation(DS.Motion.snappy) { symbolName = emoji }
-                Haptics.selection()
+        .emojiPicker(
+            isPresented: $showingEmojiPicker,
+            selectedEmoji: $pickedEmoji,
+            configuration: ElegantConfiguration(showRandom: false, showReset: false),
+            localization: Self.emojiPickerLocalization
+        )
+        .onChange(of: pickedEmoji) { _, newValue in
+            guard let newValue else { return }
+            withAnimation(DS.Motion.snappy) { symbolName = newValue.emoji }
+            Haptics.selection()
+            // Clear so picking the same emoji again still triggers this.
+            pickedEmoji = nil
+        }
+    }
+
+    private var allEmojisButton: some View {
+        Button {
+            Haptics.light()
+            showingEmojiPicker = true
+        } label: {
+            HStack(spacing: DS.Spacing.sm) {
+                Image(systemName: "magnifyingglass")
+                Text("Todos los emojis")
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
             }
-            .presentationDetents([.height(260), .medium])
+            .font(.subheadline.weight(.medium))
+            .foregroundStyle(tint)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .background(
+                RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
+                    .fill(Color.dsFill)
+            )
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+    }
+
+    /// The library's texts, routed through the app's language override.
+    private static var emojiPickerLocalization: ElegantLocalization {
+        ElegantLocalization(
+            searchFieldPlaceholder: appLocalized("Buscar"),
+            searchResultsTitle: appLocalized("Resultados"),
+            searchResultsEmptyTitle: appLocalized("No se encontraron emojis"),
+            emojiCategoryTitles: [
+                .SmileysAndEmotion: appLocalized("Emoticonos y emociones"),
+                .PeopleAndBody: appLocalized("Personas y cuerpo"),
+                .AnimalsAndNature: appLocalized("Animales y naturaleza"),
+                .FoodAndDrink: appLocalized("Comida y bebida"),
+                .TravelAndPlaces: appLocalized("Viajes y lugares"),
+                .Activities: appLocalized("Actividades"),
+                .Objects: appLocalized("Objetos"),
+                .Symbols: appLocalized("Símbolos"),
+                .Flags: appLocalized("Banderas")
+            ]
+        )
     }
 
     private var selectedEmoji: String {
@@ -134,47 +208,57 @@ struct IconPickerView: View {
         .accessibilityLabel(Text(emoji))
     }
 
-    private var customEmojiButton: some View {
-        Button {
-            showingCustomEmojiPicker = true
-        } label: {
-            Image(systemName: "plus")
-                .font(.system(size: 19, weight: .semibold))
-                .foregroundStyle(tint)
-                .frame(width: 44, height: 44)
-                .background(
-                    RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
-                        .fill(Color.dsFill)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
-                        .strokeBorder(tint.opacity(0.3), lineWidth: 1)
-                )
+    private var symbolGrid: some View {
+        eagerGrid(cellCount: suggestedSymbols.count, columns: 4, hSpacing: 12, vSpacing: 12) { index in
+            symbolButton(suggestedSymbols[index])
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text("Emoji personalizado"))
     }
 
-    private var symbolGrid: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 4), spacing: 12) {
-            ForEach(suggestedSymbols, id: \.self) { symbol in
-                let isSelected = symbol == symbolName
-                Button {
-                    withAnimation(DS.Motion.snappy) { symbolName = symbol }
-                    Haptics.selection()
-                } label: {
-                    Image(systemName: symbol)
-                        .font(.title2)
-                        .foregroundStyle(isSelected ? .white : tint)
-                        .frame(width: 52, height: 52)
-                        .background(
-                            Circle().fill(isSelected ? tint : tint.opacity(0.15))
-                        )
-                        .scaleEffect(isSelected ? 1.08 : 1.0)
-                        .shadow(color: isSelected ? tint.opacity(0.35) : .clear, radius: 8, y: 3)
-                        .symbolEffect(.bounce, options: .nonRepeating, value: isSelected)
+    private func symbolButton(_ symbol: String) -> some View {
+        let isSelected = symbol == symbolName
+        return Button {
+            withAnimation(DS.Motion.snappy) { symbolName = symbol }
+            Haptics.selection()
+        } label: {
+            Image(systemName: symbol)
+                .font(.title2)
+                .foregroundStyle(isSelected ? .white : tint)
+                .frame(width: 52, height: 52)
+                .background(
+                    Circle().fill(isSelected ? tint : tint.opacity(0.15))
+                )
+                .scaleEffect(isSelected ? 1.08 : 1.0)
+                .shadow(color: isSelected ? tint.opacity(0.35) : .clear, radius: 8, y: 3)
+                .symbolEffect(.bounce, options: .nonRepeating, value: isSelected)
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Fixed row/column layout with an eager layout pass, so the row height is
+    /// always exact. Cells are distributed evenly across the full width.
+    private func eagerGrid<Cell: View>(
+        cellCount: Int,
+        columns: Int,
+        hSpacing: CGFloat,
+        vSpacing: CGFloat,
+        @ViewBuilder cell: @escaping (Int) -> Cell
+    ) -> some View {
+        let rowCount = (cellCount + columns - 1) / columns
+        return VStack(spacing: vSpacing) {
+            ForEach(0..<rowCount, id: \.self) { row in
+                HStack(spacing: hSpacing) {
+                    ForEach(0..<columns, id: \.self) { column in
+                        Group {
+                            let index = row * columns + column
+                            if index < cellCount {
+                                cell(index)
+                            } else {
+                                Color.clear
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
                 }
-                .buttonStyle(.plain)
             }
         }
     }
@@ -217,91 +301,3 @@ struct IconPickerView: View {
     }
 }
 
-private struct CustomEmojiPickerSheet: View {
-    @Environment(\.dismiss) private var dismiss
-
-    let tint: Color
-    let onSelect: (String) -> Void
-
-    @State private var draftEmoji: String
-    @State private var inputText = ""
-    @FocusState private var isInputFocused: Bool
-
-    init(initialEmoji: String, tint: Color, onSelect: @escaping (String) -> Void) {
-        self.tint = tint
-        self.onSelect = onSelect
-        _draftEmoji = State(initialValue: isEmojiIcon(initialEmoji) ? initialEmoji : "🎉")
-    }
-
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: DS.Spacing.lg) {
-                Text(draftEmoji)
-                    .font(.system(size: 56))
-                    .frame(width: 88, height: 88)
-                    .background(
-                        RoundedRectangle(cornerRadius: DS.Radius.lg, style: .continuous)
-                            .fill(tint.opacity(0.15))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: DS.Radius.lg, style: .continuous)
-                            .strokeBorder(tint.opacity(0.35), lineWidth: 1)
-                    )
-
-                TextField("Emoji", text: $inputText)
-                    .font(.system(size: 36))
-                    .multilineTextAlignment(.center)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .frame(width: 110, height: 58)
-                    .background(
-                        RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                            .fill(Color.dsFill)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                            .strokeBorder(Color.dsDivider.opacity(0.7), lineWidth: 1)
-                    )
-                    .focused($isInputFocused)
-                    .onChange(of: inputText) { _, newValue in
-                        guard let emoji = newValue.lastEmojiCluster else { return }
-                        draftEmoji = emoji
-                        if inputText != emoji {
-                            inputText = emoji
-                        }
-                    }
-            }
-            .padding(.horizontal, DS.Spacing.lg)
-            .padding(.top, DS.Spacing.md)
-            .navigationTitle("Emoji personalizado")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Listo") {
-                        onSelect(draftEmoji)
-                        dismiss()
-                    }
-                }
-            }
-            .task {
-                isInputFocused = true
-            }
-        }
-    }
-}
-
-private extension String {
-    var lastEmojiCluster: String? {
-        var latestEmoji: String?
-        for character in self {
-            let candidate = String(character)
-            if isEmojiIcon(candidate) {
-                latestEmoji = candidate
-            }
-        }
-        return latestEmoji
-    }
-}

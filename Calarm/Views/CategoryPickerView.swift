@@ -23,7 +23,12 @@ struct CategoryPickerView: View {
                     newChip
                 }
                 .padding(.vertical, 4)
+                // Inner margin so the selected chip's scale + glow isn't clipped
+                // at the scroll edges; the negative padding below cancels it out
+                // so chips stay aligned with the row edge.
+                .padding(.horizontal, DS.Spacing.sm)
             }
+            .padding(.horizontal, -DS.Spacing.sm)
             .onChange(of: selection) { _, newValue in
                 withAnimation(DS.Motion.smooth) {
                     proxy.scrollTo(newValue, anchor: .center)
