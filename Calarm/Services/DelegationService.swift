@@ -25,6 +25,7 @@ import Foundation
 import Observation
 import os
 import SwiftData
+import UIKit
 
 /// A delegated reminder as seen by a helper (backed by a CloudKit record, never a
 /// local `Reminder`).
@@ -118,13 +119,23 @@ final class DelegationService {
         let database = cloudKitContainer.privateCloudDatabase
 
         if let existing = await existingZoneShare() {
-            // Upgrade shares created by the old collaboration flow in place.
+            // Upgrade shares created by the old collaboration flow in place:
+            // link permission + the app-icon thumbnail for the iMessage preview.
+            var needsSave = false
             if existing.publicPermission != .readWrite {
                 existing.publicPermission = .readWrite
+                needsSave = true
+            }
+            if existing[CKShare.SystemFieldKey.thumbnailImageData] == nil,
+               let thumbnail = Self.appIconThumbnailData() {
+                existing[CKShare.SystemFieldKey.thumbnailImageData] = thumbnail as CKRecordValue
+                needsSave = true
+            }
+            if needsSave {
                 let result = try await database.modifyRecords(saving: [existing], deleting: [])
                 if case .success(let saved)? = result.saveResults[existing.recordID],
                    let savedShare = saved as? CKShare {
-                    ShareDiagnostics.log("👥 share de delegación actualizado a enlace read/write")
+                    ShareDiagnostics.log("👥 share de delegación actualizado (enlace read/write + icono)")
                     return try await shareEnsuringURL(savedShare, database: database)
                 }
             }
@@ -134,6 +145,11 @@ final class DelegationService {
         let share = CKShare(recordZoneID: zone.zoneID)
         share[CKShare.SystemFieldKey.title] = "Mis alarmas (Calarm)" as CKRecordValue
         share[CKShare.SystemFieldKey.shareType] = Self.shareType as CKRecordValue
+        // App icon as the rich-link thumbnail in iMessage/Mail — without it the
+        // preview shows the generic iCloud cloud.
+        if let thumbnail = Self.appIconThumbnailData() {
+            share[CKShare.SystemFieldKey.thumbnailImageData] = thumbnail as CKRecordValue
+        }
         share.publicPermission = .readWrite
         do {
             let result = try await database.modifyRecords(saving: [share], deleting: [])
@@ -147,6 +163,23 @@ final class DelegationService {
             lastErrorMessage = SharedRemindersError.shareCreationFailed(error).errorDescription
             throw error
         }
+    }
+
+    /// The app icon rendered as PNG data for the share's rich-link preview.
+    /// Read from the bundle's primary icon (app icons aren't directly loadable
+    /// as a named asset).
+    private static func appIconThumbnailData() -> Data? {
+        guard let icons = Bundle.main.infoDictionary?["CFBundleIcons"] as? [String: Any],
+              let primary = icons["CFBundlePrimaryIcon"] as? [String: Any],
+              let files = primary["CFBundleIconFiles"] as? [String],
+              let name = files.last,
+              let icon = UIImage(named: name) else { return nil }
+        let target = CGSize(width: 256, height: 256)
+        let renderer = UIGraphicsImageRenderer(size: target)
+        let image = renderer.image { _ in
+            icon.draw(in: CGRect(origin: .zero, size: target))
+        }
+        return image.pngData()
     }
 
     /// The invite link is the whole delivery mechanism, so fail loudly when the
