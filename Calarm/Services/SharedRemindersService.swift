@@ -49,6 +49,9 @@ struct ShareParticipantInfo: Identifiable {
     let phone: String?
     let status: CKShare.ParticipantAcceptanceStatus
     let isOwner: Bool
+    /// Stable CloudKit user id — link-joined (public) participants often carry
+    /// no email/phone in `lookupInfo`, so removal matches on this first.
+    var userRecordName: String? = nil
 
     /// Localized acceptance label, e.g. "Aceptó" / "Pendiente".
     var statusLabel: String {
@@ -171,7 +174,8 @@ final class SharedRemindersService {
                 email: participant.userIdentity.lookupInfo?.emailAddress,
                 phone: participant.userIdentity.lookupInfo?.phoneNumber,
                 status: participant.acceptanceStatus,
-                isOwner: participant.role == .owner
+                isOwner: participant.role == .owner,
+                userRecordName: participant.userIdentity.userRecordID?.recordName
             )
         }
     }

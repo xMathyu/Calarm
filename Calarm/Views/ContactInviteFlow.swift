@@ -19,6 +19,9 @@ struct InviteDelivery: Identifiable, Equatable {
     let id = UUID()
     let title: String
     let url: URL
+    /// Already-localized Messages body; when nil the standard
+    /// "Te invito a '<title>' en Calarm" wording is used.
+    var customMessage: String? = nil
 }
 
 extension View {
@@ -58,7 +61,7 @@ private struct InviteDeliveryModifier: ViewModifier {
                 if let invite = delivery {
                     MessageComposeView(
                         recipients: [],
-                        body: Self.messageBody(title: invite.title, url: invite.url)
+                        body: Self.messageBody(for: invite)
                     ) { showingMessages = false }
                 }
             }
@@ -67,7 +70,7 @@ private struct InviteDeliveryModifier: ViewModifier {
                 if let invite = delivery {
                     ShareLink(
                         item: invite.url,
-                        message: Text("Te invito a '\(invite.title)' en Calarm")
+                        message: Text(verbatim: invite.customMessage ?? appLocalized("Te invito a '\(invite.title)' en Calarm"))
                     )
                     .padding()
                 }
@@ -81,7 +84,8 @@ private struct InviteDeliveryModifier: ViewModifier {
 
     /// Localized invite text for the Messages body. The link goes on its own
     /// line so iMessage/Mail render the rich preview.
-    static func messageBody(title: String, url: URL) -> String {
-        appLocalized("Te invito a '\(title)' en Calarm") + "\n" + url.absoluteString
+    static func messageBody(for invite: InviteDelivery) -> String {
+        let intro = invite.customMessage ?? appLocalized("Te invito a '\(invite.title)' en Calarm")
+        return intro + "\n" + invite.url.absoluteString
     }
 }

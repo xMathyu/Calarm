@@ -1,6 +1,38 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
+    "Mis alarmas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My alarms"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mis alarmas"
+          }
+        }
+      }
+    },
+    "Te invito a ser mi persona de confianza en Calarm: podrás ver y administrar mis alarmas desde tu teléfono." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I'm inviting you to be my trusted helper in Calarm: you'll be able to see and manage my alarms from your phone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te invito a ser mi persona de confianza en Calarm: podrás ver y administrar mis alarmas desde tu teléfono."
+          }
+        }
+      }
+    },
     "Actividades" : {
       "localizations" : {
         "en" : {

@@ -13,11 +13,8 @@ struct DelegationSettingsView: View {
     @Environment(AppSettings.self) private var settings
     @Environment(DelegationService.self) private var delegation
 
-    /// Wraps a CKShare so it can drive `.sheet(item:)` (CKShare isn't Identifiable).
-    private struct SharePresentation: Identifiable { let id = UUID(); let share: CKShare }
-
     @State private var participants: [ShareParticipantInfo] = []
-    @State private var shareToPresent: SharePresentation?
+    @State private var pendingInvite: InviteDelivery?
     @State private var isWorking = false
     @State private var errorMessage: String?
     @State private var showingDisableConfirm = false
@@ -94,12 +91,11 @@ struct DelegationSettingsView: View {
         .navigationTitle("Personas de confianza")
         .navigationBarTitleDisplayMode(.inline)
         .task { await refreshParticipants() }
-        .sheet(item: $shareToPresent, onDismiss: { Task { await refreshParticipants() } }) { presentation in
-            CloudSharingView(
-                share: presentation.share,
-                container: CKContainer(identifier: delegation.containerIdentifier),
-                availablePermissions: [.allowPrivate, .allowReadWrite]
-            ) { shareToPresent = nil }
+        // Same Messages-link delivery as sharing a single alarm — the native
+        // iCloud collaboration invite (UICloudSharingController) often never
+        // reached the invitee.
+        .inviteDelivery($pendingInvite) {
+            Task { await refreshParticipants() }
         }
         .alert("Error", isPresented: Binding(
             get: { errorMessage != nil },
@@ -139,7 +135,14 @@ struct DelegationSettingsView: View {
         Task {
             do {
                 let share = try await delegation.prepareZoneShare()
-                shareToPresent = SharePresentation(share: share)
+                guard let url = share.url else {
+                    throw SharedRemindersError.shareURLUnavailable
+                }
+                pendingInvite = InviteDelivery(
+                    title: appLocalized("Mis alarmas"),
+                    url: url,
+                    customMessage: appLocalized("Te invito a ser mi persona de confianza en Calarm: podrás ver y administrar mis alarmas desde tu teléfono.")
+                )
             } catch {
                 errorMessage = error.localizedDescription
             }
@@ -156,7 +159,11 @@ struct DelegationSettingsView: View {
     }
 
     private func revoke(_ person: ShareParticipantInfo) async {
-        await delegation.removeHelper(email: person.email, phone: person.phone)
+        await delegation.removeHelper(
+            userRecordName: person.userRecordName,
+            email: person.email,
+            phone: person.phone
+        )
         await refreshParticipants()
         Haptics.warning()
     }

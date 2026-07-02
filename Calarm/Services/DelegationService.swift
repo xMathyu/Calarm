@@ -107,30 +107,60 @@ final class DelegationService {
         return try? await database.record(for: shareID) as? CKShare
     }
 
-    /// Creates (or returns) the zone-wide share for the principal's alarms. The
-    /// caller presents `CloudSharingView` with the returned share to invite helpers
-    /// (set their permission to read/write there).
+    /// Creates (or returns) the zone-wide share for the principal's alarms, ready
+    /// to deliver as a raw URL over Messages — the same flow used when sharing a
+    /// single alarm. Link recipients join as "public" participants, so the share
+    /// must grant them `.readWrite`; the old `.none` + UICloudSharingController
+    /// collaboration invite was unreliable (invites often never arrived) and
+    /// denied link recipients with "Item Unavailable".
     func prepareZoneShare() async throws -> CKShare {
         let zone = try await ensureDelegationZone()
         let database = cloudKitContainer.privateCloudDatabase
-        if let existing = await existingZoneShare() { return existing }
+
+        if let existing = await existingZoneShare() {
+            // Upgrade shares created by the old collaboration flow in place.
+            if existing.publicPermission != .readWrite {
+                existing.publicPermission = .readWrite
+                let result = try await database.modifyRecords(saving: [existing], deleting: [])
+                if case .success(let saved)? = result.saveResults[existing.recordID],
+                   let savedShare = saved as? CKShare {
+                    ShareDiagnostics.log("👥 share de delegación actualizado a enlace read/write")
+                    return try await shareEnsuringURL(savedShare, database: database)
+                }
+            }
+            return try await shareEnsuringURL(existing, database: database)
+        }
 
         let share = CKShare(recordZoneID: zone.zoneID)
         share[CKShare.SystemFieldKey.title] = "Mis alarmas (Calarm)" as CKRecordValue
         share[CKShare.SystemFieldKey.shareType] = Self.shareType as CKRecordValue
-        share.publicPermission = .none // only explicitly invited, trusted helpers
+        share.publicPermission = .readWrite
         do {
             let result = try await database.modifyRecords(saving: [share], deleting: [])
             if case .success(let saved) = result.saveResults[share.recordID],
                let savedShare = saved as? CKShare {
                 ShareDiagnostics.log("👥 zone-wide share de delegación creado")
-                return savedShare
+                return try await shareEnsuringURL(savedShare, database: database)
             }
-            return share
+            return try await shareEnsuringURL(share, database: database)
         } catch {
             lastErrorMessage = SharedRemindersError.shareCreationFailed(error).errorDescription
             throw error
         }
+    }
+
+    /// The invite link is the whole delivery mechanism, so fail loudly when the
+    /// saved share has no URL (refetching once — CloudKit sometimes omits it in
+    /// the save response).
+    private func shareEnsuringURL(_ share: CKShare, database: CKDatabase) async throws -> CKShare {
+        if share.url != nil { return share }
+        if let fetched = try? await database.record(for: share.recordID) as? CKShare,
+           fetched.url != nil {
+            ShareDiagnostics.log("↻ URL del share de delegación recuperado tras refetch")
+            return fetched
+        }
+        ShareDiagnostics.log("⚠️ share de delegación sin URL")
+        throw SharedRemindersError.shareURLUnavailable
     }
 
     /// Participants of the delegation share (for the management UI). Excludes the
@@ -140,11 +170,15 @@ final class DelegationService {
         return sharing.participantInfos(of: share).filter { !$0.isOwner }
     }
 
-    /// Removes a helper (by matching email/phone) from the share.
-    func removeHelper(email: String?, phone: String?) async {
+    /// Removes a helper from the share. Matches by CloudKit user id first —
+    /// link-joined (public) participants often have no email/phone — then by
+    /// email/phone for invited ones.
+    func removeHelper(userRecordName: String? = nil, email: String?, phone: String?) async {
         guard let share = await existingZoneShare() else { return }
         let target = share.participants.first { participant in
-            let info = participant.userIdentity.lookupInfo
+            let identity = participant.userIdentity
+            if let userRecordName, identity.userRecordID?.recordName == userRecordName { return true }
+            let info = identity.lookupInfo
             return (email != nil && info?.emailAddress == email)
                 || (phone != nil && info?.phoneNumber == phone)
         }
