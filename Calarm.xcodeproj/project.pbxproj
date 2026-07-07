@@ -12,6 +12,7 @@
 		CA1ABEEF000000000000000E /* CalarmAlarmMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF000000000000000D /* CalarmAlarmMetadata.swift */; };
 		CA1ABEEF0000000000000010 /* CalarmWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF000000000000000F /* CalarmWidgetsBundle.swift */; };
 		CA1ABEEF0000000000000012 /* CalarmAlarmLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000011 /* CalarmAlarmLiveActivity.swift */; };
+		CA1ABEEF0000000000000016 /* StopAlarmIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000015 /* StopAlarmIntent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		CA1ABEEF000000000000000F /* CalarmWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalarmWidgetsBundle.swift; sourceTree = "<group>"; };
 		CA1ABEEF0000000000000011 /* CalarmAlarmLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalarmAlarmLiveActivity.swift; sourceTree = "<group>"; };
 		CA1ABEEF0000000000000013 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CA1ABEEF0000000000000015 /* StopAlarmIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StopAlarmIntent.swift; path = Calarm/AppIntents/StopAlarmIntent.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -111,6 +113,7 @@
 				CA1ABEEF000000000000000F /* CalarmWidgetsBundle.swift */,
 				CA1ABEEF0000000000000011 /* CalarmAlarmLiveActivity.swift */,
 				CA1ABEEF000000000000000D /* CalarmAlarmMetadata.swift */,
+				CA1ABEEF0000000000000015 /* StopAlarmIntent.swift */,
 				CA1ABEEF0000000000000013 /* Info.plist */,
 			);
 			path = CalarmWidgets;
@@ -237,6 +240,7 @@
 				CA1ABEEF0000000000000010 /* CalarmWidgetsBundle.swift in Sources */,
 				CA1ABEEF0000000000000012 /* CalarmAlarmLiveActivity.swift in Sources */,
 				CA1ABEEF000000000000000E /* CalarmAlarmMetadata.swift in Sources */,
+				CA1ABEEF0000000000000016 /* StopAlarmIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,246 +1,6 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
-    "Mis alarmas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My alarms"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mis alarmas"
-          }
-        }
-      }
-    },
-    "Te invito a ser mi persona de confianza en Calarm: podrás ver y administrar mis alarmas desde tu teléfono." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I'm inviting you to be my trusted helper in Calarm: you'll be able to see and manage my alarms from your phone."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Te invito a ser mi persona de confianza en Calarm: podrás ver y administrar mis alarmas desde tu teléfono."
-          }
-        }
-      }
-    },
-    "Actividades" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activities"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actividades"
-          }
-        }
-      }
-    },
-    "Animales y naturaleza" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Animals & Nature"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Animales y naturaleza"
-          }
-        }
-      }
-    },
-    "Banderas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Flags"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Banderas"
-          }
-        }
-      }
-    },
-    "Buscar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buscar"
-          }
-        }
-      }
-    },
-    "Comida y bebida" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Food & Drink"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comida y bebida"
-          }
-        }
-      }
-    },
-    "Emoticonos y emociones" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Smileys & Emotion"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Emoticonos y emociones"
-          }
-        }
-      }
-    },
-    "No se encontraron emojis" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No emoji found"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se encontraron emojis"
-          }
-        }
-      }
-    },
-    "Objetos" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Objects"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Objetos"
-          }
-        }
-      }
-    },
-    "Personas y cuerpo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "People & Body"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Personas y cuerpo"
-          }
-        }
-      }
-    },
-    "Resultados" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Results"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resultados"
-          }
-        }
-      }
-    },
-    "Símbolos" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Symbols"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Símbolos"
-          }
-        }
-      }
-    },
-    "Todos los emojis" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "All emojis"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todos los emojis"
-          }
-        }
-      }
-    },
-    "Viajes y lugares" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Travel & Places"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Viajes y lugares"
-          }
-        }
-      }
-    },
     " sigue la configuración del sistema." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -393,6 +153,16 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ – %2$@"
+          }
+        }
+      }
+    },
+    "%@ %lld" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$lld"
           }
         }
       }
@@ -595,6 +365,9 @@
           }
         }
       }
+    },
+    "+%lld" : {
+
     },
     "1 día" : {
       "localizations" : {
@@ -1238,6 +1011,22 @@
         }
       }
     },
+    "Actividades" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activities"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actividades"
+          }
+        }
+      }
+    },
     "Actualizar" : {
       "localizations" : {
         "en" : {
@@ -1250,6 +1039,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Actualizar"
+          }
+        }
+      }
+    },
+    "Agrega días y horas distintos para la misma alarma (p. ej. lunes y sábado)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add different days and times for the same alarm (e.g. Monday and Saturday)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agrega días y horas distintos para la misma alarma (p. ej. lunes y sábado)."
           }
         }
       }
@@ -1284,22 +1089,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Agregar"
-          }
-        }
-      }
-    },
-    "Agrega días y horas distintos para la misma alarma (p. ej. lunes y sábado)." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add different days and times for the same alarm (e.g. Monday and Saturday)."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Agrega días y horas distintos para la misma alarma (p. ej. lunes y sábado)."
           }
         }
       }
@@ -1553,6 +1342,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alguien"
+          }
+        }
+      }
+    },
+    "Animales y naturaleza" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animals & Nature"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animales y naturaleza"
           }
         }
       }
@@ -1815,6 +1620,22 @@
         }
       }
     },
+    "Banderas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flags"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Banderas"
+          }
+        }
+      }
+    },
     "Bienvenido a Calarm" : {
       "localizations" : {
         "en" : {
@@ -1892,6 +1713,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Borrar recordatorio"
+          }
+        }
+      }
+    },
+    "Buscar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar"
           }
         }
       }
@@ -2343,6 +2180,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Comenzar"
+          }
+        }
+      }
+    },
+    "Comida y bebida" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Food & Drink"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comida y bebida"
           }
         }
       }
@@ -3128,6 +2981,7 @@
       }
     },
     "Detalles" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3336,6 +3190,7 @@
       }
     },
     "Editar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3509,6 +3364,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Emoji"
+          }
+        }
+      }
+    },
+    "Emoticonos y emociones" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smileys & Emotion"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emoticonos y emociones"
           }
         }
       }
@@ -4472,6 +4343,22 @@
         }
       }
     },
+    "Mis alarmas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My alarms"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mis alarmas"
+          }
+        }
+      }
+    },
     "Ningún recordatorio coincide con tus filtros." : {
       "localizations" : {
         "en" : {
@@ -4501,6 +4388,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No pude entender la alarma: %@"
+          }
+        }
+      }
+    },
+    "No se encontraron emojis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No emoji found"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontraron emojis"
           }
         }
       }
@@ -4712,6 +4615,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nuevo recordatorio"
+          }
+        }
+      }
+    },
+    "Objetos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objects"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objetos"
           }
         }
       }
@@ -4987,6 +4906,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Personas de confianza"
+          }
+        }
+      }
+    },
+    "Personas y cuerpo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "People & Body"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personas y cuerpo"
           }
         }
       }
@@ -5371,6 +5306,7 @@
       }
     },
     "Recurrencia" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5478,6 +5414,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restablecer color"
+          }
+        }
+      }
+    },
+    "Resultados" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Results"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resultados"
           }
         }
       }
@@ -5623,6 +5575,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Símbolo"
+          }
+        }
+      }
+    },
+    "Símbolos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbols"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Símbolos"
           }
         }
       }
@@ -5885,6 +5853,22 @@
         }
       }
     },
+    "Te invito a ser mi persona de confianza en Calarm: podrás ver y administrar mis alarmas desde tu teléfono." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I'm inviting you to be my trusted helper in Calarm: you'll be able to see and manage my alarms from your phone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te invito a ser mi persona de confianza en Calarm: podrás ver y administrar mis alarmas desde tu teléfono."
+          }
+        }
+      }
+    },
     "Teams URL" : {
       "localizations" : {
         "es" : {
@@ -6041,6 +6025,22 @@
         }
       }
     },
+    "Todos los emojis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All emojis"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos los emojis"
+          }
+        }
+      }
+    },
     "Tu próxima alarma es '%@' el %@." : {
       "localizations" : {
         "en" : {
@@ -6183,6 +6183,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versión"
+          }
+        }
+      }
+    },
+    "Viajes y lugares" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Travel & Places"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viajes y lugares"
           }
         }
       }

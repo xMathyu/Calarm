@@ -10,6 +10,7 @@
 
 import ActivityKit
 import AlarmKit
+import AppIntents
 import SwiftUI
 import WidgetKit
 
@@ -37,9 +38,13 @@ struct CalarmAlarmLiveActivity: Widget {
                         .foregroundStyle(context.attributes.tintColor)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    Text(subtitle(context))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    HStack {
+                        Text(subtitle(context))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer(minLength: 8)
+                        StopButton(context: context, compact: true)
+                    }
                 }
             } compactLeading: {
                 Image(systemName: symbol(context))
@@ -82,27 +87,31 @@ private struct LockScreenView: View {
     let context: ActivityViewContext<AlarmAttributes<CalarmAlarmMetadata>>
 
     var body: some View {
-        HStack(spacing: 14) {
-            Image(systemName: symbol)
-                .font(.title2)
-                .foregroundStyle(.white)
-                .frame(width: 44, height: 44)
-                .background(context.attributes.tintColor, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        VStack(spacing: 12) {
+            HStack(spacing: 14) {
+                Image(systemName: symbol)
+                    .font(.title2)
+                    .foregroundStyle(.white)
+                    .frame(width: 44, height: 44)
+                    .background(context.attributes.tintColor, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.headline)
-                    .lineLimit(1)
-                Text(label)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.headline)
+                        .lineLimit(1)
+                    Text(label)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer(minLength: 8)
+
+                StatusView(context: context)
+                    .font(.title.weight(.semibold).monospacedDigit())
+                    .foregroundStyle(context.attributes.tintColor)
             }
 
-            Spacer(minLength: 8)
-
-            StatusView(context: context)
-                .font(.title.weight(.semibold).monospacedDigit())
-                .foregroundStyle(context.attributes.tintColor)
+            StopButton(context: context, compact: false)
         }
     }
 
@@ -122,6 +131,28 @@ private struct LockScreenView: View {
         case .paused: return "En pausa"
         case .alert: return "Sonando ahora"
         }
+    }
+}
+
+/// Stops the alarm from the Live Activity itself — without it the user has no way
+/// to cancel a snoozed countdown short of waiting for it to ring again. The
+/// `LiveActivityIntent` (shared source file, compiled into both targets) runs in
+/// the app's process, where AlarmKit authorization lives.
+private struct StopButton: View {
+    let context: ActivityViewContext<AlarmAttributes<CalarmAlarmMetadata>>
+    /// Compact = capsule sized for the Dynamic Island bottom region.
+    let compact: Bool
+
+    var body: some View {
+        Button(intent: StopAlarmIntent(alarmID: context.state.alarmID.uuidString)) {
+            Label("Detener", systemImage: "xmark")
+                .font(compact ? .caption.weight(.semibold) : .headline)
+                .frame(maxWidth: compact ? nil : .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .buttonBorderShape(.capsule)
+        .tint(context.attributes.tintColor)
+        .foregroundStyle(.white)
     }
 }
 

@@ -86,9 +86,19 @@ final class AlarmScheduler {
     }
 
     /// Cancels alarms for the owner whose fireDate is NOT in `validFireDates`.
+    ///
+    /// Alarms the system currently has ALERTING or in a snooze COUNTDOWN are left
+    /// alone: their original fireDate is already in the past, so they never appear
+    /// in `keepFireDates`, but cancelling them would kill the countdown Live
+    /// Activity and silently drop the re-ring (this ran on every app foreground, so
+    /// merely tapping the Live Activity used to cancel the snoozed alarm). Their
+    /// store entries get cleaned up by a later sync, once the alarm has finished
+    /// and left the system's list.
     func cancelOrphans(ownerID: String, keepFireDates: Set<Date>) async {
         let keepTimestamps = keepFireDates.map { $0.timeIntervalSince1970 }
+        let activeIDs = activeAlarmIDs()
         for entry in store.allEntries(forOwner: ownerID) {
+            if activeIDs.contains(entry.alarmID) { continue }
             let matches = keepTimestamps.contains { abs($0 - entry.fireDate.timeIntervalSince1970) < 1 }
             if !matches {
                 try? await manager.cancel(id: entry.alarmID)
@@ -132,6 +142,13 @@ final class AlarmScheduler {
     }
 
     // MARK: - Private
+
+    /// IDs of alarms in a non-`.scheduled` state: alerting right now, or counting
+    /// down / paused after a snooze.
+    private func activeAlarmIDs() -> Set<UUID> {
+        guard let alarms = try? manager.alarms else { return [] }
+        return Set(alarms.filter { $0.state != .scheduled }.map(\.id))
+    }
 
     private func makeConfiguration(
         title: String,

@@ -7,7 +7,11 @@ import AlarmKit
 import AppIntents
 import Foundation
 
-/// Invoked by AlarmKit when the user taps the Stop button on an alerting alarm.
+/// Invoked when the user taps Detener — either on the system alert (AlarmKit's
+/// `stopIntent`) or on the Live Activity's stop button during a snooze countdown.
+/// SHARED source file: compiled into both the app and CalarmWidgets targets so the
+/// widget can construct it; as a `LiveActivityIntent` it always PERFORMS in the
+/// app's process, where AlarmKit authorization lives.
 struct StopAlarmIntent: LiveActivityIntent {
     static var title: LocalizedStringResource = "Detener alarma"
     static var description = IntentDescription("Detiene la alarma de la reunión.")
