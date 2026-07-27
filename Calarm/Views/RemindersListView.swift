@@ -238,6 +238,7 @@ struct RemindersListView: View {
         // on the next launch while the owner's record still exists (bug: reappears).
         if reminder.isReceivedShare {
             DeletedSharesStore.add(id)
+            ShareLeadTimesStore.forget(id)
         }
         await reminderScheduler.cancelAlarms(for: reminder)
         modelContext.delete(reminder)

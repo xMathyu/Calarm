@@ -321,10 +321,16 @@ struct ReminderEditorView: View {
             }
             avisoControl
         } footer: {
-            if leadTimes.count > 1 {
-                Text("La alarma sonará una vez por cada aviso configurado.")
-            } else {
-                Text("Agrega días y horas distintos para la misma alarma (p. ej. lunes y sábado).")
+            VStack(alignment: .leading, spacing: 4) {
+                if leadTimes.count > 1 {
+                    Text("La alarma sonará una vez por cada aviso configurado.")
+                } else {
+                    Text("Agrega días y horas distintos para la misma alarma (p. ej. lunes y sábado).")
+                }
+                // Avisos on a received share stay on this device only.
+                if editingReminder?.isReceivedShare == true {
+                    Text("Tus avisos son solo tuyos: no cambian la alarma de quien la compartió.")
+                }
             }
         }
     }
@@ -673,6 +679,12 @@ struct ReminderEditorView: View {
             existing.recurrence = recurrence
             existing.additionalSchedules = additionalSchedules
             existing.leadTimes = leadTimes
+            // On a received share the avisos are the recipient's own — remember
+            // them so the next shared-DB scan doesn't overwrite them with the
+            // owner's list.
+            if existing.isReceivedShare {
+                ShareLeadTimesStore.setPersonal(leadTimes, for: existing.id)
+            }
             existing.isEnabled = isEnabled
             existing.updatedAt = Date()
             reminder = existing
@@ -873,6 +885,7 @@ struct ReminderEditorView: View {
         // Tombstone a deleted invitation so the shared-DB scan doesn't re-import it.
         if r.isReceivedShare {
             DeletedSharesStore.add(id)
+            ShareLeadTimesStore.forget(id)
         }
         await reminderScheduler.cancelAlarms(for: r)
         modelContext.delete(r)

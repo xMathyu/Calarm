@@ -305,6 +305,11 @@ struct UpdateReminderTool: Tool {
         }
         if let leads = arguments.leadTimesMinutes {
             reminder.leadTimes = ToolHelpers.leadTimes(fromMinutes: leads)
+            // Avisos on a received share are personal — persist them so the
+            // shared-DB scan doesn't overwrite them with the owner's list.
+            if reminder.isReceivedShare {
+                ShareLeadTimesStore.setPersonal(reminder.leadTimes, for: reminder.id)
+            }
         }
         if let enabled = arguments.isEnabled {
             reminder.isEnabled = enabled
@@ -350,6 +355,7 @@ struct DeleteReminderTool: Tool {
         // Tombstone a deleted invitation so the shared-DB scan doesn't re-import it.
         if reminder.isReceivedShare {
             DeletedSharesStore.add(deletedID)
+            ShareLeadTimesStore.forget(deletedID)
         }
         await scheduler.cancelAlarms(for: reminder)
         context.delete(reminder)

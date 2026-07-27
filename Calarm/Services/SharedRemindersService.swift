@@ -670,6 +670,8 @@ final class SharedRemindersService {
             // Drop tombstones whose owner record is gone, so a fresh re-invite with
             // the same id can be accepted again.
             DeletedSharesStore.prune(presentIDs: presentIDs)
+            // Same for the recipient's personal avisos — a re-share starts fresh.
+            ShareLeadTimesStore.prune(presentIDs: presentIDs)
         } catch {
             Self.log.error("importAllSharedReminders failed: \(error.localizedDescription, privacy: .public)")
             ShareDiagnostics.log("❌ scan error: \(error.localizedDescription)")
@@ -754,8 +756,17 @@ final class SharedRemindersService {
             let rule = (try? JSONDecoder().decode(RecurrenceRule.self, from: $0.recurrenceData)) ?? .once
             return AlarmSchedule(date: $0.date, recurrence: rule)
         }
-        let leadTimes = payload.leadTimeSeconds.compactMap { AlarmLeadTime(rawValue: $0) }
-        reminder.leadTimes = leadTimes.isEmpty ? [.atStart] : leadTimes
+        let payloadLeadTimes = payload.leadTimeSeconds.compactMap { AlarmLeadTime(rawValue: $0) }
+        let ownerLeadTimes = payloadLeadTimes.isEmpty ? [AlarmLeadTime.atStart] : payloadLeadTimes
+        if markAsReceivedShare {
+            // Avisos are personal to the recipient: they decide only when THIS
+            // device rings and are never pushed back to the owner. Keep the
+            // recipient's own list instead of overwriting it on every scan.
+            ShareLeadTimesStore.recordShared(ownerLeadTimes, for: reminder.id)
+            reminder.leadTimes = ShareLeadTimesStore.personal(for: reminder.id) ?? ownerLeadTimes
+        } else {
+            reminder.leadTimes = ownerLeadTimes
+        }
         reminder.isEnabled = payload.isEnabled
         reminder.updatedAt = payload.updatedAt ?? Date()
         reminder.isReceivedShare = markAsReceivedShare

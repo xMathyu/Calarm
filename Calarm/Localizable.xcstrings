@@ -6057,6 +6057,22 @@
         }
       }
     },
+    "Tus avisos son solo tuyos: no cambian la alarma de quien la compartió." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your alerts are yours only — they don't change the alarm for whoever shared it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus avisos son solo tuyos: no cambian la alarma de quien la compartió."
+          }
+        }
+      }
+    },
     "Tus personas de confianza dejarán de ver y administrar tus alarmas. Tus alarmas siguen intactas." : {
       "localizations" : {
         "en" : {
