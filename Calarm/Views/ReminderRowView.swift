@@ -12,84 +12,52 @@ struct ReminderRowView: View {
 
     private var style: CategoryStyle { categoryStore.style(for: reminder) }
 
+    /// The alarm rings within the next 24h — worth tinting so it stands out.
+    private var isSoon: Bool {
+        guard let next = nextOccurrence else { return false }
+        return next > Date() && next.timeIntervalSinceNow < 60 * 60 * 24
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: DS.Spacing.sm) {
-            HStack(spacing: DS.Spacing.md) {
-                avatar
-                    .opacity(reminder.isEnabled ? 1 : 0.55)
+        HStack(spacing: DS.Spacing.md) {
+            avatar
 
-                VStack(alignment: .leading, spacing: DS.Spacing.xs) {
-                    HStack(spacing: DS.Spacing.xs) {
-                        Text(reminder.title)
-                            .font(.headline)
-                            .lineLimit(1)
-                            .foregroundStyle(reminder.isEnabled ? .primary : .secondary)
-                        if !reminder.isEnabled {
-                            Image(systemName: "bell.slash.fill")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .transition(.scale.combined(with: .opacity))
-                        }
-                    }
+            VStack(alignment: .leading, spacing: 3) {
+                Text(reminder.title)
+                    .font(.headline)
+                    .lineLimit(1)
 
-                    if let next = nextOccurrence {
-                        Text(next, format: Date.RelativeFormatStyle(presentation: .named, unitsStyle: .wide))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    } else {
-                        Text(style.title)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                Spacer(minLength: DS.Spacing.sm)
-
+                // The time is the line that matters most, so it gets the weight
+                // (and the category tint when the alarm is about to ring); the
+                // day sits next to it as quieter context.
                 if let next = nextOccurrence {
-                    timeChip(for: next)
+                    HStack(spacing: DS.Spacing.xs) {
+                        Text(next, format: .dateTime.hour().minute())
+                            .font(.subheadline.weight(.semibold))
+                            .monospacedDigit()
+                            .foregroundStyle(isSoon ? style.color : .primary)
+                        Text(dayLabel(for: next))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                } else {
+                    Text(style.title)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                if hasBadges {
+                    badges
+                        .padding(.top, 1)
                 }
             }
 
-            // Pills live on their own full-width row so a long recurrence summary
-            // (e.g. "Weekly (Mon, Tue, Wed, Thu, Fri)") and the "Shared" badge
-            // aren't squeezed next to the time chip. Indented to align under the title.
-            if reminder.recurrence.isRecurring || reminder.isReceivedShare || !reminder.additionalSchedules.isEmpty {
-                WrapLayout(spacing: DS.Spacing.xs, lineSpacing: 6) {
-                    if reminder.recurrence.isRecurring {
-                        Label(reminder.recurrence.localizedSummary, systemImage: "repeat")
-                            .labelStyle(.titleAndIcon)
-                            .lineLimit(1)
-                            .font(.caption2.weight(.medium))
-                            .padding(.horizontal, DS.Spacing.sm)
-                            .padding(.vertical, 3)
-                            .foregroundStyle(style.color)
-                            .background(style.color.opacity(0.13), in: Capsule())
-                    }
-                    if !reminder.additionalSchedules.isEmpty {
-                        // Alarm fires on more than one day/time — surface the count.
-                        Label("+\(reminder.additionalSchedules.count)", systemImage: "calendar.badge.clock")
-                            .labelStyle(.titleAndIcon)
-                            .lineLimit(1)
-                            .font(.caption2.weight(.medium))
-                            .padding(.horizontal, DS.Spacing.sm)
-                            .padding(.vertical, 3)
-                            .foregroundStyle(style.color)
-                            .background(style.color.opacity(0.13), in: Capsule())
-                    }
-                    if reminder.isReceivedShare {
-                        Label("Compartido", systemImage: "person.2.fill")
-                            .labelStyle(.titleAndIcon)
-                            .lineLimit(1)
-                            .font(.caption2.weight(.medium))
-                            .padding(.horizontal, DS.Spacing.sm)
-                            .padding(.vertical, 3)
-                            .foregroundStyle(.secondary)
-                            .background(Color.dsFill, in: Capsule())
-                    }
-                }
-                .padding(.leading, DS.AvatarSize.md + DS.Spacing.md)
-            }
+            Spacer(minLength: DS.Spacing.sm)
         }
+        // Off alarms stay legible but visibly muted — the switch says on/off,
+        // so the row doesn't need a second "disabled" icon.
+        .opacity(reminder.isEnabled ? 1 : 0.45)
         .padding(.vertical, DS.Spacing.xs)
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
@@ -110,28 +78,51 @@ struct ReminderRowView: View {
         )
     }
 
-    private func timeChip(for date: Date) -> some View {
-        let calendar = Calendar.current
-        let isWithinNextDay = date.timeIntervalSinceNow < 60 * 60 * 24 && date > Date()
+    private var hasBadges: Bool {
+        reminder.recurrence.isRecurring
+            || reminder.isReceivedShare
+            || !reminder.additionalSchedules.isEmpty
+    }
 
-        return VStack(alignment: .trailing, spacing: 2) {
-            Text(date, format: .dateTime.hour().minute())
-                .font(.subheadline.weight(.semibold))
-                .monospacedDigit()
-                .foregroundStyle(isWithinNextDay ? style.color : .primary)
-            if !calendar.isDateInToday(date) && !calendar.isDateInTomorrow(date) {
-                Text(date, format: .dateTime.day().month(.abbreviated))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+    /// Recurrence / extra schedules / shared, as one quiet line under the time —
+    /// aligned with the title instead of spanning the whole row.
+    private var badges: some View {
+        WrapLayout(spacing: DS.Spacing.xs, lineSpacing: 4) {
+            if reminder.recurrence.isRecurring {
+                badge(reminder.recurrence.localizedSummary, systemImage: "repeat", tint: style.color)
+            }
+            if !reminder.additionalSchedules.isEmpty {
+                // Alarm fires on more than one day/time — surface the count.
+                badge("+\(reminder.additionalSchedules.count)", systemImage: "calendar.badge.clock", tint: style.color)
+            }
+            if reminder.isReceivedShare {
+                badge(appLocalized("Compartido"), systemImage: "person.2.fill", tint: .secondary)
             }
         }
-        .padding(.horizontal, DS.Spacing.sm)
-        .padding(.vertical, DS.Spacing.xs)
-        .background(
-            isWithinNextDay
-                ? style.color.opacity(0.10)
-                : Color.dsFill,
-            in: RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
-        )
+    }
+
+    private func badge(_ text: String, systemImage: String, tint: some ShapeStyle) -> some View {
+        // Hand-rolled instead of `Label` so the icon hugs its text — Label keeps a
+        // wide icon column, which leaves an odd gap at this size.
+        HStack(spacing: 3) {
+            Image(systemName: systemImage)
+                .imageScale(.small)
+            Text(text)
+                .lineLimit(1)
+        }
+        .font(.caption2.weight(.medium))
+        .foregroundStyle(tint)
+    }
+
+    /// "hoy" / "mañana" / weekday for this week / short date beyond that — the
+    /// list is already grouped by day, so this just confirms which one.
+    private func dayLabel(for date: Date) -> String {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) { return appLocalized("hoy") }
+        if calendar.isDateInTomorrow(date) { return appLocalized("mañana") }
+        if date.timeIntervalSinceNow < 60 * 60 * 24 * 7 {
+            return date.formatted(.dateTime.weekday(.wide))
+        }
+        return date.formatted(.dateTime.day().month(.abbreviated))
     }
 }

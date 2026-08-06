@@ -12,6 +12,7 @@ struct RemindersListView: View {
     @Environment(SharedRemindersService.self) private var sharedService
     @Environment(DelegationService.self) private var delegation
     @Environment(AppSettings.self) private var settings
+    @Environment(CategoryStore.self) private var categoryStore
 
     @Query(sort: [SortDescriptor(\Reminder.date)]) private var reminders: [Reminder]
 
@@ -89,32 +90,16 @@ struct RemindersListView: View {
                 ForEach(groups(from: visible), id: \.title) { group in
                     Section {
                         ForEach(group.items, id: \.reminder.id) { item in
-                            Button {
-                                Haptics.light()
-                                editorReminder = item.reminder
-                            } label: {
-                                ReminderRowView(
-                                    reminder: item.reminder,
-                                    nextOccurrence: item.nextOccurrence
-                                )
-                            }
-                            .buttonStyle(.pressable)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    Task { await delete(item.reminder) }
-                                } label: { Label("Borrar", systemImage: "trash") }
-                                Button {
-                                    Task { await toggleEnabled(item.reminder) }
-                                } label: {
-                                    Label(item.reminder.isEnabled ? "Desactivar" : "Activar",
-                                          systemImage: item.reminder.isEnabled ? "bell.slash" : "bell")
+                            row(for: item.reminder, nextOccurrence: item.nextOccurrence)
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) {
+                                        Task { await delete(item.reminder) }
+                                    } label: { Label("Borrar", systemImage: "trash") }
                                 }
-                                .tint(.orange)
-                            }
-                            .transition(.asymmetric(
-                                insertion: .scale(scale: 0.95).combined(with: .opacity),
-                                removal: .opacity
-                            ))
+                                .transition(.asymmetric(
+                                    insertion: .scale(scale: 0.95).combined(with: .opacity),
+                                    removal: .opacity
+                                ))
                         }
                     } header: {
                         sectionHeader(title: group.title, count: group.items.count)
@@ -123,21 +108,12 @@ struct RemindersListView: View {
                 if !shared.isEmpty {
                     Section {
                         ForEach(shared) { reminder in
-                            Button {
-                                Haptics.light()
-                                editorReminder = reminder
-                            } label: {
-                                ReminderRowView(
-                                    reminder: reminder,
-                                    nextOccurrence: nextOccurrence(for: reminder)
-                                )
-                            }
-                            .buttonStyle(.pressable)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    Task { await delete(reminder) }
-                                } label: { Label("Borrar", systemImage: "trash") }
-                            }
+                            row(for: reminder, nextOccurrence: nextOccurrence(for: reminder))
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) {
+                                        Task { await delete(reminder) }
+                                    } label: { Label("Borrar", systemImage: "trash") }
+                                }
                         }
                     } header: {
                         sectionHeader(title: appLocalized("Compartidos conmigo"), count: shared.count, systemImage: "person.2.fill")
@@ -148,6 +124,29 @@ struct RemindersListView: View {
             .animation(DS.Motion.smooth, value: reminders.count)
             .animation(DS.Motion.smooth, value: filterCategories)
         }
+    }
+
+    /// One list row: tap the content to edit, flip the switch to turn the alarm
+    /// on/off in place (no swipe action or options screen needed).
+    private func row(for reminder: Reminder, nextOccurrence: Date?) -> some View {
+        HStack(spacing: DS.Spacing.md) {
+            Button {
+                Haptics.light()
+                editorReminder = reminder
+            } label: {
+                ReminderRowView(reminder: reminder, nextOccurrence: nextOccurrence)
+            }
+            .buttonStyle(.pressable)
+
+            Toggle("", isOn: Binding(
+                get: { reminder.isEnabled },
+                set: { newValue in Task { await setEnabled(newValue, for: reminder) } }
+            ))
+            .labelsHidden()
+            .tint(categoryStore.style(for: reminder).color)
+            .accessibilityLabel(Text(appLocalized("Alarma activa")))
+        }
+        .padding(.vertical, 2)
     }
 
     private func sectionHeader(title: String, count: Int, systemImage: String? = nil) -> some View {
@@ -252,8 +251,11 @@ struct RemindersListView: View {
         }
     }
 
-    private func toggleEnabled(_ reminder: Reminder) async {
-        reminder.isEnabled.toggle()
+    private func setEnabled(_ isEnabled: Bool, for reminder: Reminder) async {
+        guard reminder.isEnabled != isEnabled else { return }
+        withAnimation(DS.Motion.snappy) {
+            reminder.isEnabled = isEnabled
+        }
         reminder.updatedAt = Date()
         try? modelContext.save()
         await reminderScheduler.syncAlarms(for: reminder)

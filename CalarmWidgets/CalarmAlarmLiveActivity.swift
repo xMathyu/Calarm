@@ -43,7 +43,7 @@ struct CalarmAlarmLiveActivity: Widget {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Spacer(minLength: 8)
-                        StopButton(context: context, compact: true)
+                        StopButton(context: context, size: 32)
                     }
                 }
             } compactLeading: {
@@ -87,31 +87,30 @@ private struct LockScreenView: View {
     let context: ActivityViewContext<AlarmAttributes<CalarmAlarmMetadata>>
 
     var body: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 14) {
-                Image(systemName: symbol)
-                    .font(.title2)
-                    .foregroundStyle(.white)
-                    .frame(width: 44, height: 44)
-                    .background(context.attributes.tintColor, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        HStack(spacing: 12) {
+            Image(systemName: symbol)
+                .font(.title2)
+                .foregroundStyle(.white)
+                .frame(width: 44, height: 44)
+                .background(context.attributes.tintColor, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                        .font(.headline)
-                        .lineLimit(1)
-                    Text(label)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer(minLength: 8)
-
-                StatusView(context: context)
-                    .font(.title.weight(.semibold).monospacedDigit())
-                    .foregroundStyle(context.attributes.tintColor)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.headline)
+                    .lineLimit(1)
+                Text(label)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
-            StopButton(context: context, compact: false)
+            Spacer(minLength: 8)
+
+            StatusView(context: context)
+                .font(.title2.weight(.semibold).monospacedDigit())
+                .foregroundStyle(context.attributes.tintColor)
+
+            // Cancel sits at the trailing edge as a round X — no full-width bar.
+            StopButton(context: context, size: 40)
         }
     }
 
@@ -140,19 +139,20 @@ private struct LockScreenView: View {
 /// the app's process, where AlarmKit authorization lives.
 private struct StopButton: View {
     let context: ActivityViewContext<AlarmAttributes<CalarmAlarmMetadata>>
-    /// Compact = capsule sized for the Dynamic Island bottom region.
-    let compact: Bool
+    /// Diameter of the circle — smaller inside the Dynamic Island.
+    let size: CGFloat
 
     var body: some View {
         Button(intent: StopAlarmIntent(alarmID: context.state.alarmID.uuidString)) {
-            Label("Detener", systemImage: "xmark")
-                .font(compact ? .caption.weight(.semibold) : .headline)
-                .frame(maxWidth: compact ? nil : .infinity)
+            Image(systemName: "xmark")
+                .font(.system(size: size * 0.4, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: size, height: size)
+                .background(context.attributes.tintColor, in: Circle())
+                .contentShape(Circle())
         }
-        .buttonStyle(.borderedProminent)
-        .buttonBorderShape(.capsule)
-        .tint(context.attributes.tintColor)
-        .foregroundStyle(.white)
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Detener"))
     }
 }
 

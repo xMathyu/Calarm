@@ -6234,6 +6234,102 @@
           }
         }
       }
+    },
+    "La alarma sonará según los horarios y avisos de arriba." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The alarm will ring according to the schedules and alerts above."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La alarma sonará según los horarios y avisos de arriba."
+          }
+        }
+      }
+    },
+    "La alarma está apagada: no sonará hasta que la enciendas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The alarm is off: it won't ring until you turn it on."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La alarma está apagada: no sonará hasta que la enciendas."
+          }
+        }
+      }
+    },
+    "Se abrirá Messages con el link para que tus invitados la acepten." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messages will open with the link so your guests can accept it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se abrirá Messages con el link para que tus invitados la acepten."
+          }
+        }
+      }
+    },
+    "hoy" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "today"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hoy"
+          }
+        }
+      }
+    },
+    "mañana" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tomorrow"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mañana"
+          }
+        }
+      }
+    },
+    "Desde" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starts"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desde"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -4,8 +4,43 @@
 //
 
 import CloudKit
+import Observation
 import SwiftData
 import SwiftUI
+
+/// Everything the editor can change, in one comparable value — the trigger for a
+/// debounced save and the payload written to the reminder.
+private struct EditSnapshot: Equatable {
+    var title: String
+    var notes: String
+    var date: Date
+    var category: CategorySelection
+    var iconKind: ReminderIconKind
+    var symbolName: String
+    var photoData: Data?
+    var recurrence: RecurrenceRule
+    var additionalSchedules: [AlarmSchedule]
+    var leadTimes: [AlarmLeadTime]
+    var isEnabled: Bool
+
+    var trimmedTitle: String {
+        title.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+/// Autosave bookkeeping, held by reference so a queued save and the flush on
+/// dismiss can't both insert a duplicate — and so a delete can't be undone by a
+/// save that was already in flight.
+@Observable
+private final class AutosaveBox {
+    /// The alarm created for a brand-new editor (nil while editing an existing one).
+    var reminder: Reminder?
+    /// What's already on the record — edits equal to this are a no-op.
+    var lastCommitted: EditSnapshot?
+    /// A local save happened that participants/helpers haven't seen yet.
+    var needsRemotePush = false
+    var isDeleted = false
+}
 
 struct ReminderEditorView: View {
     @Environment(\.dismiss) private var dismiss
@@ -31,9 +66,15 @@ struct ReminderEditorView: View {
     @State private var additionalSchedules: [AlarmSchedule]
     @State private var leadTimes: [AlarmLeadTime]
     @State private var showingLeadTimePicker = false
-    @State private var showingMoreOptions = false
     @State private var showingIconPicker = false
     @State private var isEnabled: Bool
+
+    // Autosave: edits are committed automatically (debounced) instead of behind a
+    // Save button. For a brand-new alarm the reminder is created on the first
+    // commit with a non-empty title, and every later commit updates that same
+    // object — the box keeps its identity so we never insert a duplicate.
+    @State private var autosave = AutosaveBox()
+    @State private var autosaveTask: Task<Void, Never>?
 
     // AI suggestion state
     @State private var pendingSuggestion: AlarmSuggestion?
@@ -106,9 +147,9 @@ struct ReminderEditorView: View {
         title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
-    private var moreOptionsSummary: String {
-        isEnabled ? appLocalized("Activa") : appLocalized("Inactiva")
-    }
+    /// The reminder these edits are being written to: the one we opened, or the
+    /// one autosave created for a new alarm. `nil` until a new alarm is titled.
+    private var targetReminder: Reminder? { editingReminder ?? autosave.reminder }
 
     /// Binding for one aviso row: replaces that value in place, merging
     /// duplicates and keeping the list ascending (soonest lead time first).
@@ -138,17 +179,10 @@ struct ReminderEditorView: View {
 
                 scheduleSection
                 categorySection
+                statusSection
 
-                moreOptionsToggleSection
-                if showingMoreOptions {
-                    statusSection
-                    if editingReminder == nil {
-                        inviteAdvancedSection
-                    }
-                }
-
-                if let editing = editingReminder {
-                    if editing.isReceivedShare {
+                if let target = targetReminder {
+                    if target.isReceivedShare {
                         sharedBySection
                     } else {
                         existingShareSection
@@ -163,26 +197,34 @@ struct ReminderEditorView: View {
             .navigationBarTitleDisplayMode(.inline)
             .scrollDismissesKeyboard(.interactively)
             .animation(DS.Motion.smooth, value: pendingSuggestion)
+            .animation(DS.Motion.smooth, value: autosave.reminder?.id)
+            // Remember what's already stored so closing an untouched editor
+            // doesn't re-save (and re-push) the alarm.
+            .onAppear {
+                if autosave.lastCommitted == nil { autosave.lastCommitted = snapshot }
+            }
             .onChange(of: title) { _, newValue in
                 scheduleSuggestionFetch(for: newValue)
             }
+            // Every edit schedules a debounced save; leaving the editor flushes
+            // whatever is still pending (including a swipe-down dismissal).
+            .onChange(of: snapshot) { _, newValue in
+                scheduleAutosave(newValue)
+            }
             .onDisappear {
                 suggestionTask?.cancel()
+                autosaveTask?.cancel()
+                let pending = snapshot
+                Task { await commit(pending, pushRemote: true) }
             }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancelar") { dismiss() }
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Group {
                         if isPreparingShare {
                             ProgressView()
                         } else {
-                            Button(editingReminder == nil ? "Crear" : "Guardar") {
-                                Task { await save() }
-                            }
-                            .disabled(isTitleEmpty)
-                            .bold()
+                            Button("Listo") { dismiss() }
+                                .bold()
                         }
                     }
                 }
@@ -338,10 +380,18 @@ struct ReminderEditorView: View {
     /// The date + time + recurrence controls for one schedule, bound to the given state.
     @ViewBuilder
     private func schedulePickers(date: Binding<Date>, recurrence: Binding<RecurrenceRule>) -> some View {
-        DatePicker(selection: date, displayedComponents: [.date]) {
-            Label("Fecha", systemImage: "calendar")
+        // A repeating alarm that already knows its days (weekly on Mon/Sat, or
+        // every day) doesn't need a date — only the time. It stays for the rules
+        // where the date really decides when it rings, labelled as the start.
+        if showsDate(for: recurrence.wrappedValue) {
+            DatePicker(selection: date, displayedComponents: [.date]) {
+                Label(
+                    recurrence.wrappedValue.isRecurring ? "Desde" : "Fecha",
+                    systemImage: "calendar"
+                )
+            }
+            .datePickerStyle(.compact)
         }
-        .datePickerStyle(.compact)
 
         DatePicker(selection: date, displayedComponents: [.hourAndMinute]) {
             Label("Hora", systemImage: "clock.fill")
@@ -402,6 +452,21 @@ struct ReminderEditorView: View {
         }
     }
 
+    /// Whether the date picker earns its row: it does when the day itself decides
+    /// when the alarm rings (one-off, monthly, yearly, weekly with no weekdays
+    /// picked) or anchors a multi-week/day cycle. `RecurrenceEngine` only reads
+    /// the time-of-day from it in the other cases.
+    private func showsDate(for rule: RecurrenceRule) -> Bool {
+        switch rule {
+        case .daily(let interval):
+            return interval > 1
+        case .weekly(let interval, let weekdays):
+            return weekdays.isEmpty || interval > 1
+        default:
+            return true
+        }
+    }
+
     /// A sensible default for a freshly-added schedule: the day after the primary
     /// date, same time, so the user just tweaks it.
     private func newScheduleDate() -> Date {
@@ -424,38 +489,7 @@ struct ReminderEditorView: View {
         }
     }
 
-    @ViewBuilder
-    private var moreOptionsToggleSection: some View {
-        Section {
-            Button {
-                withAnimation(DS.Motion.smooth) {
-                    showingMoreOptions.toggle()
-                }
-                Haptics.light()
-            } label: {
-                HStack(spacing: DS.Spacing.md) {
-                    Image(systemName: "slider.horizontal.3")
-                        .foregroundStyle(style.color)
-                        .frame(width: 26)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Más opciones")
-                            .foregroundStyle(.primary)
-                        Text(moreOptionsSummary)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                    }
-                    Spacer()
-                    Image(systemName: showingMoreOptions ? "chevron.up" : "chevron.down")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.tertiary)
-                }
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-        }
-    }
-
+    /// The on/off switch, front and center — no "more options" detour.
     @ViewBuilder
     private var statusSection: some View {
         Section {
@@ -464,18 +498,13 @@ struct ReminderEditorView: View {
                     "Alarma activa",
                     systemImage: isEnabled ? "bell.fill" : "bell.slash.fill"
                 )
+                .symbolEffect(.bounce, options: .nonRepeating, value: isEnabled)
             }
-        }
-    }
-
-    @ViewBuilder
-    private var inviteAdvancedSection: some View {
-        Section {
-            inviteRow
-        } header: {
-            Text("Compartir")
+            .tint(style.color)
         } footer: {
-            Text("Se guardará la alarma y se abrirá Messages con el link para que tus invitados la acepten.")
+            Text(isEnabled
+                 ? "La alarma sonará según los horarios y avisos de arriba."
+                 : "La alarma está apagada: no sonará hasta que la enciendas.")
         }
     }
 
@@ -490,28 +519,6 @@ struct ReminderEditorView: View {
                 photoData: $photoData
             )
         }
-    }
-
-    private var inviteRow: some View {
-        Button {
-            Haptics.light()
-            Task { await save(thenInvite: true) }
-        } label: {
-            HStack(spacing: DS.Spacing.md) {
-                Label("Invitar amigos", systemImage: "person.badge.plus")
-                Spacer()
-                if isPreparingShare {
-                    ProgressView()
-                } else {
-                    Image(systemName: "chevron.right")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.tertiary)
-                }
-            }
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .disabled(isTitleEmpty || isPreparingShare)
     }
 
     @ViewBuilder
@@ -553,6 +560,8 @@ struct ReminderEditorView: View {
             }
         } header: {
             Text("Compartir")
+        } footer: {
+            Text("Se abrirá Messages con el link para que tus invitados la acepten.")
         }
 
         if !participants.isEmpty {
@@ -626,7 +635,7 @@ struct ReminderEditorView: View {
     /// has joined (owner). No-op for a brand-new alarm.
     @MainActor
     private func refreshShare() async {
-        guard let r = editingReminder else { return }
+        guard let r = targetReminder else { return }
         if r.isReceivedShare {
             sharedBy = ShareOwnerStore.get(r.id)
             return
@@ -639,7 +648,10 @@ struct ReminderEditorView: View {
     /// Prepares the share for an existing alarm and hands off to Messages.
     @MainActor
     private func inviteExisting() async {
-        guard let r = editingReminder else { return }
+        // Make sure whatever the user just typed is on the record before the
+        // share payload is written from it.
+        await flushPendingEdits()
+        guard let r = targetReminder else { return }
         isPreparingShare = true
         defer { isPreparingShare = false }
         do {
@@ -663,83 +675,103 @@ struct ReminderEditorView: View {
         Haptics.light()
     }
 
-    private func save(thenInvite: Bool = false) async {
-        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedTitle.isEmpty else { return }
+    // MARK: - Autosave
+
+    private var snapshot: EditSnapshot {
+        EditSnapshot(
+            title: title,
+            notes: notes,
+            date: date,
+            category: categorySelection,
+            iconKind: iconKind,
+            symbolName: symbolName,
+            photoData: photoData,
+            recurrence: recurrence,
+            additionalSchedules: additionalSchedules,
+            leadTimes: leadTimes,
+            isEnabled: isEnabled
+        )
+    }
+
+    /// Debounces a save so we aren't writing (and rescheduling alarms) on every
+    /// keystroke. Remote pushes wait for the flush on dismiss.
+    private func scheduleAutosave(_ pending: EditSnapshot) {
+        autosaveTask?.cancel()
+        autosaveTask = Task {
+            try? await Task.sleep(for: .milliseconds(700))
+            if Task.isCancelled { return }
+            await commit(pending, pushRemote: false)
+        }
+    }
+
+    /// Commits any debounced edit right now — used before actions that read the
+    /// stored reminder (sharing, deleting).
+    @MainActor
+    private func flushPendingEdits() async {
+        autosaveTask?.cancel()
+        autosaveTask = nil
+        await commit(snapshot, pushRemote: false)
+    }
+
+    /// Writes the snapshot to the reminder (creating it the first time), keeps the
+    /// alarms in sync, and — on the flush when the editor closes — mirrors the
+    /// change to CloudKit. Opening an alarm and closing it untouched does nothing.
+    @MainActor
+    private func commit(_ snap: EditSnapshot, pushRemote: Bool) async {
+        guard !autosave.isDeleted else { return }
+        // Nothing to save until the alarm has a name.
+        guard !snap.trimmedTitle.isEmpty else { return }
+
+        let hasEdits = snap != autosave.lastCommitted
+        guard hasEdits || (pushRemote && autosave.needsRemotePush) else { return }
 
         let reminder: Reminder
-        if let existing = editingReminder {
-            existing.title = trimmedTitle
-            existing.notes = notes.isEmpty ? nil : notes
-            existing.date = date
-            categoryStore.apply(categorySelection, to: existing)
-            existing.iconKind = iconKind
-            existing.symbolName = symbolName
-            existing.photoData = iconKind == .photo ? photoData : nil
-            existing.recurrence = recurrence
-            existing.additionalSchedules = additionalSchedules
-            existing.leadTimes = leadTimes
-            // On a received share the avisos are the recipient's own — remember
-            // them so the next shared-DB scan doesn't overwrite them with the
-            // owner's list.
-            if existing.isReceivedShare {
-                ShareLeadTimesStore.setPersonal(leadTimes, for: existing.id)
-            }
-            existing.isEnabled = isEnabled
-            existing.updatedAt = Date()
+        if let existing = targetReminder {
             reminder = existing
         } else {
-            let new = Reminder(
-                title: trimmedTitle,
-                notes: notes.isEmpty ? nil : notes,
-                date: date,
-                iconKind: iconKind,
-                symbolName: symbolName,
-                photoData: iconKind == .photo ? photoData : nil,
-                recurrence: recurrence,
-                leadTimes: leadTimes,
-                isEnabled: isEnabled
-            )
-            new.additionalSchedules = additionalSchedules
-            categoryStore.apply(categorySelection, to: new)
+            let new = Reminder(title: snap.trimmedTitle, date: snap.date)
             modelContext.insert(new)
+            autosave.reminder = new
             reminder = new
+            Haptics.success()
         }
 
-        try? modelContext.save()
-        await reminderScheduler.syncAlarms(for: reminder)
-        Haptics.success()
-
-        // If editing an already-shared reminder, push the change to participants.
-        if editingReminder != nil {
-            await sharedService.pushUpdateIfShared(reminder)
+        if hasEdits {
+            apply(snap, to: reminder)
+            try? modelContext.save()
+            autosave.lastCommitted = snap
+            autosave.needsRemotePush = true
+            await reminderScheduler.syncAlarms(for: reminder)
         }
-        // Mirror create/edit to trusted helpers if delegation is on.
+
+        guard pushRemote, autosave.needsRemotePush else { return }
+        autosave.needsRemotePush = false
+        // Push the change to participants of an already-shared reminder…
+        await sharedService.pushUpdateIfShared(reminder)
+        // …and mirror create/edit to trusted helpers if delegation is on.
         if settings.delegationEnabled {
             await delegation.pushReminder(reminder)
         }
+    }
 
-        guard thenInvite else {
-            dismiss()
-            return
+    private func apply(_ snap: EditSnapshot, to reminder: Reminder) {
+        reminder.title = snap.trimmedTitle
+        reminder.notes = snap.notes.isEmpty ? nil : snap.notes
+        reminder.date = snap.date
+        categoryStore.apply(snap.category, to: reminder)
+        reminder.iconKind = snap.iconKind
+        reminder.symbolName = snap.symbolName
+        reminder.photoData = snap.iconKind == .photo ? snap.photoData : nil
+        reminder.recurrence = snap.recurrence
+        reminder.additionalSchedules = snap.additionalSchedules
+        reminder.leadTimes = snap.leadTimes
+        // On a received share the avisos are the recipient's own — remember them
+        // so the next shared-DB scan doesn't overwrite them with the owner's list.
+        if reminder.isReceivedShare {
+            ShareLeadTimesStore.setPersonal(snap.leadTimes, for: reminder.id)
         }
-
-        // Prepare the share and hand off to the shared invite delivery (Messages).
-        isPreparingShare = true
-        do {
-            let share = try await sharedService.prepareShare(for: reminder)
-            isPreparingShare = false
-
-            guard let url = share.url else {
-                shareError = SharedRemindersError.shareURLUnavailable.errorDescription
-                return
-            }
-
-            pendingInvite = InviteDelivery(title: trimmedTitle, url: url)
-        } catch {
-            isPreparingShare = false
-            shareError = error.localizedDescription
-        }
+        reminder.isEnabled = snap.isEnabled
+        reminder.updatedAt = Date()
     }
 
     // MARK: - AI suggestions
@@ -879,7 +911,13 @@ struct ReminderEditorView: View {
     }
 
     private func deleteReminder() async {
-        guard let r = editingReminder else { return }
+        guard let r = targetReminder else { return }
+        // Don't let a queued autosave (or the flush on dismiss) resurrect the
+        // reminder we're deleting.
+        autosaveTask?.cancel()
+        autosaveTask = nil
+        autosave.reminder = nil
+        autosave.isDeleted = true
         let id = r.id
         let wasOwned = !r.isReceivedShare
         // Tombstone a deleted invitation so the shared-DB scan doesn't re-import it.
