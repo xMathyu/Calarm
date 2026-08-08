@@ -45,11 +45,14 @@ struct CreateAlarmFromTextIntent: AppIntent {
 
         // Map AI output → typed domain values. The shared helper handles both
         // strict ISO (with timezone) and naive forms (interpreted as local).
-        let resolvedDate = Self.parseAIDate(parsed.dateISO)
+        let parsedDate = Self.parseAIDate(parsed.dateISO)
             ?? Date().addingTimeInterval(60 * 60)
 
         let category = ReminderCategory.from(slug: parsed.category) ?? .reminder
-        let recurrence = Self.recurrence(fromSlug: parsed.recurrence)
+        let weekdays = AlarmSuggestionsService.weekdays(fromNames: parsed.weekdays)
+        let recurrence = AlarmSuggestionsService.recurrence(fromSlug: parsed.recurrence, weekdays: weekdays)
+        // "todos los lunes" must start on a Monday even if the model anchored today.
+        let resolvedDate = AlarmSuggestionsService.snap(parsedDate, toFirstOf: weekdays)
         let leadTimes = Self.leadTimes(fromMinutes: parsed.leadTimesMinutes)
 
         // Persist + schedule, matching CreateAlarmIntent's flow.
@@ -101,16 +104,6 @@ struct CreateAlarmFromTextIntent: AppIntent {
             if let date = local.date(from: trimmed) { return date }
         }
         return nil
-    }
-
-    private static func recurrence(fromSlug slug: String) -> RecurrenceRule {
-        switch slug.lowercased() {
-        case "daily": .daily(interval: 1)
-        case "weekly": .weekly(interval: 1, weekdays: [])
-        case "monthly": .monthly(interval: 1)
-        case "yearly": .yearly(interval: 1)
-        default: .once
-        }
     }
 
     /// Snaps the AI's free-form minute counts onto the closest fixed

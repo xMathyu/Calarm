@@ -24,8 +24,11 @@ struct ParsedAlarmDraft: Sendable {
     @Guide(description: "Category. Pick exactly one of: birthday, anniversary, event, reminder, other.")
     let category: String
 
-    @Guide(description: "Recurrence. Pick exactly one of: once, daily, weekly, monthly, yearly.")
+    @Guide(description: "Recurrence. Pick exactly one of: once, daily, weekly, monthly, yearly. Base it on how often the user says it repeats, NEVER on a word inside the alarm's name. A named weekday ('todos los lunes') → weekly.")
     let recurrence: String
+
+    @Guide(description: "Weekday names, ONLY when the user names specific days. English lowercase: monday, tuesday, wednesday, thursday, friday, saturday, sunday. 'todos los lunes' → [\"monday\"]. 'martes y jueves' → [\"tuesday\", \"thursday\"]. Empty array when no day was named.")
+    let weekdays: [String]
 
     @Guide(description: "Minutes before the alarm to alert the user. 0 means at the moment. Examples: [0], [5], [0, 60], [0, 60, 1440]. Default to [0] if user does not specify.")
     let leadTimesMinutes: [Int]
@@ -99,7 +102,14 @@ final class ParseAlarmService {
           "a las 2pm" → 14:00:00, NOT 19:00:00. Must be in the future.
         - If only a time is given, assume today if it hasn't passed, otherwise tomorrow.
         - category: pick closest from [birthday, anniversary, event, reminder, other].
-        - recurrence: pick from [once, daily, weekly, monthly, yearly]. Default once.
+        - recurrence: pick from [once, daily, weekly, monthly, yearly]. Default once. \
+          Read the FREQUENCY the user states, never a word inside the alarm's name — \
+          meetings are often called "daily", "weekly" or "mensual". \
+          "mi daily todos los lunes" → weekly + weekdays ["monday"], NOT daily.
+        - weekdays: fill ONLY when the user names days of the week — "todos los lunes" \
+          → ["monday"], "martes y jueves" → ["tuesday","thursday"], "entre semana" → \
+          monday…friday. Otherwise []. When filled, recurrence must be weekly and \
+          dateISO must be the NEXT occurrence of that weekday.
         - leadTimesMinutes: list of minutes before. [0]=at-start, [0,60]=at-start and 1h before, [1440]=1 day. Default [0].
 
         Be concise. Respect the user's language (Spanish or English).

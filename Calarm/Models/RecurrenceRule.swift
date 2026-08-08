@@ -16,6 +16,27 @@ enum Weekday: Int, CaseIterable, Identifiable, Codable, Hashable, Sendable {
 
     var id: Int { rawValue }
 
+    /// Parses a weekday from an English or Spanish name. The language model is
+    /// told to emit English slugs, but it often echoes the user's own word
+    /// ("lunes", "martes"), so both languages — plus the common short forms and
+    /// plurals — are accepted.
+    static func from(slug: String) -> Weekday? {
+        let key = slug
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+            .folding(options: .diacriticInsensitive, locale: Locale(identifier: "en_US_POSIX"))
+        switch key {
+        case "sunday", "sundays", "sun", "domingo", "domingos", "dom": return .sunday
+        case "monday", "mondays", "mon", "lunes", "lun": return .monday
+        case "tuesday", "tuesdays", "tue", "tues", "martes", "mar": return .tuesday
+        case "wednesday", "wednesdays", "wed", "miercoles", "mie": return .wednesday
+        case "thursday", "thursdays", "thu", "thur", "thurs", "jueves", "jue": return .thursday
+        case "friday", "fridays", "fri", "viernes", "vie": return .friday
+        case "saturday", "saturdays", "sat", "sabado", "sabados", "sab": return .saturday
+        default: return nil
+        }
+    }
+
     var localizedShort: String {
         switch self {
         case .sunday: appLocalized("Dom")

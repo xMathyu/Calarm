@@ -172,6 +172,29 @@ final class AssistantService {
         Example: "Mom's birthday March 15 every year" → yearly (NOT once!).
         Example: "Cumple de mamá el 15 de marzo todos los años" → yearly.
 
+        ## Named weekdays — CRITICAL
+        When the user names days of the week, pass recurrence "weekly" AND the
+        `weekdays` list (English lowercase names). Never use "daily" for these:
+          • "todos los lunes" / "every Monday" / "los lunes" / "cada lunes" → weekly + ["monday"]
+          • "los martes y jueves" / "Tuesdays and Thursdays" → weekly + ["tuesday", "thursday"]
+          • "entre semana" / "weekdays" / "días laborales" → weekly + monday…friday
+          • "fines de semana" / "weekends" → weekly + ["saturday", "sunday"]
+        Set dateISO to the NEXT occurrence of the first named weekday, at the
+        requested time.
+
+        ## The frequency is NOT in the title — CRITICAL
+        Recurrence comes ONLY from how often the user says the alarm repeats,
+        never from words inside the alarm's NAME. Many meetings are literally
+        called "daily", "weekly", "standup", "mensual".
+        Example: "Pon una alarma de mi daily todos los lunes" →
+          title "Daily", recurrence weekly, weekdays ["monday"].
+          It is NOT daily — "daily" there is the meeting's name, and "todos los
+          lunes" is the real frequency.
+        Example: "recuérdame el reporte mensual todos los viernes" →
+          title "Reporte mensual", recurrence weekly, weekdays ["friday"] (NOT monthly).
+        When the message contains both a name-word and a real frequency phrase,
+        the frequency phrase always wins.
+
         ## Category detection
           • Birthday/cumpleaños → birthday
           • Anniversary/aniversario → anniversary

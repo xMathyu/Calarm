@@ -110,4 +110,39 @@ final class AlarmSuggestionsService {
         default: .once
         }
     }
+
+    static func weekdays(fromNames names: [String]?) -> Set<Weekday> {
+        Set((names ?? []).compactMap(Weekday.from(slug:)))
+    }
+
+    /// Builds the rule from the model's slug, letting explicit weekday names win.
+    /// Naming days always means weekly, whatever slug came back — the model
+    /// mislabels "mi daily todos los lunes" as `daily` because the *title*
+    /// contains a recurrence-looking word.
+    static func recurrence(fromSlug slug: String, weekdays: Set<Weekday>) -> RecurrenceRule {
+        guard !weekdays.isEmpty else { return recurrence(fromSlug: slug) }
+        let interval: Int
+        if case .weekly(let n, _) = recurrence(fromSlug: slug) { interval = n } else { interval = 1 }
+        return .weekly(interval: interval, weekdays: weekdays)
+    }
+
+    /// Moves `date` forward to the first day matching `weekdays`, keeping the
+    /// time of day. The model usually anchors "todos los lunes" to today, which
+    /// would show (and first fire) the alarm on the wrong day.
+    static func snap(
+        _ date: Date,
+        toFirstOf weekdays: Set<Weekday>,
+        calendar: Calendar = .current
+    ) -> Date {
+        guard !weekdays.isEmpty else { return date }
+        let matches = { (candidate: Date) in
+            weekdays.contains { $0.rawValue == calendar.component(.weekday, from: candidate) }
+        }
+        guard !matches(date) else { return date }
+        for offset in 1...7 {
+            guard let candidate = calendar.date(byAdding: .day, value: offset, to: date) else { break }
+            if matches(candidate) { return candidate }
+        }
+        return date
+    }
 }

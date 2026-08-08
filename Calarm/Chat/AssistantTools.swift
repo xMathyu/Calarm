@@ -40,8 +40,18 @@ private enum ToolHelpers {
         }
     }
 
-    static func recurrence(fromSlug slug: String?) -> RecurrenceRule {
-        AlarmSuggestionsService.recurrence(fromSlug: slug ?? "once")
+    static func recurrence(fromSlug slug: String?, weekdayNames: [String]?) -> RecurrenceRule {
+        AlarmSuggestionsService.recurrence(
+            fromSlug: slug ?? "once",
+            weekdays: AlarmSuggestionsService.weekdays(fromNames: weekdayNames)
+        )
+    }
+
+    /// Pushes the alarm date onto the first requested weekday, so "todos los
+    /// lunes" starts next Monday instead of whatever day the model picked.
+    static func alignDate(_ date: Date, to rule: RecurrenceRule) -> Date {
+        guard case .weekly(_, let weekdays) = rule else { return date }
+        return AlarmSuggestionsService.snap(date, toFirstOf: weekdays)
     }
 
     static func leadTimes(fromMinutes minutes: [Int]?) -> [AlarmLeadTime] {
@@ -113,8 +123,11 @@ struct CreateReminderTool: Tool {
         @Guide(description: "Category. A built-in (birthday, anniversary, event, reminder, other) OR the EXACT name of one of the user's custom categories listed in the instructions. Match birthdays (cumpleaños) → birthday, anniversaries → anniversary, meetings → event, generic → reminder. Prefer a custom category when the user's intent clearly matches one.")
         let category: String?
 
-        @Guide(description: "Recurrence. EXACTLY one of: once, daily, weekly, monthly, yearly. CRITICAL — read the user's words: 'every year'/'cada año'/'todos los años'/'yearly'/'anual' → yearly. 'every month'/'cada mes'/'todos los meses' → monthly. 'every week'/'cada semana'/'todas las semanas' → weekly. 'daily'/'cada día'/'todos los días' → daily. Only use 'once' if the user gave a SPECIFIC date with NO recurrence words. Example: 'Cumple de mamá el 28 de febrero todos los años' → yearly (NEVER once).")
+        @Guide(description: "Recurrence. EXACTLY one of: once, daily, weekly, monthly, yearly. CRITICAL — read HOW OFTEN the user says it repeats, and IGNORE words that are part of the alarm's NAME: 'every year'/'cada año'/'todos los años'/'yearly'/'anual' → yearly. 'every month'/'cada mes'/'todos los meses' → monthly. 'every week'/'cada semana'/'todas las semanas' → weekly. A named weekday ('todos los lunes'/'every Monday'/'los martes y jueves') → weekly, and ALSO fill weekdays. 'every day'/'cada día'/'todos los días'/'daily' AS THE FREQUENCY → daily. Only use 'once' if the user gave a SPECIFIC date with NO recurrence words. Example: 'Cumple de mamá el 28 de febrero todos los años' → yearly (NEVER once). Example: 'mi daily todos los lunes' → weekly on monday, because 'daily' is the meeting's NAME, not the frequency (NEVER daily).")
         let recurrence: String?
+
+        @Guide(description: "Weekday names, ONLY when the user names specific days of the week. English lowercase: monday, tuesday, wednesday, thursday, friday, saturday, sunday. Examples: 'todos los lunes'/'every Monday' → [\"monday\"]. 'los martes y jueves' → [\"tuesday\", \"thursday\"]. 'entre semana'/'weekdays' → [\"monday\",\"tuesday\",\"wednesday\",\"thursday\",\"friday\"]. Null when no specific day was named. Filling this makes the alarm weekly on those days, and the date is moved to the next matching day automatically.")
+        let weekdays: [String]?
 
         @Guide(description: "Lead times in MINUTES before the alarm. Supported values map to: 0 (at-start), 5, 10, 15, 30, 45, 60 (1h), 120 (2h), 180 (3h), 360 (6h), 720 (12h), 1440 (1 day), 2880 (2 days), 10080 (1 week). Other values snap to the closest. Examples: [0] = at start only, [120] = 2 hours before, [60, 1440] = 1 hour + 1 day before. Birthdays should often include [0, 1440] for at-start + 1 day before.")
         let leadTimesMinutes: [Int]?
@@ -122,14 +135,20 @@ struct CreateReminderTool: Tool {
 
     @MainActor
     func call(arguments: Arguments) async throws -> String {
-        guard let date = ToolHelpers.parseDate(arguments.dateISO) else {
+        guard let parsedDate = ToolHelpers.parseDate(arguments.dateISO) else {
             return "Error: invalid date \(arguments.dateISO). Use ISO 8601 like 2026-03-15T08:00:00."
         }
+
+        let recurrence = ToolHelpers.recurrence(
+            fromSlug: arguments.recurrence,
+            weekdayNames: arguments.weekdays
+        )
+        let date = ToolHelpers.alignDate(parsedDate, to: recurrence)
 
         let reminder = Reminder(
             title: arguments.title,
             date: date,
-            recurrence: ToolHelpers.recurrence(fromSlug: arguments.recurrence),
+            recurrence: recurrence,
             leadTimes: ToolHelpers.leadTimes(fromMinutes: arguments.leadTimesMinutes)
         )
         ToolHelpers.applyCategory(arguments.category, to: reminder)
@@ -140,7 +159,7 @@ struct CreateReminderTool: Tool {
         NotificationCenter.default.post(name: .calarmLocalRemindersChanged, object: nil)
 
         let dateStr = ToolHelpers.formatDate(date, locale: LocalizationManager.shared.currentLocale)
-        return "Created reminder '\(arguments.title)' for \(dateStr). ID: \(reminder.id.uuidString)"
+        return "Created reminder '\(arguments.title)' for \(dateStr), repeating: \(recurrence.localizedSummary). ID: \(reminder.id.uuidString)"
     }
 }
 
@@ -272,8 +291,11 @@ struct UpdateReminderTool: Tool {
         @Guide(description: "New category: a built-in slug (birthday, anniversary, event, reminder, other) or the exact name of a custom category from the instructions. Null to keep current.")
         let category: String?
 
-        @Guide(description: "New recurrence slug, or null to keep current.")
+        @Guide(description: "New recurrence slug (once, daily, weekly, monthly, yearly), or null to keep current. A named weekday ('todos los lunes'/'every Monday') → weekly, and ALSO fill weekdays. Never read the frequency out of the alarm's name.")
         let recurrence: String?
+
+        @Guide(description: "New weekday names when the user names specific days ('los lunes y miércoles' → [\"monday\", \"wednesday\"]). English lowercase. Null to keep current. Filling this makes the alarm weekly on those days.")
+        let weekdays: [String]?
 
         @Guide(description: "New lead times in minutes, or null to keep current.")
         let leadTimesMinutes: [Int]?
@@ -294,14 +316,29 @@ struct UpdateReminderTool: Tool {
         }
 
         if let title = arguments.title { reminder.title = title }
+        var dateChanged = false
         if let dateISO = arguments.dateISO, let date = ToolHelpers.parseDate(dateISO) {
             reminder.date = date
+            dateChanged = true
         }
         if let cat = arguments.category {
             ToolHelpers.applyCategory(cat, to: reminder)
         }
+        // Weekday names alone ("hazlo los lunes") mean weekly on those days,
+        // even when the model didn't bother restating the recurrence slug.
+        let newWeekdays = AlarmSuggestionsService.weekdays(fromNames: arguments.weekdays)
+        var recurrenceChanged = false
         if let rec = arguments.recurrence {
-            reminder.recurrence = ToolHelpers.recurrence(fromSlug: rec)
+            reminder.recurrence = AlarmSuggestionsService.recurrence(fromSlug: rec, weekdays: newWeekdays)
+            recurrenceChanged = true
+        } else if !newWeekdays.isEmpty {
+            reminder.recurrence = .weekly(interval: 1, weekdays: newWeekdays)
+            recurrenceChanged = true
+        }
+        // Only re-anchor when the user actually touched the schedule — a plain
+        // title edit shouldn't silently move an existing alarm's date.
+        if recurrenceChanged || dateChanged {
+            reminder.date = ToolHelpers.alignDate(reminder.date, to: reminder.recurrence)
         }
         if let leads = arguments.leadTimesMinutes {
             reminder.leadTimes = ToolHelpers.leadTimes(fromMinutes: leads)
@@ -319,7 +356,8 @@ struct UpdateReminderTool: Tool {
         await scheduler.syncAlarms(for: reminder)
         NotificationCenter.default.post(name: .calarmLocalRemindersChanged, object: nil)
 
-        return "Updated reminder '\(reminder.title)'."
+        let dateStr = ToolHelpers.formatDate(reminder.date, locale: LocalizationManager.shared.currentLocale)
+        return "Updated reminder '\(reminder.title)' — \(dateStr), repeating: \(reminder.recurrence.localizedSummary)."
     }
 }
 
