@@ -129,7 +129,13 @@ struct RemindersListView: View {
     /// One list row: tap the content to edit, flip the switch to turn the alarm
     /// on/off in place (no swipe action or options screen needed).
     private func row(for reminder: Reminder, nextOccurrence: Date?) -> some View {
-        HStack(spacing: DS.Spacing.md) {
+        // A one-off whose date passed has no occurrence left, so `isEnabled` (a
+        // manual mute flag nothing clears automatically) would still read "on" for
+        // an alarm that can never ring. Show it off and locked instead of writing
+        // to the model — reschedule it and the switch comes back on its own.
+        let isExpired = nextOccurrence == nil
+
+        return HStack(spacing: DS.Spacing.md) {
             Button {
                 Haptics.light()
                 editorReminder = reminder
@@ -139,12 +145,15 @@ struct RemindersListView: View {
             .buttonStyle(.pressable)
 
             Toggle("", isOn: Binding(
-                get: { reminder.isEnabled },
+                get: { reminder.isEnabled && !isExpired },
                 set: { newValue in Task { await setEnabled(newValue, for: reminder) } }
             ))
             .labelsHidden()
+            .disabled(isExpired)
             .tint(categoryStore.style(for: reminder).color)
-            .accessibilityLabel(Text(appLocalized("Alarma activa")))
+            .accessibilityLabel(Text(isExpired
+                ? appLocalized("Alarma vencida")
+                : appLocalized("Alarma activa")))
         }
         .padding(.vertical, 2)
     }
@@ -204,13 +213,15 @@ struct RemindersListView: View {
         var tomorrow: [Item] = []
         var thisWeek: [Item] = []
         var later: [Item] = []
-        var unscheduled: [Item] = []
+        // `allSchedules` always carries the primary schedule, so a nil next
+        // occurrence means every schedule is a one-off that already passed.
+        var expired: [Item] = []
 
         for reminder in reminders {
             let next = nextOccurrence(for: reminder)
             let item = Item(reminder: reminder, nextOccurrence: next)
             guard let date = next else {
-                unscheduled.append(item)
+                expired.append(item)
                 continue
             }
             if calendar.isDateInToday(date) { today.append(item) }
@@ -224,7 +235,7 @@ struct RemindersListView: View {
         if !tomorrow.isEmpty { result.append(Group(title: appLocalized("Mañana"), items: tomorrow)) }
         if !thisWeek.isEmpty { result.append(Group(title: appLocalized("Esta semana"), items: thisWeek)) }
         if !later.isEmpty { result.append(Group(title: appLocalized("Más adelante"), items: later)) }
-        if !unscheduled.isEmpty { result.append(Group(title: appLocalized("Sin próxima fecha"), items: unscheduled)) }
+        if !expired.isEmpty { result.append(Group(title: appLocalized("Vencidas"), items: expired)) }
         return result
     }
 

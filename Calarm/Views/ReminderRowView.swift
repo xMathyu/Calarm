@@ -18,6 +18,10 @@ struct ReminderRowView: View {
         return next > Date() && next.timeIntervalSinceNow < 60 * 60 * 24
     }
 
+    /// No occurrence left: a one-off whose date already passed. It can never ring
+    /// again, so the row says so instead of showing a switch that implies it will.
+    private var isExpired: Bool { nextOccurrence == nil }
+
     var body: some View {
         HStack(spacing: DS.Spacing.md) {
             avatar
@@ -42,8 +46,11 @@ struct ReminderRowView: View {
                             .lineLimit(1)
                     }
                 } else {
-                    Text(style.title)
-                        .font(.subheadline)
+                    // Expired: show WHEN it was, not the category — the date is the
+                    // useful bit when deciding whether to reschedule or delete it.
+                    Text(reminder.date, format: .dateTime.day().month(.abbreviated).hour().minute())
+                        .font(.subheadline.weight(.semibold))
+                        .monospacedDigit()
                         .foregroundStyle(.secondary)
                 }
 
@@ -55,9 +62,9 @@ struct ReminderRowView: View {
 
             Spacer(minLength: DS.Spacing.sm)
         }
-        // Off alarms stay legible but visibly muted — the switch says on/off,
-        // so the row doesn't need a second "disabled" icon.
-        .opacity(reminder.isEnabled ? 1 : 0.45)
+        // Off (or expired) alarms stay legible but visibly muted — the switch says
+        // on/off, so the row doesn't need a second "disabled" icon.
+        .opacity(reminder.isEnabled && !isExpired ? 1 : 0.45)
         .padding(.vertical, DS.Spacing.xs)
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
@@ -79,7 +86,8 @@ struct ReminderRowView: View {
     }
 
     private var hasBadges: Bool {
-        reminder.recurrence.isRecurring
+        isExpired
+            || reminder.recurrence.isRecurring
             || reminder.isReceivedShare
             || !reminder.additionalSchedules.isEmpty
     }
@@ -88,6 +96,9 @@ struct ReminderRowView: View {
     /// aligned with the title instead of spanning the whole row.
     private var badges: some View {
         WrapLayout(spacing: DS.Spacing.xs, lineSpacing: 4) {
+            if isExpired {
+                badge(appLocalized("Vencida"), systemImage: "clock.badge.xmark", tint: .secondary)
+            }
             if reminder.recurrence.isRecurring {
                 badge(reminder.recurrence.localizedSummary, systemImage: "repeat", tint: style.color)
             }

@@ -1,6 +1,54 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
+    "Vencida" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expired"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vencida"
+          }
+        }
+      }
+    },
+    "Vencidas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expired"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vencidas"
+          }
+        }
+      }
+    },
+    "Alarma vencida" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarm expired"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarma vencida"
+          }
+        }
+      }
+    },
     " sigue la configuración del sistema." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5720,22 +5768,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sin ocurrencias futuras"
-          }
-        }
-      }
-    },
-    "Sin próxima fecha" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No next date"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin próxima fecha"
           }
         }
       }
