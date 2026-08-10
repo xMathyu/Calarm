@@ -87,6 +87,46 @@ Inglés:
 • Stability fixes: deleted alarms no longer ring again
 ```
 
+## What's New (1.0.4) — publicado
+
+> Copiado desde App Store Connect vía API. Sirve de referencia para no repetir
+> features en versiones siguientes: 1.0.4 ya anunció personas de confianza,
+> varios horarios por alarma, el buscador de emojis, los avisos en la pantalla
+> principal y las mejoras de traducción al inglés.
+
+Español:
+```
+• NUEVO — Personas de confianza: permite que alguien de confianza (tu pareja, un familiar, tu asistente) vea y administre todas tus alarmas desde su teléfono. Lo que programen suena en tu iPhone. La invitación llega por Mensajes con un simple enlace y puedes revocar el acceso cuando quieras.
+• Varios horarios por alarma: una misma alarma ahora puede sonar en días y horas distintos (por ejemplo, lunes a las 5 p. m. y sábado a las 11 a. m.).
+• Nuevo selector de emojis: busca entre todos los emojis por nombre o categoría para personalizar el icono de tus alarmas.
+• Avisos más simples: agrega, cambia o quita todos los avisos de una alarma directamente en su pantalla principal, sin menús ocultos.
+• Mejoras de traducción al inglés y correcciones visuales en el editor.
+```
+
+## What's New (1.0.5)
+
+Español:
+```
+• Enciende o apaga cada alarma con un switch en la lista, sin abrir el editor
+• El editor guarda solo: se fueron Guardar y Cancelar, ahora basta con "Listo"
+• Detén la alarma que está sonando desde la Live Activity o la Isla Dinámica, sin desbloquear el iPhone
+• Lista rediseñada: la hora al frente con el día al lado y las etiquetas alineadas bajo el título
+• En una lista compartida, cada persona puede ponerse sus propios avisos sin cambiar los de los demás
+• El selector de fecha se oculta cuando la recurrencia ya fija los días
+• Corregido: al pedirle a la IA "pon mi daily todos los lunes", la alarma quedaba diaria en vez de semanal
+```
+
+Inglés:
+```
+• Turn each alarm on or off with a switch right in the list, without opening the editor
+• The editor now saves on its own: Save and Cancel are gone, just tap "Done"
+• Stop a ringing alarm straight from the Live Activity or Dynamic Island, without unlocking your iPhone
+• Redesigned list: the time leads with the day beside it and the labels lined up under the title
+• On a shared list, each person can set their own alerts without changing anyone else's
+• The date picker is hidden when the recurrence already fixes the days
+• Fixed: asking the AI for "my daily standup every Monday" created a daily alarm instead of a weekly one
+```
+
 ---
 
 ## Privacy
@@ -122,12 +162,28 @@ Inglés:
 
 ### Promotional Text (170 char, editable sin re-revisión de App)
 
-Español (146 char):
+Español (125 char):
+```
+Enciende o apaga cada alarma desde la lista, y detén la que está sonando desde la Isla Dinámica. Ahora el editor guarda solo.
+```
+
+Inglés (135 char):
+```
+Turn any alarm on or off right from the list, and stop the one that's ringing from the Dynamic Island. The editor now saves on its own.
+```
+
+Anterior (1.0.4, publicado):
+```
+Alarmas que suenan aunque tu iPhone esté en silencio. Nuevo: personas de confianza que administran tus alarmas, varios horarios por alarma y buscador de emojis.
+```
+```
+Alarms that ring even when your iPhone is silent. New: trusted helpers who manage your alarms, multiple schedules per alarm, and a searchable emoji picker.
+```
+
+Anterior (1.0.3):
 ```
 Alarmas que suenan aunque tu iPhone esté en silencio. Ahora con comandos de Siri y botón para unirte a tus reuniones de Teams, Zoom y Google Meet.
 ```
-
-Inglés (139 char):
 ```
 Alarms that ring even when your iPhone is silenced. Now with Siri commands and a join button for your Teams, Zoom and Google Meet meetings.
 ```

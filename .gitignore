@@ -5,3 +5,10 @@ artif*-from-xcode/
 DerivedData/
 build/
 .DS_Store
+
+# App Store Connect API keys — never commit
+*.p8
+
+# Python bytecode (ci_scripts/asc.py)
+__pycache__/
+*.pyc
