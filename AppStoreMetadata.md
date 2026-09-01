@@ -127,6 +127,36 @@ Inglés:
 • Fixed: asking the AI for "my daily standup every Monday" created a daily alarm instead of a weekly one
 ```
 
+## What's New (1.0.6)
+
+Español:
+```
+• Las alarmas que ya pasaron dejan de aparecer como activadas: su interruptor se muestra apagado, con la etiqueta "Vencida" y la fecha en que sonaron
+• La sección que las agrupa ahora se llama "Vencidas", en vez de "Sin próxima fecha"
+```
+
+Inglés:
+```
+• Alarms that already went off no longer show as enabled: their switch appears off, labeled "Expired" along with the date they rang
+• The section that groups them is now called "Expired" instead of "No next date"
+```
+
+## What's New (1.0.7)
+
+Español:
+```
+• Elige cómo suena cada alarma: seis tonos nuevos (Campana, Marimba, Radar, Arpegio, Pulso y Arpa), y cada alarma puede tener el suyo o seguir el predeterminado de Ajustes
+• Importa tu propio audio desde Archivos y úsalo como tono de alarma
+• Corregido: al renombrar una alarma, las que ya estaban programadas seguían sonando con el nombre anterior — también en el Apple Watch
+```
+
+Inglés:
+```
+• Choose how each alarm sounds: six new tones (Chime, Marimba, Radar, Arpeggio, Pulse and Harp), and every alarm can use its own or follow the default from Settings
+• Import your own audio from Files and use it as an alarm tone
+• Fixed: renaming an alarm left the already-scheduled ones ringing with the old name — on Apple Watch too
+```
+
 ---
 
 ## Privacy
@@ -162,12 +192,28 @@ Inglés:
 
 ### Promotional Text (170 char, editable sin re-revisión de App)
 
-Español (125 char):
+Español (104 char):
+```
+Ahora eliges cómo suena cada alarma: seis tonos nuevos, o tu propio audio importado desde Archivos.
+```
+
+Inglés (91 char):
+```
+Now you choose how each alarm sounds: six new tones, or your own audio imported from Files.
+```
+
+Anterior (1.0.6, publicado):
+```
+Las alarmas que ya sonaron dejan de verse como activadas: ahora salen apagadas, marcadas como vencidas y con la fecha en que sonaron.
+```
+```
+Alarms that already rang no longer look enabled: they now show as off, marked expired, with the date they rang.
+```
+
+Anterior (1.0.5, publicado):
 ```
 Enciende o apaga cada alarma desde la lista, y detén la que está sonando desde la Isla Dinámica. Ahora el editor guarda solo.
 ```
-
-Inglés (135 char):
 ```
 Turn any alarm on or off right from the list, and stop the one that's ringing from the Dynamic Island. The editor now saves on its own.
 ```
