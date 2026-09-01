@@ -22,6 +22,22 @@ extension CalarmAlarmMetadata {
     }
 }
 
+extension LocalizedStringResource {
+    /// Texto que sale de los datos de la persona (el nombre de su alarma), no del
+    /// catálogo de la app: viaja como ARGUMENTO de un formato `%@` en vez de como
+    /// clave de localización.
+    ///
+    /// `LocalizedStringResource(stringLiteral:)` toma la cadena como clave, y
+    /// AlarmKit la resuelve tarde — cuando la alarma suena, en otro proceso y con
+    /// el locale del sistema. Una alarma llamada "Recordatorio" o "Detener"
+    /// (claves que sí existen en `Localizable.xcstrings`) se mostraría traducida,
+    /// y un título con "%" pasaría por el formateador. Interpolando, el texto va
+    /// como dato dentro del propio recurso y sale tal cual se escribió.
+    static func verbatim(_ text: String) -> LocalizedStringResource {
+        LocalizedStringResource("\(text)")
+    }
+}
+
 /// Low-level wrapper over `AlarmManager.shared`. Schedules and cancels individual alarms.
 final class AlarmScheduler {
     private let manager: AlarmManager
@@ -186,14 +202,22 @@ final class AlarmScheduler {
             secondaryIntent = SnoozeAlarmIntent(alarmID: alarmID.uuidString)
         }
 
+        // The system alert only has room for a title — it shows it next to the app
+        // name — so an empty one leaves just "Calarm" on the Lock Screen and on the
+        // Apple Watch. Never hand AlarmKit a blank title.
+        let safeTitle: String = {
+            let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+            return trimmed.isEmpty ? category.localizedTitle : trimmed
+        }()
+
         // Append location to the title so the user sees where to go in the alert UI.
         let alertTitle: String = {
-            guard hasLocation, let location else { return title }
-            return "\(title) · \(location)"
+            guard hasLocation, let location else { return safeTitle }
+            return "\(safeTitle) · \(location)"
         }()
 
         let alertContent = AlarmPresentation.Alert(
-            title: LocalizedStringResource(stringLiteral: alertTitle),
+            title: .verbatim(alertTitle),
             stopButton: AlarmButton(
                 text: "Detener",
                 textColor: .white,
@@ -204,7 +228,7 @@ final class AlarmScheduler {
         )
 
         let countdownContent = AlarmPresentation.Countdown(
-            title: LocalizedStringResource(stringLiteral: title),
+            title: .verbatim(safeTitle),
             pauseButton: AlarmButton(
                 text: "Pausar",
                 textColor: .white,
@@ -229,7 +253,7 @@ final class AlarmScheduler {
 
         let metadata = CalarmAlarmMetadata(
             ownerID: ownerID,
-            title: title,
+            title: safeTitle,
             symbolName: symbolName,
             categoryRaw: category.rawValue,
             teamsURLString: meetingURL?.absoluteString,

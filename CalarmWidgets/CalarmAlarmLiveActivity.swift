@@ -17,10 +17,9 @@ import WidgetKit
 struct CalarmAlarmLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: AlarmAttributes<CalarmAlarmMetadata>.self) { context in
-            // Lock Screen / banner presentation.
+            // Lock Screen / banner presentation — and, in the `.small` family, the
+            // Apple Watch Smart Stack.
             LockScreenView(context: context)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
@@ -60,6 +59,11 @@ struct CalarmAlarmLiveActivity: Widget {
             }
             .keylineTint(context.attributes.tintColor)
         }
+        // The Apple Watch mirrors iPhone Live Activities into the Smart Stack. Without
+        // declaring `.small` the watch gets the iPhone layout squeezed into a strip
+        // where the alarm's name is the first thing to be dropped — which is how a
+        // ringing alarm ends up looking like a generic "Calarm" card on the wrist.
+        .supplementalActivityFamilies([.small])
     }
 
     private func title(_ context: ActivityViewContext<AlarmAttributes<CalarmAlarmMetadata>>) -> String {
@@ -85,8 +89,44 @@ struct CalarmAlarmLiveActivity: Widget {
 /// (or paused remaining) on the right.
 private struct LockScreenView: View {
     let context: ActivityViewContext<AlarmAttributes<CalarmAlarmMetadata>>
+    /// `.small` is the Apple Watch Smart Stack; `.medium` the iPhone/iPad.
+    @Environment(\.activityFamily) private var family
 
     var body: some View {
+        switch family {
+        case .small: watchBody
+        default: phoneBody.padding(.horizontal, 16).padding(.vertical, 12)
+        }
+    }
+
+    /// Apple Watch: the name of the alarm comes FIRST and gets the room it needs —
+    /// on the wrist that's the only thing that tells one alarm from another.
+    private var watchBody: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 6) {
+                Image(systemName: symbol)
+                    .font(.caption)
+                    .foregroundStyle(context.attributes.tintColor)
+                Text(title)
+                    .font(.headline)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+            }
+            HStack(spacing: 6) {
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Spacer(minLength: 4)
+                StatusView(context: context)
+                    .font(.callout.weight(.semibold).monospacedDigit())
+                    .foregroundStyle(context.attributes.tintColor)
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+    }
+
+    private var phoneBody: some View {
         HStack(spacing: 12) {
             Image(systemName: symbol)
                 .font(.title2)
