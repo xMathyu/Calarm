@@ -62,6 +62,13 @@ final class AlarmScheduler {
     }
 
     /// Schedules a single alarm at `fireDate` and tracks it under `ownerID`.
+    ///
+    /// An alarm already scheduled for that instant is reused only while its
+    /// CONTENT still matches: AlarmKit hands the presentation to the system at
+    /// schedule time and there's no way to edit it afterwards, so renaming an
+    /// alarm (or changing its icon, its tone, its snooze) has to cancel and
+    /// re-schedule. Without this a rename only took effect on occurrences that
+    /// hadn't been programmed yet — the next few kept ringing with the old title.
     @discardableResult
     func schedule(
         ownerID: String,
@@ -70,12 +77,30 @@ final class AlarmScheduler {
         symbolName: String,
         category: ReminderCategory,
         snooze: SnoozeInterval,
+        tone: AlarmTone,
         meetingURL: URL? = nil,
         location: String? = nil
     ) async throws -> UUID {
-        if let existing = store.alarmID(forOwner: ownerID, fireDate: fireDate) {
-            return existing
+        let fingerprint = Self.contentHash(
+            title: title,
+            symbolName: symbolName,
+            category: category,
+            snooze: snooze,
+            tone: tone,
+            meetingURL: meetingURL,
+            location: location
+        )
+
+        if let existing = store.entry(forOwner: ownerID, fireDate: fireDate) {
+            if existing.contentHash == fingerprint { return existing.alarmID }
+            // An alarm that is ringing right now (or counting down after a snooze)
+            // is left alone — cancelling it would kill the alert in progress. The
+            // next sync, once it's finished, picks up the new content.
+            if activeAlarmIDs().contains(existing.alarmID) { return existing.alarmID }
+            try? await manager.cancel(id: existing.alarmID)
+            store.remove(ownerID: ownerID, fireDate: fireDate)
         }
+
         let alarmID = UUID()
         let configuration = makeConfiguration(
             title: title,
@@ -83,14 +108,38 @@ final class AlarmScheduler {
             category: category,
             fireDate: fireDate,
             snooze: snooze,
+            tone: tone,
             ownerID: ownerID,
             meetingURL: meetingURL,
             location: location,
             alarmID: alarmID
         )
         _ = try await manager.schedule(id: alarmID, configuration: configuration)
-        store.store(alarmID: alarmID, forOwner: ownerID, fireDate: fireDate)
+        store.store(alarmID: alarmID, forOwner: ownerID, fireDate: fireDate, contentHash: fingerprint)
         return alarmID
+    }
+
+    /// Everything the person sees or hears when the alarm fires, in one string.
+    /// A `nil` stored hash (an entry written by a build that predates this) never
+    /// matches, so those alarms get reprogrammed once and then settle.
+    private static func contentHash(
+        title: String,
+        symbolName: String,
+        category: ReminderCategory,
+        snooze: SnoozeInterval,
+        tone: AlarmTone,
+        meetingURL: URL?,
+        location: String?
+    ) -> String {
+        [
+            title,
+            symbolName,
+            String(category.rawValue),
+            String(snooze.rawValue),
+            tone.rawValue,
+            meetingURL?.absoluteString ?? "",
+            location ?? "",
+        ].joined(separator: "\u{1F}")
     }
 
     /// Cancels every alarm scheduled for the given owner.
@@ -172,6 +221,7 @@ final class AlarmScheduler {
         category: ReminderCategory,
         fireDate: Date,
         snooze: SnoozeInterval,
+        tone: AlarmTone,
         ownerID: String,
         meetingURL: URL?,
         location: String?,
@@ -274,7 +324,7 @@ final class AlarmScheduler {
             attributes: attributes,
             stopIntent: stopIntent,
             secondaryIntent: secondaryIntent,
-            sound: .default
+            sound: tone.alertSound
         )
     }
 }

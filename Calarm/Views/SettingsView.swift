@@ -74,6 +74,25 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    // El picker vive en su propia pantalla porque cada fila
+                    // preescucha el tono al tocarla.
+                    NavigationLink {
+                        TonePickerView(selection: toneBinding, fallback: nil)
+                    } label: {
+                        LabeledContent {
+                            Text(settings.alarmTone.localizedTitle)
+                                .foregroundStyle(.secondary)
+                        } label: {
+                            Label("Sonido de las alarmas", systemImage: settings.alarmTone.systemImage)
+                        }
+                    }
+                } header: {
+                    sectionHeader("Sonido", systemImage: "speaker.wave.3.fill")
+                } footer: {
+                    Text("El tono con el que suenan las alarmas nuevas y las que no tienen uno propio. Cada alarma puede elegir el suyo desde su editor.")
+                }
+
+                Section {
                     Picker(selection: $settings.snoozeInterval) {
                         ForEach(SnoozeInterval.allCases) { value in
                             Text(value.localizedTitle).tag(value)
@@ -205,6 +224,16 @@ struct SettingsView: View {
         Binding(
             get: { settings.accentColor },
             set: { settings.accentColorHex = $0.toHex() }
+        )
+    }
+
+    /// Puente al picker, que trabaja con un opcional porque en el editor de una
+    /// alarma `nil` significa "seguir el predeterminado". Aquí no hay nada que
+    /// heredar, así que un `nil` no puede llegar y se ignora.
+    private var toneBinding: Binding<AlarmTone?> {
+        Binding(
+            get: { settings.alarmTone },
+            set: { if let tone = $0 { settings.alarmTone = tone } }
         )
     }
 

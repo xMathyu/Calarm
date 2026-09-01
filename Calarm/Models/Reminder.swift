@@ -35,6 +35,10 @@ final class Reminder {
     /// (e.g. training Mon+Fri 5pm AND Sat 11am). New field — older CloudKit records
     /// arrive as empty `Data()` which decodes to `[]` (single-schedule behavior).
     var additionalSchedulesData: Data = Data()
+    /// Tono con el que suena esta alarma. Cadena vacía = usar el predeterminado
+    /// de Ajustes. Campo nuevo con valor por defecto: los registros que llegan de
+    /// CloudKit sin él se comportan como "seguir el predeterminado".
+    var toneRaw: String = ""
     var isEnabled: Bool = true
     var createdAt: Date = Date()
     var updatedAt: Date = Date()
@@ -81,6 +85,12 @@ final class Reminder {
     var iconKind: ReminderIconKind {
         get { ReminderIconKind(rawValue: iconKindRaw) ?? .symbol }
         set { iconKindRaw = newValue.rawValue }
+    }
+
+    /// Tono propio de esta alarma, o `nil` cuando sigue el de Ajustes.
+    var tone: AlarmTone? {
+        get { toneRaw.isEmpty ? nil : AlarmTone(rawValue: toneRaw) }
+        set { toneRaw = newValue?.rawValue ?? "" }
     }
 
     var recurrence: RecurrenceRule {

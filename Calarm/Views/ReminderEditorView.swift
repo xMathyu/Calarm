@@ -21,6 +21,8 @@ private struct EditSnapshot: Equatable {
     var recurrence: RecurrenceRule
     var additionalSchedules: [AlarmSchedule]
     var leadTimes: [AlarmLeadTime]
+    /// Tono propio de la alarma; nil = seguir el predeterminado de Ajustes.
+    var tone: AlarmTone?
     var isEnabled: Bool
 
     var trimmedTitle: String {
@@ -65,6 +67,7 @@ struct ReminderEditorView: View {
     /// Extra schedules (different day/time) beyond the primary `date`/`recurrence`.
     @State private var additionalSchedules: [AlarmSchedule]
     @State private var leadTimes: [AlarmLeadTime]
+    @State private var tone: AlarmTone?
     @State private var showingLeadTimePicker = false
     @State private var showingIconPicker = false
     @State private var isEnabled: Bool
@@ -112,6 +115,7 @@ struct ReminderEditorView: View {
             _recurrence = State(initialValue: r.recurrence)
             _additionalSchedules = State(initialValue: r.additionalSchedules)
             _leadTimes = State(initialValue: r.leadTimes)
+            _tone = State(initialValue: r.tone)
             _isEnabled = State(initialValue: r.isEnabled)
         } else {
             let initialCategory = ReminderCategory.reminder
@@ -125,6 +129,7 @@ struct ReminderEditorView: View {
             _recurrence = State(initialValue: .once)
             _additionalSchedules = State(initialValue: [])
             _leadTimes = State(initialValue: [.atStart])
+            _tone = State(initialValue: nil)
             _isEnabled = State(initialValue: true)
         }
     }
@@ -178,6 +183,7 @@ struct ReminderEditorView: View {
                 }
 
                 scheduleSection
+                soundSection
                 categorySection
                 statusSection
 
@@ -473,6 +479,29 @@ struct ReminderEditorView: View {
         Calendar.current.date(byAdding: .day, value: 1, to: date) ?? date
     }
 
+    /// El tono de esta alarma. Por omisión sigue el de Ajustes, así que la fila
+    /// muestra el tono que realmente va a sonar, no la palabra "Predeterminado".
+    @ViewBuilder
+    private var soundSection: some View {
+        let effective = tone ?? settings.alarmTone
+        Section {
+            NavigationLink {
+                TonePickerView(selection: $tone, fallback: settings.alarmTone)
+            } label: {
+                LabeledContent {
+                    Text(effective.localizedTitle)
+                        .foregroundStyle(.secondary)
+                } label: {
+                    Label("Sonido", systemImage: effective.systemImage)
+                }
+            }
+        } footer: {
+            if tone == nil {
+                Text("Sigue el tono predeterminado de Ajustes.")
+            }
+        }
+    }
+
     @ViewBuilder
     private var categorySection: some View {
         Section {
@@ -689,6 +718,7 @@ struct ReminderEditorView: View {
             recurrence: recurrence,
             additionalSchedules: additionalSchedules,
             leadTimes: leadTimes,
+            tone: tone,
             isEnabled: isEnabled
         )
     }
@@ -764,6 +794,7 @@ struct ReminderEditorView: View {
         reminder.photoData = snap.iconKind == .photo ? snap.photoData : nil
         reminder.recurrence = snap.recurrence
         reminder.additionalSchedules = snap.additionalSchedules
+        reminder.tone = snap.tone
         reminder.leadTimes = snap.leadTimes
         // On a received share the avisos are the recipient's own — remember them
         // so the next shared-DB scan doesn't overwrite them with the owner's list.

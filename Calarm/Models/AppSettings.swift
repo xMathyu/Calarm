@@ -81,6 +81,7 @@ final class AppSettings {
 
     private enum Key {
         static let snooze = "settings.snooze"
+        static let alarmTone = "settings.alarmTone"
         static let alarmsEnabled = "settings.alarmsEnabled"
         static let onboardingCompleted = "settings.onboardingCompleted"
         static let teamsDetectionEnabled = "settings.teamsDetectionEnabled"
@@ -106,6 +107,11 @@ final class AppSettings {
 
     var snoozeInterval: SnoozeInterval {
         didSet { defaults.set(snoozeInterval.rawValue, forKey: Key.snooze) }
+    }
+
+    /// Tono predeterminado de las alarmas. Cada alarma puede sobrescribirlo.
+    var alarmTone: AlarmTone {
+        didSet { defaults.set(alarmTone.rawValue, forKey: Key.alarmTone) }
     }
 
     var alarmsEnabled: Bool {
@@ -158,6 +164,7 @@ final class AppSettings {
         self.defaults = defaults
         let storedSnooze = defaults.object(forKey: Key.snooze) as? Int
         self.snoozeInterval = storedSnooze.flatMap(SnoozeInterval.init(rawValue:)) ?? .default
+        self.alarmTone = defaults.string(forKey: Key.alarmTone).flatMap(AlarmTone.init(rawValue:)) ?? .default
         self.alarmsEnabled = defaults.object(forKey: Key.alarmsEnabled) as? Bool ?? true
         self.onboardingCompleted = defaults.bool(forKey: Key.onboardingCompleted)
         self.teamsDetectionEnabled = defaults.object(forKey: Key.teamsDetectionEnabled) as? Bool ?? true

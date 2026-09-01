@@ -69,6 +69,7 @@ final class SyncCoordinator {
             }
 
             let snooze = settings.snoozeInterval
+            let tone = settings.alarmTone
 
             for meeting in fetched {
                 let leadTimes = preferences.activeLeadTimes(forEventID: meeting.id)
@@ -89,6 +90,7 @@ final class SyncCoordinator {
                             symbolName: meeting.meetingLink != nil ? "video.fill" : "calendar",
                             category: .event,
                             snooze: snooze,
+                            tone: tone,
                             meetingURL: meeting.meetingLink?.url,
                             location: meeting.location
                         )

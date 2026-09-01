@@ -12,6 +12,12 @@ final class AlarmStore {
     private struct Entry: Codable {
         let alarmID: UUID
         let fireDate: Date
+        /// Huella de lo que se ve y se oye de la alarma (título, icono, tono…).
+        /// Detecta la alarma ya programada que quedó desactualizada: la fecha no
+        /// cambió, pero el contenido sí. Opcional porque las entradas guardadas
+        /// por builds anteriores no la traen — esas se reprograman una vez, en el
+        /// primer sync después de actualizar.
+        let contentHash: String?
     }
 
     private let defaults: UserDefaults
@@ -29,18 +35,22 @@ final class AlarmStore {
         }
     }
 
-    func alarmID(forOwner ownerID: String, fireDate: Date) -> UUID? {
-        cache[ownerID]?.first(where: { abs($0.fireDate.timeIntervalSince(fireDate)) < 1 })?.alarmID
+    /// La alarma ya programada para ese instante y su huella de contenido.
+    /// `contentHash` es `nil` en entradas escritas por builds anteriores.
+    func entry(forOwner ownerID: String, fireDate: Date) -> (alarmID: UUID, contentHash: String?)? {
+        guard let entry = cache[ownerID]?.first(where: { abs($0.fireDate.timeIntervalSince(fireDate)) < 1 })
+        else { return nil }
+        return (entry.alarmID, entry.contentHash)
     }
 
     func allEntries(forOwner ownerID: String) -> [(alarmID: UUID, fireDate: Date)] {
         (cache[ownerID] ?? []).map { ($0.alarmID, $0.fireDate) }
     }
 
-    func store(alarmID: UUID, forOwner ownerID: String, fireDate: Date) {
+    func store(alarmID: UUID, forOwner ownerID: String, fireDate: Date, contentHash: String) {
         var list = cache[ownerID] ?? []
         list.removeAll { abs($0.fireDate.timeIntervalSince(fireDate)) < 1 }
-        list.append(Entry(alarmID: alarmID, fireDate: fireDate))
+        list.append(Entry(alarmID: alarmID, fireDate: fireDate, contentHash: contentHash))
         cache[ownerID] = list
         persist()
     }

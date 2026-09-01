@@ -102,6 +102,8 @@ final class ReminderScheduler {
                     symbolName: (reminder.iconKind == .symbol ? reminder.symbolName : nil) ?? reminder.category.defaultSymbol,
                     category: reminder.category,
                     snooze: settings.snoozeInterval,
+                    // Sin tono propio, la alarma sigue el predeterminado de Ajustes.
+                    tone: reminder.tone ?? settings.alarmTone,
                     meetingURL: nil
                 )
             } catch {
