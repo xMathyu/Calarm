@@ -99,22 +99,6 @@
         }
       }
     },
-    "¿Cómo se llama la alarma?" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "What's the alarm called?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Cómo se llama la alarma?"
-          }
-        }
-      }
-    },
     "¿Cuántos cumpleaños hay este mes?" : {
       "localizations" : {
         "en" : {

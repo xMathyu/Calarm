@@ -322,6 +322,22 @@
         }
       }
     },
+    "Pon una alarma con ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set an alarm with ${applicationName}"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pon una alarma con ${applicationName}"
+          }
+        }
+      }
+    },
     "Pon una alarma en ${applicationName}" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -335,6 +351,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pon una alarma en ${applicationName}"
+          }
+        }
+      }
+    },
+    "Ponme una alarma en ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set an alarm at ${applicationName}"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponme una alarma en ${applicationName}"
           }
         }
       }

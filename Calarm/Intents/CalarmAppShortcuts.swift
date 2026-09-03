@@ -34,6 +34,11 @@ struct CalarmAppShortcuts: AppShortcutsProvider {
                 // leads (which the system's built-in alarm domain tends to grab).
                 "\(.applicationName) pon una alarma",
                 "\(.applicationName) agenda una alarma",
+                // Preposition variants. Siri matches phrases nearly literally, so
+                // "set an alarm AT Calarm" misses "…IN Calarm" and the utterance
+                // falls through to the system Clock domain.
+                "Ponme una alarma en \(.applicationName)",
+                "Pon una alarma con \(.applicationName)",
             ],
             shortTitle: "Nueva alarma",
             systemImageName: "alarm.fill"

@@ -21,9 +21,8 @@ struct CreateAlarmIntent: AppIntent {
     static let openAppWhenRun: Bool = false
 
     // Both optional so Siri never blocks on a missing name and can still fill the
-    // time from the spoken phrase ("…a las 4pm"). When neither is given (bare
-    // "pon una alarma en Calarm"), `perform()` asks for the time first, then the
-    // name — see below.
+    // time from the spoken phrase ("…a las 4pm"). When the time is missing (bare
+    // "Calarm pon una alarma"), `perform()` asks only for it — never for the name.
     @Parameter(title: "Hora", kind: .dateTime)
     var date: Date?
 
@@ -50,9 +49,8 @@ struct CreateAlarmIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         // The time is the only thing we truly need. If the user didn't say one,
-        // ask for it now (Siri prompt). We remember whether we had to ask, to
-        // decide below whether to also prompt for the name.
-        let timeWasGiven = (date != nil)
+        // ask for it now (a single Siri prompt) — that is the only question the
+        // intent is allowed to ask.
         let resolvedDate: Date
         if let date {
             resolvedDate = date
@@ -60,22 +58,12 @@ struct CreateAlarmIntent: AppIntent {
             resolvedDate = try await $date.requestValue("¿A qué hora?")
         }
 
-        // The name is optional:
-        //  • Given inline ("…con nombre Examen") → use it.
-        //  • Bare invocation (we had to ask the time) → guide the user and ask the
-        //    name too, but accept a blank answer.
-        //  • Time given inline but no name → just default it, don't nag.
+        // The name is never prompted for: creating the alarm in one step matters
+        // more than naming it. If the phrase carried a title ("…con nombre
+        // Examen") we use it, otherwise the alarm is just "Alarma" and the user
+        // renames it in the app if they care.
         let providedTitle = titleParam?.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmed: String
-        if let providedTitle, !providedTitle.isEmpty {
-            trimmed = providedTitle
-        } else if !timeWasGiven {
-            let asked = (try? await $titleParam.requestValue("¿Cómo se llama la alarma?")) ?? ""
-            let askedTrimmed = asked.trimmingCharacters(in: .whitespacesAndNewlines)
-            trimmed = askedTrimmed.isEmpty ? appLocalized("Alarma") : askedTrimmed
-        } else {
-            trimmed = appLocalized("Alarma")
-        }
+        let trimmed = (providedTitle?.isEmpty == false) ? providedTitle! : appLocalized("Alarma")
 
         let resolvedCategory = category?.category ?? .reminder
         let resolvedLeadTime = leadTime?.leadTime ?? .atStart
