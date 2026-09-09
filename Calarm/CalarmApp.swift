@@ -53,6 +53,12 @@ struct CalarmApp: App {
         // changes to CalarmAppShortcuts (and AppShortcuts.xcstrings) without
         // requiring a reinstall.
         CalarmAppShortcuts.updateAppShortcutParameters()
+
+        #if DEBUG
+        if DemoData.isRequested {
+            DemoData.seed(into: modelContainer, settings: settings)
+        }
+        #endif
     }
 
     var body: some Scene {
