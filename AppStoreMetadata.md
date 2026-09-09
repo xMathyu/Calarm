@@ -192,19 +192,18 @@ con las `uploadOperations` y confirma con el checksum MD5.
 
 ---
 
-## What's New (1.0.8) — borrador
-
-> Provisional: si el widget de próximas alarmas o el import de cumpleaños de Contactos
-> entran en esta versión, estas notas se reescriben con eso como titular.
+## What's New (1.0.8)
 
 Español:
 ```
+• Bienvenida nueva: cinco pantallas que te cuentan para qué sirve Calarm la primera vez que la abres, en lugar de una sola lista de features
 • Comparte Calarm desde Ajustes, con un toque
 • Las invitaciones a personas de confianza ahora llevan el enlace para descargar Calarm: quien la reciba puede instalarla y aceptar sin buscar nada
 ```
 
 Inglés:
 ```
+• A new welcome: five screens that tell you what Calarm is for the first time you open it, instead of a single list of features
 • Share Calarm from Settings with a single tap
 • Invitations to trusted helpers now include the link to download Calarm, so whoever gets one can install it and accept without hunting for anything
 ```

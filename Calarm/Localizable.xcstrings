@@ -1,6 +1,214 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
+    "Alarmas que no te puedes perder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarms you can't miss"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarmas que no te puedes perder"
+          }
+        }
+      }
+    },
+    "Suenan fuerte aunque el iPhone esté en silencio, bloqueado o en modo Enfoque." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "They ring loud even when your iPhone is silent, locked or in Focus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suenan fuerte aunque el iPhone esté en silencio, bloqueado o en modo Enfoque."
+          }
+        }
+      }
+    },
+    "Cumpleaños que se repiten solos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birthdays that repeat on their own"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cumpleaños que se repiten solos"
+          }
+        }
+      }
+    },
+    "Ponle la foto de la persona y se repite cada año. Cada 2 semanas, los lunes y miércoles, cada 21 días: la recurrencia que necesites." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add the person's photo and it repeats every year. Every 2 weeks, Mondays and Wednesdays, every 21 days — whatever recurrence you need."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponle la foto de la persona y se repite cada año. Cada 2 semanas, los lunes y miércoles, cada 21 días: la recurrencia que necesites."
+          }
+        }
+      }
+    },
+    "Tus eventos también suenan" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your events ring too"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus eventos también suenan"
+          }
+        }
+      }
+    },
+    "Calarm lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm reads your Calendar and gives each event up to 3 alerts. If it's a Teams, Zoom or Meet call, a Join button appears."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte."
+          }
+        }
+      }
+    },
+    "Díselo y listo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Just say it"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Díselo y listo"
+          }
+        }
+      }
+    },
+    "«Recuérdame la pastilla todos los días a las 9». El asistente la programa por ti, sin que nada salga de tu iPhone." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Remind me to take my pill every day at 9.” The assistant schedules it for you, and nothing leaves your iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Recuérdame la pastilla todos los días a las 9». El asistente la programa por ti, sin que nada salga de tu iPhone."
+          }
+        }
+      }
+    },
+    "Un permiso y ya está" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One permission and you're set"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un permiso y ya está"
+          }
+        }
+      }
+    },
+    "iOS necesita tu permiso para que Calarm programe alarmas que suenen en silencio y sobre la pantalla bloqueada." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS needs your permission for Calarm to schedule alarms that ring in silent mode and over the lock screen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS necesita tu permiso para que Calarm programe alarmas que suenen en silencio y sobre la pantalla bloqueada."
+          }
+        }
+      }
+    },
+    "Activar alarmas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on alarms"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar alarmas"
+          }
+        }
+      }
+    },
+    "Continuar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        }
+      }
+    },
+    "Omitir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omitir"
+          }
+        }
+      }
+    },
     "¿No tienes Calarm? Descárgala aquí:" : {
       "localizations" : {
         "en" : {

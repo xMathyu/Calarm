@@ -2,69 +2,104 @@
 //  OnboardingView.swift
 //  Calarm
 //
+//  Bienvenida de la primera vez: cuatro slides que cuentan para qué sirve la
+//  app antes de pedir nada, y un último paso con el permiso de alarmas. La
+//  versión anterior era una sola pantalla con una lista de features y el botón
+//  de permiso encima: se leía como un trámite, no como una presentación.
+//
 
 import SwiftUI
 
 struct OnboardingView: View {
     @Environment(AppSettings.self) private var settings
 
-    private enum Step {
-        case intro
+    private enum Step: Equatable {
+        case slides
         case requestingAlarms
         case finished
         case error(String)
     }
 
-    @State private var step: Step = .intro
+    @State private var step: Step = .slides
+    @State private var page = 0
     @State private var isWorking = false
     @State private var animateContent = false
 
     let alarmScheduler: AlarmScheduler
 
-    private let features: [(symbol: String, title: LocalizedStringKey, description: LocalizedStringKey)] = [
-        ("birthday.cake.fill", "Cumpleaños y aniversarios", "Alarmas anuales que se repiten automáticamente."),
-        ("repeat", "Recurrencias avanzadas", "Cada N días, semanas, meses o días específicos."),
-        ("photo.fill", "Foto o icono", "Pon la foto del cumpleañero o un símbolo a cada alarma."),
-        ("bell.fill", "Suena fuerte", "Aunque el iPhone esté en silencio, bloqueado o en Focus.")
+    private struct Slide: Identifiable {
+        let id: Int
+        let symbol: String
+        let title: LocalizedStringKey
+        let detail: LocalizedStringKey
+    }
+
+    private let slides: [Slide] = [
+        Slide(
+            id: 0,
+            symbol: "alarm.waves.left.and.right.fill",
+            title: "Alarmas que no te puedes perder",
+            detail: "Suenan fuerte aunque el iPhone esté en silencio, bloqueado o en modo Enfoque."
+        ),
+        Slide(
+            id: 1,
+            symbol: "birthday.cake.fill",
+            title: "Cumpleaños que se repiten solos",
+            detail: "Ponle la foto de la persona y se repite cada año. Cada 2 semanas, los lunes y miércoles, cada 21 días: la recurrencia que necesites."
+        ),
+        Slide(
+            id: 2,
+            symbol: "calendar.badge.clock",
+            title: "Tus eventos también suenan",
+            detail: "Calarm lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte."
+        ),
+        Slide(
+            id: 3,
+            symbol: "sparkles",
+            title: "Díselo y listo",
+            detail: "«Recuérdame la pastilla todos los días a las 9». El asistente la programa por ti, sin que nada salga de tu iPhone."
+        ),
+        Slide(
+            id: 4,
+            symbol: "bell.badge.fill",
+            title: "Un permiso y ya está",
+            detail: "iOS necesita tu permiso para que Calarm programe alarmas que suenen en silencio y sobre la pantalla bloqueada."
+        ),
     ]
+
+    private var isLastPage: Bool { page == slides.count - 1 }
 
     var body: some View {
         ZStack {
             backgroundGradient
 
-            VStack(spacing: DS.Spacing.xxl) {
-                Spacer()
+            VStack(spacing: 0) {
+                skipButton
 
-                HeroIcon(systemName: "alarm.waves.left.and.right.fill")
-                    .scaleEffect(animateContent ? 1 : 0.7)
-                    .opacity(animateContent ? 1 : 0)
-
-                VStack(spacing: DS.Spacing.md) {
-                    Text("Bienvenido a Calarm")
-                        .font(.largeTitle.bold())
-                        .multilineTextAlignment(.center)
-                    Text("Crea alarmas para cumpleaños, aniversarios y eventos personales. Suenan aunque tu iPhone esté en silencio.")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, DS.Spacing.xxxl)
+                TabView(selection: $page) {
+                    ForEach(slides) { slide in
+                        slideView(slide)
+                            .tag(slide.id)
+                    }
                 }
-                .opacity(animateContent ? 1 : 0)
-                .offset(y: animateContent ? 0 : 10)
-
-                featureList
-
-                Spacer()
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                // Sin el fondo del indicador, los puntos —blancos— desaparecen sobre el
+                // degradado claro.
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
 
                 primaryAction
                     .padding(.horizontal, DS.Spacing.xxxl)
+                    .padding(.top, DS.Spacing.lg)
                     .padding(.bottom, DS.Spacing.xxl)
-                    .opacity(animateContent ? 1 : 0)
             }
-            .padding(.top)
         }
         .interactiveDismissDisabled(true)
         .onAppear {
+            #if DEBUG
+            if let requested = DemoData.requestedPage, slides.indices.contains(requested) {
+                page = requested
+            }
+            #endif
             withAnimation(.spring(response: 0.7, dampingFraction: 0.75).delay(0.1)) {
                 animateContent = true
             }
@@ -84,48 +119,55 @@ struct OnboardingView: View {
         .ignoresSafeArea()
     }
 
-    private var featureList: some View {
-        VStack(alignment: .leading, spacing: DS.Spacing.lg) {
-            ForEach(Array(features.enumerated()), id: \.offset) { index, feature in
-                featureRow(symbol: feature.symbol, title: feature.title, description: feature.description)
-                    .opacity(animateContent ? 1 : 0)
-                    .offset(x: animateContent ? 0 : -20)
-                    .animation(
-                        .spring(response: 0.6, dampingFraction: 0.8)
-                            .delay(0.25 + Double(index) * 0.08),
-                        value: animateContent
-                    )
+    /// Salta a la última pantalla, no al final del onboarding: sin el permiso
+    /// la app no puede programar nada, así que ese paso no se puede saltar.
+    @ViewBuilder
+    private var skipButton: some View {
+        HStack {
+            Spacer()
+            if !isLastPage, step == .slides {
+                Button("Omitir") {
+                    withAnimation(DS.Motion.smooth) { page = slides.count - 1 }
+                }
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
             }
         }
-        .padding(.horizontal, DS.Spacing.xxxl)
+        .frame(height: 28)
+        .padding(.horizontal, DS.Spacing.xxl)
+        .padding(.top, DS.Spacing.lg)
     }
 
-    private func featureRow(symbol: String, title: LocalizedStringKey, description: LocalizedStringKey) -> some View {
-        HStack(alignment: .top, spacing: DS.Spacing.md) {
-            ZStack {
-                Circle()
-                    .fill(Color.appAccent.opacity(0.15))
-                    .frame(width: 36, height: 36)
-                Image(systemName: symbol)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.tint)
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.subheadline.weight(.semibold))
-                Text(description)
-                    .font(.caption)
+    private func slideView(_ slide: Slide) -> some View {
+        VStack(spacing: DS.Spacing.xxl) {
+            Spacer()
+
+            HeroIcon(systemName: slide.symbol)
+                .scaleEffect(animateContent ? 1 : 0.7)
+                .opacity(animateContent ? 1 : 0)
+
+            VStack(spacing: DS.Spacing.md) {
+                Text(slide.title)
+                    .font(.largeTitle.bold())
+                    .multilineTextAlignment(.center)
+                Text(slide.detail)
+                    .font(.body)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            .padding(.horizontal, DS.Spacing.xxxl)
+
+            Spacer()
         }
     }
 
     @ViewBuilder
     private var primaryAction: some View {
         switch step {
-        case .intro:
-            Button(action: startFlow) {
-                Text("Comenzar")
+        case .slides:
+            Button(action: advance) {
+                Text(isLastPage ? "Activar alarmas" : "Continuar")
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 4)
             }
@@ -149,6 +191,15 @@ struct OnboardingView: View {
                     .controlSize(.large)
             }
         }
+    }
+
+    private func advance() {
+        guard isLastPage else {
+            Haptics.light()
+            withAnimation(DS.Motion.smooth) { page += 1 }
+            return
+        }
+        startFlow()
     }
 
     private func startFlow() {

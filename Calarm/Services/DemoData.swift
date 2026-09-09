@@ -24,10 +24,18 @@ enum DemoData {
         ProcessInfo.processInfo.arguments.contains("-seedDemoData")
     }
 
+    /// Slide inicial de la bienvenida, con `-demoPage N`, para capturarlas una
+    /// por una sin depender de gestos.
+    static var requestedPage: Int? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-demoPage"), i + 1 < args.count else { return nil }
+        return Int(args[i + 1])
+    }
+
     /// Screen to open straight away, from `-demoScreen <name>`: list, editor,
-    /// recurrence, tones, assistant, settings, helpers, calendar. Driving the
-    /// captures this way keeps them deterministic — no tapping, same frame every
-    /// run, in whichever language the app was launched with.
+    /// recurrence, tones, assistant, settings, helpers, calendar, onboarding.
+    /// Driving the captures this way keeps them deterministic — no tapping, same
+    /// frame every run, in whichever language the app was launched with.
     static var requestedScreen: String? {
         let args = ProcessInfo.processInfo.arguments
         guard let i = args.firstIndex(of: "-demoScreen"), i + 1 < args.count else { return nil }
@@ -59,9 +67,10 @@ enum DemoData {
         }
         try? context.save()
 
-        // The onboarding sheet covers the whole app, and the screenshots are of
-        // the app, not of onboarding.
-        settings.onboardingCompleted = true
+        // The onboarding sheet covers the whole app, so the captures of the app
+        // itself skip it — unless the run is specifically about the welcome
+        // slides (`-demoScreen onboarding`).
+        settings.onboardingCompleted = requestedScreen != "onboarding"
 
         seedCalendarEvents()
     }
