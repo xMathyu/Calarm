@@ -68,9 +68,11 @@ private struct InviteDeliveryModifier: ViewModifier {
             // Fallback: generic share sheet (AirDrop, Mail, WhatsApp, etc.).
             .sheet(isPresented: $showingFallback, onDismiss: finish) {
                 if let invite = delivery {
+                    // The share sheet already carries the link as the item, so
+                    // the message only needs the intro and the install hint.
                     ShareLink(
                         item: invite.url,
-                        message: Text(verbatim: invite.customMessage ?? appLocalized("Te invito a '\(invite.title)' en Calarm"))
+                        message: Text(verbatim: Self.intro(for: invite) + "\n\n" + Self.installHint)
                     )
                     .padding()
                 }
@@ -82,10 +84,20 @@ private struct InviteDeliveryModifier: ViewModifier {
         onFinish()
     }
 
-    /// Localized invite text for the Messages body. The link goes on its own
+    private static func intro(for invite: InviteDelivery) -> String {
+        invite.customMessage ?? appLocalized("Te invito a '\(invite.title)' en Calarm")
+    }
+
+    /// Closes the invite for whoever doesn't have Calarm yet — without the app,
+    /// an iCloud share link is a dead end, and most invitations go to someone
+    /// who has never installed it.
+    private static var installHint: String {
+        appLocalized("¿No tienes Calarm? Descárgala aquí:") + "\n" + AppLinks.appStore.absoluteString
+    }
+
+    /// Localized invite text for the Messages body. Each link goes on its own
     /// line so iMessage/Mail render the rich preview.
     static func messageBody(for invite: InviteDelivery) -> String {
-        let intro = invite.customMessage ?? appLocalized("Te invito a '\(invite.title)' en Calarm")
-        return intro + "\n" + invite.url.absoluteString
+        intro(for: invite) + "\n" + invite.url.absoluteString + "\n\n" + installHint
     }
 }

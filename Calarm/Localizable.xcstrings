@@ -1,6 +1,54 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
+    "¿No tienes Calarm? Descárgala aquí:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don't have Calarm? Get it here:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿No tienes Calarm? Descárgala aquí:"
+          }
+        }
+      }
+    },
+    "Compartir Calarm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share Calarm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir Calarm"
+          }
+        }
+      }
+    },
+    "Alarmas que suenan aunque el iPhone esté en silencio: cumpleaños, medicamentos, citas y más." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarms that ring even when your iPhone is silent: birthdays, meds, appointments and more."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarmas que suenan aunque el iPhone esté en silencio: cumpleaños, medicamentos, citas y más."
+          }
+        }
+      }
+    },
     "Vencida" : {
       "localizations" : {
         "en" : {

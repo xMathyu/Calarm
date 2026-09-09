@@ -30,7 +30,18 @@ struct StopAlarmIntent: LiveActivityIntent {
     func perform() async throws -> some IntentResult {
         if let id = UUID(uuidString: alarmID) {
             try? await AlarmManager.shared.stop(id: id)
+            recordStopForReviewPrompt()
         }
         return .result()
+    }
+
+    /// Counts the alarms Calarm has seen through: the rating prompt only appears
+    /// after a couple of them (see `ReviewPrompt`, app target). Written with a
+    /// literal key because this file also compiles into CalarmWidgets, where
+    /// `ReviewPrompt` doesn't exist.
+    private func recordStopForReviewPrompt() {
+        let key = "review.alarmsStopped"
+        let defaults = UserDefaults.standard
+        defaults.set(defaults.integer(forKey: key) + 1, forKey: key)
     }
 }

@@ -151,6 +151,13 @@ struct SettingsView: View {
                     } label: {
                         Label("Versión", systemImage: "info.circle")
                     }
+                    ShareLink(
+                        item: AppLinks.appStore,
+                        subject: Text("Calarm"),
+                        message: Text("Alarmas que suenan aunque el iPhone esté en silencio: cumpleaños, medicamentos, citas y más.")
+                    ) {
+                        Label("Compartir Calarm", systemImage: "square.and.arrow.up")
+                    }
                 } header: {
                     sectionHeader("Acerca de", systemImage: "sparkles")
                 } footer: {

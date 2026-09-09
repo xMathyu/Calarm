@@ -3,6 +3,7 @@
 //  Calarm
 //
 
+import StoreKit
 import SwiftData
 import SwiftUI
 
@@ -13,6 +14,7 @@ struct RemindersListView: View {
     @Environment(DelegationService.self) private var delegation
     @Environment(AppSettings.self) private var settings
     @Environment(CategoryStore.self) private var categoryStore
+    @Environment(\.requestReview) private var requestReview
 
     @Query(sort: [SortDescriptor(\Reminder.date)]) private var reminders: [Reminder]
 
@@ -67,7 +69,19 @@ struct RemindersListView: View {
                 .sheet(item: $editorReminder) { reminder in
                     ReminderEditorView(editing: reminder)
                 }
+                .task { await askForReviewIfEarned() }
         }
+    }
+
+    /// Asks for an App Store rating on the alarm list, a beat after it appears,
+    /// once a couple of alarms have already rung and been stopped. The delay
+    /// keeps the system sheet from landing on top of the list drawing itself.
+    private func askForReviewIfEarned() async {
+        guard ReviewPrompt.shouldAsk(alarmCount: reminders.count) else { return }
+        try? await Task.sleep(for: .seconds(2))
+        guard !Task.isCancelled else { return }
+        ReviewPrompt.markAsked()
+        requestReview()
     }
 
     @ViewBuilder
