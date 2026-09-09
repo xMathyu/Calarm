@@ -1,13 +1,60 @@
 # Calarm — App Store metadata (borrador)
 
-> Idioma primario: **Español (México)**. Localización opcional: Inglés.
+> **Idioma primario de la tienda: Inglés (EE. UU.)** — verificado por API el 2026-09-09
+> (`app.primaryLocale = en-US`). Los dos únicos locales son `en-US` y `es-MX`. Esto importa:
+> lo que falte en es-MX (capturas, por ejemplo) se hereda de en-US, en inglés.
 
 ---
 
-## Nombre
+## Ficha propuesta para 1.0.8 (2026-09-09)
 
-- **Nombre App Store**: `Calarm` (corto, único, brand)
-- **Subtítulo (30 char)**: `Alarmas para cumpleaños y más`
+Apple indexa **nombre + subtítulo + keywords como una sola bolsa**: repetir una palabra en
+dos campos no la posiciona mejor, solo gasta caracteres. La **descripción no se indexa** —
+su único trabajo es convertir a quien ya llegó. El nombre pesa más que el subtítulo, y el
+subtítulo más que las keywords, así que los términos con más volumen van en el nombre.
+
+Lo que había hasta 1.0.7 gastaba la mitad del presupuesto: es-MX repetía `alarma`,
+`cumpleaños` y `evento` (ya estaban en nombre y subtítulo), más 8 caracteres en los espacios
+después de cada coma, más `equipos` — que nadie busca: quien busca alarmas para sus reuniones
+escribe `teams`. en-US repetía 5 de 10 términos y dejaba 20 caracteres sin usar.
+
+| | es-MX | en-US |
+|---|---|---|
+| Términos indexados antes | 12 | 11 |
+| Términos indexados después | 17 | 20 |
+
+### es-MX
+
+- **Nombre (30/30)**: `Calarm: Alarma y Avisos con IA`
+- **Subtítulo (27/30)**: `Despertador y recordatorios`
+- **Keywords (96/100)**:
+```
+medicamento,pastilla,cita,cumpleaños,aniversario,evento,calendario,reunión,compartida,pago,turno
+```
+
+### en-US
+
+- **Name (22/30)**: `Calarm: AI Alarm Clock`
+- **Subtitle (27/30)**: `Birthdays, meds & reminders`
+- **Keywords (95/100)**:
+```
+anniversary,medication,pill,appointment,shared,family,bill,shift,recurring,calendar,teams,event
+```
+
+### Locales por agregar — después de las capturas, no antes
+
+`es-ES` y `en-GB` no necesitan tocar la app (la UI ya está en español e inglés) y cada uno es
+una bolsa de keywords más. Pero **una localización sin capturas propias hereda las del idioma
+primario**, que hoy están en inglés: agregar es-ES antes de subir capturas en español
+reproduce en España exactamente el problema que tiene es-MX. Orden: capturas primero.
+
+- **es-ES** — subtítulo `Avisos, citas y cumpleaños` (26/30), keywords (92/100):
+  `medicación,pastilla,aniversario,evento,calendario,reunión,compartida,recibo,turno,boda,teams`
+- **en-GB** — keywords (92/100):
+  `anniversary,medication,tablet,shared,family,bill,shift,rota,recurring,calendar,teams,meeting`
+
+Portugués (Brasil) es el mercado grande que falta, pero va junto con la UI traducida: una
+ficha en un idioma que la app no habla se paga en reseñas de una estrella.
 
 ## Categoría
 - **Primaria**: Productivity
@@ -21,37 +68,159 @@
 
 ---
 
-## Descripción (4000 char máx, ~600 recomendado)
+## Descripción 1.0.8 (4000 char máx)
 
-Calarm convierte tus fechas importantes en alarmas que suenan como las del Reloj de Apple — fuerte, aunque tu iPhone esté en silencio, bloqueado o en modo Focus.
+No se indexa: está escrita para convertir. Cuenta lo que la ficha de 1.0.7 no contaba —el
+asistente con Apple Intelligence, los tonos y el audio importado, personas de confianza, la
+Isla Dinámica, los varios horarios por alarma y la sincronización por iCloud— y ya no menciona
+AlarmKit, SwiftData ni CloudKit, que a nadie que busca una alarma le dicen nada.
 
-A diferencia del Reloj nativo, Calarm fue hecho para eventos de la vida real:
+### es-MX
 
-🎂 **Cumpleaños y aniversarios anuales**
-Programa una alarma para el cumpleaños de un amigo y ponle su foto. Se repite cada año sin que la toques.
+```
+Las alarmas del Reloj sirven para despertarte. Calarm suena igual de fuerte —aunque el iPhone esté en silencio, bloqueado o en modo Enfoque— para todo lo demás: la pastilla de las 8, el cumpleaños de tu mamá, la cita del dentista, el pago que vence el 3.
 
-🔁 **Recurrencias que el Reloj no hace**
-Cada 2 semanas, cada mes, los lunes y miércoles, cada año en una fecha exacta. Todo lo que necesites.
+MÁS QUE UN DESPERTADOR
+• Medicamentos y citas: cada día, los lunes y miércoles, o cada 21 días. Y varios horarios en una sola alarma, para las que se toman tres veces al día.
+• Cumpleaños y aniversarios: ponle la foto de la persona y se repite cada año sin que la toques.
+• Pagos y vencimientos: el 3 de cada mes, sin falta.
+• Turnos y rutinas: lunes a las 5 p. m. y sábado a las 11 a. m., en la misma alarma.
 
-📅 **Tus eventos del calendario también suenan**
-Activa el tab Calendario y Calarm leerá tus eventos de la app Calendario de Apple. Configura cuántos avisos quieres por evento (hasta 3): "al inicio", "15 min antes", "1 hora antes".
+DÍSELO Y LISTO
+"Recuérdame la pastilla todos los días a las 9." El asistente de Calarm la programa por ti con Apple Intelligence, sin que nada salga de tu iPhone. Con Siri también: "Pon una alarma en Calarm." (El asistente necesita un iPhone compatible con Apple Intelligence.)
 
-📍 **¿Tienes que llegar manejando?**
-Cuando suena la alarma de un evento con ubicación, en lugar de "posponer" aparece un botón "Ir": detiene la alarma y abre Maps con direcciones automáticamente.
+TUS EVENTOS DEL CALENDARIO, CON ALARMA DE VERDAD
+Calarm lee tu Calendario de Apple y le pone hasta 3 avisos a cada evento: al inicio, 15 minutos antes, una hora antes. Si el evento tiene dirección, cuando suena aparece "Ir" en lugar de "Posponer": detiene la alarma y abre Mapas con la ruta. Si es una reunión de Teams, Zoom o Google Meet, aparece "Unirse" y entras sin buscar el enlace.
 
-💼 **Detección automática de reuniones de Teams**
-Si tu calendario sincroniza con Outlook/Exchange, Calarm detecta los enlaces de Microsoft Teams y muestra un botón "Unirse en Teams" para entrar al meeting sin buscar el link.
+ELIGE CÓMO SUENA
+Seis tonos —Campana, Marimba, Radar, Arpegio, Pulso y Arpa— o tu propio audio importado desde Archivos. Cada alarma puede tener el suyo.
 
-✨ **Diseñado para iOS 26**
-Liquid Glass nativo, AlarmKit del sistema, SwiftData. Todo privado en tu dispositivo — sin servidor, sin cuentas, sin ads.
+CONTRÓLALA SIN DESBLOQUEAR
+Detén o pospón la alarma que está sonando desde la Live Activity y la Isla Dinámica.
+
+PERSONAS DE CONFIANZA
+Deja que tu pareja, un familiar o tu asistente administre tus alarmas desde su teléfono: lo que programen suena en tu iPhone. La invitación llega por Mensajes y le quitas el acceso cuando quieras.
+
+TUS ALARMAS EN TODOS TUS DISPOSITIVOS
+Se sincronizan por tu iCloud. Sin cuenta nueva, sin contraseña nueva.
+
+SIN ANUNCIOS, SIN SEGUIMIENTO, SIN SERVIDORES NUESTROS
+Tus alarmas son tuyas. No hay registro, no hay analítica de terceros, no vendemos nada.
+
+Para quienes no quieren perderse lo importante.
+```
+
+### en-US
+
+```
+The Clock app's alarms are for waking up. Calarm rings just as loud — even when your iPhone is silent, locked or in Focus — for everything else: the 8 a.m. pill, your mom's birthday, the dentist at 4, the bill due on the 3rd.
+
+MORE THAN A WAKE-UP ALARM
+• Meds and appointments: every day, Mondays and Wednesdays, or every 21 days. And several times in a single alarm, for the ones you take three times a day.
+• Birthdays and anniversaries: add the person's photo and it repeats every year on its own.
+• Bills and due dates: the 3rd of every month, no exceptions.
+• Shifts and routines: Monday at 5 p.m. and Saturday at 11 a.m., in the same alarm.
+
+JUST SAY IT
+"Remind me to take my pill every day at 9." Calarm's assistant schedules it with Apple Intelligence, and nothing leaves your iPhone. Siri works too: "Set an alarm in Calarm." (The assistant needs an iPhone that supports Apple Intelligence.)
+
+YOUR CALENDAR EVENTS, WITH A REAL ALARM
+Calarm reads your Apple Calendar and gives each event up to 3 alerts: at start, 15 minutes before, an hour before. If the event has an address, "Go" replaces "Snooze" when it rings: it stops the alarm and opens Maps with directions. If it's a Teams, Zoom or Google Meet call, "Join" takes you straight in.
+
+CHOOSE HOW IT SOUNDS
+Six tones — Chime, Marimba, Radar, Arpeggio, Pulse and Harp — or your own audio imported from Files. Every alarm can have its own.
+
+CONTROL IT WITHOUT UNLOCKING
+Stop or snooze the ringing alarm from the Live Activity and the Dynamic Island.
+
+TRUSTED HELPERS
+Let your partner, a family member or your assistant manage your alarms from their phone: what they schedule rings on your iPhone. The invite arrives over Messages, and you can revoke access whenever you want.
+
+YOUR ALARMS ON ALL YOUR DEVICES
+They sync through your own iCloud. No new account, no new password.
+
+NO ADS, NO TRACKING, NO SERVERS OF OURS
+Your alarms are yours. No sign-up, no third-party analytics, nothing to sell.
+
+For people who refuse to miss what matters.
+```
 
 ---
 
-## Keywords (100 char máx, separados por coma, sin espacios)
+## Capturas (1.0.8) — reales, generadas del simulador
+
+Las de mayo eran renders generados (`ChatGPT Image May 23, 2026…`), en inglés, con la lista
+anterior al rediseño de 1.0.5, y **es-MX no tenía ninguna**: heredaba las de en-US. Ahora los
+dos locales tienen su propio set, capturado de la app corriendo, en su idioma.
+
+| Set | Tamaño | Cuántas |
+|---|---|---|
+| `APP_IPHONE_67` (6.9") | 1320×2868 | 6 por locale |
+| `APP_IPAD_PRO_3GEN_129` (13") | 2064×2752 | 6 por locale |
+
+El set de 6.5" se eliminó: con uno de 6.9" Apple escala para los tamaños menores, y mantener
+uno viejo en inglés era peor que no tenerlo.
+
+Las seis pantallas: lista con grupos y categorías · editor de un cumpleaños (anual, dos
+avisos) · selector de recurrencia con próximas ocurrencias · calendario con tres eventos y el
+botón "Unirse en Teams" · asistente con Apple Intelligence · selector de tonos.
+
+### Cómo regenerarlas
+
+`DemoData.swift` (solo DEBUG) siembra siete alarmas, una categoría propia y tres eventos de
+calendario; los títulos siguen el idioma de lanzamiento, porque el título de una alarma es
+contenido del usuario. `-demoScreen` abre una pantalla directamente, así que la corrida no
+depende de tocar nada:
 
 ```
-alarma,cumpleaños,recordatorio,aniversario,evento,calendario,teams,reunión,despertador,recurrente
+xcodebuild -scheme Calarm -destination "platform=iOS Simulator,id=<UDID>" build   # sin CODE_SIGNING_ALLOWED=NO
+xcrun simctl install <UDID> <ruta>/Calarm.app
+xcrun simctl privacy <UDID> grant calendar MathyuSolutions.Calarm
+xcrun simctl status_bar <UDID> override --time "9:41" --batteryState charged --batteryLevel 100
+xcrun simctl launch <UDID> MathyuSolutions.Calarm -seedDemoData -AppleLanguages "(es)" -demoScreen list
+xcrun simctl io <UDID> screenshot lista.png
 ```
+
+Pantallas disponibles: `list`, `editor`, `recurrence`, `tones`, `assistant`, `settings`,
+`helpers`, `calendar`. El permiso de alarmas aparece una vez por instalación: se acepta con
+Enter (`key code 36`) sobre la ventana del simulador. Reinstalar encima conserva datos y
+permisos.
+
+Los titulares se componen sobre la captura con `slides/make.py` (Chrome headless al tamaño
+exacto) y se suben con `upload_shots.py`, que crea el set, reserva cada asset, manda los bytes
+con las `uploadOperations` y confirma con el checksum MD5.
+
+---
+
+## What's New (1.0.8) — borrador
+
+> Provisional: si el widget de próximas alarmas o el import de cumpleaños de Contactos
+> entran en esta versión, estas notas se reescriben con eso como titular.
+
+Español:
+```
+• Comparte Calarm desde Ajustes, con un toque
+• Las invitaciones a personas de confianza ahora llevan el enlace para descargar Calarm: quien la reciba puede instalarla y aceptar sin buscar nada
+```
+
+Inglés:
+```
+• Share Calarm from Settings with a single tap
+• Invitations to trusted helpers now include the link to download Calarm, so whoever gets one can install it and accept without hunting for anything
+```
+
+---
+
+## Histórico de la ficha (hasta 1.0.7)
+
+Lo de abajo es lo que estuvo publicado antes de la ficha de 1.0.8. Se conserva para no
+re-anunciar features en las notas de versiones siguientes.
+
+### Nombre y keywords hasta 1.0.7
+- es-MX: `Calarm: Alarmas inteligentes` / `Cumpleaños, eventos y avisos` /
+  `alarma, cumpleaños, recordatorio, aniversario, evento, calendario, equipos, reunión, recurrente`
+- en-US: `Calarm: Smart Alarms` / `Birthdays, events & reminders` /
+  `alarm,birthday,reminder,anniversary,event,calendar,teams,meeting,recurring,smart`
 
 ## What's New (versión inicial)
 ```
