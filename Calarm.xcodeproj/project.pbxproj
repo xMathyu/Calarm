@@ -185,7 +185,7 @@
 				};
 			};
 			buildConfigurationList = 6A070F672FB579BB0003A4DF /* Build configuration list for PBXProject "Calarm" */;
-			developmentRegion = es;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
