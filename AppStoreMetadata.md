@@ -209,9 +209,11 @@ Pantallas disponibles: `list`, `editor`, `recurrence`, `tones`, `assistant`, `se
 Enter (`key code 36`) sobre la ventana del simulador. Reinstalar encima conserva datos y
 permisos.
 
-Los titulares se componen sobre la captura con `slides/make.py` (Chrome headless al tamaño
-exacto) y se suben con `upload_shots.py`, que crea el set, reserva cada asset, manda los bytes
-con las `uploadOperations` y confirma con el checksum MD5.
+Los titulares se componen sobre la captura con `Tools/appstore/slides/make.py` (Chrome headless
+al tamaño exacto) y se suben con `Tools/appstore/upload_shots.py`, que crea el set, reserva cada
+asset, manda los bytes con las `uploadOperations` y confirma con el checksum MD5. Todo el
+pipeline —capturas, composición, subida, espera del build y envío a revisión— está en
+`Tools/appstore/`, con su README.
 
 ---
 
