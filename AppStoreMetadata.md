@@ -41,6 +41,29 @@ medicamento,pastilla,cita,cumpleaños,aniversario,evento,calendario,reunión,com
 anniversary,medication,pill,appointment,shared,family,bill,shift,recurring,calendar,teams,event
 ```
 
+### de-DE (nuevo en 1.0.9)
+
+Alemania y toda la UE estuvieron **bloqueadas desde el lanzamiento** por el estado de
+comerciante del Digital Services Act (ver la sección "Bloqueo en la UE"). La ficha alemana se
+prepara igual por dos razones: **Suiza y Liechtenstein sí están disponibles** y sus usuarios
+tienen el iPhone en alemán, así que la ven desde el primer día; y el día que se resuelva el
+DSA, Alemania y Austria abren con la ficha ya puesta.
+
+- **Name (29/30)**: `Calarm: Wecker & Erinnerungen`
+- **Subtitle (30/30)**: `Geburtstage und Termine mit KI`
+- **Keywords (98/100)**:
+```
+medikament,tablette,jahrestag,kalender,besprechung,geteilt,familie,rechnung,schicht,hochzeit,teams
+```
+
+17 términos indexados. `Wecker` y `Erinnerungen` son los dos de más volumen de la categoría en
+alemán y van en el nombre; `KI` (no "AI") es como se busca la inteligencia artificial en alemán.
+
+**La app sigue en inglés para ellos.** La descripción alemana por eso no cita botones en alemán
+—en pantalla dicen "Go", "Join", "Snooze"— ni promete Siri en alemán: las frases de Siri solo
+existen en español e inglés, y el asistente entiende esos dos idiomas. La descripción lo dice
+al final, para no ganarse reseñas de una estrella por sorpresa.
+
 ### Locales por agregar — después de las capturas, no antes
 
 `es-ES` y `en-GB` no necesitan tocar la app (la UI ya está en español e inglés) y cada uno es
@@ -206,6 +229,70 @@ Inglés:
 • A new welcome: five screens that tell you what Calarm is for the first time you open it, instead of a single list of features
 • Share Calarm from Settings with a single tap
 • Invitations to trusted helpers now include the link to download Calarm, so whoever gets one can install it and accept without hunting for anything
+```
+
+---
+
+## Descripción de-DE (1.0.9)
+
+```
+Die Wecker der Uhr-App sind fürs Aufstehen da. Calarm klingelt genauso laut – auch wenn das iPhone stumm, gesperrt oder im Fokus ist – für alles andere: die Tablette um 8, Mamas Geburtstag, der Zahnarzttermin um 16 Uhr, die Rechnung am 3.
+
+MEHR ALS EIN WECKER
+• Medikamente und Termine: jeden Tag, montags und mittwochs, oder alle 21 Tage. Und mehrere Uhrzeiten in einem einzigen Alarm, für alles, was dreimal täglich ansteht.
+• Geburtstage und Jahrestage: Foto der Person hinzufügen, und der Alarm wiederholt sich jedes Jahr von selbst.
+• Rechnungen und Fristen: am 3. jedes Monats, ohne Ausnahme.
+• Schichten und Routinen: montags um 17 Uhr und samstags um 11 Uhr, im selben Alarm.
+
+DEINE KALENDERTERMINE, MIT EINEM ECHTEN ALARM
+Calarm liest deinen Apple Kalender und gibt jedem Termin bis zu 3 Hinweise: zum Start, 15 Minuten vorher, eine Stunde vorher. Hat der Termin eine Adresse, stoppt ein Tippen den Alarm und öffnet Karten mit der Route. Ist es ein Teams-, Zoom- oder Meet-Meeting, kommst du mit einem Tippen direkt hinein, ohne den Link zu suchen.
+
+SAG ES EINFACH
+„Remind me to take my pill every day at 9." Der Assistent legt den Alarm für dich an – mit Apple Intelligence, und nichts verlässt dein iPhone. (Der Assistent benötigt ein iPhone, das Apple Intelligence unterstützt.)
+
+WÄHLE, WIE ER KLINGT
+Sechs Töne – Glocke, Marimba, Radar, Arpeggio, Puls und Harfe – oder dein eigenes Audio aus der Dateien-App. Jeder Alarm kann seinen eigenen haben.
+
+STEUERE IHN, OHNE ZU ENTSPERREN
+Stoppe oder schlummere den klingelnden Alarm direkt in der Live-Aktivität und der Dynamic Island.
+
+VERTRAUENSPERSONEN
+Lass deinen Partner, ein Familienmitglied oder deine Assistenz deine Alarme vom eigenen Telefon aus verwalten: Was sie einstellen, klingelt auf deinem iPhone. Die Einladung kommt per Nachrichten, und du kannst den Zugriff jederzeit wieder entziehen.
+
+DEINE ALARME AUF ALLEN GERÄTEN
+Sie synchronisieren sich über deine eigene iCloud. Kein neues Konto, kein neues Passwort.
+
+KEINE WERBUNG, KEIN TRACKING, KEINE SERVER VON UNS
+Deine Alarme gehören dir. Keine Anmeldung, keine Analyse durch Dritte, nichts zu verkaufen.
+
+Für alle, die nichts Wichtiges verpassen wollen.
+
+Hinweis: Die App-Oberfläche ist auf Englisch und Spanisch verfügbar.
+```
+
+### Texto promocional de-DE
+
+```
+Nicht nur zum Aufwachen: Tabletten, Geburtstage, Termine, Rechnungen und Schichten. Klingelt laut, auch wenn das iPhone stumm oder gesperrt ist.
+```
+
+---
+
+## What's New (1.0.9)
+
+Español:
+```
+• Corregido: en un iPhone configurado en un idioma que Calarm no habla —alemán, portugués, japonés— la app se veía a medias en español, con las fechas en inglés. Ahora se ve entera en inglés
+```
+
+Inglés:
+```
+• Fixed: on an iPhone set to a language Calarm doesn't speak — German, Portuguese, Japanese — the app showed up half in Spanish, with dates in English. Now it shows up fully in English
+```
+
+Alemán:
+```
+• Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
 ---
