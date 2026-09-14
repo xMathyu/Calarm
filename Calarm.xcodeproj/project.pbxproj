@@ -23,6 +23,13 @@
 			remoteGlobalIDString = CA1ABEEF0000000000000002;
 			remoteInfo = CalarmWidgets;
 		};
+		CA1ABEEF0000000000000109 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6A070F642FB579BB0003A4DF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6A070F6B2FB579BB0003A4DF;
+			remoteInfo = Calarm;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,6 +49,7 @@
 /* Begin PBXFileReference section */
 		6A070F6C2FB579BB0003A4DF /* Calarm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Calarm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA1ABEEF0000000000000001 /* CalarmWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CalarmWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA1ABEEF0000000000000101 /* CalarmTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalarmTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA1ABEEF000000000000000D /* CalarmAlarmMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CalarmAlarmMetadata.swift; path = Calarm/Models/CalarmAlarmMetadata.swift; sourceTree = SOURCE_ROOT; };
 		CA1ABEEF000000000000000F /* CalarmWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalarmWidgetsBundle.swift; sourceTree = "<group>"; };
 		CA1ABEEF0000000000000011 /* CalarmAlarmLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalarmAlarmLiveActivity.swift; sourceTree = "<group>"; };
@@ -68,6 +76,11 @@
 			path = Calarm;
 			sourceTree = "<group>";
 		};
+		CA1ABEEF000000000000010B /* CalarmTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CalarmTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +99,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CA1ABEEF0000000000000104 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -94,6 +114,7 @@
 			children = (
 				6A070F6E2FB579BB0003A4DF /* Calarm */,
 				CA1ABEEF0000000000000014 /* CalarmWidgets */,
+				CA1ABEEF000000000000010B /* CalarmTests */,
 				6A070F6D2FB579BB0003A4DF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -103,6 +124,7 @@
 			children = (
 				6A070F6C2FB579BB0003A4DF /* Calarm.app */,
 				CA1ABEEF0000000000000001 /* CalarmWidgets.appex */,
+				CA1ABEEF0000000000000101 /* CalarmTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -166,6 +188,29 @@
 			productReference = CA1ABEEF0000000000000001 /* CalarmWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		CA1ABEEF0000000000000102 /* CalarmTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA1ABEEF0000000000000106 /* Build configuration list for PBXNativeTarget "CalarmTests" */;
+			buildPhases = (
+				CA1ABEEF0000000000000103 /* Sources */,
+				CA1ABEEF0000000000000104 /* Frameworks */,
+				CA1ABEEF0000000000000105 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA1ABEEF000000000000010A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CA1ABEEF000000000000010B /* CalarmTests */,
+			);
+			name = CalarmTests;
+			packageProductDependencies = (
+			);
+			productName = CalarmTests;
+			productReference = CA1ABEEF0000000000000101 /* CalarmTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -181,6 +226,10 @@
 					};
 					CA1ABEEF0000000000000002 = {
 						CreatedOnToolsVersion = 26.5;
+					};
+					CA1ABEEF0000000000000102 = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = 6A070F6B2FB579BB0003A4DF;
 					};
 				};
 			};
@@ -204,6 +253,7 @@
 			targets = (
 				6A070F6B2FB579BB0003A4DF /* Calarm */,
 				CA1ABEEF0000000000000002 /* CalarmWidgets */,
+				CA1ABEEF0000000000000102 /* CalarmTests */,
 			);
 		};
 /* End PBXProject section */
@@ -217,6 +267,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CA1ABEEF0000000000000005 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA1ABEEF0000000000000105 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -244,6 +301,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CA1ABEEF0000000000000103 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -251,6 +315,11 @@
 			isa = PBXTargetDependency;
 			target = CA1ABEEF0000000000000002 /* CalarmWidgets */;
 			targetProxy = CA1ABEEF000000000000000A /* PBXContainerItemProxy */;
+		};
+		CA1ABEEF000000000000010A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6A070F6B2FB579BB0003A4DF /* Calarm */;
+			targetProxy = CA1ABEEF0000000000000109 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -508,6 +577,48 @@
 			};
 			name = Release;
 		};
+		CA1ABEEF0000000000000107 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 49;
+				DEVELOPMENT_TEAM = 5QGSG9RD22;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0.9;
+				PRODUCT_BUNDLE_IDENTIFIER = MathyuSolutions.CalarmTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Calarm.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Calarm";
+			};
+			name = Debug;
+		};
+		CA1ABEEF0000000000000108 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 49;
+				DEVELOPMENT_TEAM = 5QGSG9RD22;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0.9;
+				PRODUCT_BUNDLE_IDENTIFIER = MathyuSolutions.CalarmTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Calarm.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Calarm";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -534,6 +645,15 @@
 			buildConfigurations = (
 				CA1ABEEF0000000000000007 /* Debug */,
 				CA1ABEEF0000000000000008 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA1ABEEF0000000000000106 /* Build configuration list for PBXNativeTarget "CalarmTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA1ABEEF0000000000000107 /* Debug */,
+				CA1ABEEF0000000000000108 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
