@@ -297,6 +297,32 @@ Alemán:
 • Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
+## What's New (1.0.10)
+
+Español:
+```
+• Corregido: al guardar una alarma sin ponerle nombre, el editor se cerraba sin crear nada y sin decir por qué. Ahora te pide el nombre y no se pierde lo que ya habías configurado
+• El calendario se cierra solo al elegir el día, en vez de quedarse abierto tapando el resto
+• Si la fecha ya pasó, la alarma te avisa de que no va a sonar
+• Corregido: pedirle al asistente "una alarma a las 9" de noche la ponía para hoy —una hora que ya pasó— en vez de para mañana
+```
+
+Inglés:
+```
+• Fixed: saving an alarm without a name closed the editor without creating anything, and without saying why. Now it asks you for the name and keeps what you had set up
+• The calendar closes itself when you pick a day, instead of staying open over everything else
+• If the date has already passed, the alarm now warns you that it won't ring
+• Fixed: asking the assistant for "an alarm at 9" late at night set it for today — an hour that had already gone by — instead of tomorrow
+```
+
+Alemán:
+```
+• Behoben: Beim Speichern eines Weckers ohne Namen schloss sich der Editor, ohne etwas anzulegen und ohne zu sagen, warum. Jetzt fragt er nach dem Namen und behält, was du eingestellt hast
+• Der Kalender schließt sich von selbst, sobald du einen Tag auswählst, statt alles Weitere zu verdecken
+• Liegt das Datum in der Vergangenheit, weist der Wecker jetzt darauf hin, dass er nicht klingeln wird
+• Behoben: "Wecker um 9" spät abends legte der Assistent auf heute — eine Uhrzeit, die schon vorbei war — statt auf morgen
+```
+
 ---
 
 ## Histórico de la ficha (hasta 1.0.7)
