@@ -72,6 +72,16 @@ struct ReminderEditorView: View {
     @State private var showingIconPicker = false
     @State private var isEnabled: Bool
 
+    // No title, no alarm: instead of closing the editor with nothing saved, the
+    // field turns red and asks for a name.
+    @State private var showTitleError = false
+    @FocusState private var titleFocused: Bool
+
+    /// Which calendar is expanded (nil = none). The primary schedule uses
+    /// `primaryScheduleID`; the extra ones use their own id.
+    @State private var openCalendarID: UUID?
+    private static let primaryScheduleID = UUID()
+
     // Autosave: edits are committed automatically (debounced) instead of behind a
     // Save button. For a brand-new alarm the reminder is created on the first
     // commit with a non-empty title, and every later commit updates that same
@@ -211,6 +221,9 @@ struct ReminderEditorView: View {
             }
             .onChange(of: title) { _, newValue in
                 scheduleSuggestionFetch(for: newValue)
+                if showTitleError, !isTitleEmpty {
+                    withAnimation(DS.Motion.quick) { showTitleError = false }
+                }
             }
             // Every edit schedules a debounced save; leaving the editor flushes
             // whatever is still pending (including a swipe-down dismissal).
@@ -229,7 +242,7 @@ struct ReminderEditorView: View {
                         if isPreparingShare {
                             ProgressView()
                         } else {
-                            Button("Listo") { dismiss() }
+                            Button("Listo") { handleDone() }
                                 .bold()
                         }
                     }
@@ -323,11 +336,31 @@ struct ReminderEditorView: View {
                 VStack(alignment: .leading, spacing: DS.Spacing.sm) {
                     TextField("Título", text: $title)
                         .font(.title3.weight(.semibold))
+                        .focused($titleFocused)
+                        .padding(DS.Spacing.xs)
+                        .background(
+                            RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
+                                .fill(Color.red.opacity(showTitleError ? 0.12 : 0))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
+                                .strokeBorder(.red, lineWidth: showTitleError ? 1.5 : 0)
+                        )
+                        // Puts the field back where it was: the box is only decoration.
+                        .padding(-DS.Spacing.xs)
                     TextField("Notas (opcional)", text: $notes, axis: .vertical)
                         .lineLimit(1...3)
                 }
             }
             .padding(.vertical, DS.Spacing.xs)
+        } footer: {
+            if showTitleError {
+                Label("Ponle un nombre a la alarma para poder guardarla.", systemImage: "exclamationmark.circle.fill")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.red)
+            } else if isTitleEmpty {
+                Text("Ponle un nombre para reconocerla, por ejemplo «Tomar pastilla».")
+            }
         }
     }
 
@@ -335,7 +368,7 @@ struct ReminderEditorView: View {
     private var scheduleSection: some View {
         // Primary schedule (date + time + recurrence).
         Section {
-            schedulePickers(date: $date, recurrence: $recurrence)
+            schedulePickers(id: Self.primaryScheduleID, date: $date, recurrence: $recurrence)
         } header: {
             Text(additionalSchedules.isEmpty ? appLocalized("Cuándo") : "\(appLocalized("Horario")) 1")
         }
@@ -343,7 +376,7 @@ struct ReminderEditorView: View {
         // Additional schedules — same alarm, different day/time.
         ForEach($additionalSchedules) { $sched in
             Section {
-                schedulePickers(date: $sched.date, recurrence: $sched.recurrence)
+                schedulePickers(id: sched.id, date: $sched.date, recurrence: $sched.recurrence)
                 Button(role: .destructive) {
                     withAnimation(DS.Motion.snappy) {
                         additionalSchedules.removeAll { $0.id == sched.id }
@@ -385,18 +418,47 @@ struct ReminderEditorView: View {
 
     /// The date + time + recurrence controls for one schedule, bound to the given state.
     @ViewBuilder
-    private func schedulePickers(date: Binding<Date>, recurrence: Binding<RecurrenceRule>) -> some View {
+    private func schedulePickers(id: UUID, date: Binding<Date>, recurrence: Binding<RecurrenceRule>) -> some View {
         // A repeating alarm that already knows its days (weekly on Mon/Sat, or
         // every day) doesn't need a date — only the time. It stays for the rules
         // where the date really decides when it rings, labelled as the start.
         if showsDate(for: recurrence.wrappedValue) {
-            DatePicker(selection: date, displayedComponents: [.date]) {
-                Label(
-                    recurrence.wrappedValue.isRecurring ? "Desde" : "Fecha",
-                    systemImage: "calendar"
-                )
+            // Row that expands the calendar. The compact DatePicker stays open
+            // after picking a day; this one closes as soon as one is picked.
+            Button {
+                Haptics.light()
+                withAnimation(DS.Motion.snappy) {
+                    openCalendarID = (openCalendarID == id) ? nil : id
+                }
+            } label: {
+                LabeledContent {
+                    HStack(spacing: DS.Spacing.xs) {
+                        Text(date.wrappedValue.formatted(date: .abbreviated, time: .omitted))
+                            .foregroundStyle(openCalendarID == id ? style.color : .secondary)
+                        Image(systemName: "chevron.down")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(.tertiary)
+                            .rotationEffect(.degrees(openCalendarID == id ? -180 : 0))
+                    }
+                } label: {
+                    Label(
+                        recurrence.wrappedValue.isRecurring ? "Desde" : "Fecha",
+                        systemImage: "calendar"
+                    )
+                }
             }
-            .datePickerStyle(.compact)
+            .buttonStyle(.plain)
+
+            if openCalendarID == id {
+                DatePicker("", selection: date, displayedComponents: [.date])
+                    .datePickerStyle(.graphical)
+                    .labelsHidden()
+                    // Picking a day closes the calendar; paging months doesn't.
+                    .onChange(of: Calendar.current.startOfDay(for: date.wrappedValue)) { _, _ in
+                        Haptics.selection()
+                        withAnimation(DS.Motion.snappy) { openCalendarID = nil }
+                    }
+            }
         }
 
         DatePicker(selection: date, displayedComponents: [.hourAndMinute]) {
@@ -414,6 +476,19 @@ struct ReminderEditorView: View {
                 Label("Repetir", systemImage: "repeat")
             }
         }
+
+        // A one-off alarm with a past date never gets scheduled: say so here
+        // instead of letting it turn up under "Vencidas" with no explanation.
+        if neverRings(date: date.wrappedValue, recurrence: recurrence.wrappedValue) {
+            Label("Esa fecha y hora ya pasaron: la alarma no sonará.", systemImage: "exclamationmark.triangle.fill")
+                .font(.footnote)
+                .foregroundStyle(.orange)
+        }
+    }
+
+    /// A schedule with no future occurrence: it saves, but it never rings.
+    private func neverRings(date: Date, recurrence: RecurrenceRule) -> Bool {
+        RecurrenceEngine.nextOccurrences(rule: recurrence, baseDate: date, count: 1).isEmpty
     }
 
     /// Lead-time controls, shared across all schedules and edited right here —
@@ -702,6 +777,23 @@ struct ReminderEditorView: View {
             leadTimes.removeAll { $0 == value }
         }
         Haptics.light()
+    }
+
+    // MARK: - Done
+
+    /// Something is configured that no saved alarm holds yet.
+    private var hasPendingWork: Bool { snapshot != autosave.lastCommitted }
+
+    /// "Listo": with no title `commit` saves nothing, so rather than closing the
+    /// editor and losing what was set up, flag the field and ask for the name.
+    private func handleDone() {
+        guard isTitleEmpty, hasPendingWork else {
+            dismiss()
+            return
+        }
+        withAnimation(DS.Motion.snappy) { showTitleError = true }
+        titleFocused = true
+        Haptics.warning()
     }
 
     // MARK: - Autosave

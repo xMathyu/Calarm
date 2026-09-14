@@ -6986,6 +6986,54 @@
           }
         }
       }
+    },
+    "Ponle un nombre a la alarma para poder guardarla." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give the alarm a name so it can be saved."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponle un nombre a la alarma para poder guardarla."
+          }
+        }
+      }
+    },
+    "Ponle un nombre para reconocerla, por ejemplo «Tomar pastilla»." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give it a name you'll recognize, for example “Take pill”."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponle un nombre para reconocerla, por ejemplo «Tomar pastilla»."
+          }
+        }
+      }
+    },
+    "Esa fecha y hora ya pasaron: la alarma no sonará." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That date and time have already passed: the alarm won't ring."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esa fecha y hora ya pasaron: la alarma no sonará."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
