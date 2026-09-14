@@ -54,6 +54,19 @@ private enum ToolHelpers {
         return AlarmSuggestionsService.snap(date, toFirstOf: weekdays)
     }
 
+    /// Puts the model's date where the user meant it: rolled onto the next
+    /// occurrence when the time of day already went by ("a las 9" said at 23:00
+    /// means tomorrow), then snapped onto a named weekday.
+    static func resolveDate(_ date: Date, for rule: RecurrenceRule) -> Date {
+        alignDate(AlarmSuggestionsService.rollIntoFuture(date, recurrence: rule), to: rule)
+    }
+
+    /// Whether the alarm has any occurrence left — a one-off in the past is
+    /// stored, but it never rings, and the model should say so.
+    static func willEverRing(date: Date, recurrence: RecurrenceRule) -> Bool {
+        !RecurrenceEngine.nextOccurrences(rule: recurrence, baseDate: date, count: 1).isEmpty
+    }
+
     static func leadTimes(fromMinutes minutes: [Int]?) -> [AlarmLeadTime] {
         AlarmSuggestionsService.leadTimes(fromMinutes: minutes ?? [0])
     }
@@ -143,7 +156,7 @@ struct CreateReminderTool: Tool {
             fromSlug: arguments.recurrence,
             weekdayNames: arguments.weekdays
         )
-        let date = ToolHelpers.alignDate(parsedDate, to: recurrence)
+        let date = ToolHelpers.resolveDate(parsedDate, for: recurrence)
 
         let reminder = Reminder(
             title: arguments.title,
@@ -159,7 +172,10 @@ struct CreateReminderTool: Tool {
         NotificationCenter.default.post(name: .calarmLocalRemindersChanged, object: nil)
 
         let dateStr = ToolHelpers.formatDate(date, locale: LocalizationManager.shared.currentLocale)
-        return "Created reminder '\(arguments.title)' for \(dateStr), repeating: \(recurrence.localizedSummary). ID: \(reminder.id.uuidString)"
+        let warning = ToolHelpers.willEverRing(date: date, recurrence: recurrence)
+            ? ""
+            : " WARNING: that date is already in the past, so this alarm will never ring — tell the user and offer to move it."
+        return "Created reminder '\(arguments.title)' for \(dateStr), repeating: \(recurrence.localizedSummary). ID: \(reminder.id.uuidString)\(warning)"
     }
 }
 
@@ -338,7 +354,7 @@ struct UpdateReminderTool: Tool {
         // Only re-anchor when the user actually touched the schedule — a plain
         // title edit shouldn't silently move an existing alarm's date.
         if recurrenceChanged || dateChanged {
-            reminder.date = ToolHelpers.alignDate(reminder.date, to: reminder.recurrence)
+            reminder.date = ToolHelpers.resolveDate(reminder.date, for: reminder.recurrence)
         }
         if let leads = arguments.leadTimesMinutes {
             reminder.leadTimes = ToolHelpers.leadTimes(fromMinutes: leads)

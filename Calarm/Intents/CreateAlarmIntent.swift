@@ -51,11 +51,11 @@ struct CreateAlarmIntent: AppIntent {
         // The time is the only thing we truly need. If the user didn't say one,
         // ask for it now (a single Siri prompt) — that is the only question the
         // intent is allowed to ask.
-        let resolvedDate: Date
+        let spokenDate: Date
         if let date {
-            resolvedDate = date
+            spokenDate = date
         } else {
-            resolvedDate = try await $date.requestValue("¿A qué hora?")
+            spokenDate = try await $date.requestValue("¿A qué hora?")
         }
 
         // The name is never prompted for: creating the alarm in one step matters
@@ -67,6 +67,11 @@ struct CreateAlarmIntent: AppIntent {
 
         let resolvedCategory = category?.category ?? .reminder
         let resolvedLeadTime = leadTime?.leadTime ?? .atStart
+        // "Pon una alarma a las 9" said at 23:00 arrives as today at 09:00 —
+        // already gone, so it would never ring. Move it to the next day, and
+        // re-read the weekly rule from there so it repeats on the day it rings.
+        let spokenRule = recurrence?.rule(basedOn: spokenDate) ?? .once
+        let resolvedDate = AlarmSuggestionsService.rollIntoFuture(spokenDate, recurrence: spokenRule)
         let resolvedRecurrence = recurrence?.rule(basedOn: resolvedDate) ?? .once
 
         // Match the main app's SwiftData configuration so the reminder appears

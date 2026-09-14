@@ -145,4 +145,37 @@ final class AlarmSuggestionsService {
         }
         return date
     }
+
+    /// Rolls a date the model left in the past onto its next occurrence, keeping
+    /// the time of day. "Pon una alarma a las 9" said at 23:00 comes back as
+    /// today 09:00, and a one-off alarm like that is never scheduled — it can
+    /// only have meant tomorrow. Only slips under 24 h move: a date the user
+    /// really did put in a past day is left alone (and flagged elsewhere).
+    static func rollIntoFuture(
+        _ date: Date,
+        recurrence: RecurrenceRule,
+        now: Date = Date(),
+        calendar: Calendar = .current
+    ) -> Date {
+        guard date <= now, now.timeIntervalSince(date) < 24 * 60 * 60 else { return date }
+        // Step by the rule's own period so the anchor keeps its meaning — a
+        // weekly alarm moves a week, not a day. Weekly on named days steps by a
+        // day because `snap` puts it back on a requested weekday afterwards.
+        let step: (component: Calendar.Component, value: Int) = switch recurrence {
+        case .once: (.day, 1)
+        case .daily(let interval): (.day, max(1, interval))
+        case .weekly(let interval, let weekdays):
+            weekdays.isEmpty ? (.weekOfYear, max(1, interval)) : (.day, 1)
+        case .monthly(let interval): (.month, max(1, interval))
+        case .yearly(let interval): (.year, max(1, interval))
+        }
+        var candidate = date
+        while candidate <= now {
+            guard let next = calendar.date(byAdding: step.component, value: step.value, to: candidate) else {
+                return date
+            }
+            candidate = next
+        }
+        return candidate
+    }
 }

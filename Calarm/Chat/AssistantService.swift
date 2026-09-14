@@ -161,6 +161,10 @@ final class AssistantService {
           (no Z, no timezone offset — dates are ALWAYS interpreted as the user's local time).
         - Example: "a las 2 de la tarde" → 14:00:00 (NOT 19:00:00 UTC).
         - Example: "mañana a las 8 am" with current local time \(nowLocal) → add 1 day, set hour 08:00:00.
+        - A BARE TIME always means the NEXT time that clock time comes around. \
+          If it has already gone by today, use TOMORROW — never a past moment. \
+          Example: it is \(nowLocal) and the user says "a las 9" / "at 9": if 09:00 \
+          already passed today, the alarm is TOMORROW at 09:00:00.
 
         ## Recurrence detection — CRITICAL
         Read the user's full message for recurrence hints and map them:

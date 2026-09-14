@@ -51,8 +51,13 @@ struct CreateAlarmFromTextIntent: AppIntent {
         let category = ReminderCategory.from(slug: parsed.category) ?? .reminder
         let weekdays = AlarmSuggestionsService.weekdays(fromNames: parsed.weekdays)
         let recurrence = AlarmSuggestionsService.recurrence(fromSlug: parsed.recurrence, weekdays: weekdays)
-        // "todos los lunes" must start on a Monday even if the model anchored today.
-        let resolvedDate = AlarmSuggestionsService.snap(parsedDate, toFirstOf: weekdays)
+        // A time that already went by today means tomorrow ("a las 9" at 23:00),
+        // and "todos los lunes" must start on a Monday even if the model
+        // anchored the date on today.
+        let resolvedDate = AlarmSuggestionsService.snap(
+            AlarmSuggestionsService.rollIntoFuture(parsedDate, recurrence: recurrence),
+            toFirstOf: weekdays
+        )
         let leadTimes = Self.leadTimes(fromMinutes: parsed.leadTimesMinutes)
 
         // Persist + schedule, matching CreateAlarmIntent's flow.

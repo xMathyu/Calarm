@@ -104,6 +104,80 @@ struct AlarmSuggestionsMappersTests {
         #expect(occurrences.first == date("2026-08-10 09:00"))
     }
 
+    // MARK: - Rolling a past date into the future
+
+    @Test func bareTimeAlreadyGoneMovesToTomorrow() {
+        // "Pon una alarma a las 9" typed at 23:00 — the model answers with today
+        // at 09:00, which would never ring.
+        let rolled = AlarmSuggestionsService.rollIntoFuture(
+            date("2026-08-07 09:00"),
+            recurrence: .once,
+            now: date("2026-08-07 23:00"),
+            calendar: calendar
+        )
+        #expect(rolled == date("2026-08-08 09:00"))
+    }
+
+    @Test func futureDatesAreLeftAlone() {
+        let future = date("2026-08-08 09:00")
+        #expect(
+            AlarmSuggestionsService.rollIntoFuture(
+                future,
+                recurrence: .once,
+                now: date("2026-08-07 23:00"),
+                calendar: calendar
+            ) == future
+        )
+    }
+
+    @Test func aDateFromAnEarlierDayIsNotSilentlyMoved() {
+        // Over 24 h in the past is a date the user really gave, not a bare time:
+        // moving it a day would invent a schedule they never asked for.
+        let old = date("2026-08-01 09:00")
+        #expect(
+            AlarmSuggestionsService.rollIntoFuture(
+                old,
+                recurrence: .once,
+                now: date("2026-08-07 23:00"),
+                calendar: calendar
+            ) == old
+        )
+    }
+
+    @Test func recurringAlarmsKeepTheirAnchor() {
+        // A weekly alarm moves a week, a monthly one a month — so the day of the
+        // week (or of the month) the user picked survives the roll.
+        let weekly = AlarmSuggestionsService.rollIntoFuture(
+            date("2026-08-07 09:00"),
+            recurrence: .weekly(interval: 1, weekdays: []),
+            now: date("2026-08-07 23:00"),
+            calendar: calendar
+        )
+        #expect(weekly == date("2026-08-14 09:00"))
+
+        let monthly = AlarmSuggestionsService.rollIntoFuture(
+            date("2026-08-07 09:00"),
+            recurrence: .monthly(interval: 1),
+            now: date("2026-08-07 23:00"),
+            calendar: calendar
+        )
+        #expect(monthly == date("2026-09-07 09:00"))
+    }
+
+    @Test func weeklyOnNamedDaysRollsThenSnapsBackOntoTheDay() {
+        // Friday 23:00, "todos los viernes a las 9": +1 day lands on Saturday and
+        // `snap` walks it to the next Friday.
+        let rule = AlarmSuggestionsService.recurrence(fromSlug: "weekly", weekdays: [.friday])
+        let rolled = AlarmSuggestionsService.rollIntoFuture(
+            date("2026-08-07 09:00"),
+            recurrence: rule,
+            now: date("2026-08-07 23:00"),
+            calendar: calendar
+        )
+        let snapped = AlarmSuggestionsService.snap(rolled, toFirstOf: [.friday], calendar: calendar)
+        #expect(snapped == date("2026-08-14 09:00"))
+    }
+
     // MARK: - Helpers
 
     private var calendar: Calendar {
