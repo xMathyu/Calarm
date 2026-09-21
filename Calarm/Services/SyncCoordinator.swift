@@ -59,7 +59,11 @@ final class SyncCoordinator {
             let now = Date()
             // Look ahead 90 days so events scheduled months in advance show up.
             let horizon = now.addingTimeInterval(90 * 24 * 60 * 60)
-            let fetched = try await source.upcomingMeetings(from: now, to: horizon)
+            let fetched = try await source.upcomingMeetings(
+                from: now,
+                to: horizon,
+                calendarIDs: settings.selectedCalendarIDs
+            )
             self.meetings = fetched
             self.lastError = nil
 
@@ -70,9 +74,10 @@ final class SyncCoordinator {
 
             let snooze = settings.snoozeInterval
             let tone = settings.alarmTone
+            let countdown = settings.countdown
 
             for meeting in fetched {
-                let leadTimes = preferences.activeLeadTimes(forEventID: meeting.id)
+                let leadTimes = preferences.activeLeadTimes(for: meeting)
                 let fireDates = leadTimes
                     .map { meeting.startDate.addingTimeInterval(-$0.seconds) }
                     .filter { $0 > now }
@@ -91,6 +96,7 @@ final class SyncCoordinator {
                             category: .event,
                             snooze: snooze,
                             tone: tone,
+                            countdown: countdown,
                             meetingURL: meeting.meetingLink?.url,
                             location: meeting.location
                         )
@@ -111,6 +117,11 @@ final class SyncCoordinator {
         } catch {
             self.lastError = error.localizedDescription
         }
+    }
+
+    /// Los calendarios entre los que se puede elegir en Ajustes.
+    func availableCalendars() async -> [CalendarInfo] {
+        (try? await source.availableCalendars()) ?? []
     }
 
     func reschedule() async {

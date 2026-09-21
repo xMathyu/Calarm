@@ -63,7 +63,7 @@ struct MeetingsListView: View {
                             } label: {
                                 MeetingRowView(
                                     meeting: meeting,
-                                    leadTimes: preferences.activeLeadTimes(forEventID: meeting.id),
+                                    leadTimes: preferences.activeLeadTimes(for: meeting),
                                     alarmsEnabled: settings.alarmsEnabled && preferences.isEnabled(forEventID: meeting.id)
                                 )
                             }

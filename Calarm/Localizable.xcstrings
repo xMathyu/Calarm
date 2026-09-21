@@ -7067,18 +7067,274 @@
         }
       }
     },
-    "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte." : {
+    "Cuenta regresiva" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When on, Calarm reads events from your Calendar app and gives each one an alarm at the default alert time. Each event can change its own from its screen. If the event has a Microsoft Teams, Zoom or Google Meet link, a button appears to join."
+            "value" : "Countdown"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte."
+            "value" : "Cuenta regresiva"
+          }
+        }
+      }
+    },
+    "Sin cuenta regresiva" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No countdown"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin cuenta regresiva"
+          }
+        }
+      }
+    },
+    "1 minuto antes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 minute before"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 minuto antes"
+          }
+        }
+      }
+    },
+    "2 minutos antes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 minutes before"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 minutos antes"
+          }
+        }
+      }
+    },
+    "Muestra la cuenta atrás en la Isla Dinámica y en la pantalla bloqueada durante los minutos previos a cada alarma. La alarma sigue sonando a su hora." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows the countdown in the Dynamic Island and on the Lock Screen during the minutes before each alarm. The alarm still rings at its time."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra la cuenta atrás en la Isla Dinámica y en la pantalla bloqueada durante los minutos previos a cada alarma. La alarma sigue sonando a su hora."
+          }
+        }
+      }
+    },
+    "Calendarios" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendars"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendarios"
+          }
+        }
+      }
+    },
+    "Todos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos"
+          }
+        }
+      }
+    },
+    "%lld seleccionados" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld selected"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld seleccionados"
+          }
+        }
+      }
+    },
+    "Todos los calendarios" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All calendars"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos los calendarios"
+          }
+        }
+      }
+    },
+    "Calarm mira todos tus calendarios, incluidos los que agregues después." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm watches every one of your calendars, including any you add later."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm mira todos tus calendarios, incluidos los que agregues después."
+          }
+        }
+      }
+    },
+    "Solo suenan los eventos de los calendarios marcados." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only events from the checked calendars ring."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo suenan los eventos de los calendarios marcados."
+          }
+        }
+      }
+    },
+    "No encontré calendarios en este iPhone." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I found no calendars on this iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No encontré calendarios en este iPhone."
+          }
+        }
+      }
+    },
+    "Otros" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otros"
+          }
+        }
+      }
+    },
+    "Solo eventos a los que asisto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only events I'm attending"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo eventos a los que asisto"
+          }
+        }
+      }
+    },
+    "Sin alarma: no eres parte de este evento" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No alarm: you're not part of this event"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin alarma: no eres parte de este evento"
+          }
+        }
+      }
+    },
+    "Lo rechazaste o es de otra persona, y en Ajustes pediste solo los eventos a los que asistes. Si guardas avisos aquí, este evento sonará igual." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You declined it or it belongs to someone else, and in Settings you asked for only the events you attend. If you save alerts here, this event rings anyway."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo rechazaste o es de otra persona, y en Ajustes pediste solo los eventos a los que asistes. Si guardas avisos aquí, este evento sonará igual."
+          }
+        }
+      }
+    },
+    "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When on, Calarm reads events from your Calendar app and gives each one an alarm at the default alert time. Each event can change its own from its screen. If the event has a Microsoft Teams, Zoom or Google Meet link, a button appears to join.\n\n\"Only events I'm attending\" leaves without an alarm the ones you declined and the ones that belong to someone else, such as those on a shared calendar. Events you gave alerts to by hand don't change."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian."
           }
         }
       }

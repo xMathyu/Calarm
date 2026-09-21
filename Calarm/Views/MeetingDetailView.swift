@@ -9,6 +9,7 @@ struct MeetingDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
     @Environment(MeetingPreferencesStore.self) private var preferences
+    @Environment(AppSettings.self) private var settings
     @Environment(SyncCoordinator.self) private var coordinator
 
     let meeting: Meeting
@@ -76,6 +77,15 @@ struct MeetingDetailView: View {
                         } label: {
                             Label("Unirse en \(link.provider.displayName)", systemImage: "video.fill")
                         }
+                    }
+                }
+
+                if isSkippedByAttendance {
+                    Section {
+                        Label("Sin alarma: no eres parte de este evento", systemImage: "person.badge.shield.exclamationmark")
+                            .foregroundStyle(.secondary)
+                    } footer: {
+                        Text("Lo rechazaste o es de otra persona, y en Ajustes pediste solo los eventos a los que asistes. Si guardas avisos aquí, este evento sonará igual.")
                     }
                 }
 
@@ -162,6 +172,14 @@ struct MeetingDetailView: View {
             isEnabled = preferences.isEnabled(forEventID: meeting.id)
             hasLoaded = true
         }
+    }
+
+    /// El evento queda sin alarma por la regla global, no por sus propios
+    /// ajustes: no es suyo y nunca lo configuró a mano.
+    private var isSkippedByAttendance: Bool {
+        settings.onlyAttendingEvents
+            && !meeting.isParticipating
+            && !preferences.hasOverride(forEventID: meeting.id)
     }
 
     private func openMaps(query: String) {

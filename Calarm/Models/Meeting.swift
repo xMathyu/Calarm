@@ -37,6 +37,11 @@ struct Meeting: Identifiable, Hashable, Sendable {
     let meetingLink: MeetingLink?
     let organizer: String?
     let location: String?
+    /// Si la persona cuenta como parte del evento: lo creó ella, o está en la
+    /// lista de invitados sin haberlo declinado. Falso para los eventos de otra
+    /// persona que se ven desde un calendario compartido. Las fuentes que no
+    /// saben de invitados dicen que sí, que es lo que había antes.
+    var isParticipating: Bool = true
 
     var duration: TimeInterval {
         endDate.timeIntervalSince(startDate)

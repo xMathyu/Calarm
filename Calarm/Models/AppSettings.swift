@@ -87,6 +87,9 @@ final class AppSettings {
         static let onboardingCompleted = "settings.onboardingCompleted"
         static let teamsDetectionEnabled = "settings.teamsDetectionEnabled"
         static let delegationEnabled = "settings.delegationEnabled"
+        static let selectedCalendarIDs = "settings.selectedCalendarIDs"
+        static let onlyAttendingEvents = "settings.onlyAttendingEvents"
+        static let countdown = "settings.countdown"
         static let appearance = "settings.appearance"
         static let language = "settings.language"
         static let accentColorHex = "settings.accentColorHex"
@@ -125,6 +128,12 @@ final class AppSettings {
             .flatMap(AlarmLeadTime.init(rawValue:)) ?? .atStart
     }
 
+    /// Cuánto dura la cuenta regresiva que se ve antes de que suene una alarma.
+    /// Apagada por defecto: quien no la pida no ve nada nuevo.
+    var countdown: AlarmCountdown {
+        didSet { defaults.set(countdown.rawValue, forKey: Key.countdown) }
+    }
+
     /// Tono predeterminado de las alarmas. Cada alarma puede sobrescribirlo.
     var alarmTone: AlarmTone {
         didSet { defaults.set(alarmTone.rawValue, forKey: Key.alarmTone) }
@@ -146,6 +155,25 @@ final class AppSettings {
     /// user's alarms (the "Personas de confianza" / delegation feature).
     var delegationEnabled: Bool {
         didSet { defaults.set(delegationEnabled, forKey: Key.delegationEnabled) }
+    }
+
+    /// Los calendarios que Calarm mira. `nil` = todos los del usuario, que es
+    /// como arranca y lo que hacía antes de que se pudiera elegir.
+    var selectedCalendarIDs: Set<String>? {
+        didSet {
+            if let ids = selectedCalendarIDs {
+                defaults.set(Array(ids), forKey: Key.selectedCalendarIDs)
+            } else {
+                defaults.removeObject(forKey: Key.selectedCalendarIDs)
+            }
+        }
+    }
+
+    /// Cuando está activo, los eventos que la persona declinó y los que son de
+    /// otra persona (los ve por un calendario compartido) no llevan alarma, a
+    /// menos que les haya puesto avisos a mano.
+    var onlyAttendingEvents: Bool {
+        didSet { defaults.set(onlyAttendingEvents, forKey: Key.onlyAttendingEvents) }
     }
 
     var appearance: AppearanceMode {
@@ -181,11 +209,15 @@ final class AppSettings {
         let storedSnooze = defaults.object(forKey: Key.snooze) as? Int
         self.snoozeInterval = storedSnooze.flatMap(SnoozeInterval.init(rawValue:)) ?? .default
         self.defaultLeadTime = Self.storedDefaultLeadTime(defaults: defaults)
+        let storedCountdown = defaults.object(forKey: Key.countdown) as? Int
+        self.countdown = storedCountdown.flatMap(AlarmCountdown.init(rawValue:)) ?? .default
         self.alarmTone = defaults.string(forKey: Key.alarmTone).flatMap(AlarmTone.init(rawValue:)) ?? .default
         self.alarmsEnabled = defaults.object(forKey: Key.alarmsEnabled) as? Bool ?? true
         self.onboardingCompleted = defaults.bool(forKey: Key.onboardingCompleted)
         self.teamsDetectionEnabled = defaults.object(forKey: Key.teamsDetectionEnabled) as? Bool ?? true
         self.delegationEnabled = defaults.object(forKey: Key.delegationEnabled) as? Bool ?? false
+        self.selectedCalendarIDs = (defaults.array(forKey: Key.selectedCalendarIDs) as? [String]).map(Set.init)
+        self.onlyAttendingEvents = defaults.object(forKey: Key.onlyAttendingEvents) as? Bool ?? false
         let storedAppearance = defaults.object(forKey: Key.appearance) as? Int
         self.appearance = storedAppearance.flatMap(AppearanceMode.init(rawValue:)) ?? .system
         self.accentColorHex = defaults.string(forKey: Key.accentColorHex)

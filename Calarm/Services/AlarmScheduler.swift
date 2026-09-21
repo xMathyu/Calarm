@@ -78,6 +78,7 @@ final class AlarmScheduler {
         category: ReminderCategory,
         snooze: SnoozeInterval,
         tone: AlarmTone,
+        countdown: AlarmCountdown = .off,
         meetingURL: URL? = nil,
         location: String? = nil
     ) async throws -> UUID {
@@ -87,6 +88,7 @@ final class AlarmScheduler {
             category: category,
             snooze: snooze,
             tone: tone,
+            countdown: countdown,
             meetingURL: meetingURL,
             location: location
         )
@@ -109,6 +111,7 @@ final class AlarmScheduler {
             fireDate: fireDate,
             snooze: snooze,
             tone: tone,
+            countdown: countdown,
             ownerID: ownerID,
             meetingURL: meetingURL,
             location: location,
@@ -128,6 +131,7 @@ final class AlarmScheduler {
         category: ReminderCategory,
         snooze: SnoozeInterval,
         tone: AlarmTone,
+        countdown: AlarmCountdown,
         meetingURL: URL?,
         location: String?
     ) -> String {
@@ -137,9 +141,31 @@ final class AlarmScheduler {
             String(category.rawValue),
             String(snooze.rawValue),
             tone.rawValue,
+            String(countdown.rawValue),
             meetingURL?.absoluteString ?? "",
             location ?? "",
         ].joined(separator: "\u{1F}")
+    }
+
+    /// Cuándo hay que entregarle la alarma al sistema para que la cuenta regresiva
+    /// termine justo a la hora de sonar, o `nil` si no lleva cuenta.
+    ///
+    /// La cuenta corre ENTRE la fecha programada y la alerta: medido en un
+    /// iPhone 17 con iOS 26 (2026-09-21), una alarma con `schedule` en T y
+    /// `preAlert` de C entra en cuenta en T y suena en T + C. Por eso se entrega
+    /// C antes de la hora que la persona puso.
+    ///
+    /// Si esa fecha adelantada ya pasó —la alarma es dentro de 5 minutos y la
+    /// cuenta dura 10— no hay hueco: devuelve `nil` y la alarma se programa a
+    /// secas. Sonar a su hora importa más que la animación.
+    static func countdownStart(
+        fireDate: Date,
+        countdown: AlarmCountdown,
+        now: Date = Date()
+    ) -> Date? {
+        guard let seconds = countdown.seconds else { return nil }
+        let start = fireDate.addingTimeInterval(-seconds)
+        return start > now ? start : nil
     }
 
     /// Cancels every alarm scheduled for the given owner.
@@ -222,6 +248,7 @@ final class AlarmScheduler {
         fireDate: Date,
         snooze: SnoozeInterval,
         tone: AlarmTone,
+        countdown: AlarmCountdown,
         ownerID: String,
         meetingURL: URL?,
         location: String?,
@@ -318,9 +345,14 @@ final class AlarmScheduler {
 
         let stopIntent = StopAlarmIntent(alarmID: alarmID.uuidString)
 
+        let countdownStart = Self.countdownStart(fireDate: fireDate, countdown: countdown)
+
         return AlarmManager.AlarmConfiguration(
-            countdownDuration: Alarm.CountdownDuration(preAlert: nil, postAlert: snooze.seconds),
-            schedule: .fixed(fireDate),
+            countdownDuration: Alarm.CountdownDuration(
+                preAlert: countdownStart == nil ? nil : countdown.seconds,
+                postAlert: snooze.seconds
+            ),
+            schedule: .fixed(countdownStart ?? fireDate),
             attributes: attributes,
             stopIntent: stopIntent,
             secondaryIntent: secondaryIntent,

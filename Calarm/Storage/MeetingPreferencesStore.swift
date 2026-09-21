@@ -82,6 +82,21 @@ final class MeetingPreferencesStore {
         return leadTimes(forEventID: eventID)
     }
 
+    /// Lo mismo, aplicando además las reglas globales que dependen del evento y
+    /// no solo de su id. Hoy es una: "solo eventos a los que asisto" deja sin
+    /// alarma lo que la persona declinó y lo que es de alguien más.
+    ///
+    /// Un evento que ella configuró a mano queda fuera de la regla: lo que
+    /// eligió evento por evento manda sobre el interruptor general.
+    func activeLeadTimes(for meeting: Meeting) -> [AlarmLeadTime] {
+        if settings.onlyAttendingEvents,
+           !meeting.isParticipating,
+           !hasOverride(forEventID: meeting.id) {
+            return []
+        }
+        return activeLeadTimes(forEventID: meeting.id)
+    }
+
     func setLeadTimes(_ leadTimes: [AlarmLeadTime], enabled: Bool, forEventID eventID: String) {
         let unique = Array(Set(leadTimes))
             .sorted(by: { $0.rawValue < $1.rawValue })

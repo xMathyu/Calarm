@@ -14,8 +14,13 @@ protocol CalendarSource: Sendable {
     /// Requests authorization from the user if needed. Returns true if access was granted.
     func requestAccess() async throws -> Bool
 
+    /// Los calendarios entre los que la persona puede elegir en Ajustes.
+    func availableCalendars() async throws -> [CalendarInfo]
+
     /// Returns all Teams meetings starting within the given date range.
-    func upcomingMeetings(from start: Date, to end: Date) async throws -> [Meeting]
+    /// `calendarIDs` nil significa "todos los calendarios del usuario"; un
+    /// conjunto vacío significa que no eligió ninguno y no hay nada que leer.
+    func upcomingMeetings(from start: Date, to end: Date, calendarIDs: Set<String>?) async throws -> [Meeting]
 
     /// An async stream that emits whenever the underlying calendar data changes.
     var changes: AsyncStream<Void> { get }

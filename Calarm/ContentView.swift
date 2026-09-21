@@ -12,6 +12,9 @@ struct ContentView: View {
     let alarmScheduler: AlarmScheduler
     let onTeamsToggleChanged: (Bool) -> Void
     let teamsCoordinatorProvider: () -> SyncCoordinator?
+    /// Reprograma las alarmas propias cuando un ajuste cambia la hora a la que
+    /// el sistema tiene que recibirlas (hoy, la cuenta regresiva).
+    let onCountdownChanged: () -> Void
 
     enum TabID: String, Hashable {
         case alarms, calendar, assistant, settings
@@ -44,7 +47,8 @@ struct ContentView: View {
                 SettingsView(
                     alarmScheduler: alarmScheduler,
                     onTeamsToggleChanged: onTeamsToggleChanged,
-                    teamsCoordinatorProvider: teamsCoordinatorProvider
+                    teamsCoordinatorProvider: teamsCoordinatorProvider,
+                    onCountdownChanged: onCountdownChanged
                 )
             }
         }

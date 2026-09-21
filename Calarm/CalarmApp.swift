@@ -66,7 +66,8 @@ struct CalarmApp: App {
             ContentView(
                 alarmScheduler: alarmScheduler,
                 onTeamsToggleChanged: handleTeamsToggle,
-                teamsCoordinatorProvider: { teamsCoordinator }
+                teamsCoordinatorProvider: { teamsCoordinator },
+                onCountdownChanged: { Task { await syncAllReminders() } }
             )
             .environment(settings)
             .environment(reminderScheduler)

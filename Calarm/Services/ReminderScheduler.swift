@@ -104,6 +104,7 @@ final class ReminderScheduler {
                     snooze: settings.snoozeInterval,
                     // Sin tono propio, la alarma sigue el predeterminado de Ajustes.
                     tone: reminder.tone ?? settings.alarmTone,
+                    countdown: settings.countdown,
                     meetingURL: nil
                 )
             } catch {

@@ -14,6 +14,9 @@ struct SettingsView: View {
     /// Para reprogramar los eventos que heredan el aviso predeterminado cuando
     /// ese aviso cambia. `nil` mientras el calendario esté apagado.
     let teamsCoordinatorProvider: () -> SyncCoordinator?
+    /// Reprograma las alarmas propias: la cuenta regresiva cambia la hora a la
+    /// que el sistema tiene que recibirlas, no solo lo que se ve.
+    let onCountdownChanged: () -> Void
 
     var body: some View {
         @Bindable var settings = settings
@@ -118,6 +121,25 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Picker(selection: $settings.countdown) {
+                        ForEach(AlarmCountdown.allCases) { value in
+                            Text(value.localizedTitle).tag(value)
+                        }
+                    } label: {
+                        Label("Cuenta regresiva", systemImage: "timer")
+                    }
+                    .pickerStyle(.menu)
+                    .onChange(of: settings.countdown) { _, _ in
+                        Haptics.selection()
+                        onAlarmTimingChanged()
+                    }
+                } header: {
+                    sectionHeader("Cuenta regresiva", systemImage: "timer")
+                } footer: {
+                    Text("Muestra la cuenta atrás en la Isla Dinámica y en la pantalla bloqueada durante los minutos previos a cada alarma. La alarma sigue sonando a su hora.")
+                }
+
+                Section {
                     Picker(selection: $settings.snoozeInterval) {
                         ForEach(SnoozeInterval.allCases) { value in
                             Text(value.localizedTitle).tag(value)
@@ -140,10 +162,32 @@ struct SettingsView: View {
                         Haptics.selection()
                         onTeamsToggleChanged(newValue)
                     }
+                    if settings.teamsDetectionEnabled {
+                        NavigationLink {
+                            CalendarPickerView(
+                                load: { await teamsCoordinatorProvider()?.availableCalendars() ?? [] },
+                                onChange: { Task { await teamsCoordinatorProvider()?.reschedule() } }
+                            )
+                        } label: {
+                            LabeledContent {
+                                Text(calendarSelectionSummary)
+                                    .foregroundStyle(.secondary)
+                            } label: {
+                                Label("Calendarios", systemImage: "calendar.badge.checkmark")
+                            }
+                        }
+                        Toggle(isOn: $settings.onlyAttendingEvents) {
+                            Label("Solo eventos a los que asisto", systemImage: "person.badge.shield.checkmark")
+                        }
+                        .onChange(of: settings.onlyAttendingEvents) { _, _ in
+                            Haptics.selection()
+                            Task { await teamsCoordinatorProvider()?.sync() }
+                        }
+                    }
                 } header: {
                     sectionHeader("Calendario de Apple", systemImage: "calendar")
                 } footer: {
-                    Text("Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.")
+                    Text("Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian.")
                 }
 
                 Section {
@@ -250,6 +294,21 @@ struct SettingsView: View {
         } footer: {
             Text("Tinta botones, acentos y resaltados. Las categorías mantienen sus propios colores.")
         }
+    }
+
+    /// El texto gris de la fila "Calendarios": "Todos" o cuántos hay marcados.
+    private var calendarSelectionSummary: String {
+        guard let ids = settings.selectedCalendarIDs else { return appLocalized("Todos") }
+        return String(format: appLocalized("%lld seleccionados"), ids.count)
+    }
+
+    /// Un cambio que mueve la hora a la que el sistema tiene entregadas las
+    /// alarmas: hay que reprogramar las del calendario y las propias.
+    private func onAlarmTimingChanged() {
+        // La cuenta regresiva entra en la huella de contenido de cada alarma,
+        // así que una sincronización normal las reprograma solas.
+        Task { await teamsCoordinatorProvider()?.sync() }
+        onCountdownChanged()
     }
 
     private var accentColorBinding: Binding<Color> {
