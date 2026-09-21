@@ -768,7 +768,17 @@ struct ReminderEditorView: View {
                 return
             }
             existingShare = share
-            pendingInvite = InviteDelivery(title: r.title, url: url)
+            // Wrap the CloudKit share in a Calarm link so the invitation
+            // previews with the alarm's name and time, and so whoever doesn't
+            // have the app yet lands on a page that offers it. Falling back to
+            // the raw share URL keeps invites working if encoding ever fails.
+            let inviteURL = InviteLink.make(
+                title: r.title,
+                date: r.date,
+                tintHex: r.category.tint.toHex(),
+                shareURL: url
+            ) ?? url
+            pendingInvite = InviteDelivery(title: r.title, url: inviteURL)
         } catch {
             shareError = error.localizedDescription
         }

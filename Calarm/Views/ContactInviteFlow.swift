@@ -72,7 +72,7 @@ private struct InviteDeliveryModifier: ViewModifier {
                     // the message only needs the intro and the install hint.
                     ShareLink(
                         item: invite.url,
-                        message: Text(verbatim: Self.intro(for: invite) + "\n\n" + Self.installHint)
+                        message: Text(verbatim: Self.fallbackMessage(for: invite))
                     )
                     .padding()
                 }
@@ -88,16 +88,33 @@ private struct InviteDeliveryModifier: ViewModifier {
         invite.customMessage ?? appLocalized("Te invito a '\(invite.title)' en Calarm")
     }
 
-    /// Closes the invite for whoever doesn't have Calarm yet — without the app,
-    /// an iCloud share link is a dead end, and most invitations go to someone
-    /// who has never installed it.
-    private static var installHint: String {
-        appLocalized("¿No tienes Calarm? Descárgala aquí:") + "\n" + AppLinks.appStore.absoluteString
+    /// Closes the invite for whoever doesn't have Calarm yet — a bare iCloud
+    /// share link is a dead end without the app, and most invitations go to
+    /// someone who has never installed it.
+    ///
+    /// A Calarm invitation link needs none of this: its own page already shows
+    /// the alarm and offers the download. Appending it there would only put a
+    /// second link in the message and spoil the preview, so it is added solely
+    /// for the links that are still raw iCloud URLs (delegation invites, and
+    /// the fallback when building our own link fails).
+    private static func installHint(for invite: InviteDelivery) -> String? {
+        guard !InviteLink.isInvite(invite.url) else { return nil }
+        return appLocalized("¿No tienes Calarm? Descárgala aquí:") + "\n" + AppLinks.appStore.absoluteString
     }
 
     /// Localized invite text for the Messages body. Each link goes on its own
     /// line so iMessage/Mail render the rich preview.
     static func messageBody(for invite: InviteDelivery) -> String {
-        intro(for: invite) + "\n" + invite.url.absoluteString + "\n\n" + installHint
+        var body = intro(for: invite) + "\n" + invite.url.absoluteString
+        if let hint = installHint(for: invite) { body += "\n\n" + hint }
+        return body
+    }
+
+    /// Body for the generic share sheet, which carries the link as its own item
+    /// — so only the wording belongs here.
+    private static func fallbackMessage(for invite: InviteDelivery) -> String {
+        var body = intro(for: invite)
+        if let hint = installHint(for: invite) { body += "\n\n" + hint }
+        return body
     }
 }

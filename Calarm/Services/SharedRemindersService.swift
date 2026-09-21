@@ -285,6 +285,47 @@ final class SharedRemindersService {
         }
     }
 
+    /// Fetches the share metadata behind a CloudKit share URL.
+    ///
+    /// iOS only hands an app `CKShare.Metadata` on its own when *it* opens an
+    /// `icloud.com/share/…` link. Calarm's own invitation links never go
+    /// through that path, so the metadata has to be fetched explicitly before
+    /// `acceptShare(metadata:)` can run — same destination, different door.
+    func shareMetadata(for url: URL) async throws -> CKShare.Metadata {
+        /// CloudKit's result blocks run off the main actor, so the metadata is
+        /// parked here rather than captured directly.
+        final class Box: @unchecked Sendable {
+            var result: Result<CKShare.Metadata, any Error>?
+        }
+        let box = Box()
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let operation = CKFetchShareMetadataOperation(shareURLs: [url])
+            // Match what the system's own accept flow provides, so the ingest
+            // path downstream sees exactly the metadata it already expects.
+            operation.shouldFetchRootRecord = true
+            operation.perShareMetadataResultBlock = { _, result in
+                box.result = result
+            }
+            operation.fetchShareMetadataResultBlock = { operationResult in
+                if case .success(let metadata) = box.result {
+                    continuation.resume(returning: metadata)
+                    return
+                }
+                // Prefer the per-share error: it says why *this* invitation
+                // failed (expired, revoked), where the operation-level one is
+                // usually just "the request failed".
+                switch (box.result, operationResult) {
+                case (.failure(let error), _), (_, .failure(let error)):
+                    continuation.resume(throwing: SharedRemindersError.acceptFailed(error))
+                default:
+                    continuation.resume(throwing: SharedRemindersError.shareUnavailable)
+                }
+            }
+            cloudKitContainer.add(operation)
+        }
+    }
+
     // MARK: - Private helpers
 
     private static let sharingZoneName = "SharedRemindersZone"

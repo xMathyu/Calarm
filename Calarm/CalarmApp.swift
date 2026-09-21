@@ -83,6 +83,13 @@ struct CalarmApp: App {
             .environment(\.locale, localization.currentLocale)
             // Forces every Text(...) to re-evaluate after a language switch.
             .id(localization.revision)
+            // Invitations arriving as Calarm links (calarm-puce.vercel.app/i/…).
+            // The CloudKit share metadata callbacks never fire for these, since
+            // iOS only raises those for icloud.com URLs it opens itself.
+            .onOpenURL { url in
+                guard InviteLink.isInvite(url) else { return }
+                Task { await acceptInviteLink(url) }
+            }
             .task {
                 UIApplication.shared.installGlobalKeyboardDismissGesture()
                 // Bring up the calendar coordinator FIRST so the "Calendario" tab
@@ -179,6 +186,27 @@ struct CalarmApp: App {
             } message: {
                 Text(sharedRemindersService.acceptErrorMessage ?? "")
             }
+        }
+    }
+
+    /// Accepts an invitation that arrived through one of Calarm's own links.
+    ///
+    /// Recovers the CloudKit share URL the link carries, fetches its metadata,
+    /// and then hands it to exactly the same accept path the system callbacks
+    /// use — so a link invitation and a native one end up in the same place.
+    @MainActor
+    private func acceptInviteLink(_ url: URL) async {
+        guard let shareURL = InviteLink.shareURL(from: url) else {
+            ShareDiagnostics.log("❌ enlace de invitación ilegible")
+            return
+        }
+        do {
+            let metadata = try await sharedRemindersService.shareMetadata(for: shareURL)
+            ShareDiagnostics.log("📥 invitación recibida (enlace Calarm)")
+            await acceptIncomingShare(metadata)
+        } catch {
+            PendingShare.log.error("Invite link failed: \(error.localizedDescription)")
+            ShareDiagnostics.log("❌ enlace de invitación: \(error.localizedDescription)")
         }
     }
 
