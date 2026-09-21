@@ -63,13 +63,16 @@ final class EventKitCalendarSource: CalendarSource, @unchecked Sendable {
     func upcomingMeetings(from start: Date, to end: Date, calendarIDs: Set<String>?) async throws -> [Meeting] {
         guard await isAuthorized else { throw CalendarSourceError.accessDenied }
 
-        var userCalendars = selectableCalendars()
-        if let calendarIDs {
-            // Una selección vacía es una elección: no hay nada que leer.
-            guard !calendarIDs.isEmpty else { return [] }
-            userCalendars = userCalendars.filter { calendarIDs.contains($0.calendarIdentifier) }
-            guard !userCalendars.isEmpty else { return [] }
+        let available = selectableCalendars()
+        var userCalendars = available
+        if let wanted = Self.calendarsToRead(
+            selection: calendarIDs,
+            available: available.map(\.calendarIdentifier)
+        ) {
+            guard !wanted.isEmpty else { return [] }
+            userCalendars = available.filter { wanted.contains($0.calendarIdentifier) }
         }
+        guard !userCalendars.isEmpty else { return [] }
         let predicate = eventStore.predicateForEvents(withStart: start, end: end, calendars: userCalendars)
         let events = eventStore.events(matching: predicate)
 
@@ -101,6 +104,21 @@ final class EventKitCalendarSource: CalendarSource, @unchecked Sendable {
             )
         }
         .sorted { $0.startDate < $1.startDate }
+    }
+
+    /// Qué calendarios hay que leer, dada la selección guardada. `nil` = todos.
+    ///
+    /// Una selección vacía es una elección —"ninguno"— y se respeta. Pero una
+    /// selección cuyos identificadores ya no existen NO es una elección: los de
+    /// EventKit rotan al quitar y volver a poner una cuenta, o al restaurar el
+    /// iPhone de un backup, y entonces la persona se quedaría sin alarmas de
+    /// calendario para siempre sin que nada se lo diga. En ese caso se leen
+    /// todos: en una app de alarmas, sonar de más se ve; no sonar, no.
+    static func calendarsToRead(selection: Set<String>?, available: [String]) -> Set<String>? {
+        guard let selection else { return nil }
+        guard !selection.isEmpty else { return [] }
+        let alive = selection.intersection(available)
+        return alive.isEmpty ? nil : alive
     }
 
     /// Si la persona cuenta como parte del evento.

@@ -118,6 +118,29 @@ struct CalendarRulesTests {
         #expect(AppSettings(defaults: defaults).selectedCalendarIDs == nil)
     }
 
+    /// Sin selección se leen todos.
+    @Test func sinSeleccionSeLeenTodosLosCalendarios() {
+        #expect(EventKitCalendarSource.calendarsToRead(selection: nil, available: ["a", "b"]) == nil)
+    }
+
+    /// Una selección vacía sí es una elección: no se lee ninguno.
+    @Test func unaSeleccionVaciaNoLeeNingunCalendario() {
+        #expect(EventKitCalendarSource.calendarsToRead(selection: [], available: ["a", "b"]) == [])
+    }
+
+    /// Lo normal: se leen los elegidos, y los que ya no existen se ignoran.
+    @Test func seLeenLosElegidosQueTodaviaExisten() {
+        #expect(EventKitCalendarSource.calendarsToRead(selection: ["a"], available: ["a", "b"]) == ["a"])
+        #expect(EventKitCalendarSource.calendarsToRead(selection: ["a", "fantasma"], available: ["a", "b"]) == ["a"])
+    }
+
+    /// El caso que importa: si NINGUNO de los elegidos existe ya —los ids de
+    /// EventKit rotan al reponer una cuenta o restaurar un backup— se vuelve a
+    /// leer todo, en vez de dejar a la persona sin alarmas y sin aviso.
+    @Test func siLosElegidosYaNoExistenSeLeenTodos() {
+        #expect(EventKitCalendarSource.calendarsToRead(selection: ["viejo1", "viejo2"], available: ["a", "b"]) == nil)
+    }
+
     /// La selección sobrevive a un reinicio de la app.
     @Test func laSeleccionDeCalendariosSeGuarda() {
         let defaults = makeDefaults()

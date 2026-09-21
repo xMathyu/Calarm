@@ -67,6 +67,18 @@ struct CalendarPickerView: View {
             guard !hasLoaded else { return }
             calendars = await load()
             hasLoaded = true
+            healStaleSelection()
+        }
+    }
+
+    /// Una selección guardada cuyos calendarios ya no existen (los
+    /// identificadores de EventKit rotan al reponer una cuenta o restaurar un
+    /// backup) vuelve a "todos", igual que hace la lectura de eventos. Si no,
+    /// esta pantalla mostraría todo sin marcar mientras las alarmas suenan.
+    private func healStaleSelection() {
+        guard !calendars.isEmpty, let selection = settings.selectedCalendarIDs, !selection.isEmpty else { return }
+        if selection.isDisjoint(with: Set(calendars.map(\.id))) {
+            settings.selectedCalendarIDs = nil
         }
     }
 
