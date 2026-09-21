@@ -11,6 +11,9 @@ struct SettingsView: View {
 
     let alarmScheduler: AlarmScheduler
     let onTeamsToggleChanged: (Bool) -> Void
+    /// Para reprogramar los eventos que heredan el aviso predeterminado cuando
+    /// ese aviso cambia. `nil` mientras el calendario esté apagado.
+    let teamsCoordinatorProvider: () -> SyncCoordinator?
 
     var body: some View {
         @Bindable var settings = settings
@@ -93,6 +96,28 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Picker(selection: $settings.defaultLeadTime) {
+                        ForEach(AlarmLeadTime.allCases) { value in
+                            Text(value.localizedTitle).tag(value)
+                        }
+                    } label: {
+                        Label("Aviso por defecto", systemImage: "bell.badge.fill")
+                    }
+                    .pickerStyle(.menu)
+                    .onChange(of: settings.defaultLeadTime) { _, _ in
+                        Haptics.selection()
+                        // Los eventos que no tienen avisos propios ya están
+                        // programados con el valor anterior: una sincronización
+                        // los mueve al nuevo.
+                        Task { await teamsCoordinatorProvider()?.sync() }
+                    }
+                } header: {
+                    sectionHeader("Avisos", systemImage: "bell.badge.fill")
+                } footer: {
+                    Text("Con cuánta anticipación suena una alarma nueva y cada evento del calendario que no tenga sus propios avisos. Las alarmas que ya existen no cambian.")
+                }
+
+                Section {
                     Picker(selection: $settings.snoozeInterval) {
                         ForEach(SnoozeInterval.allCases) { value in
                             Text(value.localizedTitle).tag(value)
@@ -118,7 +143,7 @@ struct SettingsView: View {
                 } header: {
                     sectionHeader("Calendario de Apple", systemImage: "calendar")
                 } footer: {
-                    Text("Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.")
+                    Text("Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.")
                 }
 
                 Section {

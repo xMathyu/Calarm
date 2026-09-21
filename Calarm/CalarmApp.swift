@@ -34,7 +34,7 @@ struct CalarmApp: App {
         let alarmScheduler = AlarmScheduler(store: alarmStore)
         let reminderScheduler = ReminderScheduler(scheduler: alarmScheduler, settings: settings)
         let calendarSource = EventKitCalendarSource()
-        let meetingPreferences = MeetingPreferencesStore()
+        let meetingPreferences = MeetingPreferencesStore(settings: settings)
         let modelContainer = Self.makeModelContainer()
 
         self._settings = State(initialValue: settings)

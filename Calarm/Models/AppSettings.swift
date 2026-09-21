@@ -81,6 +81,7 @@ final class AppSettings {
 
     private enum Key {
         static let snooze = "settings.snooze"
+        static let defaultLeadTime = "settings.defaultLeadTime"
         static let alarmTone = "settings.alarmTone"
         static let alarmsEnabled = "settings.alarmsEnabled"
         static let onboardingCompleted = "settings.onboardingCompleted"
@@ -107,6 +108,21 @@ final class AppSettings {
 
     var snoozeInterval: SnoozeInterval {
         didSet { defaults.set(snoozeInterval.rawValue, forKey: Key.snooze) }
+    }
+
+    /// Con cuánta anticipación suena una alarma que no eligió su propio aviso:
+    /// las alarmas nuevas del editor y los eventos del calendario sin ajustes
+    /// propios. "Al momento" mantiene el comportamiento de siempre.
+    var defaultLeadTime: AlarmLeadTime {
+        didSet { defaults.set(defaultLeadTime.rawValue, forKey: Key.defaultLeadTime) }
+    }
+
+    /// El mismo valor, leído sin instancia: el `init` de una vista siembra su
+    /// estado antes de poder tocar el entorno. `didSet` escribe en cuanto cambia,
+    /// así que las dos lecturas nunca se separan.
+    static func storedDefaultLeadTime(defaults: UserDefaults = .standard) -> AlarmLeadTime {
+        (defaults.object(forKey: Key.defaultLeadTime) as? Int)
+            .flatMap(AlarmLeadTime.init(rawValue:)) ?? .atStart
     }
 
     /// Tono predeterminado de las alarmas. Cada alarma puede sobrescribirlo.
@@ -164,6 +180,7 @@ final class AppSettings {
         self.defaults = defaults
         let storedSnooze = defaults.object(forKey: Key.snooze) as? Int
         self.snoozeInterval = storedSnooze.flatMap(SnoozeInterval.init(rawValue:)) ?? .default
+        self.defaultLeadTime = Self.storedDefaultLeadTime(defaults: defaults)
         self.alarmTone = defaults.string(forKey: Key.alarmTone).flatMap(AlarmTone.init(rawValue:)) ?? .default
         self.alarmsEnabled = defaults.object(forKey: Key.alarmsEnabled) as? Bool ?? true
         self.onboardingCompleted = defaults.bool(forKey: Key.onboardingCompleted)

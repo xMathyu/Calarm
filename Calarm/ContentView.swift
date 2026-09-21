@@ -43,7 +43,8 @@ struct ContentView: View {
             Tab("Ajustes", systemImage: "gearshape", value: TabID.settings) {
                 SettingsView(
                     alarmScheduler: alarmScheduler,
-                    onTeamsToggleChanged: onTeamsToggleChanged
+                    onTeamsToggleChanged: onTeamsToggleChanged,
+                    teamsCoordinatorProvider: teamsCoordinatorProvider
                 )
             }
         }

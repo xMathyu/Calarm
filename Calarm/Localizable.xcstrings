@@ -2994,22 +2994,6 @@
         }
       }
     },
-    "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When on, Calarm reads events from your Calendar app and schedules an alarm 10 minutes before each one. If the event has a Microsoft Teams, Zoom or Google Meet link, a button appears to join."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte."
-          }
-        }
-      }
-    },
     "Cuando esté apagado, esta alarma no sonará aunque tengas avisos configurados." : {
       "localizations" : {
         "en" : {
@@ -7031,6 +7015,70 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esa fecha y hora ya pasaron: la alarma no sonará."
+          }
+        }
+      }
+    },
+    "Aviso por defecto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default alert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aviso por defecto"
+          }
+        }
+      }
+    },
+    "Avisos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos"
+          }
+        }
+      }
+    },
+    "Con cuánta anticipación suena una alarma nueva y cada evento del calendario que no tenga sus propios avisos. Las alarmas que ya existen no cambian." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How far ahead of its time a new alarm rings, and every calendar event that has no alerts of its own. Alarms that already exist don't change."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con cuánta anticipación suena una alarma nueva y cada evento del calendario que no tenga sus propios avisos. Las alarmas que ya existen no cambian."
+          }
+        }
+      }
+    },
+    "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When on, Calarm reads events from your Calendar app and gives each one an alarm at the default alert time. Each event can change its own from its screen. If the event has a Microsoft Teams, Zoom or Google Meet link, a button appears to join."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte."
           }
         }
       }

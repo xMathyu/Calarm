@@ -138,7 +138,10 @@ struct ReminderEditorView: View {
             _photoData = State(initialValue: nil)
             _recurrence = State(initialValue: .once)
             _additionalSchedules = State(initialValue: [])
-            _leadTimes = State(initialValue: [.atStart])
+            // El aviso predeterminado de Ajustes, leído sin el entorno (aquí
+            // todavía no existe). Queda visible en la fila "Aviso" antes de
+            // guardar, así que nadie se entera tarde de que la alarma se adelanta.
+            _leadTimes = State(initialValue: [AppSettings.storedDefaultLeadTime()])
             _tone = State(initialValue: nil)
             _isEnabled = State(initialValue: true)
         }

@@ -18,22 +18,28 @@ struct MeetingPrefs: Codable, Equatable {
 }
 
 /// Per-event user preferences for calendar events.
-/// Default when an event has no entry: enabled with `[.atStart]`.
+/// An event with no entry inherits the app-wide default aviso from Settings.
 @Observable
 @MainActor
 final class MeetingPreferencesStore {
     static let maxAlarmsPerEvent = 3
-    static let defaultLeadTimes: [AlarmLeadTime] = [.atStart]
 
     private let defaults: UserDefaults
+    private let settings: AppSettings
     private let keyV1 = "meetingPreferences.v1"
     private let keyV2 = "meetingPreferences.v2"
     private var cache: [String: MeetingPrefs]
     /// Bumped on changes so consumers can react via @Observable.
     private(set) var revision: Int = 0
 
-    init(defaults: UserDefaults = .standard) {
+    /// Lo que suena en un evento que nunca se editó. Se lee de Ajustes en cada
+    /// consulta (no se copia) para que cambiar el predeterminado mueva de una vez
+    /// a todos los eventos que lo heredan.
+    var defaultLeadTimes: [AlarmLeadTime] { [settings.defaultLeadTime] }
+
+    init(defaults: UserDefaults = .standard, settings: AppSettings) {
         self.defaults = defaults
+        self.settings = settings
         self.cache = Self.loadInitial(defaults: defaults, keyV1: keyV1, keyV2: keyV2)
     }
 
@@ -59,7 +65,7 @@ final class MeetingPreferencesStore {
         if let entry = cache[eventID] {
             return entry.leadTimes.compactMap { AlarmLeadTime(rawValue: $0) }
         }
-        return Self.defaultLeadTimes
+        return defaultLeadTimes
     }
 
     func isEnabled(forEventID eventID: String) -> Bool {
