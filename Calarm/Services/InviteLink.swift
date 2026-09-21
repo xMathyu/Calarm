@@ -24,6 +24,15 @@ enum InviteLink {
     /// in Calarm.entitlements, or iOS opens the link in Safari instead.
     static let host = "calarm-puce.vercel.app"
 
+    /// Second door: `calarm://i/<payload>/`, declared in Info.plist.
+    ///
+    /// The invitation page can't send someone into the app with a universal
+    /// link, because iOS deliberately ignores those when the page already lives
+    /// on the claimed domain. Its "Ya tengo Calarm" button uses this instead,
+    /// which also rescues anyone whose link opens in Safari because they once
+    /// chose to leave the app association off.
+    static let scheme = "calarm"
+
     /// Wire format version, mirrored by `INVITE_VERSION` on the web side.
     private static let version = 1
 
@@ -45,6 +54,8 @@ enum InviteLink {
         let l: String?
         /// Category tint as `#RRGGBB`, colors the card.
         let c: String?
+        /// The emoji chosen as the alarm's icon, when there is one.
+        let e: String?
         /// The CloudKit share URL, which is what the app actually needs.
         let s: String
     }
@@ -72,6 +83,7 @@ enum InviteLink {
         title: String,
         date: Date,
         tintHex: String?,
+        emoji: String? = nil,
         shareURL: URL,
         languageCode: String = LocalizationManager.shared.currentLocale.language.languageCode?.identifier ?? "es"
     ) -> URL? {
@@ -84,6 +96,7 @@ enum InviteLink {
             tz: TimeZone.current.identifier,
             l: languageCode == "en" ? "en" : "es",
             c: tintHex,
+            e: emoji,
             s: shareURL.absoluteString
         )
 
@@ -99,10 +112,26 @@ enum InviteLink {
 
     // MARK: - Reading
 
-    /// True when `url` is one of our invitation links, so the app can claim it
-    /// without trying to decode every URL it's handed.
+    /// True when `url` is one of our invitation links, in either shape, so the
+    /// app can claim it without trying to decode every URL it's handed.
     static func isInvite(_ url: URL) -> Bool {
-        url.host() == host && url.path().hasPrefix("/i/")
+        dataSegment(of: url) != nil
+    }
+
+    /// The payload segment of an invitation URL, whichever door it came through:
+    /// `https://<host>/i/<payload>/` or `calarm://i/<payload>/`.
+    private static func dataSegment(of url: URL) -> String? {
+        if url.scheme?.lowercased() == scheme {
+            // In `calarm://i/<payload>/` the "i" parses as the host.
+            guard url.host() == "i" else { return nil }
+            return url.pathComponents.first { $0 != "/" }
+        }
+        guard url.host() == host, url.path().hasPrefix("/i/") else { return nil }
+        return url.path()
+            .dropFirst("/i/".count)
+            .split(separator: "/")
+            .first
+            .map(String.init)
     }
 
     /// Recovers the CloudKit share URL from an incoming invitation link.
@@ -111,14 +140,8 @@ enum InviteLink {
     /// other than iCloud — the link arrives from outside the app, so it is not
     /// to be trusted.
     static func shareURL(from url: URL) -> URL? {
-        guard isInvite(url) else { return nil }
-
-        let segment = url.path()
-            .dropFirst("/i/".count)
-            .split(separator: "/")
-            .first
-        guard let segment,
-              let data = base64URLDecoded(String(segment)),
+        guard let segment = dataSegment(of: url),
+              let data = base64URLDecoded(segment),
               let payload = try? decoder.decode(Payload.self, from: data),
               payload.v == version,
               payload.s.hasPrefix(shareURLPrefix)

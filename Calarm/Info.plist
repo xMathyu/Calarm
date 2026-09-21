@@ -18,6 +18,17 @@
 	<true/>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Calarm transcribe tu voz en el dispositivo para que el asistente con IA entienda lo que le dices.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>MathyuSolutions.Calarm.invite</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>calarm</string>
+			</array>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

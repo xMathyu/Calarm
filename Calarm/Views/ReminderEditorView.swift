@@ -776,6 +776,7 @@ struct ReminderEditorView: View {
                 title: r.title,
                 date: r.date,
                 tintHex: r.category.tint.toHex(),
+                emoji: r.iconKind == .emoji ? r.symbolName : nil,
                 shareURL: url
             ) ?? url
             pendingInvite = InviteDelivery(title: r.title, url: inviteURL)
