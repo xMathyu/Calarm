@@ -302,19 +302,25 @@ Alemán:
 Español:
 ```
 • Nuevo: "Aviso por defecto" en Ajustes. Elige con cuánta anticipación quieres que suenen tus alarmas —de 5 minutos a una semana antes— y cada evento de tu calendario lo usa sin que tengas que entrar uno por uno
-• Las alarmas nuevas también nacen con ese aviso. Los eventos que ya configuraste a mano conservan el suyo, y ninguna alarma existente se mueve
+• Nuevo: elige qué calendarios mira Calarm. Los del trabajo sí, el compartido de casa no, o como prefieras
+• Nuevo: "Solo eventos a los que asisto" deja sin alarma los eventos que rechazaste y los que son de otra persona
+• Nuevo: cuenta regresiva antes de que suene la alarma, en la Isla Dinámica y en la pantalla bloqueada
 ```
 
 Inglés:
 ```
 • New: "Default alert" in Settings. Choose how far ahead your alarms should ring — from 5 minutes to a week before — and every event in your calendar uses it, with no need to open them one by one
-• New alarms start with that alert too. Events you already set up by hand keep theirs, and no existing alarm is moved
+• New: choose which calendars Calarm watches. Work ones yes, the shared home one no, or however you like
+• New: "Only events I'm attending" leaves without an alarm the events you declined and the ones that belong to someone else
+• New: a countdown before the alarm rings, in the Dynamic Island and on the Lock Screen
 ```
 
 Alemán:
 ```
 • Neu: „Default alert" in den Einstellungen. Lege fest, wie lange im Voraus deine Wecker klingeln sollen – von 5 Minuten bis zu einer Woche – und jeder Termin in deinem Kalender übernimmt es, ohne dass du sie einzeln öffnen musst
-• Auch neue Wecker starten mit diesem Hinweis. Termine, die du selbst eingestellt hast, behalten ihren, und kein bestehender Wecker wird verschoben
+• Neu: Wähle aus, welche Kalender Calarm beobachtet. Die vom Beruf ja, den gemeinsamen zu Hause nicht – oder wie du magst
+• Neu: „Only events I'm attending" lässt Termine ohne Wecker, die du abgesagt hast oder die jemand anderem gehören
+• Neu: ein Countdown, bevor der Wecker klingelt – in der Dynamic Island und auf dem Sperrbildschirm
 ```
 
 ## What's New (1.0.10)
