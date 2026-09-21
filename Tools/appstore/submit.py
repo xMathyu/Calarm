@@ -16,13 +16,19 @@ import asc  # noqa: E402
 APP = "6772419323"
 
 
+# Estados desde los que una versión se puede editar y (re)enviar.
+# DEVELOPER_REJECTED es donde queda al retirarla de la cola uno mismo
+# (PATCH /v1/reviewSubmissions/{id} {canceled: true}) para cambiarle el build.
+SUBMITTABLE = {"PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED"}
+
+
 def version_id(version_string: str) -> str:
     for v in asc.get(f"/v1/apps/{APP}/appStoreVersions?limit=10")["data"]:
         if v["attributes"]["versionString"] == version_string:
             state = v["attributes"]["appStoreState"]
             print(f"versión {version_string} · {state}")
-            if state != "PREPARE_FOR_SUBMISSION":
-                sys.exit(f"la versión está en {state}, no en PREPARE_FOR_SUBMISSION")
+            if state not in SUBMITTABLE:
+                sys.exit(f"la versión está en {state}; se puede enviar desde {sorted(SUBMITTABLE)}")
             return v["id"]
     sys.exit(f"no encontré la versión {version_string}")
 
