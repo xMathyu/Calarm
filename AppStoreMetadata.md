@@ -297,6 +297,26 @@ Alemán:
 • Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
+## What's New (1.0.11)
+
+Español:
+```
+• Nuevo: "Aviso por defecto" en Ajustes. Elige con cuánta anticipación quieres que suenen tus alarmas —de 5 minutos a una semana antes— y cada evento de tu calendario lo usa sin que tengas que entrar uno por uno
+• Las alarmas nuevas también nacen con ese aviso. Los eventos que ya configuraste a mano conservan el suyo, y ninguna alarma existente se mueve
+```
+
+Inglés:
+```
+• New: "Default alert" in Settings. Choose how far ahead your alarms should ring — from 5 minutes to a week before — and every event in your calendar uses it, with no need to open them one by one
+• New alarms start with that alert too. Events you already set up by hand keep theirs, and no existing alarm is moved
+```
+
+Alemán:
+```
+• Neu: „Default alert" in den Einstellungen. Lege fest, wie lange im Voraus deine Wecker klingeln sollen – von 5 Minuten bis zu einer Woche – und jeder Termin in deinem Kalender übernimmt es, ohne dass du sie einzeln öffnen musst
+• Auch neue Wecker starten mit diesem Hinweis. Termine, die du selbst eingestellt hast, behalten ihren, und kein bestehender Wecker wird verschoben
+```
+
 ## What's New (1.0.10)
 
 Español:
