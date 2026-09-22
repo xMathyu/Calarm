@@ -297,6 +297,26 @@ Alemán:
 • Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
+## What's New (1.0.12)
+
+Español:
+```
+• Nuevo: las invitaciones a una alarma muestran su nombre y su hora en la vista previa, en WhatsApp, Mensajes o donde las compartas
+• Nuevo: si quien recibe la invitación todavía no tiene Calarm, el enlace le lleva a una página con la alarma y el botón para descargarla, no a un enlace de iCloud sin salida
+```
+
+Inglés:
+```
+• New: alarm invitations now show the alarm's name and time in the link preview, in WhatsApp, Messages or wherever you share them
+• New: if the person you invite doesn't have Calarm yet, the link takes them to a page with the alarm and a button to download it, instead of a dead-end iCloud link
+```
+
+Alemán:
+```
+• Neu: Einladungen zu einem Wecker zeigen jetzt Namen und Uhrzeit in der Linkvorschau – in WhatsApp, Nachrichten oder wo auch immer du sie teilst
+• Neu: Wer eine Einladung bekommt und Calarm noch nicht hat, landet auf einer Seite mit dem Wecker und einem Button zum Herunterladen – statt auf einem iCloud-Link ohne Ausweg
+```
+
 ## What's New (1.0.11)
 
 Español:
