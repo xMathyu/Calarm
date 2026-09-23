@@ -145,7 +145,7 @@ MORE THAN A WAKE-UP ALARM
 • Shifts and routines: Monday at 5 p.m. and Saturday at 11 a.m., in the same alarm.
 
 JUST SAY IT
-"Remind me to take my pill every day at 9." Calarm's assistant schedules it with Apple Intelligence, and nothing leaves your iPhone. Siri works too: "Set an alarm in Calarm." (The assistant needs an iPhone that supports Apple Intelligence.)
+"Remind me to take my pill every day at 9." Calarm's assistant schedules it with Apple Intelligence, and nothing leaves your iPhone. Siri works too — to Siri it's "Cal Alarm": "Hey Siri, set an alarm in Cal Alarm." (The assistant needs an iPhone that supports Apple Intelligence.)
 
 YOUR CALENDAR EVENTS, WITH A REAL ALARM
 Calarm reads your Apple Calendar and gives each event up to 3 alerts: at start, 15 minutes before, an hour before. If the event has an address, "Go" replaces "Snooze" when it rings: it stops the alarm and opens Maps with directions. If it's a Teams, Zoom or Google Meet call, "Join" takes you straight in.
