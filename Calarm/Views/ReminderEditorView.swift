@@ -1066,8 +1066,13 @@ struct ReminderEditorView: View {
         modelContext.delete(r)
         try? modelContext.save()
         Haptics.warning()
-        if wasOwned, settings.delegationEnabled {
-            await delegation.deleteZoneRecord(forReminderID: id)
+        if wasOwned {
+            // Same as deleting from the list: remove the shared record so the
+            // invitees' copies go away (and they're told). Only the list did it.
+            await sharedService.deleteSharedRecord(forReminderID: id)
+            if settings.delegationEnabled {
+                await delegation.deleteZoneRecord(forReminderID: id)
+            }
         }
         dismiss()
     }

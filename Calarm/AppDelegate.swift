@@ -5,6 +5,7 @@
 
 import CloudKit
 import UIKit
+import UserNotifications
 import os
 
 extension Notification.Name {
@@ -12,13 +13,17 @@ extension Notification.Name {
     /// notification's `object` is the `CKShare.Metadata`.
     static let calarmDidAcceptShare = Notification.Name("CalarmDidAcceptShare")
     /// Posted when a silent CloudKit push says the shared database changed (owner
-    /// edited/deleted a shared reminder), so the recipient should re-sync.
+    /// edited/deleted a shared reminder), AFTER the app has re-synced it — so open
+    /// screens (e.g. "Listas que administro") can reload.
     static let calarmSharedDataChanged = Notification.Name("CalarmSharedDataChanged")
     /// Posted by code paths that create/edit reminders outside the main editor
-    /// (e.g. the AI assistant tools) so delegation can mirror the change up.
+    /// (e.g. the AI assistant tools) so delegation can mirror the change up. On an
+    /// edit, `object` is the reminder's UUID, so a shared alarm reaches its
+    /// invitees too.
     static let calarmLocalRemindersChanged = Notification.Name("CalarmLocalRemindersChanged")
     /// Posted when a reminder is deleted outside the main editor; `object` is the
-    /// deleted reminder's UUID, so delegation can remove its zone record.
+    /// deleted reminder's UUID, so its shared record and delegation zone record
+    /// can be removed.
     static let calarmReminderDeleted = Notification.Name("CalarmReminderDeleted")
 }
 
@@ -49,12 +54,19 @@ enum PendingShare {
 /// Installs the scene delegate (the only channel that reliably sees share metadata
 /// on cold launch) and catches the app-delegate acceptance callback as a fallback.
 final class AppDelegate: NSObject, UIApplicationDelegate {
+    /// Re-syncs what a silent CloudKit push is about. Set by `CalarmApp` at launch,
+    /// because a push can wake the app in the background with no window — and so
+    /// no SwiftUI `.onReceive` to do the work.
+    static var remoteChangeHandler: (() async -> Void)?
+
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         // Needed to receive CloudKit's silent push when a shared reminder changes.
         application.registerForRemoteNotifications()
+        // So a shared alarm's change notice also shows while Calarm is open.
+        UNUserNotificationCenter.current().delegate = self
         return true
     }
 
@@ -75,7 +87,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         PendingShare.store(cloudKitShareMetadata, source: "appDelegate")
     }
 
-    /// Silent CloudKit push: the shared database changed. Ask the app to re-sync.
+    /// Silent CloudKit push: the shared database changed. Re-sync before calling
+    /// the completion handler — iOS suspends the app right after it, which cut a
+    /// background import short: the alarm kept its old time until the next launch.
     func application(
         _ application: UIApplication,
         didReceiveRemoteNotification userInfo: [AnyHashable: Any],
@@ -83,8 +97,22 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     ) {
         PendingShare.log.info("Remote notification (CloudKit) received")
         ShareDiagnostics.log("🔔 push CloudKit recibido")
-        NotificationCenter.default.post(name: .calarmSharedDataChanged, object: nil)
-        completionHandler(.newData)
+        Task {
+            await Self.remoteChangeHandler?()
+            NotificationCenter.default.post(name: .calarmSharedDataChanged, object: nil)
+            completionHandler(.newData)
+        }
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    /// Shows a shared alarm's change notice even while Calarm is open: the
+    /// foreground scan is often what finds the change, when a push was missed.
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification
+    ) async -> UNNotificationPresentationOptions {
+        [.banner, .list, .sound]
     }
 }
 

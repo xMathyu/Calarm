@@ -72,6 +72,8 @@ final class SharedRemindersService {
     let containerIdentifier: String
     private let cloudKitContainer: CKContainer
     private let modelContainer: ModelContainer
+    /// Cancels the alarms of received shares the owner deleted.
+    private let scheduler: ReminderScheduler
 
     /// Latest error message surfaced to the UI when an operation fails.
     private(set) var lastErrorMessage: String?
@@ -79,10 +81,16 @@ final class SharedRemindersService {
     /// user instead of leaving them staring at a list that never updates.
     private(set) var acceptErrorMessage: String?
 
+    /// The scan in progress. A request that arrives meanwhile waits for it and
+    /// gets one more pass (`rescanRequested`) instead of starting its own.
+    @ObservationIgnored private var scanTask: Task<Void, Never>?
+    @ObservationIgnored private var rescanRequested = false
+
     private static let log = Logger(subsystem: "MathyuSolutions.Calarm", category: "sharing")
 
-    init(modelContainer: ModelContainer, containerIdentifier: String = "iCloud.MathyuSolutions.Calarm") {
+    init(modelContainer: ModelContainer, scheduler: ReminderScheduler, containerIdentifier: String = "iCloud.MathyuSolutions.Calarm") {
         self.modelContainer = modelContainer
+        self.scheduler = scheduler
         self.containerIdentifier = containerIdentifier
         self.cloudKitContainer = CKContainer(identifier: containerIdentifier)
     }
@@ -263,6 +271,12 @@ final class SharedRemindersService {
     }
 
     // MARK: - Invitee side
+
+    /// Whether this device holds any alarm someone shared with it.
+    var hasReceivedShares: Bool {
+        let descriptor = FetchDescriptor<Reminder>(predicate: #Predicate { $0.isReceivedShare })
+        return ((try? modelContainer.mainContext.fetchCount(descriptor)) ?? 0) > 0
+    }
 
     /// Accepts an incoming share invitation, fetches the shared record, and creates a local
     /// `Reminder` row marked as shared.
@@ -651,7 +665,9 @@ final class SharedRemindersService {
         ShareDiagnostics.log("ingest: record OK (payload=\(record["payload"] != nil))")
 
         let context = modelContainer.mainContext
-        let applied = applyRecord(record, owner: Self.owner(from: metadata), in: context)
+        // No change notification here: the person is accepting the invitation and
+        // sees the alarm as it is now.
+        let applied = applyRecord(record, owner: Self.owner(from: metadata), in: context).reminder
         // Re-accepting an invitation the user had deleted should bring it back, so
         // clear any tombstone for it.
         DeletedSharesStore.remove(applied.id)
@@ -666,7 +682,30 @@ final class SharedRemindersService {
     /// frequently fails to deliver to SwiftUI apps. Accepting a share (tapping
     /// "Open") makes the owner's zone appear in the recipient's shared database,
     /// so we just read whatever is there.
+    ///
+    /// One scan at a time: launch alone starts two (`.task` and the first
+    /// `.active`), and a push can add a third. Overlapping scans can both find a
+    /// record missing and both insert it — a duplicate alarm. A request that
+    /// arrives mid-scan is folded into one more pass, so no change is missed.
     func importAllSharedReminders() async {
+        if let running = scanTask {
+            rescanRequested = true
+            await running.value
+            return
+        }
+        let task = Task {
+            repeat {
+                rescanRequested = false
+                await scanSharedDatabase()
+            } while rescanRequested
+            // Same step as the last check, so no request slips in between.
+            scanTask = nil
+        }
+        scanTask = task
+        await task.value
+    }
+
+    private func scanSharedDatabase() async {
         let database = cloudKitContainer.sharedCloudDatabase
         do {
             let zones = try await database.allRecordZones()
@@ -675,44 +714,66 @@ final class SharedRemindersService {
             var imported = 0
             var skipped = 0
             var presentIDs: Set<UUID> = []
+            var rescheduled: [Reminder] = []
             for zone in zones {
                 // SAFETY: never ingest the delegation zone here. Those records are
                 // someone else's alarms that this device (acting as a helper) only
                 // MANAGES — ingesting them into local SwiftData would make them ring
                 // on the helper's phone. They're handled separately by DelegationService.
                 guard zone.zoneID.zoneName != DelegationService.zoneName else { continue }
-                let changes = try await database.recordZoneChanges(inZoneWith: zone.zoneID, since: nil)
-                for modResult in changes.modificationResultsByID.values {
-                    guard case .success(let modification) = modResult else { continue }
-                    let record = modification.record
-                    guard record.recordType == "CalarmSharedReminder" else { continue }
-                    let recordID = candidateLocalID(for: record)
-                    presentIDs.insert(recordID)
-                    // Skip invitations the recipient deleted — re-importing them
-                    // would make a deleted share reappear on every launch.
-                    if DeletedSharesStore.contains(recordID) {
-                        skipped += 1
-                        continue
+                // Read EVERY page: a record left on a later page would look deleted
+                // to `reconcileDeletedShares` — copy removed, "deleted" notice sent.
+                var token: CKServerChangeToken?
+                var moreComing = true
+                while moreComing {
+                    let changes = try await database.recordZoneChanges(inZoneWith: zone.zoneID, since: token)
+                    for (ckRecordID, modResult) in changes.modificationResultsByID {
+                        guard case .success(let modification) = modResult else {
+                            // Unreadable this time, but it exists: keep the local copy
+                            // instead of treating it as deleted.
+                            if let id = UUID(uuidString: ckRecordID.recordName) { presentIDs.insert(id) }
+                            continue
+                        }
+                        let record = modification.record
+                        guard record.recordType == "CalarmSharedReminder" else { continue }
+                        let recordID = candidateLocalID(for: record)
+                        presentIDs.insert(recordID)
+                        // Skip invitations the recipient deleted — re-importing them
+                        // would make a deleted share reappear on every launch.
+                        if DeletedSharesStore.contains(recordID) {
+                            skipped += 1
+                            continue
+                        }
+                        let applied = applyRecord(record, owner: nil, in: context)
+                        if applied.scheduleChanged { rescheduled.append(applied.reminder) }
+                        imported += 1
                     }
-                    applyRecord(record, owner: nil, in: context)
-                    imported += 1
+                    token = changes.changeToken
+                    moreComing = changes.moreComing
                 }
             }
             if imported > 0 {
                 try? context.save()
                 CategoryStore.shared?.reload()
                 ShareDiagnostics.log("✅ scan: \(imported) recordatorio(s) importado(s)")
+                // The owner moved these to another day/time: tell the person, or
+                // they keep counting on the old time.
+                for reminder in rescheduled {
+                    await ShareChangeNotifier.notifyScheduleChanged(reminder)
+                }
             } else {
                 ShareDiagnostics.log("scan: sin recordatorios compartidos\(skipped > 0 ? " (\(skipped) borrado(s) ignorado(s))" : "")")
             }
             // Scan completed without error → safe to remove copies the owner
-            // deleted or unshared (their record is no longer present).
-            reconcileDeletedShares(presentIDs: presentIDs, in: context)
+            // deleted or unshared (their record is no longer present), and any
+            // copy of an invitation the person deleted.
+            await removeStaleCopies(presentIDs: presentIDs, in: context)
             // Drop tombstones whose owner record is gone, so a fresh re-invite with
             // the same id can be accepted again.
             DeletedSharesStore.prune(presentIDs: presentIDs)
             // Same for the recipient's personal avisos — a re-share starts fresh.
             ShareLeadTimesStore.prune(presentIDs: presentIDs)
+            ShareChangeNotifier.prune(presentIDs: presentIDs)
         } catch {
             Self.log.error("importAllSharedReminders failed: \(error.localizedDescription, privacy: .public)")
             ShareDiagnostics.log("❌ scan error: \(error.localizedDescription)")
@@ -730,9 +791,9 @@ final class SharedRemindersService {
     /// Upserts a shared `CalarmSharedReminder` CKRecord into a local `Reminder`
     /// (marked as a received share). Caller is responsible for saving the context.
     /// `owner` (when known, i.e. from the accept metadata) is remembered so the
-    /// recipient can see who shared it. Returns the local id + title.
-    @discardableResult
-    private func applyRecord(_ record: CKRecord, owner: SharedByPerson?, in context: ModelContext) -> (id: UUID, title: String) {
+    /// recipient can see who shared it. Returns the local reminder, and whether
+    /// the owner changed its schedule since this device last saw the record.
+    private func applyRecord(_ record: CKRecord, owner: SharedByPerson?, in context: ModelContext) -> (reminder: Reminder, scheduleChanged: Bool) {
         let payload = decodePayload(from: record)
         let customCategoryID = ensureCustomCategory(payload.customCategory, in: context)
         // Reuse the record name as the local UUID so importing twice updates the
@@ -740,10 +801,25 @@ final class SharedRemindersService {
         let localID = UUID(uuidString: record.recordID.recordName)
             ?? UUID(uuidString: payload.id)
             ?? UUID()
-        let descriptor = FetchDescriptor<Reminder>(predicate: #Predicate { $0.id == localID })
+        // There can be several: each device inserts its own copy when its scan
+        // runs before SwiftData has synced the other device's (or the app's own,
+        // after a reinstall), and a CloudKit-synced store can't enforce a unique
+        // id. Keep the oldest — `createdAt` syncs too, so every device keeps the
+        // same one — and drop the rest.
+        let descriptor = FetchDescriptor<Reminder>(
+            predicate: #Predicate { $0.id == localID },
+            sortBy: [SortDescriptor(\.createdAt)]
+        )
+        let matches = (try? context.fetch(descriptor)) ?? []
         let reminder: Reminder
-        if let existing = try? context.fetch(descriptor).first {
-            reminder = existing
+        if let oldest = matches.first {
+            reminder = oldest
+            for duplicate in matches.dropFirst() {
+                context.delete(duplicate)
+            }
+            if matches.count > 1 {
+                ShareDiagnostics.log("🧹 \(matches.count - 1) copia(s) duplicada(s) de '\(payload.title)'")
+            }
         } else {
             reminder = Reminder(id: localID)
             context.insert(reminder)
@@ -754,24 +830,41 @@ final class SharedRemindersService {
         if let owner {
             ShareOwnerStore.set(owner, for: localID)
         }
-        return (localID, payload.title)
+        let scheduleChanged = ShareChangeNotifier.recordSchedule(of: payload, for: localID)
+        return (reminder, scheduleChanged)
     }
 
     /// Removes local received-share reminders whose shared record is no longer
-    /// present (owner deleted it or stopped sharing). Only call after a SUCCESSFUL
-    /// scan, never on error, so a transient fetch failure can't wipe valid copies.
-    private func reconcileDeletedShares(presentIDs: Set<UUID>, in context: ModelContext) {
+    /// present (owner deleted it or stopped sharing) and tells the person; and
+    /// removes, quietly, every copy of an invitation the person deleted — one that
+    /// SwiftData synced back from another device, or a duplicate left behind.
+    /// Cancels their alarms. Only call after a SUCCESSFUL scan, never on error, so
+    /// a transient fetch failure can't wipe valid copies.
+    private func removeStaleCopies(presentIDs: Set<UUID>, in context: ModelContext) async {
         let descriptor = FetchDescriptor<Reminder>(predicate: #Predicate { $0.isReceivedShare })
         guard let received = try? context.fetch(descriptor) else { return }
-        var removed = 0
-        for reminder in received where !presentIDs.contains(reminder.id) {
-            context.delete(reminder)
-            removed += 1
+        let deletedByMe = received.filter { DeletedSharesStore.contains($0.id) }
+        let deletedByOwner = received.filter { !presentIDs.contains($0.id) && !DeletedSharesStore.contains($0.id) }
+        if !deletedByMe.isEmpty {
+            ShareDiagnostics.log("🧹 scan: \(deletedByMe.count) copia(s) de invitaciones borradas")
         }
-        if removed > 0 {
-            try? context.save()
-            CategoryStore.shared?.reload()
-            ShareDiagnostics.log("🗑️ scan: \(removed) compartido(s) eliminado(s) por el dueño")
+        let gone = deletedByMe + deletedByOwner
+        guard !gone.isEmpty else { return }
+        // Captured before deleting: the notice needs the alarm's title.
+        let notices = deletedByOwner.filter(ShareChangeNotifier.isUpcoming).map(ShareChangeNotifier.Alarm.init)
+        for reminder in gone {
+            // `syncAlarms` only schedules reminders that still exist, so without
+            // this a deleted alarm kept ringing until the next cold launch.
+            await scheduler.cancelAlarms(forReminderID: reminder.id)
+            context.delete(reminder)
+        }
+        try? context.save()
+        CategoryStore.shared?.reload()
+        if !deletedByOwner.isEmpty {
+            ShareDiagnostics.log("🗑️ scan: \(deletedByOwner.count) compartido(s) eliminado(s) por el dueño")
+        }
+        for notice in notices {
+            await ShareChangeNotifier.notifyDeleted(notice)
         }
     }
 

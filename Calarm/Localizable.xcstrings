@@ -455,6 +455,38 @@
         }
       }
     },
+    "%@ cambió el horario y ya no volverá a sonar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ changed the schedule. It won't ring again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ cambió el horario y ya no volverá a sonar."
+          }
+        }
+      }
+    },
+    "%@ cambió el horario. Sonará el %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ changed the schedule. It'll ring on %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ cambió el horario. Sonará el %@"
+          }
+        }
+      }
+    },
     "%@ crear alarma" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -536,6 +568,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ inteligente"
+          }
+        }
+      }
+    },
+    "%@ la borró, así que ya no sonará." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ deleted it, so it won't ring anymore."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ la borró, así que ya no sonará."
           }
         }
       }

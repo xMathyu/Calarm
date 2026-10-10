@@ -370,7 +370,7 @@ struct UpdateReminderTool: Tool {
         reminder.updatedAt = Date()
         try context.save()
         await scheduler.syncAlarms(for: reminder)
-        NotificationCenter.default.post(name: .calarmLocalRemindersChanged, object: nil)
+        NotificationCenter.default.post(name: .calarmLocalRemindersChanged, object: reminder.id)
 
         let dateStr = ToolHelpers.formatDate(reminder.date, locale: LocalizationManager.shared.currentLocale)
         return "Updated reminder '\(reminder.title)' — \(dateStr), repeating: \(reminder.recurrence.localizedSummary)."

@@ -41,13 +41,32 @@ struct CalarmApp: App {
         self._reminderScheduler = State(initialValue: reminderScheduler)
         self._teamsCoordinator = State(initialValue: nil)
         self._meetingPreferences = State(initialValue: meetingPreferences)
-        let sharedRemindersService = SharedRemindersService(modelContainer: modelContainer)
+        let sharedRemindersService = SharedRemindersService(modelContainer: modelContainer, scheduler: reminderScheduler)
         self._sharedRemindersService = State(initialValue: sharedRemindersService)
-        self._delegationService = State(initialValue: DelegationService(modelContainer: modelContainer, sharing: sharedRemindersService, scheduler: reminderScheduler))
+        let delegationService = DelegationService(modelContainer: modelContainer, sharing: sharedRemindersService, scheduler: reminderScheduler)
+        self._delegationService = State(initialValue: delegationService)
         self._categoryStore = State(initialValue: CategoryStore(context: modelContainer.mainContext))
         self.alarmScheduler = alarmScheduler
         self.calendarSource = calendarSource
         self.modelContainer = modelContainer
+
+        // Silent CloudKit push: the owner of an alarm shared with us edited or
+        // deleted it (a new time also posts a notification, see
+        // `ShareChangeNotifier`), OR, for a principal, a trusted helper edited/
+        // deleted one of their alarms in the delegation zone. Installed here, not
+        // as an `.onReceive`, so it also runs when the push wakes the app in the
+        // background with no window.
+        let resyncSharedData: () async -> Void = {
+            await sharedRemindersService.importAllSharedReminders()
+            if settings.delegationEnabled {
+                await delegationService.pullPrincipalChanges()
+            }
+            await Self.syncAllReminders(in: modelContainer, with: reminderScheduler)
+        }
+        AppDelegate.remoteChangeHandler = resyncSharedData
+        // An invitation deleted on another device of this iCloud account: the
+        // re-scan drops this device's copy too.
+        DeletedSharesStore.startSyncing(onChange: resyncSharedData)
 
         // Re-register the Siri phrases on every launch so the system picks up
         // changes to CalarmAppShortcuts (and AppShortcuts.xcstrings) without
@@ -135,6 +154,7 @@ struct CalarmApp: App {
                     Task {
                         await sharedRemindersService.importAllSharedReminders()
                         await syncAllReminders()
+                        await requestChangeNotificationsIfNeeded()
                     }
                     if settings.delegationEnabled {
                         Task {
@@ -152,28 +172,33 @@ struct CalarmApp: App {
                 guard let metadata = note.object as? CKShare.Metadata else { return }
                 Task { await acceptIncomingShare(metadata) }
             }
-            // Silent CloudKit push: a per-record share changed, OR (for a principal)
-            // a trusted helper edited/deleted one of their alarms in the
-            // delegation zone. Re-sync both paths.
-            .onReceive(NotificationCenter.default.publisher(for: .calarmSharedDataChanged)) { _ in
+            // A reminder was created/edited outside the main editor (AI assistant).
+            // Push an edit to the invitees of a shared alarm, and mirror it up to
+            // trusted helpers.
+            .onReceive(NotificationCenter.default.publisher(for: .calarmLocalRemindersChanged)) { note in
                 Task {
-                    await sharedRemindersService.importAllSharedReminders()
-                    if settings.delegationEnabled {
-                        await delegationService.pullPrincipalChanges()
+                    if let id = note.object as? UUID {
+                        let descriptor = FetchDescriptor<Reminder>(predicate: #Predicate { $0.id == id })
+                        if let reminder = try? modelContainer.mainContext.fetch(descriptor).first {
+                            await sharedRemindersService.pushUpdateIfShared(reminder)
+                        }
                     }
-                    await syncAllReminders()
+                    if settings.delegationEnabled {
+                        await delegationService.reconcileUp()
+                    }
                 }
             }
-            // A reminder was created/edited outside the main editor (AI assistant).
-            // Mirror it up to trusted helpers.
-            .onReceive(NotificationCenter.default.publisher(for: .calarmLocalRemindersChanged)) { _ in
-                guard settings.delegationEnabled else { return }
-                Task { await delegationService.reconcileUp() }
-            }
-            // A reminder was deleted outside the main editor; remove its zone record.
+            // A reminder was deleted outside the main editor (AI assistant): remove
+            // its shared record, so invitees lose it too (a no-op for one that was
+            // never shared, or was received), and its delegation zone record.
             .onReceive(NotificationCenter.default.publisher(for: .calarmReminderDeleted)) { note in
-                guard settings.delegationEnabled, let id = note.object as? UUID else { return }
-                Task { await delegationService.deleteZoneRecord(forReminderID: id) }
+                guard let id = note.object as? UUID else { return }
+                Task {
+                    await sharedRemindersService.deleteSharedRecord(forReminderID: id)
+                    if settings.delegationEnabled {
+                        await delegationService.deleteZoneRecord(forReminderID: id)
+                    }
+                }
             }
             .alert(
                 "No se pudo aceptar la invitación",
@@ -236,6 +261,7 @@ struct CalarmApp: App {
             try await sharedRemindersService.acceptShare(metadata: metadata)
             PendingShare.clear()
             await syncAllReminders()
+            await requestChangeNotificationsIfNeeded()
         } catch {
             // `acceptShare` already recorded `acceptErrorMessage` for the alert.
             PendingShare.log.error("Share ingest failed: \(error.localizedDescription)")
@@ -256,10 +282,24 @@ struct CalarmApp: App {
 
     @MainActor
     private func syncAllReminders() async {
+        await Self.syncAllReminders(in: modelContainer, with: reminderScheduler)
+    }
+
+    @MainActor
+    private static func syncAllReminders(in modelContainer: ModelContainer, with reminderScheduler: ReminderScheduler) async {
         let context = modelContainer.mainContext
         let descriptor = FetchDescriptor<Reminder>()
         guard let reminders = try? context.fetch(descriptor) else { return }
         await reminderScheduler.syncAlarms(for: reminders)
+    }
+
+    /// An invitee hears about a shared alarm's new time through a notification,
+    /// which needs permission. Asked once, and only once there's a received alarm
+    /// to be notified about — not on top of onboarding.
+    @MainActor
+    private func requestChangeNotificationsIfNeeded() async {
+        guard settings.onboardingCompleted, sharedRemindersService.hasReceivedShares else { return }
+        await ShareChangeNotifier.requestAuthorizationIfNeeded()
     }
 
     @MainActor
