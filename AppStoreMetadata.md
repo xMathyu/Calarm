@@ -297,6 +297,35 @@ Alemán:
 • Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
+## What's New (1.0.13)
+
+Español:
+```
+• Nuevo: si quien te compartió una alarma le cambia la hora o la borra, te llega una notificación
+• Corregido: una alarma compartida que su dueño borraba seguía sonando en tu iPhone
+• Corregido: algunas alarmas compartidas aparecían repetidas, y las invitaciones que borrabas podían volver
+• Corregido: los cambios que haces con el asistente, y las alarmas que borras desde la pantalla de edición, ahora también llegan a las personas con quienes las compartes
+• Corregido: si al pedirle a Siri que abra Calarm se abrían las alarmas del Reloj, ahora puedes decir «Cal Alarm»
+```
+
+Inglés:
+```
+• New: if someone who shared an alarm with you changes its time or deletes it, you get a notification
+• Fixed: a shared alarm its owner deleted kept ringing on your iPhone
+• Fixed: some shared alarms showed up twice, and invitations you deleted could come back
+• Fixed: changes you make with the assistant, and alarms you delete from the edit screen, now also reach the people you share them with
+• Fixed: if asking Siri to open Calarm opened the Clock app's alarms instead, you can now say "Cal Alarm"
+```
+
+Alemán:
+```
+• Neu: Wenn jemand, der einen Wecker mit dir teilt, die Uhrzeit ändert oder ihn löscht, bekommst du eine Mitteilung
+• Behoben: Ein geteilter Wecker, den sein Besitzer gelöscht hatte, klingelte auf deinem iPhone weiter
+• Behoben: Manche geteilten Wecker erschienen doppelt, und gelöschte Einladungen konnten zurückkommen
+• Behoben: Änderungen über den Assistenten und Wecker, die du im Bearbeiten-Bildschirm löschst, erreichen jetzt auch die Personen, mit denen du sie teilst
+• Behoben: Wenn Siri beim Öffnen von Calarm stattdessen die Wecker der Uhr-App öffnete, kannst du jetzt „Cal Alarm" sagen
+```
+
 ## What's New (1.0.12)
 
 Español:
