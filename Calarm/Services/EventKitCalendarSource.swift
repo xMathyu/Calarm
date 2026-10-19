@@ -13,9 +13,13 @@ final class EventKitCalendarSource: CalendarSource, @unchecked Sendable {
         self.eventStore = eventStore
     }
 
-    var isAuthorized: Bool {
+    var access: CalendarAccess {
         get async {
-            EKEventStore.authorizationStatus(for: .event) == .fullAccess
+            switch EKEventStore.authorizationStatus(for: .event) {
+            case .fullAccess: .granted
+            case .notDetermined: .notDetermined
+            default: .denied
+            }
         }
     }
 
@@ -33,7 +37,7 @@ final class EventKitCalendarSource: CalendarSource, @unchecked Sendable {
     }
 
     func availableCalendars() async throws -> [CalendarInfo] {
-        guard await isAuthorized else { throw CalendarSourceError.accessDenied }
+        guard await access == .granted else { throw CalendarSourceError.accessDenied }
         return selectableCalendars().map { calendar in
             CalendarInfo(
                 id: calendar.calendarIdentifier,
@@ -61,7 +65,7 @@ final class EventKitCalendarSource: CalendarSource, @unchecked Sendable {
     }
 
     func upcomingMeetings(from start: Date, to end: Date, calendarIDs: Set<String>?) async throws -> [Meeting] {
-        guard await isAuthorized else { throw CalendarSourceError.accessDenied }
+        guard await access == .granted else { throw CalendarSourceError.accessDenied }
 
         let available = selectableCalendars()
         var userCalendars = available

@@ -43,7 +43,29 @@ struct MeetingsListView: View {
 
     @ViewBuilder
     private var content: some View {
-        if coordinator.meetings.isEmpty {
+        // Sin permiso la lista siempre sale vacía, y "Sin eventos próximos" hacía
+        // creer que Calarm no encontraba eventos que sí estaban en el calendario.
+        if coordinator.access == .notDetermined {
+            EmptyStateView(
+                systemImage: "calendar.badge.exclamationmark",
+                title: "Conecta tu calendario",
+                message: "Calarm necesita permiso para leer tus eventos y ponerles alarma.",
+                actionTitle: "Permitir acceso"
+            ) {
+                Task { await coordinator.requestAccessIfNeeded() }
+            }
+        } else if coordinator.access == .denied {
+            EmptyStateView(
+                systemImage: "calendar.badge.exclamationmark",
+                title: "Sin acceso al calendario",
+                message: "Calarm no puede leer tus eventos. Toca Abrir Ajustes y en Calendarios elige «Acceso total».",
+                actionTitle: "Abrir Ajustes"
+            ) {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+        } else if coordinator.meetings.isEmpty {
             EmptyStateView(
                 systemImage: "calendar.badge.exclamationmark",
                 title: "Sin eventos próximos",

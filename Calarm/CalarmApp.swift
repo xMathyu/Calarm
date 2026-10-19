@@ -117,6 +117,9 @@ struct CalarmApp: App {
                 if settings.teamsDetectionEnabled {
                     bootstrapTeamsCoordinator()
                 }
+                // Aparte: el aviso del permiso espera a que la persona conteste, y
+                // el arranque de abajo no tiene por qué esperarla.
+                Task { await requestCalendarAccessIfNeeded() }
                 await syncAllReminders()
                 // Cancel system alarms that no longer belong to anything: tracked
                 // entries whose reminder was deleted, and alarms AlarmKit still has
@@ -144,6 +147,10 @@ struct CalarmApp: App {
                     await delegationService.reconcileUp()
                     await syncAllReminders()
                 }
+            }
+            .onChange(of: settings.onboardingCompleted) { _, completed in
+                guard completed else { return }
+                Task { await requestCalendarAccessIfNeeded() }
             }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active, settings.onboardingCompleted {
@@ -300,6 +307,16 @@ struct CalarmApp: App {
     private func requestChangeNotificationsIfNeeded() async {
         guard settings.onboardingCompleted, sharedRemindersService.hasReceivedShares else { return }
         await ShareChangeNotifier.requestAuthorizationIfNeeded()
+    }
+
+    /// El interruptor del calendario viene encendido, así que el aviso que salía
+    /// al encenderlo no lo veía nadie: la lectura fallaba en silencio y la pestaña
+    /// Calendario se quedaba vacía. Se pide al terminar la bienvenida (que no pide
+    /// nada antes de presentarse) y, para quien ya la pasó, al abrir la app.
+    @MainActor
+    private func requestCalendarAccessIfNeeded() async {
+        guard settings.onboardingCompleted, settings.teamsDetectionEnabled else { return }
+        await teamsCoordinator?.requestAccessIfNeeded()
     }
 
     @MainActor

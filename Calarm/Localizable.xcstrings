@@ -1202,7 +1202,6 @@
       }
     },
     "Abrir Ajustes" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2278,6 +2277,38 @@
         }
       }
     },
+    "Calarm necesita permiso para leer tus eventos y ponerles alarma." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm needs permission to read your events and set alarms for them."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm necesita permiso para leer tus eventos y ponerles alarma."
+          }
+        }
+      }
+    },
+    "Calarm no puede leer tus eventos. Toca Abrir Ajustes y en Calendarios elige «Acceso total»." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm can't read your events. Tap Open Settings, and under Calendars choose “Full Access”."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm no puede leer tus eventos. Toca Abrir Ajustes y en Calendarios elige «Acceso total»."
+          }
+        }
+      }
+    },
     "Calarm necesita acceso a tu calendario para detectar reuniones." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2678,6 +2709,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Con cuánta anticipación avisar"
+          }
+        }
+      }
+    },
+    "Conecta tu calendario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect your calendar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conecta tu calendario"
           }
         }
       }
@@ -5134,7 +5181,6 @@
       }
     },
     "Permitir acceso" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5911,6 +5957,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Símbolos"
+          }
+        }
+      }
+    },
+    "Sin acceso al calendario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No calendar access"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin acceso al calendario"
           }
         }
       }

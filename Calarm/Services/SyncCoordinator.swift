@@ -14,6 +14,10 @@ final class SyncCoordinator {
     private(set) var meetings: [Meeting] = []
     private(set) var isSyncing: Bool = false
     private(set) var lastError: String?
+    /// El permiso del calendario según la última sincronización. Arranca como
+    /// concedido para que la pestaña no enseñe un aviso de permiso durante el
+    /// instante que tarda la primera lectura.
+    private(set) var access: CalendarAccess = .granted
 
     private let source: CalendarSource
     private let scheduler: AlarmScheduler
@@ -47,13 +51,29 @@ final class SyncCoordinator {
     func stop() {
         changeObserverTask?.cancel()
         changeObserverTask = nil
+        meetings = []
         Task { await cancelAllCalendarAlarms() }
+    }
+
+    /// Saca el aviso del sistema si nunca se pidió el permiso, y sincroniza con
+    /// lo que la persona conteste. Si ya contestó, no hace nada: iOS no vuelve a
+    /// preguntar.
+    func requestAccessIfNeeded() async {
+        guard await source.access == .notDetermined else { return }
+        _ = try? await source.requestAccess()
+        await sync()
     }
 
     func sync() async {
         guard !isSyncing else { return }
         isSyncing = true
         defer { isSyncing = false }
+
+        access = await source.access
+        guard access == .granted else {
+            meetings = []
+            return
+        }
 
         do {
             let now = Date()
@@ -130,11 +150,14 @@ final class SyncCoordinator {
     }
 
     /// Cancels every alarm scheduled by the calendar feature.
+    ///
+    /// Solo las alarmas: la lista de eventos se queda. Con el interruptor general
+    /// apagado los eventos se siguen viendo, cada uno con la campana tachada; antes
+    /// esto vaciaba la lista y la pestaña decía "Sin eventos próximos".
     private func cancelAllCalendarAlarms() async {
         for entry in await scheduler.storedEntriesOwnedByCalendar() {
             await scheduler.cancelAll(ownerID: entry.ownerID)
         }
-        meetings = []
     }
 
     static func ownerID(for eventID: String) -> String {
