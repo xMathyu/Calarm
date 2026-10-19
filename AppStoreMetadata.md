@@ -302,6 +302,7 @@ Alemán:
 Español:
 ```
 • Nuevo: si quien te compartió una alarma le cambia la hora o la borra, te llega una notificación
+• Corregido: los eventos de tu calendario no aparecían en Calarm, porque la app nunca te pedía permiso para leerlo. Ahora te lo pide al abrirla
 • Corregido: una alarma compartida que su dueño borraba seguía sonando en tu iPhone
 • Corregido: algunas alarmas compartidas aparecían repetidas, y las invitaciones que borrabas podían volver
 • Corregido: los cambios que haces con el asistente, y las alarmas que borras desde la pantalla de edición, ahora también llegan a las personas con quienes las compartes
@@ -311,6 +312,7 @@ Español:
 Inglés:
 ```
 • New: if someone who shared an alarm with you changes its time or deletes it, you get a notification
+• Fixed: your calendar events didn't show up in Calarm, because the app never asked for permission to read your calendar. Now it asks when you open it
 • Fixed: a shared alarm its owner deleted kept ringing on your iPhone
 • Fixed: some shared alarms showed up twice, and invitations you deleted could come back
 • Fixed: changes you make with the assistant, and alarms you delete from the edit screen, now also reach the people you share them with
@@ -320,6 +322,7 @@ Inglés:
 Alemán:
 ```
 • Neu: Wenn jemand, der einen Wecker mit dir teilt, die Uhrzeit ändert oder ihn löscht, bekommst du eine Mitteilung
+• Behoben: Die Termine aus deinem Kalender erschienen nicht in Calarm, weil die App nie um Zugriff auf deinen Kalender gebeten hat. Jetzt fragt sie beim Öffnen danach
 • Behoben: Ein geteilter Wecker, den sein Besitzer gelöscht hatte, klingelte auf deinem iPhone weiter
 • Behoben: Manche geteilten Wecker erschienen doppelt, und gelöschte Einladungen konnten zurückkommen
 • Behoben: Änderungen über den Assistenten und Wecker, die du im Bearbeiten-Bildschirm löschst, erreichen jetzt auch die Personen, mit denen du sie teilst
