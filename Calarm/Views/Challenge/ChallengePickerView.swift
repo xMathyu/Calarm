@@ -19,15 +19,22 @@ struct ChallengePickerView: View {
         List {
             Section {
                 kindRow(nil)
-                ForEach(WakeChallenge.Kind.allCases) { kind in
-                    kindRow(kind)
-                }
             } header: {
                 Text("Reto")
             } footer: {
                 Text(selection == nil
                      ? "Sin reto, la alarma se apaga con un toque."
                      : "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar al minuto y a los 2, 5 y 10 minutos.")
+            }
+
+            ForEach(WakeChallenge.Group.allCases) { group in
+                Section {
+                    ForEach(WakeChallenge.Kind.kinds(in: group)) { kind in
+                        kindRow(kind)
+                    }
+                } header: {
+                    Text(group.localizedTitle)
+                }
             }
 
             if let current = selection {

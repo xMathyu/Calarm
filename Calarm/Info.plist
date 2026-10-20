@@ -39,6 +39,8 @@
 	<string>Calarm lee tus eventos del calendario para ponerles alarma y detectar enlaces de Microsoft Teams. Si lo activas en Ajustes, también guarda tus alarmas en un calendario llamado Calarm.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Calarm usa tus contactos para mostrar la foto de quienes comparten alarmas contigo. Si no das acceso, se muestran sus iniciales.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Calarm usa el movimiento para contar tus pasos y sacudidas en los retos que apagan la alarma.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Calarm usa el micrófono para que le hables al asistente con IA y este cree alarmas dictándolas con tu voz.</string>
 	<key>NSSupportsLiveActivities</key>

@@ -18,17 +18,70 @@ import Foundation
 /// compartir, así que todo campo que se añada después lleva valor por defecto
 /// al decodificar.
 struct WakeChallenge: Codable, Hashable, Sendable {
+    /// Los retos se agrupan en el selector por lo que piden: pensar, moverse o
+    /// levantarse de la cama.
+    enum Group: CaseIterable, Identifiable, Sendable {
+        case mind
+        case body
+        case getUp
+
+        var id: Self { self }
+
+        var localizedTitle: String {
+            switch self {
+            case .mind: appLocalized("Mente")
+            case .body: appLocalized("Cuerpo")
+            case .getUp: appLocalized("Levantarte")
+            }
+        }
+    }
+
+    /// El orden de los casos es el orden en que se listan dentro de cada grupo.
+    /// El `rawValue` se persiste y viaja al compartir: no renombrar.
     enum Kind: String, Codable, CaseIterable, Identifiable, Sendable {
+        // Mente
         case math
         case memory
+        case order
+        case pairs
+        case colors
+        case odd
+        case typing
+        // Cuerpo
+        case shake
+        case steps
+        case tilt
+        case reflex
+        // Levantarte
         case qr
 
         var id: String { rawValue }
+
+        var group: Group {
+            switch self {
+            case .math, .memory, .order, .pairs, .colors, .odd, .typing: .mind
+            case .shake, .steps, .tilt, .reflex: .body
+            case .qr: .getUp
+            }
+        }
+
+        static func kinds(in group: Group) -> [Kind] {
+            allCases.filter { $0.group == group }
+        }
 
         var localizedTitle: String {
             switch self {
             case .math: appLocalized("Cálculo")
             case .memory: appLocalized("Memoria")
+            case .order: appLocalized("Ordenar números")
+            case .pairs: appLocalized("Parejas")
+            case .colors: appLocalized("Colores")
+            case .odd: appLocalized("El distinto")
+            case .typing: appLocalized("Escribir")
+            case .shake: appLocalized("Sacudir")
+            case .steps: appLocalized("Caminar")
+            case .tilt: appLocalized("Laberinto")
+            case .reflex: appLocalized("Atrapa")
             case .qr: appLocalized("Código QR")
             }
         }
@@ -37,6 +90,15 @@ struct WakeChallenge: Codable, Hashable, Sendable {
             switch self {
             case .math: appLocalized("Resuelve operaciones con el teclado numérico.")
             case .memory: appLocalized("Repite la secuencia de casillas que se ilumina.")
+            case .order: appLocalized("Toca los números en orden, del 1 al último, en una cuadrícula revuelta.")
+            case .pairs: appLocalized("Da la vuelta a las cartas y encuentra todas las parejas de emojis.")
+            case .colors: appLocalized("Toca el color de la tinta, no la palabra que lees.")
+            case .odd: appLocalized("Encuentra el emoji que no es como los demás.")
+            case .typing: appLocalized("Copia una frase letra por letra, sin autocorrector.")
+            case .shake: appLocalized("Sacude el teléfono con ganas hasta llenar la barra.")
+            case .steps: appLocalized("Da unos pasos con el teléfono en la mano: cuenta los pasos de verdad.")
+            case .tilt: appLocalized("Inclina el teléfono para llevar la bola hasta la salida.")
+            case .reflex: appLocalized("Toca los objetivos que aparecen antes de que desaparezcan.")
             case .qr: appLocalized("Escanea un código QR o de barras que registres, por ejemplo el de la pasta de dientes.")
             }
         }
@@ -45,6 +107,15 @@ struct WakeChallenge: Codable, Hashable, Sendable {
             switch self {
             case .math: "plus.forwardslash.minus"
             case .memory: "square.grid.3x3.fill"
+            case .order: "number.square"
+            case .pairs: "rectangle.on.rectangle.angled"
+            case .colors: "paintpalette.fill"
+            case .odd: "eye.fill"
+            case .typing: "keyboard"
+            case .shake: "iphone.radiowaves.left.and.right"
+            case .steps: "figure.walk"
+            case .tilt: "circle.dotted.and.circle"
+            case .reflex: "scope"
             case .qr: "qrcode.viewfinder"
             }
         }

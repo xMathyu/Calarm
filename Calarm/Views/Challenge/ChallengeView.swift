@@ -97,6 +97,24 @@ struct ChallengeView: View {
             MathChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
         case .memory:
             MemoryChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .order:
+            OrderChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .pairs:
+            PairsChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .colors:
+            ColorsChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .odd:
+            OddOneOutChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .typing:
+            TypingChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .shake:
+            ShakeChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .steps:
+            StepsChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .tilt:
+            TiltMazeChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .reflex:
+            ReflexChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
         case .qr:
             QRChallengeGame(expectedCode: challenge.code ?? "", onSolved: handleSolved)
         }

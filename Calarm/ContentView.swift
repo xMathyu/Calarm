@@ -94,19 +94,27 @@ struct ContentView: View {
                 ChallengePickerView(selection: $demoChallenge, alarmTitle: "Despertar")
             }
         }
-        // El reto en modo de prueba: `challenge` (cálculo), `challengeMemory`, `challengeQR`.
-        .fullScreenCover(isPresented: .constant(DemoData.requestedScreen == "challenge")) {
-            ChallengeView(mode: .practice(WakeChallenge(kind: .math), title: "Despertar"))
-        }
-        .fullScreenCover(isPresented: .constant(DemoData.requestedScreen == "challengeMemory")) {
-            ChallengeView(mode: .practice(WakeChallenge(kind: .memory), title: "Despertar"))
-        }
-        .fullScreenCover(isPresented: .constant(DemoData.requestedScreen == "challengeQR")) {
-            ChallengeView(mode: .practice(WakeChallenge(kind: .qr, code: "demo"), title: "Despertar"))
+        // El reto en modo de prueba: `-demoScreen challenge` (cálculo) o
+        // `-demoScreen challenge-<kind>` con el rawValue de `WakeChallenge.Kind`.
+        .fullScreenCover(isPresented: .constant(Self.demoChallengeKind != nil)) {
+            if let kind = Self.demoChallengeKind {
+                ChallengeView(mode: .practice(WakeChallenge(kind: kind, code: kind == .qr ? "demo" : nil), title: "Despertar"))
+            }
         }
         #endif
     }
 }
+
+#if DEBUG
+extension ContentView {
+    /// `challenge` abre el de cálculo; `challenge-<rawValue>` cualquier otro.
+    static var demoChallengeKind: WakeChallenge.Kind? {
+        guard let screen = DemoData.requestedScreen, screen.hasPrefix("challenge") else { return nil }
+        let raw = screen.dropFirst("challenge".count).drop(while: { $0 == "-" })
+        return raw.isEmpty ? .math : WakeChallenge.Kind(rawValue: String(raw))
+    }
+}
+#endif
 
 /// Selects the tab a screenshot run asked for. Does nothing in release builds.
 private struct DemoScreenModifier: ViewModifier {
