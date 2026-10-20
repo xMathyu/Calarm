@@ -2,6 +2,10 @@
 //  MeetingsListView.swift
 //  Calarm
 //
+//  La lista de eventos próximos del calendario del sistema, agrupados por día.
+//  Vive dentro de la pestaña Calendario (ver `CalendarTabView`), que pone el
+//  título y alterna entre esta lista y la vista de mes.
+//
 
 import SwiftUI
 
@@ -10,35 +14,42 @@ struct MeetingsListView: View {
     @Environment(AppSettings.self) private var settings
     @Environment(MeetingPreferencesStore.self) private var preferences
 
+    @Binding var mode: CalendarTabView.Mode
+
     @State private var selectedMeeting: Meeting?
 
     var body: some View {
-        NavigationStack {
-            content
-                .navigationTitle("Calendario")
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            Haptics.light()
-                            Task { await coordinator.sync() }
-                        } label: {
-                            if coordinator.isSyncing {
-                                ProgressView()
-                            } else {
-                                Image(systemName: "arrow.clockwise")
-                                    .symbolEffect(.rotate, options: .nonRepeating, value: coordinator.isSyncing)
-                            }
-                        }
-                        .accessibilityLabel("Actualizar")
+        content
+            .toolbar {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button {
+                        Haptics.selection()
+                        mode = .month
+                    } label: {
+                        Image(systemName: "calendar")
                     }
+                    .accessibilityLabel("Vista de mes")
+
+                    Button {
+                        Haptics.light()
+                        Task { await coordinator.sync() }
+                    } label: {
+                        if coordinator.isSyncing {
+                            ProgressView()
+                        } else {
+                            Image(systemName: "arrow.clockwise")
+                                .symbolEffect(.rotate, options: .nonRepeating, value: coordinator.isSyncing)
+                        }
+                    }
+                    .accessibilityLabel("Actualizar")
                 }
-                .refreshable {
-                    await coordinator.sync()
-                }
-                .sheet(item: $selectedMeeting) { meeting in
-                    MeetingDetailView(meeting: meeting)
-                }
-        }
+            }
+            .refreshable {
+                await coordinator.sync()
+            }
+            .sheet(item: $selectedMeeting) { meeting in
+                MeetingDetailView(meeting: meeting)
+            }
     }
 
     @ViewBuilder
@@ -97,7 +108,7 @@ struct MeetingsListView: View {
                         }
                     } header: {
                         HStack(spacing: DS.Spacing.xs) {
-                            Text(headerTitle(for: group.day))
+                            Text(CalendarDayTitle.string(for: group.day))
                             Text("\(group.meetings.count)")
                                 .font(.caption2.weight(.bold))
                                 .monospacedDigit()
@@ -130,9 +141,12 @@ struct MeetingsListView: View {
             MeetingGroup(day: day, meetings: grouped[day]?.sorted(by: { $0.startDate < $1.startDate }) ?? [])
         }
     }
+}
 
-    private func headerTitle(for day: Date) -> String {
-        let calendar = Calendar.current
+/// "Hoy" / "Mañana" / the full date, as the day headers of the calendar tab
+/// name a day — shared by the events list and the month view.
+enum CalendarDayTitle {
+    static func string(for day: Date, calendar: Calendar = .current) -> String {
         if calendar.isDateInToday(day) { return appLocalized("Hoy") }
         if calendar.isDateInTomorrow(day) { return appLocalized("Mañana") }
         let formatter = DateFormatter()

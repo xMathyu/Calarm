@@ -51,10 +51,14 @@ final class EventKitCalendarSource: CalendarSource, @unchecked Sendable {
 
     /// Los calendarios que Calarm ofrece: los del usuario, sin los suscritos
     /// (festivos, calendarios deportivos) ni el de cumpleaños de Contactos, que
-    /// no son eventos que alguien haya agendado.
+    /// no son eventos que alguien haya agendado. Tampoco el calendario «Calarm»
+    /// que escribe `CalendarMirrorService`: leerlo haría sonar cada alarma dos
+    /// veces, una por la alarma y otra por su propia entrada.
     private func selectableCalendars() -> [EKCalendar] {
         eventStore.calendars(for: .event).filter { calendar in
-            calendar.type != .subscription && calendar.type != .birthday
+            calendar.type != .subscription
+                && calendar.type != .birthday
+                && !CalendarMirrorService.isMirrorCalendar(calendar)
         }
     }
 
@@ -104,7 +108,8 @@ final class EventKitCalendarSource: CalendarSource, @unchecked Sendable {
                 meetingLink: meetingLink,
                 organizer: event.organizer?.name,
                 location: event.location,
-                isParticipating: Self.isParticipating(in: event)
+                isParticipating: Self.isParticipating(in: event),
+                calendarColorHex: (event.calendar as EKCalendar?)?.cgColor.flatMap(Self.hex(from:))
             )
         }
         .sorted { $0.startDate < $1.startDate }

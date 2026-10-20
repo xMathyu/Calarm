@@ -108,7 +108,9 @@ struct ReminderEditorView: View {
     @State private var sharedBy: SharedByPerson?
     @State private var showingManageSheet = false
 
-    init(editing reminder: Reminder? = nil) {
+    /// `initialDate` siembra la fecha de una alarma NUEVA (la vista de mes la
+    /// pasa cuando se crea desde un día concreto); se ignora al editar.
+    init(editing reminder: Reminder? = nil, initialDate: Date? = nil) {
         self.editingReminder = reminder
         if let r = reminder {
             _title = State(initialValue: r.title)
@@ -131,7 +133,7 @@ struct ReminderEditorView: View {
             let initialCategory = ReminderCategory.reminder
             _title = State(initialValue: "")
             _notes = State(initialValue: "")
-            _date = State(initialValue: Date().addingTimeInterval(60 * 60))
+            _date = State(initialValue: initialDate ?? Date().addingTimeInterval(60 * 60))
             _categorySelection = State(initialValue: .builtin(initialCategory))
             _iconKind = State(initialValue: .symbol)
             _symbolName = State(initialValue: initialCategory.defaultSymbol)

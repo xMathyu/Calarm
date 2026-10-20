@@ -9,6 +9,9 @@ struct ReminderRowView: View {
     @Environment(CategoryStore.self) private var categoryStore
     let reminder: Reminder
     let nextOccurrence: Date?
+    /// Apagado en listas que ya son de un solo día (la vista de mes), donde
+    /// repetir "hoy" o el día de la semana junto a la hora no aporta nada.
+    var showsDay: Bool = true
 
     private var style: CategoryStyle { categoryStore.style(for: reminder) }
 
@@ -40,10 +43,12 @@ struct ReminderRowView: View {
                             .font(.subheadline.weight(.semibold))
                             .monospacedDigit()
                             .foregroundStyle(isSoon ? style.color : .primary)
-                        Text(dayLabel(for: next))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
+                        if showsDay {
+                            Text(dayLabel(for: next))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        }
                     }
                 } else {
                     // Expired: show WHEN it was, not the category — the date is the

@@ -457,7 +457,7 @@
 				INFOPLIST_FILE = Calarm/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSAlarmKitUsageDescription = "Calarm necesita programar alarmas para avisarte antes de tus reuniones de Teams.";
-				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Calarm necesita acceso a tu calendario para detectar reuniones de Microsoft Teams y programar alarmas automáticas.\n";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Calarm lee tus eventos del calendario para ponerles alarma y detectar enlaces de Microsoft Teams. Si lo activas en Ajustes, también guarda tus alarmas en un calendario llamado Calarm.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -495,7 +495,7 @@
 				INFOPLIST_FILE = Calarm/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSAlarmKitUsageDescription = "Calarm necesita programar alarmas para avisarte antes de tus reuniones de Teams.";
-				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Calarm necesita acceso a tu calendario para detectar reuniones de Microsoft Teams y programar alarmas automáticas.\n";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Calarm lee tus eventos del calendario para ponerles alarma y detectar enlaces de Microsoft Teams. Si lo activas en Ajustes, también guarda tus alarmas en un calendario llamado Calarm.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

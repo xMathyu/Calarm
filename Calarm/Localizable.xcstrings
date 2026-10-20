@@ -1,6 +1,182 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
+    "Guardar mis alarmas en el Calendario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save my alarms to Calendar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar mis alarmas en el Calendario"
+          }
+        }
+      }
+    },
+    "«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarm en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarm no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Save my alarms to Calendar” creates a calendar named Calarm in your Calendar app, with an entry for every active alarm that updates when you change or delete it. Calarm doesn't read that calendar, so nothing rings twice. Turning it off removes that calendar."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarm en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarm no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina."
+          }
+        }
+      }
+    },
+    "Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarm." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To save your alarms, open Settings and under Calendars choose “Full Access” for Calarm."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarm."
+          }
+        }
+      }
+    },
+    "Nada este día" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing on this day"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada este día"
+          }
+        }
+      }
+    },
+    "Mes anterior" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous month"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes anterior"
+          }
+        }
+      }
+    },
+    "Mes siguiente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next month"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes siguiente"
+          }
+        }
+      }
+    },
+    "Vista de mes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Month view"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vista de mes"
+          }
+        }
+      }
+    },
+    "Lista de eventos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event list"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista de eventos"
+          }
+        }
+      }
+    },
+    "Tus eventos del Calendario saldrán aquí junto a tus alarmas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Calendar events will show up here next to your alarms."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus eventos del Calendario saldrán aquí junto a tus alarmas."
+          }
+        }
+      }
+    },
+    "Permitir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir"
+          }
+        }
+      }
+    },
+    "Con alarmas o eventos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Has alarms or events"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con alarmas o eventos"
+          }
+        }
+      }
+    },
     "Alarmas que no te puedes perder" : {
       "localizations" : {
         "en" : {

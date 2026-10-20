@@ -25,6 +25,9 @@ extension Notification.Name {
     /// deleted reminder's UUID, so its shared record and delegation zone record
     /// can be removed.
     static let calarmReminderDeleted = Notification.Name("CalarmReminderDeleted")
+    /// Una entrada del calendario «Calarm» tocada en la app Calendario: su URL
+    /// trae el id de la alarma (`object`), que la lista abre en su editor.
+    static let calarmOpenReminder = Notification.Name("CalarmOpenReminder")
 }
 
 /// Single, delegate-independent capture point for an incoming CloudKit share.

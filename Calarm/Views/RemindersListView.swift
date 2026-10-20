@@ -70,6 +70,11 @@ struct RemindersListView: View {
                     ReminderEditorView(editing: reminder)
                 }
                 .task { await askForReviewIfEarned() }
+                .onReceive(NotificationCenter.default.publisher(for: .calarmOpenReminder)) { note in
+                    guard let id = note.object as? UUID,
+                          let reminder = reminders.first(where: { $0.id == id }) else { return }
+                    editorReminder = reminder
+                }
         }
     }
 

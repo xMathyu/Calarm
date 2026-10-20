@@ -4,10 +4,15 @@
 //
 
 import AlarmKit
+import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
     @Environment(AppSettings.self) private var settings
+    @Environment(ReminderScheduler.self) private var reminderScheduler
+    @Environment(\.modelContext) private var modelContext
+
+    @State private var showingMirrorAccessAlert = false
 
     let alarmScheduler: AlarmScheduler
     let onTeamsToggleChanged: (Bool) -> Void
@@ -184,10 +189,20 @@ struct SettingsView: View {
                             Task { await teamsCoordinatorProvider()?.sync() }
                         }
                     }
+                    Toggle(isOn: $settings.calendarMirrorEnabled) {
+                        Label("Guardar mis alarmas en el Calendario", systemImage: "calendar.badge.plus")
+                    }
+                    .onChange(of: settings.calendarMirrorEnabled) { _, newValue in
+                        Haptics.selection()
+                        Task { await handleCalendarMirrorToggle(newValue) }
+                    }
                 } header: {
                     sectionHeader("Calendario de Apple", systemImage: "calendar")
                 } footer: {
+                    VStack(alignment: .leading, spacing: DS.Spacing.sm) {
                     Text("Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian.")
+                    Text("«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarm en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarm no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina.")
+                    }
                 }
 
                 Section {
@@ -235,6 +250,16 @@ struct SettingsView: View {
             }
             .formStyle(.grouped)
             .navigationTitle("Ajustes")
+            .alert("Sin acceso al calendario", isPresented: $showingMirrorAccessAlert) {
+                Button("Abrir Ajustes") {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                }
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarm.")
+            }
             .animation(DS.Motion.snappy, value: alarmScheduler.authorizationState)
         }
     }
@@ -293,6 +318,22 @@ struct SettingsView: View {
             sectionHeader("Color de la app", systemImage: "paintbrush.fill")
         } footer: {
             Text("Tinta botones, acentos y resaltados. Las categorías mantienen sus propios colores.")
+        }
+    }
+
+    /// Encender el espejo pide el permiso del calendario y vuelca las alarmas;
+    /// si no hay acceso total el interruptor vuelve a apagado y se explica dónde
+    /// darlo. Apagarlo borra el calendario «Calarm».
+    private func handleCalendarMirrorToggle(_ enabled: Bool) async {
+        if enabled {
+            let reminders = (try? modelContext.fetch(FetchDescriptor<Reminder>())) ?? []
+            let started = await reminderScheduler.startCalendarMirror(reminders: reminders)
+            if !started {
+                settings.calendarMirrorEnabled = false
+                showingMirrorAccessAlert = true
+            }
+        } else {
+            reminderScheduler.stopCalendarMirror()
         }
     }
 

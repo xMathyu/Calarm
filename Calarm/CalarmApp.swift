@@ -106,6 +106,11 @@ struct CalarmApp: App {
             // The CloudKit share metadata callbacks never fire for these, since
             // iOS only raises those for icloud.com URLs it opens itself.
             .onOpenURL { url in
+                // El enlace de una entrada del calendario «Calarm» abre su alarma.
+                if let reminderID = CalendarMirrorService.reminderID(from: url) {
+                    NotificationCenter.default.post(name: .calarmOpenReminder, object: reminderID)
+                    return
+                }
                 guard InviteLink.isInvite(url) else { return }
                 Task { await acceptInviteLink(url) }
             }

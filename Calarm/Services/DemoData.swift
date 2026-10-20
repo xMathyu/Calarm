@@ -33,7 +33,8 @@ enum DemoData {
     }
 
     /// Screen to open straight away, from `-demoScreen <name>`: list, editor,
-    /// recurrence, tones, assistant, settings, helpers, calendar, onboarding.
+    /// recurrence, tones, assistant, settings, helpers, calendar (month view),
+    /// agenda (the events list), onboarding.
     /// Driving the captures this way keeps them deterministic — no tapping, same
     /// frame every run, in whichever language the app was launched with.
     static var requestedScreen: String? {
@@ -71,6 +72,13 @@ enum DemoData {
         // itself skip it — unless the run is specifically about the welcome
         // slides (`-demoScreen onboarding`).
         settings.onboardingCompleted = requestedScreen != "onboarding"
+
+        // La pestaña Calendario abre en la vista de mes; `agenda` pide la lista
+        // de eventos de siempre (la captura del botón «Unirse en Teams»).
+        UserDefaults.standard.set(
+            (requestedScreen == "agenda" ? CalendarTabView.Mode.agenda : .month).rawValue,
+            forKey: CalendarTabView.modeDefaultsKey
+        )
 
         seedCalendarEvents()
     }

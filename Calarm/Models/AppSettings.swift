@@ -89,6 +89,7 @@ final class AppSettings {
         static let delegationEnabled = "settings.delegationEnabled"
         static let selectedCalendarIDs = "settings.selectedCalendarIDs"
         static let onlyAttendingEvents = "settings.onlyAttendingEvents"
+        static let calendarMirrorEnabled = "settings.calendarMirrorEnabled"
         static let countdown = "settings.countdown"
         static let appearance = "settings.appearance"
         static let language = "settings.language"
@@ -176,6 +177,12 @@ final class AppSettings {
         didSet { defaults.set(onlyAttendingEvents, forKey: Key.onlyAttendingEvents) }
     }
 
+    /// Escribir cada alarma activa en un calendario «Calarm» del Calendario del
+    /// sistema (ver `CalendarMirrorService`). Apagado por defecto.
+    var calendarMirrorEnabled: Bool {
+        didSet { defaults.set(calendarMirrorEnabled, forKey: Key.calendarMirrorEnabled) }
+    }
+
     var appearance: AppearanceMode {
         didSet { defaults.set(appearance.rawValue, forKey: Key.appearance) }
     }
@@ -218,6 +225,7 @@ final class AppSettings {
         self.delegationEnabled = defaults.object(forKey: Key.delegationEnabled) as? Bool ?? false
         self.selectedCalendarIDs = (defaults.array(forKey: Key.selectedCalendarIDs) as? [String]).map(Set.init)
         self.onlyAttendingEvents = defaults.object(forKey: Key.onlyAttendingEvents) as? Bool ?? false
+        self.calendarMirrorEnabled = defaults.object(forKey: Key.calendarMirrorEnabled) as? Bool ?? false
         let storedAppearance = defaults.object(forKey: Key.appearance) as? Int
         self.appearance = storedAppearance.flatMap(AppearanceMode.init(rawValue:)) ?? .system
         self.accentColorHex = defaults.string(forKey: Key.accentColorHex)

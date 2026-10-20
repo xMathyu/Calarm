@@ -18,6 +18,9 @@ final class SyncCoordinator {
     /// concedido para que la pestaña no enseñe un aviso de permiso durante el
     /// instante que tarda la primera lectura.
     private(set) var access: CalendarAccess = .granted
+    /// Sube en cada lectura del calendario que termina bien. La vista de mes lo
+    /// observa para volver a pedir los eventos de su mes.
+    private(set) var syncRevision: Int = 0
 
     private let source: CalendarSource
     private let scheduler: AlarmScheduler
@@ -86,6 +89,7 @@ final class SyncCoordinator {
             )
             self.meetings = fetched
             self.lastError = nil
+            syncRevision += 1
 
             guard settings.alarmsEnabled else {
                 await cancelAllCalendarAlarms()
@@ -137,6 +141,17 @@ final class SyncCoordinator {
         } catch {
             self.lastError = error.localizedDescription
         }
+    }
+
+    /// Los eventos de un rango cualquiera, para la vista de mes: trae también
+    /// los que ya pasaron, que `meetings` no incluye. Solo lee; no programa nada.
+    func meetings(from start: Date, to end: Date) async -> [Meeting] {
+        guard await source.access == .granted else { return [] }
+        return (try? await source.upcomingMeetings(
+            from: start,
+            to: end,
+            calendarIDs: settings.selectedCalendarIDs
+        )) ?? []
     }
 
     /// Los calendarios entre los que se puede elegir en Ajustes.

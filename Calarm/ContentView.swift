@@ -34,11 +34,10 @@ struct ContentView: View {
             Tab("Alarmas", systemImage: "bell.fill", value: TabID.alarms) {
                 RemindersListView()
             }
-            if settings.teamsDetectionEnabled, let coordinator = teamsCoordinatorProvider() {
-                Tab("Calendario", systemImage: "calendar", value: TabID.calendar) {
-                    MeetingsListView()
-                        .environment(coordinator)
-                }
+            // Siempre visible: la vista de mes enseña las alarmas propias aunque
+            // la lectura del calendario esté apagada (entonces va sin eventos).
+            Tab("Calendario", systemImage: "calendar", value: TabID.calendar) {
+                CalendarTabView(coordinator: teamsCoordinatorProvider())
             }
             Tab("Asistente", systemImage: "sparkles", value: TabID.assistant) {
                 CalarmChatView()
@@ -56,6 +55,9 @@ struct ContentView: View {
             OnboardingView(alarmScheduler: alarmScheduler)
         }
         .modifier(DemoScreenModifier(selection: $selection))
+        .onReceive(NotificationCenter.default.publisher(for: .calarmOpenReminder)) { _ in
+            selection = .alarms
+        }
         #if DEBUG
         .sheet(isPresented: .constant(DemoData.requestedScreen == "editor")) {
             if let birthday = demoReminders.first(where: { $0.category == .birthday }) {
@@ -89,7 +91,7 @@ private struct DemoScreenModifier: ViewModifier {
         #if DEBUG
         content.task {
             switch DemoData.requestedScreen {
-            case "calendar": selection = .calendar
+            case "calendar", "agenda": selection = .calendar
             case "assistant": selection = .assistant
             case "settings", "helpers": selection = .settings
             default: break

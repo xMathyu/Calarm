@@ -42,6 +42,10 @@ struct Meeting: Identifiable, Hashable, Sendable {
     /// persona que se ven desde un calendario compartido. Las fuentes que no
     /// saben de invitados dicen que sí, que es lo que había antes.
     var isParticipating: Bool = true
+    /// Color del calendario al que pertenece, en `#RRGGBB`, para pintar su
+    /// punto en la vista de mes como lo hace la app Calendario. `nil` si no
+    /// se pudo leer.
+    var calendarColorHex: String? = nil
 
     var duration: TimeInterval {
         endDate.timeIntervalSince(startDate)

@@ -17,6 +17,11 @@ final class ReminderScheduler {
     private let scheduler: AlarmScheduler
     private let settings: AppSettings
     private let occurrencesPerReminder: Int
+    /// El calendario «Calarm» del Calendario del sistema. Solo actúa con
+    /// `settings.calendarMirrorEnabled`; se engancha aquí porque por aquí pasa
+    /// todo cambio de alarma, venga del editor, la lista, el asistente, Siri o
+    /// una persona de confianza.
+    private let mirror = CalendarMirrorService()
 
     /// Upper bound on concurrently-scheduled AlarmKit alarms per reminder across all
     /// of its schedules × lead times. Keeps multi-schedule alarms from exhausting the
@@ -34,6 +39,7 @@ final class ReminderScheduler {
         isWorking = true
         defer { isWorking = false }
         await applyReminder(reminder)
+        if settings.calendarMirrorEnabled { mirror.apply(reminder) }
     }
 
     /// (Re)programs all alarms for every reminder in `reminders`.
@@ -43,15 +49,31 @@ final class ReminderScheduler {
         for reminder in reminders {
             await applyReminder(reminder)
         }
+        // Con la lista completa se puede además quitar lo que sobre.
+        if settings.calendarMirrorEnabled { mirror.reconcile(reminders) }
     }
 
     /// Cancels every alarm associated with the given reminder.
     func cancelAlarms(for reminder: Reminder) async {
-        await scheduler.cancelAll(ownerID: ownerID(for: reminder))
+        await cancelAlarms(forReminderID: reminder.id)
     }
 
     func cancelAlarms(forReminderID id: UUID) async {
         await scheduler.cancelAll(ownerID: Self.ownerID(forReminderID: id))
+        if settings.calendarMirrorEnabled { mirror.remove(reminderID: id) }
+    }
+
+    /// Al encender «Guardar mis alarmas en el Calendario»: pide el permiso si
+    /// hace falta y vuelca todas las alarmas. `false` si no hay acceso total.
+    func startCalendarMirror(reminders: [Reminder]) async -> Bool {
+        guard await mirror.requestAccessIfNeeded() else { return false }
+        mirror.reconcile(reminders)
+        return true
+    }
+
+    /// Al apagarlo: el calendario «Calarm» se va con todas sus entradas.
+    func stopCalendarMirror() {
+        mirror.removeCalendar()
     }
 
     static func ownerID(forReminderID id: UUID) -> String {
