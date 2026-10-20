@@ -33,6 +33,11 @@ enum InviteLink {
     /// chose to leave the app association off.
     static let scheme = "calarm"
 
+    /// The query parameter that carries the alarm's photo (`InvitePhoto`):
+    /// base64url JPEG bytes. Kept out of the payload so a photo can never break
+    /// the invitation itself, and spared a second round of base64.
+    static let photoQueryName = "f"
+
     /// Wire format version, mirrored by `INVITE_VERSION` on the web side.
     private static let version = 1
 
@@ -56,6 +61,9 @@ enum InviteLink {
         let c: String?
         /// The emoji chosen as the alarm's icon, when there is one.
         let e: String?
+        /// Otherwise the SF Symbol name of its icon. The site can't draw SF
+        /// Symbols, so it maps the name to a look-alike glyph of its own.
+        let y: String?
         /// The CloudKit share URL, which is what the app actually needs.
         let s: String
     }
@@ -84,6 +92,8 @@ enum InviteLink {
         date: Date,
         tintHex: String?,
         emoji: String? = nil,
+        symbol: String? = nil,
+        photo: Data? = nil,
         shareURL: URL,
         languageCode: String = LocalizationManager.shared.currentLocale.language.languageCode?.identifier ?? "es"
     ) -> URL? {
@@ -97,6 +107,7 @@ enum InviteLink {
             l: languageCode == "en" ? "en" : "es",
             c: tintHex,
             e: emoji,
+            y: symbol,
             s: shareURL.absoluteString
         )
 
@@ -107,6 +118,10 @@ enum InviteLink {
         // The trailing slash is the site's canonical form; without it Vercel
         // answers with a redirect.
         components.path = "/i/\(base64URLEncoded(data))/"
+        if let photo, !photo.isEmpty {
+            // base64url's alphabet is already query-safe.
+            components.percentEncodedQuery = "\(photoQueryName)=\(base64URLEncoded(photo))"
+        }
         return components.url
     }
 

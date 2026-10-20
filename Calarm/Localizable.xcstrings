@@ -1,485 +1,8 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
-    "Guardar mis alarmas en el Calendario" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save my alarms to Calendar"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Guardar mis alarmas en el Calendario"
-          }
-        }
-      }
-    },
-    "«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarm en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarm no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "“Save my alarms to Calendar” creates a calendar named Calarm in your Calendar app, with an entry for every active alarm that updates when you change or delete it. Calarm doesn't read that calendar, so nothing rings twice. Turning it off removes that calendar."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarm en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarm no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina."
-          }
-        }
-      }
-    },
-    "Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarm." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "To save your alarms, open Settings and under Calendars choose “Full Access” for Calarm."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarm."
-          }
-        }
-      }
-    },
-    "Nada este día" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nothing on this day"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nada este día"
-          }
-        }
-      }
-    },
-    "Mes anterior" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Previous month"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mes anterior"
-          }
-        }
-      }
-    },
-    "Mes siguiente" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next month"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mes siguiente"
-          }
-        }
-      }
-    },
-    "Vista de mes" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Month view"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vista de mes"
-          }
-        }
-      }
-    },
-    "Lista de eventos" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Event list"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lista de eventos"
-          }
-        }
-      }
-    },
-    "Tus eventos del Calendario saldrán aquí junto a tus alarmas." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your Calendar events will show up here next to your alarms."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tus eventos del Calendario saldrán aquí junto a tus alarmas."
-          }
-        }
-      }
-    },
-    "Permitir" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Allow"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permitir"
-          }
-        }
-      }
-    },
-    "Con alarmas o eventos" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Has alarms or events"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Con alarmas o eventos"
-          }
-        }
-      }
-    },
-    "Alarmas que no te puedes perder" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alarms you can't miss"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alarmas que no te puedes perder"
-          }
-        }
-      }
-    },
-    "Suenan fuerte aunque el iPhone esté en silencio, bloqueado o en modo Enfoque." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "They ring loud even when your iPhone is silent, locked or in Focus."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suenan fuerte aunque el iPhone esté en silencio, bloqueado o en modo Enfoque."
-          }
-        }
-      }
-    },
-    "Cumpleaños que se repiten solos" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Birthdays that repeat on their own"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cumpleaños que se repiten solos"
-          }
-        }
-      }
-    },
-    "Ponle la foto de la persona y se repite cada año. Cada 2 semanas, los lunes y miércoles, cada 21 días: la recurrencia que necesites." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add the person's photo and it repeats every year. Every 2 weeks, Mondays and Wednesdays, every 21 days — whatever recurrence you need."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ponle la foto de la persona y se repite cada año. Cada 2 semanas, los lunes y miércoles, cada 21 días: la recurrencia que necesites."
-          }
-        }
-      }
-    },
-    "Tus eventos también suenan" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your events ring too"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tus eventos también suenan"
-          }
-        }
-      }
-    },
-    "Calarm lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calarm reads your Calendar and gives each event up to 3 alerts. If it's a Teams, Zoom or Meet call, a Join button appears."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calarm lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte."
-          }
-        }
-      }
-    },
-    "Díselo y listo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Just say it"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Díselo y listo"
-          }
-        }
-      }
-    },
-    "«Recuérdame la pastilla todos los días a las 9». El asistente la programa por ti, sin que nada salga de tu iPhone." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "“Remind me to take my pill every day at 9.” The assistant schedules it for you, and nothing leaves your iPhone."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "«Recuérdame la pastilla todos los días a las 9». El asistente la programa por ti, sin que nada salga de tu iPhone."
-          }
-        }
-      }
-    },
-    "Un permiso y ya está" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "One permission and you're set"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un permiso y ya está"
-          }
-        }
-      }
-    },
-    "iOS necesita tu permiso para que Calarm programe alarmas que suenen en silencio y sobre la pantalla bloqueada." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS needs your permission for Calarm to schedule alarms that ring in silent mode and over the lock screen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS necesita tu permiso para que Calarm programe alarmas que suenen en silencio y sobre la pantalla bloqueada."
-          }
-        }
-      }
-    },
-    "Activar alarmas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Turn on alarms"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activar alarmas"
-          }
-        }
-      }
-    },
-    "Continuar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuar"
-          }
-        }
-      }
-    },
-    "Omitir" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skip"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Omitir"
-          }
-        }
-      }
-    },
-    "¿No tienes Calarm? Descárgala aquí:" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Don't have Calarm? Get it here:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿No tienes Calarm? Descárgala aquí:"
-          }
-        }
-      }
-    },
-    "Compartir Calarm" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Share Calarm"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compartir Calarm"
-          }
-        }
-      }
-    },
-    "Alarmas que suenan aunque el iPhone esté en silencio: cumpleaños, medicamentos, citas y más." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alarms that ring even when your iPhone is silent: birthdays, meds, appointments and more."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alarmas que suenan aunque el iPhone esté en silencio: cumpleaños, medicamentos, citas y más."
-          }
-        }
-      }
-    },
-    "Vencida" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Expired"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vencida"
-          }
-        }
-      }
-    },
-    "Vencidas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Expired"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vencidas"
-          }
-        }
-      }
-    },
-    "Alarma vencida" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alarm expired"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alarma vencida"
-          }
-        }
-      }
+    "" : {
+
     },
     " sigue la configuración del sistema." : {
       "extractionState" : "stale",
@@ -494,6 +17,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : " sigue la configuración del sistema."
+          }
+        }
+      }
+    },
+    "¡Dale, sacude!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come on, shake!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Dale, sacude!"
+          }
+        }
+      }
+    },
+    "¡Sigue!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep going!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Sigue!"
+          }
+        }
+      }
+    },
+    "¡Ya casi!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Almost there!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Ya casi!"
           }
         }
       }
@@ -579,6 +150,22 @@
         }
       }
     },
+    "¿No tienes Calarm? Descárgala aquí:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don't have Calarm? Get it here:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿No tienes Calarm? Descárgala aquí:"
+          }
+        }
+      }
+    },
     "¿Qué quieres recordar?" : {
       "localizations" : {
         "en" : {
@@ -610,6 +197,58 @@
           }
         }
       }
+    },
+    "«%@» ya está en tus alarmas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” is now in your alarms"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» ya está en tus alarmas"
+          }
+        }
+      }
+    },
+    "«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarm en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarm no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Save my alarms to Calendar” creates a calendar named Calarm in your Calendar app, with an entry for every active alarm that updates when you change or delete it. Calarm doesn't read that calendar, so nothing rings twice. Turning it off removes that calendar."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarm en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarm no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina."
+          }
+        }
+      }
+    },
+    "«Recuérdame la pastilla todos los días a las 9». El asistente la programa por ti, sin que nada salga de tu iPhone." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Remind me to take my pill every day at 9.” The assistant schedules it for you, and nothing leaves your iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Recuérdame la pastilla todos los días a las 9». El asistente la programa por ti, sin que nada salga de tu iPhone."
+          }
+        }
+      }
+    },
+    "%@" : {
+      "comment" : "Literal text that will be interpolated into a localized string.",
+      "isCommentAutoGenerated" : true
     },
     "%@ – %@" : {
       "localizations" : {
@@ -859,6 +498,22 @@
         }
       }
     },
+    "%lld / %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld"
+          }
+        }
+      }
+    },
     "%lld %@" : {
       "shouldTranslate" : false
     },
@@ -878,8 +533,21 @@
         }
       }
     },
-    "+%lld" : {
-
+    "%lld seleccionados" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld selected"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld seleccionados"
+          }
+        }
+      }
     },
     "1 día" : {
       "localizations" : {
@@ -957,6 +625,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "1 minuto"
+          }
+        }
+      }
+    },
+    "1 minuto antes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 minute before"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 minuto antes"
           }
         }
       }
@@ -1053,6 +737,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "2 horas antes"
+          }
+        }
+      }
+    },
+    "2 minutos antes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 minutes before"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 minutos antes"
           }
         }
       }
@@ -1361,6 +1061,22 @@
         }
       }
     },
+    "Abre Calarm para resolver el reto que apaga la alarma." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens Calarm to solve the challenge that turns off the alarm."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Calarm para resolver el reto que apaga la alarma."
+          }
+        }
+      }
+    },
     "Abre el enlace de la reunión en Microsoft Teams." : {
       "localizations" : {
         "en" : {
@@ -1507,6 +1223,7 @@
       }
     },
     "Activar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1518,6 +1235,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activar"
+          }
+        }
+      }
+    },
+    "Activar alarmas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on alarms"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar alarmas"
           }
         }
       }
@@ -1587,6 +1320,22 @@
         }
       }
     },
+    "Agregando la alarma compartida…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adding the shared alarm…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregando la alarma compartida…"
+          }
+        }
+      }
+    },
     "Agregar" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1632,6 +1381,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Agregar horario"
+          }
+        }
+      }
+    },
+    "Ahora repítela" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now repeat it"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora repítela"
           }
         }
       }
@@ -1776,6 +1541,22 @@
         }
       }
     },
+    "Alarma vencida" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarm expired"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarma vencida"
+          }
+        }
+      }
+    },
     "Alarmas" : {
       "localizations" : {
         "en" : {
@@ -1809,6 +1590,7 @@
       }
     },
     "Alarmas anuales que se repiten automáticamente." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1841,6 +1623,38 @@
         }
       }
     },
+    "Alarmas que no te puedes perder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarms you can't miss"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarmas que no te puedes perder"
+          }
+        }
+      }
+    },
+    "Alarmas que suenan aunque el iPhone esté en silencio: cumpleaños, medicamentos, citas y más." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarms that ring even when your iPhone is silent: birthdays, meds, appointments and more."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarmas que suenan aunque el iPhone esté en silencio: cumpleaños, medicamentos, citas y más."
+          }
+        }
+      }
+    },
     "Alguien" : {
       "localizations" : {
         "en" : {
@@ -1853,6 +1667,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alguien"
+          }
+        }
+      }
+    },
+    "Amarillo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yellow"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amarillo"
           }
         }
       }
@@ -2002,6 +1832,86 @@
         }
       }
     },
+    "Apunta la cámara al código que querrás escanear para apagar la alarma." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point the camera at the code you'll scan to turn off the alarm."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apunta la cámara al código que querrás escanear para apagar la alarma."
+          }
+        }
+      }
+    },
+    "Apunta la cámara al código registrado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point the camera at the registered code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apunta la cámara al código registrado"
+          }
+        }
+      }
+    },
+    "Arpa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Harp"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arpa"
+          }
+        }
+      }
+    },
+    "Arpegio" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arpeggio"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arpegio"
+          }
+        }
+      }
+    },
+    "Arriba, el mundo te espera" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rise up, the world is waiting for you"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arriba, el mundo te espera"
+          }
+        }
+      }
+    },
     "Asistente" : {
       "localizations" : {
         "en" : {
@@ -2014,6 +1924,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Asistente"
+          }
+        }
+      }
+    },
+    "Atento…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get ready…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atento…"
+          }
+        }
+      }
+    },
+    "Atrapa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catch"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atrapa"
+          }
+        }
+      }
+    },
+    "Atrapados %lld de %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caught %lld of %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atrapados %lld de %lld"
           }
         }
       }
@@ -2035,6 +1993,7 @@
       }
     },
     "Aunque el iPhone esté en silencio, bloqueado o en Focus." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2115,6 +2074,38 @@
         }
       }
     },
+    "Aviso por defecto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default alert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aviso por defecto"
+          }
+        }
+      }
+    },
+    "Avisos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos"
+          }
+        }
+      }
+    },
     "Avisos (máximo %lld)" : {
       "localizations" : {
         "en" : {
@@ -2127,6 +2118,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avisos (máximo %lld)"
+          }
+        }
+      }
+    },
+    "Azul" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blue"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Azul"
           }
         }
       }
@@ -2148,6 +2155,7 @@
       }
     },
     "Bienvenido a Calarm" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2389,6 +2397,22 @@
         }
       }
     },
+    "Cada mañana es una nueva oportunidad" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every morning is a new chance"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada mañana es una nueva oportunidad"
+          }
+        }
+      }
+    },
     "Cada mes" : {
       "localizations" : {
         "en" : {
@@ -2406,6 +2430,7 @@
       }
     },
     "Cada N días, semanas, meses o días específicos." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2437,6 +2462,9 @@
         }
       }
     },
+    "Calarm" : {
+
+    },
     "Calarm es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más." : {
       "localizations" : {
         "en" : {
@@ -2449,6 +2477,71 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Calarm es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más."
+          }
+        }
+      }
+    },
+    "Calarm lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm reads your Calendar and gives each event up to 3 alerts. If it's a Teams, Zoom or Meet call, a Join button appears."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte."
+          }
+        }
+      }
+    },
+    "Calarm mira todos tus calendarios, incluidos los que agregues después." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm watches every one of your calendars, including any you add later."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm mira todos tus calendarios, incluidos los que agregues después."
+          }
+        }
+      }
+    },
+    "Calarm necesita acceso a tu calendario para detectar reuniones." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm needs calendar access to detect meetings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm necesita acceso a tu calendario para detectar reuniones."
+          }
+        }
+      }
+    },
+    "Calarm necesita la cámara para leer el código. Actívala en Ajustes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm needs the camera to read the code. Turn it on in Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm necesita la cámara para leer el código. Actívala en Ajustes."
           }
         }
       }
@@ -2485,19 +2578,18 @@
         }
       }
     },
-    "Calarm necesita acceso a tu calendario para detectar reuniones." : {
-      "extractionState" : "stale",
+    "Calarm no tiene permiso para contar tus pasos. Actívalo en Ajustes › Privacidad y seguridad › Movimiento y forma física." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm needs calendar access to detect meetings."
+            "value" : "Calarm doesn't have permission to count your steps. Turn it on in Settings › Privacy & Security › Motion & Fitness."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm necesita acceso a tu calendario para detectar reuniones."
+            "value" : "Calarm no tiene permiso para contar tus pasos. Actívalo en Ajustes › Privacidad y seguridad › Movimiento y forma física."
           }
         }
       }
@@ -2514,6 +2606,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Calarm te dice qué alarmas tienes hoy con un resumen natural."
+          }
+        }
+      }
+    },
+    "Cálculo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Math"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cálculo"
           }
         }
       }
@@ -2550,6 +2658,38 @@
         }
       }
     },
+    "Calendarios" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendars"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendarios"
+          }
+        }
+      }
+    },
+    "Cambiar código" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar código"
+          }
+        }
+      }
+    },
     "Cambiar foto" : {
       "localizations" : {
         "en" : {
@@ -2578,6 +2718,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cambiar icono"
+          }
+        }
+      }
+    },
+    "Camina con el teléfono en la mano." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Walk with your phone in your hand."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camina con el teléfono en la mano."
+          }
+        }
+      }
+    },
+    "Caminar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Walk"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caminar"
+          }
+        }
+      }
+    },
+    "Campana" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chime"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Campana"
           }
         }
       }
@@ -2611,6 +2799,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cargando contactos…"
+          }
+        }
+      }
+    },
+    "Carta boca abajo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face-down card"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carta boca abajo"
           }
         }
       }
@@ -2679,6 +2883,38 @@
         }
       }
     },
+    "Código QR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código QR"
+          }
+        }
+      }
+    },
+    "Código registrado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registered code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código registrado"
+          }
+        }
+      }
+    },
     "Color" : {
       "localizations" : {
         "en" : {
@@ -2711,7 +2947,24 @@
         }
       }
     },
+    "Colores" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colors"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colores"
+          }
+        }
+      }
+    },
     "Comenzar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2793,6 +3046,22 @@
         }
       }
     },
+    "Compartida por %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shared by %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartida por %@"
+          }
+        }
+      }
+    },
     "Compartido" : {
       "localizations" : {
         "en" : {
@@ -2857,6 +3126,22 @@
         }
       }
     },
+    "Compartir Calarm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share Calarm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir Calarm"
+          }
+        }
+      }
+    },
     "Compartir: diagnóstico" : {
       "localizations" : {
         "en" : {
@@ -2869,6 +3154,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compartir: diagnóstico"
+          }
+        }
+      }
+    },
+    "Comprobar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprobar"
+          }
+        }
+      }
+    },
+    "Con alarmas o eventos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Has alarms or events"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con alarmas o eventos"
           }
         }
       }
@@ -2889,6 +3206,22 @@
         }
       }
     },
+    "Con cuánta anticipación suena una alarma nueva y cada evento del calendario que no tenga sus propios avisos. Las alarmas que ya existen no cambian." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How far ahead of its time a new alarm rings, and every calendar event that has no alerts of its own. Alarms that already exist don't change."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con cuánta anticipación suena una alarma nueva y cada evento del calendario que no tenga sus propios avisos. Las alarmas que ya existen no cambian."
+          }
+        }
+      }
+    },
     "Conecta tu calendario" : {
       "localizations" : {
         "en" : {
@@ -2905,6 +3238,22 @@
         }
       }
     },
+    "Continuar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        }
+      }
+    },
     "Continuar de todas formas" : {
       "localizations" : {
         "en" : {
@@ -2917,6 +3266,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Continuar de todas formas"
+          }
+        }
+      }
+    },
+    "Copia una frase letra por letra, sin autocorrector." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy a sentence letter by letter, with no autocorrect."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copia una frase letra por letra, sin autocorrector."
           }
         }
       }
@@ -2938,6 +3303,7 @@
       }
     },
     "Crea alarmas para cumpleaños, aniversarios y eventos personales. Suenan aunque tu iPhone esté en silencio." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3248,6 +3614,22 @@
         }
       }
     },
+    "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When on, Calarm reads events from your Calendar app and gives each one an alarm at the default alert time. Each event can change its own from its screen. If the event has a Microsoft Teams, Zoom or Google Meet link, a button appears to join.\n\n\"Only events I'm attending\" leaves without an alarm the ones you declined and the ones that belong to someone else, such as those on a shared calendar. Events you gave alerts to by hand don't change."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian."
+          }
+        }
+      }
+    },
     "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3313,6 +3695,38 @@
         }
       }
     },
+    "Cuenta regresiva" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Countdown"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta regresiva"
+          }
+        }
+      }
+    },
+    "Cuerpo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Body"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuerpo"
+          }
+        }
+      }
+    },
     "Cumple de mi mamá el 15 de marzo cada año" : {
       "localizations" : {
         "en" : {
@@ -3345,7 +3759,24 @@
         }
       }
     },
+    "Cumpleaños que se repiten solos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birthdays that repeat on their own"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cumpleaños que se repiten solos"
+          }
+        }
+      }
+    },
     "Cumpleaños y aniversarios" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3357,6 +3788,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cumpleaños y aniversarios"
+          }
+        }
+      }
+    },
+    "Da la vuelta a las cartas y encuentra todas las parejas de emojis." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flip the cards and find every emoji pair."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da la vuelta a las cartas y encuentra todas las parejas de emojis."
+          }
+        }
+      }
+    },
+    "Da unos pasos con el teléfono en la mano: cuenta los pasos de verdad." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take a few steps with the phone in hand: it counts real steps."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da unos pasos con el teléfono en la mano: cuenta los pasos de verdad."
           }
         }
       }
@@ -3519,6 +3982,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Describe la alarma en lenguaje natural y Calarm la crea con IA."
+          }
+        }
+      }
+    },
+    "Desde" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starts"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desde"
+          }
+        }
+      }
+    },
+    "Despierta, que la vida no espera" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wake up, life does not wait"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Despierta, que la vida no espera"
           }
         }
       }
@@ -3716,6 +4211,54 @@
         }
       }
     },
+    "Difícil" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hard"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Difícil"
+          }
+        }
+      }
+    },
+    "Dificultad" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Difficulty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dificultad"
+          }
+        }
+      }
+    },
+    "Díselo y listo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Just say it"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Díselo y listo"
+          }
+        }
+      }
+    },
     "Dom" : {
       "localizations" : {
         "en" : {
@@ -3781,6 +4324,22 @@
         }
       }
     },
+    "El café no se va a hacer solo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The coffee will not make itself"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El café no se va a hacer solo"
+          }
+        }
+      }
+    },
     "El calendario no está disponible en este dispositivo." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3794,6 +4353,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "El calendario no está disponible en este dispositivo."
+          }
+        }
+      }
+    },
+    "El contador se actualiza cada pocos segundos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The counter updates every few seconds."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El contador se actualiza cada pocos segundos."
+          }
+        }
+      }
+    },
+    "El distinto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odd one out"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El distinto"
           }
         }
       }
@@ -3826,6 +4417,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "el modelo aún se está descargando, intenta más tarde"
+          }
+        }
+      }
+    },
+    "El sol ya salió y tú también" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The sun is up and so are you"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El sol ya salió y tú también"
+          }
+        }
+      }
+    },
+    "El tono con el que suenan las alarmas nuevas y las que no tienen uno propio. Cada alarma puede elegir el suyo desde su editor." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The tone used by new alarms and by any alarm without its own. Each alarm can pick a different one in its editor."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El tono con el que suenan las alarmas nuevas y las que no tienen uno propio. Cada alarma puede elegir el suyo desde su editor."
+          }
+        }
+      }
+    },
+    "El tono del sistema se repite hasta que detienes la alarma. Los demás suenan 28 segundos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The system tone repeats until you stop the alarm. The others play for 28 seconds."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El tono del sistema se repite hasta que detienes la alarma. Los demás suenan 28 segundos."
           }
         }
       }
@@ -3943,6 +4582,38 @@
         }
       }
     },
+    "Encuentra el emoji que no es como los demás." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find the emoji that isn't like the others."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encuentra el emoji que no es como los demás."
+          }
+        }
+      }
+    },
+    "Entendido" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Got it"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entendido"
+          }
+        }
+      }
+    },
     "Enviar" : {
       "localizations" : {
         "en" : {
@@ -4025,6 +4696,118 @@
         }
       }
     },
+    "Esa fecha y hora ya pasaron: la alarma no sonará." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That date and time have already passed: the alarm won't ring."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esa fecha y hora ya pasaron: la alarma no sonará."
+          }
+        }
+      }
+    },
+    "Escanea un código QR o de barras que registres, por ejemplo el de la pasta de dientes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan a QR code or barcode you register, such as the one on your toothpaste."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanea un código QR o de barras que registres, por ejemplo el de la pasta de dientes."
+          }
+        }
+      }
+    },
+    "Escribe aquí la frase" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type the phrase here"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe aquí la frase"
+          }
+        }
+      }
+    },
+    "Escríbela tal cual, con tildes y mayúsculas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type it exactly, accents and capitals included."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escríbela tal cual, con tildes y mayúsculas."
+          }
+        }
+      }
+    },
+    "Escribir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typing"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribir"
+          }
+        }
+      }
+    },
+    "Ese no es el código registrado." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That's not the registered code."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ese no es el código registrado."
+          }
+        }
+      }
+    },
+    "Ese no es el color de la tinta." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That is not the ink color."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ese no es el color de la tinta."
+          }
+        }
+      }
+    },
     "Español" : {
       "localizations" : {
         "en" : {
@@ -4057,6 +4840,38 @@
         }
       }
     },
+    "Este dispositivo no cuenta pasos: sacude el teléfono en su lugar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This device can't count steps: shake your phone instead."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este dispositivo no cuenta pasos: sacude el teléfono en su lugar."
+          }
+        }
+      }
+    },
+    "Este dispositivo no puede escanear códigos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This device can't scan codes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este dispositivo no puede escanear códigos."
+          }
+        }
+      }
+    },
     "este dispositivo no soporta Apple Intelligence" : {
       "localizations" : {
         "en" : {
@@ -4069,6 +4884,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "este dispositivo no soporta Apple Intelligence"
+          }
+        }
+      }
+    },
+    "Este dispositivo no tiene sensores de movimiento." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This device has no motion sensors."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este dispositivo no tiene sensores de movimiento."
           }
         }
       }
@@ -4102,6 +4933,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Evento sin título"
+          }
+        }
+      }
+    },
+    "Fácil" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easy"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fácil"
+          }
+        }
+      }
+    },
+    "Falta registrar el código: sin él la alarma se apaga como siempre." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No code registered yet: without one the alarm turns off as usual."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta registrar el código: sin él la alarma se apaga como siempre."
           }
         }
       }
@@ -4171,6 +5034,7 @@
       }
     },
     "Foto o icono" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4182,6 +5046,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Foto o icono"
+          }
+        }
+      }
+    },
+    "Frase %lld de %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phrase %lld of %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frase %lld de %lld"
           }
         }
       }
@@ -4234,6 +5114,22 @@
         }
       }
     },
+    "Guardar mis alarmas en el Calendario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save my alarms to Calendar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar mis alarmas en el Calendario"
+          }
+        }
+      }
+    },
     "Hablar" : {
       "localizations" : {
         "en" : {
@@ -4262,6 +5158,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "hasta %@"
+          }
+        }
+      }
+    },
+    "Hay un error: revisa lo escrito." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is a mistake: check what you typed."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hay un error: revisa lo escrito."
           }
         }
       }
@@ -4298,6 +5210,22 @@
         }
       }
     },
+    "hoy" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "today"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hoy"
+          }
+        }
+      }
+    },
     "Hoy" : {
       "localizations" : {
         "en" : {
@@ -4310,6 +5238,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hoy"
+          }
+        }
+      }
+    },
+    "Hoy va a ser un gran día" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today is going to be a great day"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoy va a ser un gran día"
           }
         }
       }
@@ -4346,7 +5290,24 @@
         }
       }
     },
+    "Importar audio…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import audio…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importar audio…"
+          }
+        }
+      }
+    },
     "Inactiva" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4358,6 +5319,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inactiva"
+          }
+        }
+      }
+    },
+    "Inclina el teléfono para llevar la bola hasta la bandera." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilt your phone to roll the ball to the flag."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inclina el teléfono para llevar la bola hasta la bandera."
+          }
+        }
+      }
+    },
+    "Inclina el teléfono para llevar la bola hasta la salida." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilt the phone to roll the ball to the exit."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inclina el teléfono para llevar la bola hasta la salida."
+          }
+        }
+      }
+    },
+    "Incorrecto, inténtalo otra vez." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wrong, try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incorrecto, inténtalo otra vez."
           }
         }
       }
@@ -4508,6 +5517,22 @@
         }
       }
     },
+    "iOS necesita tu permiso para que Calarm programe alarmas que suenen en silencio y sobre la pantalla bloqueada." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS needs your permission for Calarm to schedule alarms that ring in silent mode and over the lock screen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS necesita tu permiso para que Calarm programe alarmas que suenen en silencio y sobre la pantalla bloqueada."
+          }
+        }
+      }
+    },
     "Ir" : {
       "localizations" : {
         "en" : {
@@ -4556,6 +5581,54 @@
         }
       }
     },
+    "La alarma está apagada: no sonará hasta que la enciendas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The alarm is off: it won't ring until you turn it on."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La alarma está apagada: no sonará hasta que la enciendas."
+          }
+        }
+      }
+    },
+    "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar al minuto y a los 2, 5 y 10 minutos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The alarm won't turn off until you solve the challenge. If you stop it from the Lock Screen or your watch, it rings again a minute later and at 2, 5 and 10 minutes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar al minuto y a los 2, 5 y 10 minutos."
+          }
+        }
+      }
+    },
+    "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The alarm won't turn off until you solve the challenge. If you stop it from the Lock Screen or your watch, it rings again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar."
+          }
+        }
+      }
+    },
     "La alarma sonará en cada uno de estos momentos antes del inicio del evento. Si el evento tiene ubicación, en la alarma aparecerá un botón ‘Ir’ que la detiene y abre Maps con direcciones." : {
       "localizations" : {
         "en" : {
@@ -4572,6 +5645,22 @@
         }
       }
     },
+    "La alarma sonará según los horarios y avisos de arriba." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The alarm will ring according to the schedules and alerts above."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La alarma sonará según los horarios y avisos de arriba."
+          }
+        }
+      }
+    },
     "La alarma sonará una vez por cada aviso configurado." : {
       "localizations" : {
         "en" : {
@@ -4584,6 +5673,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "La alarma sonará una vez por cada aviso configurado."
+          }
+        }
+      }
+    },
+    "La cama puede esperar, tú no" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The bed can wait, you cannot"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La cama puede esperar, tú no"
+          }
+        }
+      }
+    },
+    "Laberinto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maze"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laberinto"
           }
         }
       }
@@ -4620,6 +5741,22 @@
         }
       }
     },
+    "Levantarte" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get up"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Levantarte"
+          }
+        }
+      }
+    },
     "Limpiar" : {
       "localizations" : {
         "en" : {
@@ -4648,6 +5785,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Limpiar filtros"
+          }
+        }
+      }
+    },
+    "Lista de eventos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event list"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista de eventos"
           }
         }
       }
@@ -4716,6 +5869,22 @@
         }
       }
     },
+    "Lo rechazaste o es de otra persona, y en Ajustes pediste solo los eventos a los que asistes. Si guardas avisos aquí, este evento sonará igual." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You declined it or it belongs to someone else, and in Settings you asked for only the events you attend. If you save alerts here, this event rings anyway."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo rechazaste o es de otra persona, y en Ajustes pediste solo los eventos a los que asistes. Si guardas avisos aquí, este evento sonará igual."
+          }
+        }
+      }
+    },
     "Location" : {
       "localizations" : {
         "es" : {
@@ -4738,6 +5907,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lun"
+          }
+        }
+      }
+    },
+    "mañana" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tomorrow"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mañana"
           }
         }
       }
@@ -4774,6 +5959,22 @@
         }
       }
     },
+    "Marimba" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marimba"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marimba"
+          }
+        }
+      }
+    },
     "Más adelante" : {
       "localizations" : {
         "en" : {
@@ -4791,6 +5992,7 @@
       }
     },
     "Más opciones" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4802,6 +6004,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Más opciones"
+          }
+        }
+      }
+    },
+    "Media" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medium"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media"
+          }
+        }
+      }
+    },
+    "Memoria" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memoria"
           }
         }
       }
@@ -4838,6 +6072,22 @@
         }
       }
     },
+    "Mente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mind"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mente"
+          }
+        }
+      }
+    },
     "mes" : {
       "localizations" : {
         "en" : {
@@ -4850,6 +6100,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "mes"
+          }
+        }
+      }
+    },
+    "Mes anterior" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous month"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes anterior"
+          }
+        }
+      }
+    },
+    "Mes siguiente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next month"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes siguiente"
           }
         }
       }
@@ -4902,6 +6184,118 @@
         }
       }
     },
+    "Mis tonos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My tones"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mis tonos"
+          }
+        }
+      }
+    },
+    "Modo de prueba: la alarma no está sonando." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice mode: the alarm isn't ringing."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de prueba: la alarma no está sonando."
+          }
+        }
+      }
+    },
+    "Morado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purple"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morado"
+          }
+        }
+      }
+    },
+    "Muestra la cuenta atrás en la Isla Dinámica y en la pantalla bloqueada durante los minutos previos a cada alarma. La alarma sigue sonando a su hora." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows the countdown in the Dynamic Island and on the Lock Screen during the minutes before each alarm. The alarm still rings at its time."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra la cuenta atrás en la Isla Dinámica y en la pantalla bloqueada durante los minutos previos a cada alarma. La alarma sigue sonando a su hora."
+          }
+        }
+      }
+    },
+    "Nada este día" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing on this day"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada este día"
+          }
+        }
+      }
+    },
+    "Nadie va a vivir tu día por ti" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No one will live your day for you"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nadie va a vivir tu día por ti"
+          }
+        }
+      }
+    },
+    "Naranja" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orange"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naranja"
+          }
+        }
+      }
+    },
     "Ningún recordatorio coincide con tus filtros." : {
       "localizations" : {
         "en" : {
@@ -4914,6 +6308,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ningún recordatorio coincide con tus filtros."
+          }
+        }
+      }
+    },
+    "Ninguno" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguno"
+          }
+        }
+      }
+    },
+    "No encontré calendarios en este iPhone." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I found no calendars on this iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No encontré calendarios en este iPhone."
           }
         }
       }
@@ -4967,6 +6393,38 @@
         }
       }
     },
+    "No se pudo importar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t import"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo importar"
+          }
+        }
+      }
+    },
+    "No se pudo leer ese audio. Prueba con un archivo .m4a, .mp3, .wav o .caf sin protección de copia." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That audio couldn’t be read. Try an .m4a, .mp3, .wav or .caf file without copy protection."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo leer ese audio. Prueba con un archivo .m4a, .mp3, .wav o .caf sin protección de copia."
+          }
+        }
+      }
+    },
     "No se pudo preparar la alarma para compartirla." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4980,6 +6438,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No se pudo preparar la alarma para compartirla."
+          }
+        }
+      }
+    },
+    "No se puede preescuchar: es el tono propio de iOS." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Can’t be previewed: it’s iOS’s own tone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se puede preescuchar: es el tono propio de iOS."
           }
         }
       }
@@ -5178,6 +6652,22 @@
         }
       }
     },
+    "Observa la secuencia…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Watch the sequence…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Observa la secuencia…"
+          }
+        }
+      }
+    },
     "OK" : {
       "localizations" : {
         "en" : {
@@ -5190,6 +6680,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "Omitir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omitir"
+          }
+        }
+      }
+    },
+    "Ordenar números" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Number order"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordenar números"
           }
         }
       }
@@ -5242,6 +6764,55 @@
         }
       }
     },
+    "Otros" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otros"
+          }
+        }
+      }
+    },
+    "Palabra %@, tinta %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Word %@, ink %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palabra %@, tinta %@"
+          }
+        }
+      }
+    },
+    "Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarm." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To save your alarms, open Settings and under Calendars choose “Full Access” for Calarm."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarm."
+          }
+        }
+      }
+    },
     "Para invitar amigos a tus eventos, Calarm necesita acceder a tus contactos." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5288,6 +6859,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Para qué es la alarma (opcional)"
+          }
+        }
+      }
+    },
+    "Parejas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pairs"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parejas"
+          }
+        }
+      }
+    },
+    "Parejas %lld de %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pairs %lld of %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parejas %lld de %lld"
+          }
+        }
+      }
+    },
+    "pasos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "steps"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pasos"
           }
         }
       }
@@ -5356,6 +6975,22 @@
         }
       }
     },
+    "Permitir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir"
+          }
+        }
+      }
+    },
     "Permitir acceso" : {
       "localizations" : {
         "en" : {
@@ -5384,6 +7019,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Permitir personas de confianza"
+          }
+        }
+      }
+    },
+    "Permitir posponer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow snooze"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir posponer"
           }
         }
       }
@@ -5486,6 +7137,7 @@
       }
     },
     "Pon la foto del cumpleañero o un símbolo a cada alarma." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5534,6 +7186,54 @@
         }
       }
     },
+    "Ponle la foto de la persona y se repite cada año. Cada 2 semanas, los lunes y miércoles, cada 21 días: la recurrencia que necesites." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add the person's photo and it repeats every year. Every 2 weeks, Mondays and Wednesdays, every 21 days — whatever recurrence you need."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponle la foto de la persona y se repite cada año. Cada 2 semanas, los lunes y miércoles, cada 21 días: la recurrencia que necesites."
+          }
+        }
+      }
+    },
+    "Ponle un nombre a la alarma para poder guardarla." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give the alarm a name so it can be saved."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponle un nombre a la alarma para poder guardarla."
+          }
+        }
+      }
+    },
+    "Ponle un nombre para reconocerla, por ejemplo «Tomar pastilla»." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give it a name you'll recognize, for example “Take pill”."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponle un nombre para reconocerla, por ejemplo «Tomar pastilla»."
+          }
+        }
+      }
+    },
     "Pospone la alarma según el intervalo configurado." : {
       "localizations" : {
         "en" : {
@@ -5566,6 +7266,22 @@
         }
       }
     },
+    "Posponer %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snooze %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posponer %@"
+          }
+        }
+      }
+    },
     "Posponer alarma" : {
       "localizations" : {
         "en" : {
@@ -5578,6 +7294,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Posponer alarma"
+          }
+        }
+      }
+    },
+    "Predeterminado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predeterminado"
           }
         }
       }
@@ -5595,6 +7327,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Probar alarma en 1 minuto"
+          }
+        }
+      }
+    },
+    "Probar reto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try the challenge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probar reto"
+          }
+        }
+      }
+    },
+    "Problema %lld de %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Problem %lld of %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Problema %lld de %lld"
           }
         }
       }
@@ -5715,6 +7479,22 @@
         }
       }
     },
+    "Pulso" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulse"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulso"
+          }
+        }
+      }
+    },
     "Qué tengo hoy en %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5760,6 +7540,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quitar horario"
+          }
+        }
+      }
+    },
+    "Radar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Radar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Radar"
           }
         }
       }
@@ -5865,6 +7661,7 @@
       }
     },
     "Recurrencias avanzadas" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5876,6 +7673,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Recurrencias avanzadas"
+          }
+        }
+      }
+    },
+    "Registrar código" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Register code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrar código"
           }
         }
       }
@@ -5928,6 +7741,54 @@
         }
       }
     },
+    "Repite la secuencia de casillas que se ilumina." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeat the sequence of tiles that lights up."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repite la secuencia de casillas que se ilumina."
+          }
+        }
+      }
+    },
+    "Resolver reto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solve challenge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resolver reto"
+          }
+        }
+      }
+    },
+    "Respira hondo y a por todas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take a deep breath and go for it"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respira hondo y a por todas"
+          }
+        }
+      }
+    },
     "Restablecer al valor por defecto" : {
       "localizations" : {
         "en" : {
@@ -5956,6 +7817,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restablecer color"
+          }
+        }
+      }
+    },
+    "Resuelve el reto para apagar la alarma" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solve the challenge to turn off the alarm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resuelve el reto para apagar la alarma"
+          }
+        }
+      }
+    },
+    "Resuelve operaciones con el teclado numérico." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solve arithmetic problems on a number pad."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resuelve operaciones con el teclado numérico."
           }
         }
       }
@@ -6009,6 +7902,54 @@
         }
       }
     },
+    "Reto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Challenge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reto"
+          }
+        }
+      }
+    },
+    "Reto para apagar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wake-up challenge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reto para apagar"
+          }
+        }
+      }
+    },
+    "Reto resuelto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Challenge solved"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reto resuelto"
+          }
+        }
+      }
+    },
     "Revocar" : {
       "localizations" : {
         "en" : {
@@ -6021,6 +7962,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Revocar"
+          }
+        }
+      }
+    },
+    "Rojo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Red"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rojo"
+          }
+        }
+      }
+    },
+    "Ronda %lld de %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Round %lld of %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ronda %lld de %lld"
           }
         }
       }
@@ -6041,7 +8014,88 @@
         }
       }
     },
+    "Sacude el teléfono con fuerza" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shake your phone hard"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sacude el teléfono con fuerza"
+          }
+        }
+      }
+    },
+    "Sacude el teléfono con ganas hasta llenar la barra." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shake the phone hard until the bar fills up."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sacude el teléfono con ganas hasta llenar la barra."
+          }
+        }
+      }
+    },
+    "sacudidas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "shakes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sacudidas"
+          }
+        }
+      }
+    },
+    "Sacudir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shake"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sacudir"
+          }
+        }
+      }
+    },
+    "Se abrirá Messages con el link para que tus invitados la acepten." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messages will open with the link so your guests can accept it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se abrirá Messages con el link para que tus invitados la acepten."
+          }
+        }
+      }
+    },
     "Se guardará la alarma y se abrirá Messages con el link para que tus invitados la acepten." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6053,6 +8107,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Se guardará la alarma y se abrirá Messages con el link para que tus invitados la acepten."
+          }
+        }
+      }
+    },
+    "Secuencia incorrecta, mírala otra vez." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wrong sequence, watch it again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secuencia incorrecta, mírala otra vez."
           }
         }
       }
@@ -6105,6 +8175,54 @@
         }
       }
     },
+    "Sigue el tono elegido en Ajustes. Si lo cambias ahí, esta alarma también cambia." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follows the tone chosen in Settings. Change it there and this alarm changes too."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sigue el tono elegido en Ajustes. Si lo cambias ahí, esta alarma también cambia."
+          }
+        }
+      }
+    },
+    "Sigue el tono predeterminado de Ajustes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follows the default tone from Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sigue el tono predeterminado de Ajustes."
+          }
+        }
+      }
+    },
+    "Siguiente: %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next: %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguiente: %lld"
+          }
+        }
+      }
+    },
     "Símbolo" : {
       "localizations" : {
         "en" : {
@@ -6153,6 +8271,22 @@
         }
       }
     },
+    "Sin alarma: no eres parte de este evento" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No alarm: you're not part of this event"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin alarma: no eres parte de este evento"
+          }
+        }
+      }
+    },
     "Sin alarmas" : {
       "localizations" : {
         "en" : {
@@ -6197,6 +8331,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sin categorías propias"
+          }
+        }
+      }
+    },
+    "Sin cuenta regresiva" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No countdown"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin cuenta regresiva"
           }
         }
       }
@@ -6298,6 +8448,38 @@
         }
       }
     },
+    "Sin reto, la alarma se apaga con un toque." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without a challenge, the alarm turns off with a tap."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin reto, la alarma se apaga con un toque."
+          }
+        }
+      }
+    },
+    "Sin sensores: arrastra la bola." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No sensors: drag the ball."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin sensores: arrastra la bola."
+          }
+        }
+      }
+    },
     "Solicitando permiso de alarmas…" : {
       "localizations" : {
         "en" : {
@@ -6314,7 +8496,88 @@
         }
       }
     },
+    "Solo eventos a los que asisto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only events I'm attending"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo eventos a los que asisto"
+          }
+        }
+      }
+    },
+    "Solo suenan los eventos de los calendarios marcados." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only events from the checked calendars ring."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo suenan los eventos de los calendarios marcados."
+          }
+        }
+      }
+    },
+    "Sonido" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sound"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonido"
+          }
+        }
+      }
+    },
+    "Sonido de las alarmas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarm sound"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonido de las alarmas"
+          }
+        }
+      }
+    },
+    "Sonríe, ya es de día" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smile, the day is here"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonríe, ya es de día"
+          }
+        }
+      }
+    },
     "Suena fuerte" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6326,6 +8589,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Suena fuerte"
+          }
+        }
+      }
+    },
+    "Suenan fuerte aunque el iPhone esté en silencio, bloqueado o en modo Enfoque." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "They ring loud even when your iPhone is silent, locked or in Focus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suenan fuerte aunque el iPhone esté en silencio, bloqueado o en modo Enfoque."
           }
         }
       }
@@ -6417,6 +8696,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Teams URL"
+          }
+        }
+      }
+    },
+    "Tiempo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiempo"
           }
         }
       }
@@ -6550,6 +8845,86 @@
         }
       }
     },
+    "Toca el color de la tinta, no la palabra que lees." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the ink color, not the word you read."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca el color de la tinta, no la palabra que lees."
+          }
+        }
+      }
+    },
+    "Toca el color de la tinta, no la palabra." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the ink color, not the word."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca el color de la tinta, no la palabra."
+          }
+        }
+      }
+    },
+    "Toca los números en orden, del 1 al último, en una cuadrícula revuelta." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the numbers in order, from 1 to the last, on a shuffled grid."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca los números en orden, del 1 al último, en una cuadrícula revuelta."
+          }
+        }
+      }
+    },
+    "Toca los objetivos que aparecen antes de que desaparezcan." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the targets as they pop up, before they vanish."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca los objetivos que aparecen antes de que desaparezcan."
+          }
+        }
+      }
+    },
+    "Toca para abrirla" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap to open it"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca para abrirla"
+          }
+        }
+      }
+    },
     "Toca un emoji o escribe el tuyo abajo." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6567,6 +8942,38 @@
         }
       }
     },
+    "Todos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos"
+          }
+        }
+      }
+    },
+    "Todos los calendarios" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All calendars"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos los calendarios"
+          }
+        }
+      }
+    },
     "Todos los emojis" : {
       "localizations" : {
         "en" : {
@@ -6579,6 +8986,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todos los emojis"
+          }
+        }
+      }
+    },
+    "Tono del sistema" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System tone"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tono del sistema"
+          }
+        }
+      }
+    },
+    "Tono importado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imported tone"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tono importado"
+          }
+        }
+      }
+    },
+    "Tonos de Calarm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm tones"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tonos de Calarm"
           }
         }
       }
@@ -6615,6 +9070,38 @@
         }
       }
     },
+    "Tus eventos del Calendario saldrán aquí junto a tus alarmas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Calendar events will show up here next to your alarms."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus eventos del Calendario saldrán aquí junto a tus alarmas."
+          }
+        }
+      }
+    },
+    "Tus eventos también suenan" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your events ring too"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus eventos también suenan"
+          }
+        }
+      }
+    },
     "Tus personas de confianza dejarán de ver y administrar tus alarmas. Tus alarmas siguen intactas." : {
       "localizations" : {
         "en" : {
@@ -6643,6 +9130,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ubicación"
+          }
+        }
+      }
+    },
+    "Un buen día empieza al levantarte" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A good day starts when you get up"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un buen día empieza al levantarte"
+          }
+        }
+      }
+    },
+    "Un paso más cerca de tus metas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One step closer to your goals"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un paso más cerca de tus metas"
+          }
+        }
+      }
+    },
+    "Un permiso y ya está" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One permission and you're set"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un permiso y ya está"
           }
         }
       }
@@ -6712,6 +9247,38 @@
         }
       }
     },
+    "Usa un audio tuyo desde Archivos. Calarm lo recorta a 28 segundos y lo repite hasta llenarlos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use your own audio from Files. Calarm trims it to 28 seconds and repeats it to fill them."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa un audio tuyo desde Archivos. Calarm lo recorta a 28 segundos y lo repite hasta llenarlos."
+          }
+        }
+      }
+    },
+    "Usar sacudidas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use shakes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar sacudidas"
+          }
+        }
+      }
+    },
     "Ve a Ajustes → Calarm → Contactos y activa el acceso para invitar amigos." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6725,6 +9292,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ve a Ajustes → Calarm → Contactos y activa el acceso para invitar amigos."
+          }
+        }
+      }
+    },
+    "Vencida" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expired"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vencida"
+          }
+        }
+      }
+    },
+    "Vencidas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expired"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vencidas"
+          }
+        }
+      }
+    },
+    "Verde" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Green"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verde"
           }
         }
       }
@@ -6777,434 +9392,18 @@
         }
       }
     },
-    "La alarma sonará según los horarios y avisos de arriba." : {
+    "Vista de mes" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The alarm will ring according to the schedules and alerts above."
+            "value" : "Month view"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La alarma sonará según los horarios y avisos de arriba."
-          }
-        }
-      }
-    },
-    "La alarma está apagada: no sonará hasta que la enciendas." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The alarm is off: it won't ring until you turn it on."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La alarma está apagada: no sonará hasta que la enciendas."
-          }
-        }
-      }
-    },
-    "Se abrirá Messages con el link para que tus invitados la acepten." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Messages will open with the link so your guests can accept it."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se abrirá Messages con el link para que tus invitados la acepten."
-          }
-        }
-      }
-    },
-    "hoy" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "today"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "hoy"
-          }
-        }
-      }
-    },
-    "mañana" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "tomorrow"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "mañana"
-          }
-        }
-      }
-    },
-    "Desde" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starts"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desde"
-          }
-        }
-      }
-    },
-    "Tono del sistema" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "System tone"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tono del sistema"
-          }
-        }
-      }
-    },
-    "Campana" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chime"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Campana"
-          }
-        }
-      }
-    },
-    "Marimba" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Marimba"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Marimba"
-          }
-        }
-      }
-    },
-    "Radar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Radar"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Radar"
-          }
-        }
-      }
-    },
-    "Arpegio" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arpeggio"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arpegio"
-          }
-        }
-      }
-    },
-    "Pulso" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pulse"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pulso"
-          }
-        }
-      }
-    },
-    "Arpa" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Harp"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arpa"
-          }
-        }
-      }
-    },
-    "Predeterminado" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Default"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Predeterminado"
-          }
-        }
-      }
-    },
-    "Sonido" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sound"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sonido"
-          }
-        }
-      }
-    },
-    "Sonido de las alarmas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alarm sound"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sonido de las alarmas"
-          }
-        }
-      }
-    },
-    "Sigue el tono predeterminado de Ajustes." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Follows the default tone from Settings."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sigue el tono predeterminado de Ajustes."
-          }
-        }
-      }
-    },
-    "Sigue el tono elegido en Ajustes. Si lo cambias ahí, esta alarma también cambia." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Follows the tone chosen in Settings. Change it there and this alarm changes too."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sigue el tono elegido en Ajustes. Si lo cambias ahí, esta alarma también cambia."
-          }
-        }
-      }
-    },
-    "El tono del sistema se repite hasta que detienes la alarma. Los demás suenan 28 segundos." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The system tone repeats until you stop the alarm. The others play for 28 seconds."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El tono del sistema se repite hasta que detienes la alarma. Los demás suenan 28 segundos."
-          }
-        }
-      }
-    },
-    "El tono con el que suenan las alarmas nuevas y las que no tienen uno propio. Cada alarma puede elegir el suyo desde su editor." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The tone used by new alarms and by any alarm without its own. Each alarm can pick a different one in its editor."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El tono con el que suenan las alarmas nuevas y las que no tienen uno propio. Cada alarma puede elegir el suyo desde su editor."
-          }
-        }
-      }
-    },
-    "Tono importado" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Imported tone"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tono importado"
-          }
-        }
-      }
-    },
-    "Tonos de Calarm" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calarm tones"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tonos de Calarm"
-          }
-        }
-      }
-    },
-    "Mis tonos" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My tones"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mis tonos"
-          }
-        }
-      }
-    },
-    "Importar audio…" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Import audio…"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importar audio…"
-          }
-        }
-      }
-    },
-    "Usa un audio tuyo desde Archivos. Calarm lo recorta a 28 segundos y lo repite hasta llenarlos." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Use your own audio from Files. Calarm trims it to 28 seconds and repeats it to fill them."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usa un audio tuyo desde Archivos. Calarm lo recorta a 28 segundos y lo repite hasta llenarlos."
-          }
-        }
-      }
-    },
-    "No se pudo importar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couldn’t import"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se pudo importar"
-          }
-        }
-      }
-    },
-    "No se pudo leer ese audio. Prueba con un archivo .m4a, .mp3, .wav o .caf sin protección de copia." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "That audio couldn’t be read. Try an .m4a, .mp3, .wav or .caf file without copy protection."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se pudo leer ese audio. Prueba con un archivo .m4a, .mp3, .wav o .caf sin protección de copia."
+            "value" : "Vista de mes"
           }
         }
       }
@@ -7224,2119 +9423,7 @@
           }
         }
       }
-    },
-    "Entendido" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Got it"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entendido"
-          }
-        }
-      }
-    },
-    "No se puede preescuchar: es el tono propio de iOS." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Can’t be previewed: it’s iOS’s own tone."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se puede preescuchar: es el tono propio de iOS."
-          }
-        }
-      }
-    },
-    "Ponle un nombre a la alarma para poder guardarla." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Give the alarm a name so it can be saved."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ponle un nombre a la alarma para poder guardarla."
-          }
-        }
-      }
-    },
-    "Ponle un nombre para reconocerla, por ejemplo «Tomar pastilla»." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Give it a name you'll recognize, for example “Take pill”."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ponle un nombre para reconocerla, por ejemplo «Tomar pastilla»."
-          }
-        }
-      }
-    },
-    "Esa fecha y hora ya pasaron: la alarma no sonará." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "That date and time have already passed: the alarm won't ring."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esa fecha y hora ya pasaron: la alarma no sonará."
-          }
-        }
-      }
-    },
-    "Aviso por defecto" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Default alert"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aviso por defecto"
-          }
-        }
-      }
-    },
-    "Avisos" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alerts"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avisos"
-          }
-        }
-      }
-    },
-    "Con cuánta anticipación suena una alarma nueva y cada evento del calendario que no tenga sus propios avisos. Las alarmas que ya existen no cambian." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "How far ahead of its time a new alarm rings, and every calendar event that has no alerts of its own. Alarms that already exist don't change."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Con cuánta anticipación suena una alarma nueva y cada evento del calendario que no tenga sus propios avisos. Las alarmas que ya existen no cambian."
-          }
-        }
-      }
-    },
-    "Cuenta regresiva" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Countdown"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuenta regresiva"
-          }
-        }
-      }
-    },
-    "Sin cuenta regresiva" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No countdown"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin cuenta regresiva"
-          }
-        }
-      }
-    },
-    "1 minuto antes" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1 minute before"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1 minuto antes"
-          }
-        }
-      }
-    },
-    "2 minutos antes" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "2 minutes before"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "2 minutos antes"
-          }
-        }
-      }
-    },
-    "Muestra la cuenta atrás en la Isla Dinámica y en la pantalla bloqueada durante los minutos previos a cada alarma. La alarma sigue sonando a su hora." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shows the countdown in the Dynamic Island and on the Lock Screen during the minutes before each alarm. The alarm still rings at its time."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Muestra la cuenta atrás en la Isla Dinámica y en la pantalla bloqueada durante los minutos previos a cada alarma. La alarma sigue sonando a su hora."
-          }
-        }
-      }
-    },
-    "Calendarios" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calendars"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calendarios"
-          }
-        }
-      }
-    },
-    "Todos" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "All"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todos"
-          }
-        }
-      }
-    },
-    "%lld seleccionados" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld selected"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld seleccionados"
-          }
-        }
-      }
-    },
-    "Todos los calendarios" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "All calendars"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todos los calendarios"
-          }
-        }
-      }
-    },
-    "Calarm mira todos tus calendarios, incluidos los que agregues después." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calarm watches every one of your calendars, including any you add later."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calarm mira todos tus calendarios, incluidos los que agregues después."
-          }
-        }
-      }
-    },
-    "Solo suenan los eventos de los calendarios marcados." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Only events from the checked calendars ring."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo suenan los eventos de los calendarios marcados."
-          }
-        }
-      }
-    },
-    "No encontré calendarios en este iPhone." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I found no calendars on this iPhone."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No encontré calendarios en este iPhone."
-          }
-        }
-      }
-    },
-    "Otros" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Other"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Otros"
-          }
-        }
-      }
-    },
-    "Solo eventos a los que asisto" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Only events I'm attending"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo eventos a los que asisto"
-          }
-        }
-      }
-    },
-    "Sin alarma: no eres parte de este evento" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No alarm: you're not part of this event"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin alarma: no eres parte de este evento"
-          }
-        }
-      }
-    },
-    "Lo rechazaste o es de otra persona, y en Ajustes pediste solo los eventos a los que asistes. Si guardas avisos aquí, este evento sonará igual." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You declined it or it belongs to someone else, and in Settings you asked for only the events you attend. If you save alerts here, this event rings anyway."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lo rechazaste o es de otra persona, y en Ajustes pediste solo los eventos a los que asistes. Si guardas avisos aquí, este evento sonará igual."
-          }
-        }
-      }
-    },
-    "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When on, Calarm reads events from your Calendar app and gives each one an alarm at the default alert time. Each event can change its own from its screen. If the event has a Microsoft Teams, Zoom or Google Meet link, a button appears to join.\n\n\"Only events I'm attending\" leaves without an alarm the ones you declined and the ones that belong to someone else, such as those on a shared calendar. Events you gave alerts to by hand don't change."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian."
-          }
-        }
-      }
-    },
-    "Reto para apagar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wake-up challenge"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reto para apagar"
-          }
-        }
-      }
-    },
-    "Ninguno" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "None"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ninguno"
-          }
-        }
-      }
-    },
-    "Cálculo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Math"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cálculo"
-          }
-        }
-      }
-    },
-    "Memoria" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memory"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memoria"
-          }
-        }
-      }
-    },
-    "Código QR" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "QR code"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código QR"
-          }
-        }
-      }
-    },
-    "Resuelve operaciones con el teclado numérico." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solve arithmetic problems on a number pad."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resuelve operaciones con el teclado numérico."
-          }
-        }
-      }
-    },
-    "Repite la secuencia de casillas que se ilumina." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Repeat the sequence of tiles that lights up."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Repite la secuencia de casillas que se ilumina."
-          }
-        }
-      }
-    },
-    "Escanea un código QR o de barras que registres, por ejemplo el de la pasta de dientes." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scan a QR code or barcode you register, such as the one on your toothpaste."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escanea un código QR o de barras que registres, por ejemplo el de la pasta de dientes."
-          }
-        }
-      }
-    },
-    "Fácil" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Easy"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fácil"
-          }
-        }
-      }
-    },
-    "Media" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Medium"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Media"
-          }
-        }
-      }
-    },
-    "Difícil" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hard"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Difícil"
-          }
-        }
-      }
-    },
-    "Dificultad" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Difficulty"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dificultad"
-          }
-        }
-      }
-    },
-    "Reto" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Challenge"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reto"
-          }
-        }
-      }
-    },
-    "Sin reto, la alarma se apaga con un toque." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Without a challenge, the alarm turns off with a tap."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin reto, la alarma se apaga con un toque."
-          }
-        }
-      }
-    },
-    "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar al minuto y a los 2, 5 y 10 minutos." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The alarm won't turn off until you solve the challenge. If you stop it from the Lock Screen or your watch, it rings again a minute later and at 2, 5 and 10 minutes."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar al minuto y a los 2, 5 y 10 minutos."
-          }
-        }
-      }
-    },
-    "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The alarm won't turn off until you solve the challenge. If you stop it from the Lock Screen or your watch, it rings again."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar."
-          }
-        }
-      }
-    },
-    "Permitir posponer" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Allow snooze"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permitir posponer"
-          }
-        }
-      }
-    },
-    "Registrar código" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Register code"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Registrar código"
-          }
-        }
-      }
-    },
-    "Cambiar código" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Change code"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cambiar código"
-          }
-        }
-      }
-    },
-    "Código registrado" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Registered code"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código registrado"
-          }
-        }
-      }
-    },
-    "Falta registrar el código: sin él la alarma se apaga como siempre." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No code registered yet: without one the alarm turns off as usual."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Falta registrar el código: sin él la alarma se apaga como siempre."
-          }
-        }
-      }
-    },
-    "Probar reto" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Try the challenge"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Probar reto"
-          }
-        }
-      }
-    },
-    "Apunta la cámara al código que querrás escanear para apagar la alarma." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Point the camera at the code you'll scan to turn off the alarm."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apunta la cámara al código que querrás escanear para apagar la alarma."
-          }
-        }
-      }
-    },
-    "Resolver reto" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solve challenge"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resolver reto"
-          }
-        }
-      }
-    },
-    "Abre Calarm para resolver el reto que apaga la alarma." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opens Calarm to solve the challenge that turns off the alarm."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre Calarm para resolver el reto que apaga la alarma."
-          }
-        }
-      }
-    },
-    "Resuelve el reto para apagar la alarma" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solve the challenge to turn off the alarm"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resuelve el reto para apagar la alarma"
-          }
-        }
-      }
-    },
-    "Modo de prueba: la alarma no está sonando." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Practice mode: the alarm isn't ringing."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modo de prueba: la alarma no está sonando."
-          }
-        }
-      }
-    },
-    "Reto resuelto" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Challenge solved"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reto resuelto"
-          }
-        }
-      }
-    },
-    "Posponer %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snooze %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Posponer %@"
-          }
-        }
-      }
-    },
-    "Problema %lld de %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Problem %lld of %lld"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Problema %lld de %lld"
-          }
-        }
-      }
-    },
-    "Incorrecto, inténtalo otra vez." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wrong, try again."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Incorrecto, inténtalo otra vez."
-          }
-        }
-      }
-    },
-    "Comprobar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Check"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comprobar"
-          }
-        }
-      }
-    },
-    "Ronda %lld de %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Round %lld of %lld"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ronda %lld de %lld"
-          }
-        }
-      }
-    },
-    "Observa la secuencia…" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Watch the sequence…"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Observa la secuencia…"
-          }
-        }
-      }
-    },
-    "Ahora repítela" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Now repeat it"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ahora repítela"
-          }
-        }
-      }
-    },
-    "Secuencia incorrecta, mírala otra vez." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wrong sequence, watch it again."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Secuencia incorrecta, mírala otra vez."
-          }
-        }
-      }
-    },
-    "Apunta la cámara al código registrado" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Point the camera at the registered code"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apunta la cámara al código registrado"
-          }
-        }
-      }
-    },
-    "Ese no es el código registrado." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "That's not the registered code."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ese no es el código registrado."
-          }
-        }
-      }
-    },
-    "Este dispositivo no puede escanear códigos." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This device can't scan codes."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este dispositivo no puede escanear códigos."
-          }
-        }
-      }
-    },
-    "Calarm necesita la cámara para leer el código. Actívala en Ajustes." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calarm needs the camera to read the code. Turn it on in Settings."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calarm necesita la cámara para leer el código. Actívala en Ajustes."
-          }
-        }
-      }
-    },
-    "Mente" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mind"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mente"
-          }
-        }
-      }
-    },
-    "Cuerpo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Body"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuerpo"
-          }
-        }
-      }
-    },
-    "Levantarte" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Get up"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Levantarte"
-          }
-        }
-      }
-    },
-    "Ordenar números" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Number order"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ordenar números"
-          }
-        }
-      }
-    },
-    "Parejas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pairs"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Parejas"
-          }
-        }
-      }
-    },
-    "Colores" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Colors"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Colores"
-          }
-        }
-      }
-    },
-    "El distinto" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Odd one out"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El distinto"
-          }
-        }
-      }
-    },
-    "Escribir" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Typing"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escribir"
-          }
-        }
-      }
-    },
-    "Sacudir" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shake"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sacudir"
-          }
-        }
-      }
-    },
-    "Caminar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Walk"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caminar"
-          }
-        }
-      }
-    },
-    "Laberinto" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maze"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laberinto"
-          }
-        }
-      }
-    },
-    "Atrapa" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Catch"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atrapa"
-          }
-        }
-      }
-    },
-    "Toca los números en orden, del 1 al último, en una cuadrícula revuelta." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tap the numbers in order, from 1 to the last, on a shuffled grid."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toca los números en orden, del 1 al último, en una cuadrícula revuelta."
-          }
-        }
-      }
-    },
-    "Da la vuelta a las cartas y encuentra todas las parejas de emojis." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Flip the cards and find every emoji pair."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Da la vuelta a las cartas y encuentra todas las parejas de emojis."
-          }
-        }
-      }
-    },
-    "Toca el color de la tinta, no la palabra que lees." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tap the ink color, not the word you read."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toca el color de la tinta, no la palabra que lees."
-          }
-        }
-      }
-    },
-    "Encuentra el emoji que no es como los demás." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Find the emoji that isn't like the others."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Encuentra el emoji que no es como los demás."
-          }
-        }
-      }
-    },
-    "Copia una frase letra por letra, sin autocorrector." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copy a sentence letter by letter, with no autocorrect."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copia una frase letra por letra, sin autocorrector."
-          }
-        }
-      }
-    },
-    "Sacude el teléfono con ganas hasta llenar la barra." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shake the phone hard until the bar fills up."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sacude el teléfono con ganas hasta llenar la barra."
-          }
-        }
-      }
-    },
-    "Da unos pasos con el teléfono en la mano: cuenta los pasos de verdad." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Take a few steps with the phone in hand: it counts real steps."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Da unos pasos con el teléfono en la mano: cuenta los pasos de verdad."
-          }
-        }
-      }
-    },
-    "Inclina el teléfono para llevar la bola hasta la salida." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilt the phone to roll the ball to the exit."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inclina el teléfono para llevar la bola hasta la salida."
-          }
-        }
-      }
-    },
-    "Toca los objetivos que aparecen antes de que desaparezcan." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tap the targets as they pop up, before they vanish."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toca los objetivos que aparecen antes de que desaparezcan."
-          }
-        }
-      }
-    },
-    "Sacude el teléfono con fuerza" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shake your phone hard"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sacude el teléfono con fuerza"
-          }
-        }
-      }
-    },
-    "%lld / %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        }
-      }
-    },
-    "sacudidas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "shakes"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sacudidas"
-          }
-        }
-      }
-    },
-    "¡Dale, sacude!" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Come on, shake!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Dale, sacude!"
-          }
-        }
-      }
-    },
-    "¡Sigue!" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keep going!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Sigue!"
-          }
-        }
-      }
-    },
-    "¡Ya casi!" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Almost there!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Ya casi!"
-          }
-        }
-      }
-    },
-    "Este dispositivo no tiene sensores de movimiento." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This device has no motion sensors."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este dispositivo no tiene sensores de movimiento."
-          }
-        }
-      }
-    },
-    "Camina con el teléfono en la mano." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Walk with your phone in your hand."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Camina con el teléfono en la mano."
-          }
-        }
-      }
-    },
-    "pasos" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "steps"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "pasos"
-          }
-        }
-      }
-    },
-    "El contador se actualiza cada pocos segundos." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The counter updates every few seconds."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El contador se actualiza cada pocos segundos."
-          }
-        }
-      }
-    },
-    "Este dispositivo no cuenta pasos: sacude el teléfono en su lugar." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This device can't count steps: shake your phone instead."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este dispositivo no cuenta pasos: sacude el teléfono en su lugar."
-          }
-        }
-      }
-    },
-    "Calarm no tiene permiso para contar tus pasos. Actívalo en Ajustes › Privacidad y seguridad › Movimiento y forma física." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calarm doesn't have permission to count your steps. Turn it on in Settings › Privacy & Security › Motion & Fitness."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calarm no tiene permiso para contar tus pasos. Actívalo en Ajustes › Privacidad y seguridad › Movimiento y forma física."
-          }
-        }
-      }
-    },
-    "Usar sacudidas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Use shakes"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usar sacudidas"
-          }
-        }
-      }
-    },
-    "Inclina el teléfono para llevar la bola hasta la bandera." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilt your phone to roll the ball to the flag."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inclina el teléfono para llevar la bola hasta la bandera."
-          }
-        }
-      }
-    },
-    "Sin sensores: arrastra la bola." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No sensors: drag the ball."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin sensores: arrastra la bola."
-          }
-        }
-      }
-    },
-    "Siguiente: %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next: %lld"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Siguiente: %lld"
-          }
-        }
-      }
-    },
-    "Tiempo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tiempo"
-          }
-        }
-      }
-    },
-    "Parejas %lld de %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pairs %lld of %lld"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Parejas %lld de %lld"
-          }
-        }
-      }
-    },
-    "Carta boca abajo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Face-down card"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carta boca abajo"
-          }
-        }
-      }
-    },
-    "Toca el color de la tinta, no la palabra." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tap the ink color, not the word."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toca el color de la tinta, no la palabra."
-          }
-        }
-      }
-    },
-    "Ese no es el color de la tinta." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "That is not the ink color."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ese no es el color de la tinta."
-          }
-        }
-      }
-    },
-    "Palabra %@, tinta %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Word %@, ink %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Palabra %@, tinta %@"
-          }
-        }
-      }
-    },
-    "Rojo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Red"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rojo"
-          }
-        }
-      }
-    },
-    "Verde" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Green"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verde"
-          }
-        }
-      }
-    },
-    "Azul" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Blue"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Azul"
-          }
-        }
-      }
-    },
-    "Amarillo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yellow"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Amarillo"
-          }
-        }
-      }
-    },
-    "Morado" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Purple"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Morado"
-          }
-        }
-      }
-    },
-    "Naranja" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Orange"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naranja"
-          }
-        }
-      }
-    },
-    "Atrapados %lld de %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caught %lld of %lld"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atrapados %lld de %lld"
-          }
-        }
-      }
-    },
-    "Atento…" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Get ready…"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atento…"
-          }
-        }
-      }
-    },
-    "Frase %lld de %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Phrase %lld of %lld"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Frase %lld de %lld"
-          }
-        }
-      }
-    },
-    "Escribe aquí la frase" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Type the phrase here"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escribe aquí la frase"
-          }
-        }
-      }
-    },
-    "Escríbela tal cual, con tildes y mayúsculas." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Type it exactly, accents and capitals included."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escríbela tal cual, con tildes y mayúsculas."
-          }
-        }
-      }
-    },
-    "Hay un error: revisa lo escrito." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "There is a mistake: check what you typed."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hay un error: revisa lo escrito."
-          }
-        }
-      }
-    },
-    "Hoy va a ser un gran día" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Today is going to be a great day"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hoy va a ser un gran día"
-          }
-        }
-      }
-    },
-    "Arriba, el mundo te espera" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rise up, the world is waiting for you"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arriba, el mundo te espera"
-          }
-        }
-      }
-    },
-    "Un paso más cerca de tus metas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "One step closer to your goals"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un paso más cerca de tus metas"
-          }
-        }
-      }
-    },
-    "El café no se va a hacer solo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The coffee will not make itself"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El café no se va a hacer solo"
-          }
-        }
-      }
-    },
-    "Cada mañana es una nueva oportunidad" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Every morning is a new chance"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cada mañana es una nueva oportunidad"
-          }
-        }
-      }
-    },
-    "Respira hondo y a por todas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Take a deep breath and go for it"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Respira hondo y a por todas"
-          }
-        }
-      }
-    },
-    "El sol ya salió y tú también" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The sun is up and so are you"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El sol ya salió y tú también"
-          }
-        }
-      }
-    },
-    "La cama puede esperar, tú no" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The bed can wait, you cannot"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La cama puede esperar, tú no"
-          }
-        }
-      }
-    },
-    "Sonríe, ya es de día" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Smile, the day is here"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sonríe, ya es de día"
-          }
-        }
-      }
-    },
-    "Nadie va a vivir tu día por ti" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No one will live your day for you"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nadie va a vivir tu día por ti"
-          }
-        }
-      }
-    },
-    "Despierta, que la vida no espera" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wake up, life does not wait"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Despierta, que la vida no espera"
-          }
-        }
-      }
-    },
-    "Un buen día empieza al levantarte" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A good day starts when you get up"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un buen día empieza al levantarte"
-          }
-        }
-      }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }

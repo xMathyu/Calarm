@@ -803,11 +803,25 @@ struct ReminderEditorView: View {
             // previews with the alarm's name and time, and so whoever doesn't
             // have the app yet lands on a page that offers it. Falling back to
             // the raw share URL keeps invites working if encoding ever fails.
+            // The card shows the alarm as the list does: its own color (a custom
+            // category's too, not just the built-in tint) and its own icon,
+            // resolved like `ReminderRowView` does. A photo travels as a tiny
+            // thumbnail; the category's symbol goes along in case it doesn't fit.
+            let style = categoryStore.style(for: r)
+            let ownIcon = r.symbolName.flatMap { $0.isEmpty ? nil : $0 }
+            let categorySymbol = style.iconKind == .symbol ? style.iconValue : "bell.fill"
+            let linkSymbol: String? = switch r.iconKind {
+            case .emoji: nil
+            case .symbol: ownIcon ?? categorySymbol
+            case .photo: categorySymbol
+            }
             let inviteURL = InviteLink.make(
                 title: r.title,
                 date: r.date,
-                tintHex: r.category.tint.toHex(),
-                emoji: r.iconKind == .emoji ? r.symbolName : nil,
+                tintHex: style.color.toHex(),
+                emoji: r.iconKind == .emoji ? (ownIcon ?? "⭐️") : nil,
+                symbol: linkSymbol,
+                photo: r.iconKind == .photo ? r.photoData.flatMap(InvitePhoto.thumbnail(from:)) : nil,
                 shareURL: url
             ) ?? url
             pendingInvite = InviteDelivery(title: r.title, url: inviteURL)
@@ -1106,6 +1120,10 @@ struct ReminderEditorView: View {
             if settings.delegationEnabled {
                 await delegation.deleteZoneRecord(forReminderID: id)
             }
+        } else {
+            // Drop out of the share too, so the owner's «Personas» list stops
+            // showing us as joined. Not awaited: the editor closes right away.
+            Task { await sharedService.leaveShare(forReminderID: id) }
         }
         dismiss()
     }

@@ -235,6 +235,13 @@ struct CalarmApp: App {
             .onReceive(NotificationCenter.default.publisher(for: .calarmReminderDeleted)) { note in
                 guard let id = note.object as? UUID else { return }
                 Task {
+                    // A received invitation (the assistant tombstoned it before
+                    // posting): drop out of its share instead, so the owner's
+                    // «Personas» list stops showing us as joined.
+                    if DeletedSharesStore.contains(id) {
+                        await sharedRemindersService.leaveShare(forReminderID: id)
+                        return
+                    }
                     await sharedRemindersService.deleteSharedRecord(forReminderID: id)
                     if settings.delegationEnabled {
                         await delegationService.deleteZoneRecord(forReminderID: id)
@@ -266,6 +273,10 @@ struct CalarmApp: App {
             ShareDiagnostics.log("❌ enlace de invitación ilegible")
             return
         }
+        // Feedback from the first instant: fetching the metadata, accepting and
+        // ingesting are three CloudKit round trips, and the list only changes at
+        // the very end — several seconds of nothing otherwise.
+        sharedRemindersService.beginAcceptingShare()
         do {
             let metadata = try await sharedRemindersService.shareMetadata(for: shareURL)
             ShareDiagnostics.log("📥 invitación recibida (enlace Calarm)")
@@ -273,6 +284,8 @@ struct CalarmApp: App {
         } catch {
             PendingShare.log.error("Invite link failed: \(error.localizedDescription)")
             ShareDiagnostics.log("❌ enlace de invitación: \(error.localizedDescription)")
+            // Until now this failed in silence: no alarm and no error either.
+            sharedRemindersService.reportAcceptFailure(error)
         }
     }
 
@@ -294,6 +307,8 @@ struct CalarmApp: App {
         let isZoneWideShare = rootRecordID == nil
         if shareType == DelegationService.shareType || isZoneWideShare {
             ShareDiagnostics.log("🤝 ruteo a delegación (tipo=\(shareType ?? "nil"), zoneWide=\(isZoneWideShare))")
+            // Not an alarm for this list: the «agregando…» toast doesn't apply.
+            sharedRemindersService.clearIncomingShare()
             await delegationService.acceptDelegationShare(metadata: metadata)
             PendingShare.clear()
             return

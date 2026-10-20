@@ -9,6 +9,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(AppSettings.self) private var settings
     @Environment(ChallengeCoordinator.self) private var challenges
+    @Environment(SharedRemindersService.self) private var sharedService
 
     let alarmScheduler: AlarmScheduler
     let onTeamsToggleChanged: (Bool) -> Void
@@ -67,6 +68,34 @@ struct ContentView: View {
         .modifier(DemoScreenModifier(selection: $selection))
         .onReceive(NotificationCenter.default.publisher(for: .calarmOpenReminder)) { _ in
             selection = .alarms
+        }
+        // An invitation being accepted: «agregando…» while CloudKit works, then
+        // the alarm's name once it's on the list. Before this, the person tapped
+        // the link and watched the list for several seconds with no sign of life.
+        .overlay(alignment: .top) {
+            if let status = sharedService.incomingShare {
+                IncomingShareToast(status: status) { reminderID in
+                    sharedService.clearIncomingShare()
+                    NotificationCenter.default.post(name: .calarmOpenReminder, object: reminderID)
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .animation(DS.Motion.bouncy, value: sharedService.incomingShare)
+        .onChange(of: sharedService.incomingShare) { _, status in
+            guard case .accepted = status else { return }
+            Haptics.success()
+            // Show the list it landed on, wherever the person was.
+            selection = .alarms
+        }
+        .task(id: sharedService.incomingShare) {
+            guard let status = sharedService.incomingShare else { return }
+            // The confirmation goes away on its own; the «agregando…» one only
+            // if the accept never reports back (CloudKit stuck without a network).
+            let delay: Duration = status == .accepting ? .seconds(60) : .seconds(4)
+            try? await Task.sleep(for: delay)
+            guard !Task.isCancelled else { return }
+            sharedService.clearIncomingShare()
         }
         #if DEBUG
         .sheet(isPresented: .constant(DemoData.requestedScreen == "editor")) {

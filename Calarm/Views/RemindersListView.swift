@@ -278,6 +278,10 @@ struct RemindersListView: View {
             if settings.delegationEnabled {
                 await delegation.deleteZoneRecord(forReminderID: id)
             }
+        } else {
+            // Drop out of the share too, so the owner's «Personas» list stops
+            // showing us as joined. Off the row's removal: it's a few round trips.
+            Task { await sharedService.leaveShare(forReminderID: id) }
         }
     }
 
