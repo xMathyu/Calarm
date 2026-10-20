@@ -42,7 +42,7 @@ struct CalarmAlarmLiveActivity: Widget {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Spacer(minLength: 8)
-                        StopButton(context: context, size: 32)
+                        ActionButton(context: context, size: 32)
                     }
                 }
             } compactLeading: {
@@ -150,7 +150,7 @@ private struct LockScreenView: View {
                 .foregroundStyle(context.attributes.tintColor)
 
             // Cancel sits at the trailing edge as a round X — no full-width bar.
-            StopButton(context: context, size: 40)
+            ActionButton(context: context, size: 40)
         }
     }
 
@@ -169,6 +169,31 @@ private struct LockScreenView: View {
         case .countdown: return "Suena de nuevo en"
         case .paused: return "En pausa"
         case .alert: return "Sonando ahora"
+        }
+    }
+}
+
+/// La acción al final de la fila. Con reto para apagar, «Resolver» abre la app
+/// con el juego por el enlace `calarm://challenge/<id>` (la X apagaría la alarma
+/// sin resolverlo, y volvería a sonar al minuto); sin reto, la X de siempre.
+private struct ActionButton: View {
+    let context: ActivityViewContext<AlarmAttributes<CalarmAlarmMetadata>>
+    let size: CGFloat
+
+    var body: some View {
+        if context.attributes.metadata?.hasChallenge == true,
+           let url = URL(string: "calarm://challenge/\(context.state.alarmID.uuidString)") {
+            Link(destination: url) {
+                Image(systemName: "puzzlepiece.extension.fill")
+                    .font(.system(size: size * 0.42, weight: .bold))
+                    .foregroundStyle(.white)
+                    .frame(width: size, height: size)
+                    .background(context.attributes.tintColor, in: Circle())
+                    .contentShape(Circle())
+            }
+            .accessibilityLabel(Text("Resolver"))
+        } else {
+            StopButton(context: context, size: size)
         }
     }
 }

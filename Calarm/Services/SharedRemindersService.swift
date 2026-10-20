@@ -553,7 +553,8 @@ final class SharedRemindersService {
                 ? nil
                 : reminder.additionalSchedules.map {
                     SharePayload.ScheduleInfo(date: $0.date, recurrenceData: $0.recurrenceData)
-                }
+                },
+            challengeData: reminder.challenge == nil ? nil : reminder.challengeData
         )
     }
 
@@ -890,6 +891,7 @@ final class SharedRemindersService {
             let rule = (try? JSONDecoder().decode(RecurrenceRule.self, from: $0.recurrenceData)) ?? .once
             return AlarmSchedule(date: $0.date, recurrence: rule)
         }
+        reminder.challengeData = payload.challengeData ?? Data()
         let payloadLeadTimes = payload.leadTimeSeconds.compactMap { AlarmLeadTime(rawValue: $0) }
         let ownerLeadTimes = payloadLeadTimes.isEmpty ? [AlarmLeadTime.atStart] : payloadLeadTimes
         if markAsReceivedShare {
@@ -1012,6 +1014,10 @@ struct SharePayload: Codable {
     /// schedule alarm keeps all its days/times on recipients and helpers. Optional/
     /// absent = single-schedule (older senders).
     var additionalSchedules: [ScheduleInfo]? = nil
+    /// v3: reto para apagar (JSON `WakeChallenge`), para que una alarma con reto
+    /// lo conserve en invitados y personas de confianza. Opcional/ausente = sin
+    /// reto (emisores anteriores).
+    var challengeData: Data? = nil
 
     struct CustomCategoryInfo: Codable {
         var id: String

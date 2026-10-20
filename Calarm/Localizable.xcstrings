@@ -7624,6 +7624,646 @@
           }
         }
       }
+    },
+    "Reto para apagar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wake-up challenge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reto para apagar"
+          }
+        }
+      }
+    },
+    "Ninguno" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguno"
+          }
+        }
+      }
+    },
+    "Cálculo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Math"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cálculo"
+          }
+        }
+      }
+    },
+    "Memoria" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memoria"
+          }
+        }
+      }
+    },
+    "Código QR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código QR"
+          }
+        }
+      }
+    },
+    "Resuelve operaciones con el teclado numérico." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solve arithmetic problems on a number pad."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resuelve operaciones con el teclado numérico."
+          }
+        }
+      }
+    },
+    "Repite la secuencia de casillas que se ilumina." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeat the sequence of tiles that lights up."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repite la secuencia de casillas que se ilumina."
+          }
+        }
+      }
+    },
+    "Escanea un código QR o de barras que registres, por ejemplo el de la pasta de dientes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan a QR code or barcode you register, such as the one on your toothpaste."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanea un código QR o de barras que registres, por ejemplo el de la pasta de dientes."
+          }
+        }
+      }
+    },
+    "Fácil" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easy"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fácil"
+          }
+        }
+      }
+    },
+    "Media" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medium"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media"
+          }
+        }
+      }
+    },
+    "Difícil" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hard"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Difícil"
+          }
+        }
+      }
+    },
+    "Dificultad" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Difficulty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dificultad"
+          }
+        }
+      }
+    },
+    "Reto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Challenge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reto"
+          }
+        }
+      }
+    },
+    "Sin reto, la alarma se apaga con un toque." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without a challenge, the alarm turns off with a tap."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin reto, la alarma se apaga con un toque."
+          }
+        }
+      }
+    },
+    "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar al minuto y a los 2, 5 y 10 minutos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The alarm won't turn off until you solve the challenge. If you stop it from the Lock Screen or your watch, it rings again a minute later and at 2, 5 and 10 minutes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar al minuto y a los 2, 5 y 10 minutos."
+          }
+        }
+      }
+    },
+    "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The alarm won't turn off until you solve the challenge. If you stop it from the Lock Screen or your watch, it rings again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar."
+          }
+        }
+      }
+    },
+    "Permitir posponer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow snooze"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir posponer"
+          }
+        }
+      }
+    },
+    "Registrar código" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Register code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrar código"
+          }
+        }
+      }
+    },
+    "Cambiar código" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar código"
+          }
+        }
+      }
+    },
+    "Código registrado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registered code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código registrado"
+          }
+        }
+      }
+    },
+    "Falta registrar el código: sin él la alarma se apaga como siempre." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No code registered yet: without one the alarm turns off as usual."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta registrar el código: sin él la alarma se apaga como siempre."
+          }
+        }
+      }
+    },
+    "Probar reto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try the challenge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probar reto"
+          }
+        }
+      }
+    },
+    "Apunta la cámara al código que querrás escanear para apagar la alarma." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point the camera at the code you'll scan to turn off the alarm."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apunta la cámara al código que querrás escanear para apagar la alarma."
+          }
+        }
+      }
+    },
+    "Resolver reto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solve challenge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resolver reto"
+          }
+        }
+      }
+    },
+    "Abre Calarm para resolver el reto que apaga la alarma." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens Calarm to solve the challenge that turns off the alarm."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Calarm para resolver el reto que apaga la alarma."
+          }
+        }
+      }
+    },
+    "Resuelve el reto para apagar la alarma" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solve the challenge to turn off the alarm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resuelve el reto para apagar la alarma"
+          }
+        }
+      }
+    },
+    "Modo de prueba: la alarma no está sonando." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice mode: the alarm isn't ringing."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de prueba: la alarma no está sonando."
+          }
+        }
+      }
+    },
+    "Reto resuelto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Challenge solved"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reto resuelto"
+          }
+        }
+      }
+    },
+    "Posponer %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snooze %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posponer %@"
+          }
+        }
+      }
+    },
+    "Problema %lld de %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Problem %lld of %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Problema %lld de %lld"
+          }
+        }
+      }
+    },
+    "Incorrecto, inténtalo otra vez." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wrong, try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incorrecto, inténtalo otra vez."
+          }
+        }
+      }
+    },
+    "Comprobar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprobar"
+          }
+        }
+      }
+    },
+    "Ronda %lld de %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Round %lld of %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ronda %lld de %lld"
+          }
+        }
+      }
+    },
+    "Observa la secuencia…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Watch the sequence…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Observa la secuencia…"
+          }
+        }
+      }
+    },
+    "Ahora repítela" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now repeat it"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora repítela"
+          }
+        }
+      }
+    },
+    "Secuencia incorrecta, mírala otra vez." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wrong sequence, watch it again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secuencia incorrecta, mírala otra vez."
+          }
+        }
+      }
+    },
+    "Apunta la cámara al código registrado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point the camera at the registered code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apunta la cámara al código registrado"
+          }
+        }
+      }
+    },
+    "Ese no es el código registrado." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That's not the registered code."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ese no es el código registrado."
+          }
+        }
+      }
+    },
+    "Este dispositivo no puede escanear códigos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This device can't scan codes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este dispositivo no puede escanear códigos."
+          }
+        }
+      }
+    },
+    "Calarm necesita la cámara para leer el código. Actívala en Ajustes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm needs the camera to read the code. Turn it on in Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm necesita la cámara para leer el código. Actívala en Ajustes."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

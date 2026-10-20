@@ -43,6 +43,17 @@ final class AlarmStore {
         return (entry.alarmID, entry.contentHash)
     }
 
+    /// La alarma de Calarm dueña de un id de AlarmKit, y la hora para la que se
+    /// programó. `nil` si el sistema la tiene pero el store no la conoce.
+    func owner(ofAlarmID alarmID: UUID) -> (ownerID: String, fireDate: Date)? {
+        for (ownerID, list) in cache {
+            if let entry = list.first(where: { $0.alarmID == alarmID }) {
+                return (ownerID, entry.fireDate)
+            }
+        }
+        return nil
+    }
+
     func allEntries(forOwner ownerID: String) -> [(alarmID: UUID, fireDate: Date)] {
         (cache[ownerID] ?? []).map { ($0.alarmID, $0.fireDate) }
     }

@@ -25,6 +25,10 @@ struct CalarmAlarmMetadata: AlarmMetadata {
     /// still decodes.
     let teamsURLString: String?
     let location: String?
+    /// `true` cuando la alarma lleva reto para apagar: la Live Activity enseña
+    /// «Resolver» en vez de la X. Opcional para que el metadata de alarmas
+    /// programadas por builds anteriores siga decodificando.
+    var hasChallenge: Bool? = nil
 
     var meetingURL: URL? {
         guard let s = teamsURLString, !s.isEmpty else { return nil }

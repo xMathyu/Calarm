@@ -20,6 +20,7 @@ struct CalarmApp: App {
     @State private var sharedRemindersService: SharedRemindersService
     @State private var delegationService: DelegationService
     @State private var categoryStore: CategoryStore
+    @State private var challengeCoordinator: ChallengeCoordinator
     @State private var localization = LocalizationManager.shared
 
     private let alarmScheduler: AlarmScheduler
@@ -46,6 +47,19 @@ struct CalarmApp: App {
         let delegationService = DelegationService(modelContainer: modelContainer, sharing: sharedRemindersService, scheduler: reminderScheduler)
         self._delegationService = State(initialValue: delegationService)
         self._categoryStore = State(initialValue: CategoryStore(context: modelContainer.mainContext))
+        let challengeCoordinator = ChallengeCoordinator(
+            alarmScheduler: alarmScheduler,
+            reminderScheduler: reminderScheduler,
+            modelContainer: modelContainer,
+            settings: settings
+        )
+        self._challengeCoordinator = State(initialValue: challengeCoordinator)
+        // «Detener» en la pantalla de bloqueo o el reloj sobre una alarma con
+        // reto sin resolver: vuelve a sonar al minuto. El intent corre en este
+        // proceso, así que el hook llega aunque la app estuviera cerrada.
+        StopAlarmIntent.onStop = { alarmID in
+            await challengeCoordinator.userStopped(alarmID: alarmID)
+        }
         self.alarmScheduler = alarmScheduler
         self.calendarSource = calendarSource
         self.modelContainer = modelContainer
@@ -94,6 +108,7 @@ struct CalarmApp: App {
             .environment(sharedRemindersService)
             .environment(delegationService)
             .environment(categoryStore)
+            .environment(challengeCoordinator)
             .modelContainer(modelContainer)
             .preferredColorScheme(settings.appearance.preferredColorScheme)
             .tint(settings.accentColor)
@@ -106,6 +121,11 @@ struct CalarmApp: App {
             // The CloudKit share metadata callbacks never fire for these, since
             // iOS only raises those for icloud.com URLs it opens itself.
             .onOpenURL { url in
+                // El botón «Resolver» de la Live Activity de una alarma con reto.
+                if let alarmID = ChallengeRequest.alarmID(from: url) {
+                    challengeCoordinator.present(alarmID: alarmID)
+                    return
+                }
                 // El enlace de una entrada del calendario «Calarm» abre su alarma.
                 if let reminderID = CalendarMirrorService.reminderID(from: url) {
                     NotificationCenter.default.post(name: .calarmOpenReminder, object: reminderID)
@@ -126,6 +146,8 @@ struct CalarmApp: App {
                 // el arranque de abajo no tiene por qué esperarla.
                 Task { await requestCalendarAccessIfNeeded() }
                 await syncAllReminders()
+                // Si arranca con una alarma con reto sonando, el reto sale ya.
+                challengeCoordinator.presentIfAlerting()
                 // Cancel system alarms that no longer belong to anything: tracked
                 // entries whose reminder was deleted, and alarms AlarmKit still has
                 // but the store never knew about (pre-v2 formats). Without this,
@@ -159,6 +181,7 @@ struct CalarmApp: App {
             }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active, settings.onboardingCompleted {
+                    challengeCoordinator.presentIfAlerting()
                     Task { await syncAllReminders() }
                     Task { await teamsCoordinator?.sync() }
                     // Re-scan on foreground — this is when a freshly accepted
@@ -176,6 +199,12 @@ struct CalarmApp: App {
                         }
                     }
                 }
+            }
+            // «Resolver reto» en la alerta del sistema (`SolveChallengeIntent`).
+            .onReceive(NotificationCenter.default.publisher(for: .calarmSolveChallenge)) { note in
+                guard let alarmID = note.object as? UUID else { return }
+                ChallengeRequest.clear()
+                challengeCoordinator.present(alarmID: alarmID)
             }
             // Reliable handoff for share acceptance (see AppDelegate): the system
             // callback posts this notification, which we always receive here.
@@ -285,10 +314,14 @@ struct CalarmApp: App {
         let context = modelContainer.mainContext
         let descriptor = FetchDescriptor<Reminder>()
         let reminders = (try? context.fetch(descriptor)) ?? []
-        let validOwnerIDs = Set(reminders.map { ReminderScheduler.ownerID(forReminderID: $0.id) })
+        let validReminderIDs = Set(reminders.map(\.id))
         await alarmScheduler.reconcileWithSystem { ownerID in
-            // Calendar-owned alarms are reconciled by SyncCoordinator itself.
-            ownerID.hasPrefix(SyncCoordinator.ownerIDPrefix) || validOwnerIDs.contains(ownerID)
+            // Calendar-owned alarms are reconciled by SyncCoordinator itself. The
+            // rest (la alarma y los refuerzos de su reto) valen mientras exista
+            // la alarma de Calarm detrás.
+            if ownerID.hasPrefix(SyncCoordinator.ownerIDPrefix) { return true }
+            guard let reminderID = ReminderScheduler.reminderID(fromOwnerID: ownerID) else { return false }
+            return validReminderIDs.contains(reminderID)
         }
     }
 

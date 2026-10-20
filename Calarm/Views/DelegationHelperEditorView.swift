@@ -102,7 +102,9 @@ struct DelegationHelperEditorView: View {
             isEnabled: isEnabled,
             recurrenceData: (try? JSONEncoder().encode(recurrence)) ?? Data(),
             customCategory: nil,
-            photoThumbnail: isPhoto ? existing?.payload.photoThumbnail : nil
+            photoThumbnail: isPhoto ? existing?.payload.photoThumbnail : nil,
+            // Este editor no toca el reto para apagar: se conserva el que tuviera.
+            challengeData: existing?.payload.challengeData
         )
         await delegation.helperUpsert(payload, in: principal.zoneID, existingRecordID: existing?.recordID)
         Haptics.success()

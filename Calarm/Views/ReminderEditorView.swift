@@ -23,6 +23,8 @@ private struct EditSnapshot: Equatable {
     var leadTimes: [AlarmLeadTime]
     /// Tono propio de la alarma; nil = seguir el predeterminado de Ajustes.
     var tone: AlarmTone?
+    /// Reto para apagar; nil = la alarma se apaga con un toque.
+    var challenge: WakeChallenge?
     var isEnabled: Bool
 
     var trimmedTitle: String {
@@ -68,6 +70,7 @@ struct ReminderEditorView: View {
     @State private var additionalSchedules: [AlarmSchedule]
     @State private var leadTimes: [AlarmLeadTime]
     @State private var tone: AlarmTone?
+    @State private var challenge: WakeChallenge?
     @State private var showingLeadTimePicker = false
     @State private var showingIconPicker = false
     @State private var isEnabled: Bool
@@ -128,6 +131,7 @@ struct ReminderEditorView: View {
             _additionalSchedules = State(initialValue: r.additionalSchedules)
             _leadTimes = State(initialValue: r.leadTimes)
             _tone = State(initialValue: r.tone)
+            _challenge = State(initialValue: r.challenge)
             _isEnabled = State(initialValue: r.isEnabled)
         } else {
             let initialCategory = ReminderCategory.reminder
@@ -145,6 +149,7 @@ struct ReminderEditorView: View {
             // guardar, así que nadie se entera tarde de que la alarma se adelanta.
             _leadTimes = State(initialValue: [AppSettings.storedDefaultLeadTime()])
             _tone = State(initialValue: nil)
+            _challenge = State(initialValue: nil)
             _isEnabled = State(initialValue: true)
         }
     }
@@ -199,6 +204,7 @@ struct ReminderEditorView: View {
 
                 scheduleSection
                 soundSection
+                challengeSection
                 categorySection
                 statusSection
 
@@ -582,6 +588,29 @@ struct ReminderEditorView: View {
         }
     }
 
+    /// El reto que hay que resolver en la app para apagar la alarma.
+    @ViewBuilder
+    private var challengeSection: some View {
+        Section {
+            NavigationLink {
+                ChallengePickerView(selection: $challenge, alarmTitle: title)
+            } label: {
+                LabeledContent {
+                    Text(challenge?.localizedSummary ?? appLocalized("Ninguno"))
+                        .foregroundStyle(.secondary)
+                } label: {
+                    Label("Reto para apagar", systemImage: "puzzlepiece.extension.fill")
+                }
+            }
+        } footer: {
+            if let challenge, !challenge.isReady {
+                Text("Falta registrar el código: sin él la alarma se apaga como siempre.")
+            } else if challenge != nil {
+                Text("La alarma no se apaga hasta resolver el reto. Si la detienes desde la pantalla de bloqueo o el reloj, vuelve a sonar.")
+            }
+        }
+    }
+
     @ViewBuilder
     private var categorySection: some View {
         Section {
@@ -827,6 +856,7 @@ struct ReminderEditorView: View {
             additionalSchedules: additionalSchedules,
             leadTimes: leadTimes,
             tone: tone,
+            challenge: challenge,
             isEnabled: isEnabled
         )
     }
@@ -903,6 +933,7 @@ struct ReminderEditorView: View {
         reminder.recurrence = snap.recurrence
         reminder.additionalSchedules = snap.additionalSchedules
         reminder.tone = snap.tone
+        reminder.challenge = snap.challenge
         reminder.leadTimes = snap.leadTimes
         // On a received share the avisos are the recipient's own — remember them
         // so the next shared-DB scan doesn't overwrite them with the owner's list.

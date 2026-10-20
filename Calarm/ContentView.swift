@@ -8,6 +8,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(AppSettings.self) private var settings
+    @Environment(ChallengeCoordinator.self) private var challenges
 
     let alarmScheduler: AlarmScheduler
     let onTeamsToggleChanged: (Bool) -> Void
@@ -27,6 +28,7 @@ struct ContentView: View {
     @Query(sort: [SortDescriptor(\Reminder.date)]) private var demoReminders: [Reminder]
     @State private var demoTone: AlarmTone? = .marimba
     @State private var demoRecurrence: RecurrenceRule = .weekly(interval: 1, weekdays: [.monday, .wednesday])
+    @State private var demoChallenge: WakeChallenge? = WakeChallenge(kind: .math)
     #endif
 
     var body: some View {
@@ -54,6 +56,14 @@ struct ContentView: View {
         .sheet(isPresented: .constant(!settings.onboardingCompleted)) {
             OnboardingView(alarmScheduler: alarmScheduler)
         }
+        // La pantalla del reto: aparece cuando suena una alarma con reto y solo
+        // se va al resolverlo (o al posponer, si la alarma lo permite).
+        .fullScreenCover(item: Binding(
+            get: { challenges.session },
+            set: { if $0 == nil { challenges.sessionAlarmEnded() } }
+        )) { session in
+            ChallengeView(mode: .alarm(session))
+        }
         .modifier(DemoScreenModifier(selection: $selection))
         .onReceive(NotificationCenter.default.publisher(for: .calarmOpenReminder)) { _ in
             selection = .alarms
@@ -78,6 +88,21 @@ struct ContentView: View {
             NavigationStack {
                 DelegationSettingsView()
             }
+        }
+        .sheet(isPresented: .constant(DemoData.requestedScreen == "challengePicker")) {
+            NavigationStack {
+                ChallengePickerView(selection: $demoChallenge, alarmTitle: "Despertar")
+            }
+        }
+        // El reto en modo de prueba: `challenge` (cálculo), `challengeMemory`, `challengeQR`.
+        .fullScreenCover(isPresented: .constant(DemoData.requestedScreen == "challenge")) {
+            ChallengeView(mode: .practice(WakeChallenge(kind: .math), title: "Despertar"))
+        }
+        .fullScreenCover(isPresented: .constant(DemoData.requestedScreen == "challengeMemory")) {
+            ChallengeView(mode: .practice(WakeChallenge(kind: .memory), title: "Despertar"))
+        }
+        .fullScreenCover(isPresented: .constant(DemoData.requestedScreen == "challengeQR")) {
+            ChallengeView(mode: .practice(WakeChallenge(kind: .qr, code: "demo"), title: "Despertar"))
         }
         #endif
     }

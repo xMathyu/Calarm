@@ -33,6 +33,8 @@
 	<false/>
 	<key>NSAlarmKitUsageDescription</key>
 	<string>Calarm necesita programar alarmas para avisarte antes de tus reuniones y recordatorios.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Calarm usa la cámara para leer el código QR o de barras que apaga una alarma con el reto «Código QR».</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
 	<string>Calarm lee tus eventos del calendario para ponerles alarma y detectar enlaces de Microsoft Teams. Si lo activas en Ajustes, también guarda tus alarmas en un calendario llamado Calarm.</string>
 	<key>NSContactsUsageDescription</key>

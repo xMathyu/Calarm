@@ -39,6 +39,12 @@ final class Reminder {
     /// de Ajustes. Campo nuevo con valor por defecto: los registros que llegan de
     /// CloudKit sin él se comportan como "seguir el predeterminado".
     var toneRaw: String = ""
+    /// Reto para apagar (JSON `WakeChallenge`). Vacío = sin reto. Campo nuevo
+    /// con valor por defecto, como `toneRaw`: los registros que llegan de
+    /// CloudKit sin él se comportan como «sin reto». OJO: es una columna nueva
+    /// de SwiftData (`CD_challengeData`), así que hay que desplegar el esquema
+    /// a Production en el panel de CloudKit antes de publicar.
+    var challengeData: Data = Data()
     var isEnabled: Bool = true
     var createdAt: Date = Date()
     var updatedAt: Date = Date()
@@ -91,6 +97,12 @@ final class Reminder {
     var tone: AlarmTone? {
         get { toneRaw.isEmpty ? nil : AlarmTone(rawValue: toneRaw) }
         set { toneRaw = newValue?.rawValue ?? "" }
+    }
+
+    /// Reto para apagar, o `nil` si la alarma se apaga con un toque.
+    var challenge: WakeChallenge? {
+        get { WakeChallenge.decode(challengeData) }
+        set { challengeData = newValue?.encoded() ?? Data() }
     }
 
     var recurrence: RecurrenceRule {

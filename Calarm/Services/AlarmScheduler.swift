@@ -80,7 +80,8 @@ final class AlarmScheduler {
         tone: AlarmTone,
         countdown: AlarmCountdown = .off,
         meetingURL: URL? = nil,
-        location: String? = nil
+        location: String? = nil,
+        challenge: WakeChallenge? = nil
     ) async throws -> UUID {
         let fingerprint = Self.contentHash(
             title: title,
@@ -90,7 +91,8 @@ final class AlarmScheduler {
             tone: tone,
             countdown: countdown,
             meetingURL: meetingURL,
-            location: location
+            location: location,
+            challenge: challenge
         )
 
         if let existing = store.entry(forOwner: ownerID, fireDate: fireDate) {
@@ -115,6 +117,7 @@ final class AlarmScheduler {
             ownerID: ownerID,
             meetingURL: meetingURL,
             location: location,
+            challenge: challenge,
             alarmID: alarmID
         )
         _ = try await manager.schedule(id: alarmID, configuration: configuration)
@@ -133,7 +136,8 @@ final class AlarmScheduler {
         tone: AlarmTone,
         countdown: AlarmCountdown,
         meetingURL: URL?,
-        location: String?
+        location: String?,
+        challenge: WakeChallenge?
     ) -> String {
         [
             title,
@@ -144,6 +148,7 @@ final class AlarmScheduler {
             String(countdown.rawValue),
             meetingURL?.absoluteString ?? "",
             location ?? "",
+            challenge?.fingerprint ?? "",
         ].joined(separator: "\u{1F}")
     }
 
@@ -232,6 +237,43 @@ final class AlarmScheduler {
         store.clearAll()
     }
 
+    // MARK: - Retos
+
+    /// La alarma de Calarm dueña de un id de AlarmKit, y la hora para la que se
+    /// programó.
+    func owner(forAlarmID alarmID: UUID) -> (ownerID: String, fireDate: Date)? {
+        store.owner(ofAlarmID: alarmID)
+    }
+
+    func storedFireDates(ownerID: String) -> [Date] {
+        store.allEntries(forOwner: ownerID).map(\.fireDate)
+    }
+
+    /// Las alarmas que están sonando ahora mismo.
+    func alertingAlarmIDs() -> Set<UUID> {
+        guard let alarms = try? manager.alarms else { return [] }
+        return Set(alarms.filter { $0.state == .alerting }.map(\.id))
+    }
+
+    func stop(alarmID: UUID) {
+        try? manager.stop(id: alarmID)
+    }
+
+    /// Posponer: la alarma pasa a cuenta regresiva (`postAlert`) y vuelve a sonar.
+    func snooze(alarmID: UUID) {
+        try? manager.countdown(id: alarmID)
+    }
+
+    /// Detiene las alarmas del dueño que estén sonando o en cuenta regresiva,
+    /// salvo `keep`.
+    func stopActive(ownerID: String, except keep: UUID? = nil) {
+        let active = activeAlarmIDs()
+        for entry in store.allEntries(forOwner: ownerID)
+        where active.contains(entry.alarmID) && entry.alarmID != keep {
+            try? manager.stop(id: entry.alarmID)
+        }
+    }
+
     // MARK: - Private
 
     /// IDs of alarms in a non-`.scheduled` state: alerting right now, or counting
@@ -252,16 +294,29 @@ final class AlarmScheduler {
         ownerID: String,
         meetingURL: URL?,
         location: String?,
+        challenge: WakeChallenge?,
         alarmID: UUID
     ) -> AlarmManager.AlarmConfiguration<CalarmAlarmMetadata> {
         let hasLocation = (location?.isEmpty == false) && meetingURL == nil
+        let hasChallenge = challenge?.isReady == true
 
-        // When the event has a physical location, the secondary button navigates to it
-        // (stopping the alarm). Otherwise we keep snooze.
+        // Con reto, el botón secundario abre la app con el juego, y resolverlo es
+        // lo único que apaga la alarma: el control de parar del sistema no se
+        // puede quitar, pero detenerla sin resolver la hace volver a sonar.
+        // Sin reto: when the event has a physical location, the secondary button
+        // navigates to it (stopping the alarm). Otherwise we keep snooze.
         let secondaryButton: AlarmButton
         let secondaryBehavior: AlarmPresentation.Alert.SecondaryButtonBehavior
         let secondaryIntent: any LiveActivityIntent
-        if hasLocation, let location {
+        if hasChallenge {
+            secondaryButton = AlarmButton(
+                text: "Resolver reto",
+                textColor: .white,
+                systemImageName: "puzzlepiece.extension.fill"
+            )
+            secondaryBehavior = .custom
+            secondaryIntent = SolveChallengeIntent(alarmID: alarmID.uuidString)
+        } else if hasLocation, let location {
             secondaryButton = AlarmButton(
                 text: "Ir",
                 textColor: .white,
@@ -334,7 +389,8 @@ final class AlarmScheduler {
             symbolName: symbolName,
             categoryRaw: category.rawValue,
             teamsURLString: meetingURL?.absoluteString,
-            location: location
+            location: location,
+            hasChallenge: hasChallenge ? true : nil
         )
 
         let attributes = AlarmAttributes(

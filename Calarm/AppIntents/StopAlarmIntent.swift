@@ -16,6 +16,11 @@ struct StopAlarmIntent: LiveActivityIntent {
     static var title: LocalizedStringResource = "Detener alarma"
     static var description = IntentDescription("Detiene la alarma de la reunión.")
 
+    /// Hook del lado de la app, instalado por `CalarmApp` (queda `nil` en el
+    /// proceso del widget, donde este archivo también compila): deja reaccionar
+    /// cuando la persona detiene una alarma con reto sin resolverlo.
+    nonisolated(unsafe) static var onStop: (@Sendable (UUID) async -> Void)?
+
     @Parameter(title: "Alarm ID")
     var alarmID: String
 
@@ -31,6 +36,7 @@ struct StopAlarmIntent: LiveActivityIntent {
         if let id = UUID(uuidString: alarmID) {
             try? await AlarmManager.shared.stop(id: id)
             recordStopForReviewPrompt()
+            await Self.onStop?(id)
         }
         return .result()
     }
