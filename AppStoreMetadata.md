@@ -305,36 +305,45 @@ Alemán:
 
 Español:
 ```
+• Nuevo: «Reto para apagar». Elige un juego para cada alarma y no se apagará hasta que lo resuelvas: cálculo, memoria, ordenar números, parejas, colores, encontrar el distinto, escribir una frase, sacudir el teléfono, caminar, un laberinto que se juega inclinando el iPhone, atrapar objetivos o escanear un código que dejes lejos de la cama. Si la detienes sin resolverlo, vuelve a sonar
 • Nuevo: la pestaña Calendario ahora enseña el mes completo, con tus alarmas y los eventos de tu calendario marcados en cada día. Toca un día para ver qué tienes, o el + para crear una alarma en esa fecha
 • Nuevo: en Ajustes puedes activar «Guardar mis alarmas en el Calendario»: Calarm crea un calendario propio en tu app Calendario con una entrada por cada alarma, que se actualiza sola cuando la cambias o la borras
 • Nuevo: si quien te compartió una alarma le cambia la hora o la borra, te llega una notificación
+• Nuevo: al abrir una invitación ves que la alarma se está agregando, y te avisa en cuanto ya está en tu lista
 • Corregido: los eventos de tu calendario no aparecían en Calarm, porque la app nunca te pedía permiso para leerlo. Ahora te lo pide al abrirla
 • Corregido: una alarma compartida que su dueño borraba seguía sonando en tu iPhone
 • Corregido: algunas alarmas compartidas aparecían repetidas, y las invitaciones que borrabas podían volver
+• Corregido: si borrabas una alarma que te compartieron, quien te la compartió te seguía viendo como unido
 • Corregido: los cambios que haces con el asistente, y las alarmas que borras desde la pantalla de edición, ahora también llegan a las personas con quienes las compartes
 • Corregido: si al pedirle a Siri que abra Calarm se abrían las alarmas del Reloj, ahora puedes decir «Cal Alarm»
 ```
 
 Inglés:
 ```
+• New: “Wake-up challenge”. Pick a game for each alarm and it won't turn off until you solve it: math, memory, number order, pairs, colors, odd one out, typing a sentence, shaking your phone, walking, a maze you play by tilting your iPhone, catching targets, or scanning a code you leave far from your bed. Stop it without solving and it rings again
 • New: the Calendar tab now shows the whole month, with your alarms and your calendar events marked on each day. Tap a day to see what's on, or + to create an alarm on that date
 • New: in Settings you can turn on “Save my alarms to Calendar”: Calarm creates its own calendar in your Calendar app with an entry for every alarm, kept up to date when you change or delete it
 • New: if someone who shared an alarm with you changes its time or deletes it, you get a notification
+• New: when you open an invitation you see the alarm being added, and you're told as soon as it's on your list
 • Fixed: your calendar events didn't show up in Calarm, because the app never asked for permission to read your calendar. Now it asks when you open it
 • Fixed: a shared alarm its owner deleted kept ringing on your iPhone
 • Fixed: some shared alarms showed up twice, and invitations you deleted could come back
+• Fixed: if you deleted an alarm someone shared with you, they still saw you as joined
 • Fixed: changes you make with the assistant, and alarms you delete from the edit screen, now also reach the people you share them with
 • Fixed: if asking Siri to open Calarm opened the Clock app's alarms instead, you can now say "Cal Alarm"
 ```
 
 Alemán:
 ```
+• Neu: „Aufgabe zum Ausschalten“. Wähle für jeden Wecker ein Spiel, und er geht erst aus, wenn du es gelöst hast: Rechnen, Gedächtnis, Zahlen ordnen, Paare, Farben, das Andere finden, einen Satz tippen, das iPhone schütteln, gehen, ein Labyrinth, das du durch Neigen des iPhones spielst, Ziele fangen oder einen Code scannen, den du weit weg vom Bett hinlegst. Stoppst du ihn, ohne zu lösen, klingelt er wieder
 • Neu: Der Tab „Kalender“ zeigt jetzt den ganzen Monat, mit deinen Weckern und deinen Kalenderterminen an jedem Tag markiert. Tippe auf einen Tag, um zu sehen, was ansteht, oder auf +, um einen Wecker an diesem Datum anzulegen
 • Neu: In den Einstellungen kannst du „Meine Wecker im Kalender speichern“ aktivieren: Calarm legt in deiner Kalender-App einen eigenen Kalender mit einem Eintrag pro Wecker an, der sich beim Ändern oder Löschen von selbst aktualisiert
 • Neu: Wenn jemand, der einen Wecker mit dir teilt, die Uhrzeit ändert oder ihn löscht, bekommst du eine Mitteilung
+• Neu: Wenn du eine Einladung öffnest, siehst du, dass der Wecker hinzugefügt wird, und erfährst sofort, wann er in deiner Liste ist
 • Behoben: Die Termine aus deinem Kalender erschienen nicht in Calarm, weil die App nie um Zugriff auf deinen Kalender gebeten hat. Jetzt fragt sie beim Öffnen danach
 • Behoben: Ein geteilter Wecker, den sein Besitzer gelöscht hatte, klingelte auf deinem iPhone weiter
 • Behoben: Manche geteilten Wecker erschienen doppelt, und gelöschte Einladungen konnten zurückkommen
+• Behoben: Wenn du einen Wecker gelöscht hast, den jemand mit dir teilt, wurdest du dort weiterhin als beigetreten angezeigt
 • Behoben: Änderungen über den Assistenten und Wecker, die du im Bearbeiten-Bildschirm löschst, erreichen jetzt auch die Personen, mit denen du sie teilst
 • Behoben: Wenn Siri beim Öffnen von Calarm stattdessen die Wecker der Uhr-App öffnete, kannst du jetzt „Cal Alarm" sagen
 ```
