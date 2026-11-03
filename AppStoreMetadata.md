@@ -301,6 +301,38 @@ Alemán:
 • Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
+## What's New (1.0.14)
+
+Español:
+```
+• Nuevo: «Cuenta regresiva». Cuenta los días que faltan para un concierto, un viaje o un cumpleaños, con un emoji o una foto de fondo. Los cumpleaños y aniversarios pueden repetirse cada año, y si le pones hora también cuenta horas, minutos y segundos. Desde ahí puedes poner una alarma para ese día
+• Nuevo: widgets para la pantalla de inicio y la pantalla bloqueada. «Cuenta regresiva» muestra los días que faltan para el evento que elijas, y «Próxima alarma» la siguiente que va a sonar (o las tres siguientes)
+• Nuevo: botón «Nueva alarma» para el Centro de control, la pantalla bloqueada o el botón de Acción
+• Nuevo: cuatro retos más para apagar la alarma, en el grupo Arcade: Vuelo, Ovejas, Cañón y Tirachinas
+• Nuevo: las invitaciones se envían por donde quieras (WhatsApp, Mensajes, Instagram…), ya no solo por SMS
+• Corregido: en las alarmas compartidas salía «Alguien» en lugar del nombre de la persona
+```
+
+Inglés:
+```
+• New: “Countdown”. Count the days until a concert, a trip or a birthday, with an emoji or a background photo. Birthdays and anniversaries can repeat every year, and if you add a time it also counts the hours, minutes and seconds. From there you can set an alarm for that day
+• New: widgets for your Home Screen and Lock Screen. “Countdown” shows the days left until the event you choose, and “Next alarm” shows the next one that will ring (or the next three)
+• New: a “New alarm” button for Control Center, the Lock Screen or the Action button
+• New: four more wake-up challenges in the Arcade group: Flight, Sheep, Cannon and Slingshot
+• New: send invitations wherever you like (WhatsApp, Messages, Instagram…), not just by text message
+• Fixed: shared alarms showed “Someone” instead of the person's name
+```
+
+Alemán:
+```
+• Neu: „Countdown“. Zähle die Tage bis zu einem Konzert, einer Reise oder einem Geburtstag, mit einem Emoji oder einem Hintergrundfoto. Geburtstage und Jahrestage können sich jedes Jahr wiederholen, und mit Uhrzeit zählt er auch Stunden, Minuten und Sekunden. Von dort aus kannst du einen Wecker für diesen Tag stellen
+• Neu: Widgets für den Home-Bildschirm und den Sperrbildschirm. „Countdown“ zeigt die Tage bis zum Ereignis deiner Wahl, „Nächster Wecker“ den nächsten, der klingelt (oder die nächsten drei)
+• Neu: eine Taste „Neuer Wecker“ für das Kontrollzentrum, den Sperrbildschirm oder die Aktionstaste
+• Neu: vier weitere Aufgaben zum Ausschalten in der Gruppe Arcade: Flug, Schafe, Kanone und Steinschleuder
+• Neu: Einladungen verschickst du, wo du willst (WhatsApp, Nachrichten, Instagram …), nicht mehr nur per SMS
+• Behoben: Bei geteilten Weckern stand „Jemand“ statt des Namens der Person
+```
+
 ## What's New (1.0.13)
 
 Español:
