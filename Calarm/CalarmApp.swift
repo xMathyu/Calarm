@@ -82,6 +82,15 @@ struct CalarmApp: App {
         // re-scan drops this device's copy too.
         DeletedSharesStore.startSyncing(onChange: resyncSharedData)
 
+        // Los widgets leen un resumen que escribe la app: se rehace tras cada
+        // guardado de SwiftData (editor, lista, asistente, Siri, cuentas
+        // regresivas), juntando los guardados seguidos en una sola escritura.
+        NotificationCenter.default.addObserver(forName: ModelContext.didSave, object: nil, queue: .main) { _ in
+            MainActor.assumeIsolated {
+                WidgetSnapshotWriter.scheduleUpdate(container: modelContainer)
+            }
+        }
+
         // Re-register the Siri phrases on every launch so the system picks up
         // changes to CalarmAppShortcuts (and AppShortcuts.xcstrings) without
         // requiring a reinstall.
@@ -121,19 +130,22 @@ struct CalarmApp: App {
             // The CloudKit share metadata callbacks never fire for these, since
             // iOS only raises those for icloud.com URLs it opens itself.
             .onOpenURL { url in
-                // El botón «Resolver» de la Live Activity de una alarma con reto.
-                if let alarmID = ChallengeRequest.alarmID(from: url) {
-                    challengeCoordinator.present(alarmID: alarmID)
-                    return
-                }
-                // El enlace de una entrada del calendario «Calarm» abre su alarma.
-                if let reminderID = CalendarMirrorService.reminderID(from: url) {
-                    NotificationCenter.default.post(name: .calarmOpenReminder, object: reminderID)
-                    return
-                }
-                guard InviteLink.isInvite(url) else { return }
-                Task { await acceptInviteLink(url) }
+                handleOpenURL(url)
             }
+            #if DEBUG
+            // `-demoOpenURL <url>`: el mismo camino que un toque en un widget,
+            // sin el aviso «¿Abrir en Calarm?» que pone `simctl openurl`.
+            .task {
+                let args = ProcessInfo.processInfo.arguments
+                if let i = args.firstIndex(of: "-demoOpenURL"), i + 1 < args.count, let url = URL(string: args[i + 1]) {
+                    handleOpenURL(url)
+                }
+                // `-demoNewAlarm`: lo que hace el control «Nueva alarma» al abrir la app.
+                if args.contains("-demoNewAlarm") {
+                    NewAlarmRequest.post()
+                }
+            }
+            #endif
             .task {
                 UIApplication.shared.installGlobalKeyboardDismissGesture()
                 // Bring up the calendar coordinator FIRST so the "Calendario" tab
@@ -180,6 +192,11 @@ struct CalarmApp: App {
                 Task { await requestCalendarAccessIfNeeded() }
             }
             .onChange(of: scenePhase) { _, newPhase in
+                // Al salir, el resumen de los widgets queda al día (p. ej. con lo
+                // que llegó de iCloud mientras la app estaba abierta).
+                if newPhase == .background {
+                    WidgetSnapshotWriter.update(container: modelContainer)
+                }
                 if newPhase == .active, settings.onboardingCompleted {
                     challengeCoordinator.presentIfAlerting()
                     Task { await syncAllReminders() }
@@ -260,6 +277,30 @@ struct CalarmApp: App {
                 Text(sharedRemindersService.acceptErrorMessage ?? "")
             }
         }
+    }
+
+    /// Los enlaces que abren la app: widgets, Live Activity, calendario «Calarm»
+    /// e invitaciones.
+    @MainActor
+    private func handleOpenURL(_ url: URL) {
+        // El botón «Resolver» de la Live Activity de una alarma con reto.
+        if let alarmID = ChallengeRequest.alarmID(from: url) {
+            challengeCoordinator.present(alarmID: alarmID)
+            return
+        }
+        // El widget de cuenta regresiva abre su evento (o la pestaña).
+        if let countdownID = CalarmLinks.countdownID(from: url) {
+            CountdownOpenRequest.post(countdownID)
+            return
+        }
+        // El enlace de una entrada del calendario «Calarm» (o del widget de
+        // próxima alarma) abre su alarma.
+        if let reminderID = CalendarMirrorService.reminderID(from: url) {
+            NotificationCenter.default.post(name: .calarmOpenReminder, object: reminderID)
+            return
+        }
+        guard InviteLink.isInvite(url) else { return }
+        Task { await acceptInviteLink(url) }
     }
 
     /// Accepts an invitation that arrived through one of Calarm's own links.
@@ -351,6 +392,9 @@ struct CalarmApp: App {
         let descriptor = FetchDescriptor<Reminder>()
         guard let reminders = try? context.fetch(descriptor) else { return }
         await reminderScheduler.syncAlarms(for: reminders)
+        // También corre en segundo plano (push de un cambio compartido), así que
+        // el widget de próxima alarma se entera sin abrir la app.
+        WidgetSnapshotWriter.update(container: modelContainer)
     }
 
     /// An invitee hears about a shared alarm's new time through a notification,
@@ -389,7 +433,7 @@ struct CalarmApp: App {
     /// Builds the SwiftData container. Tries iCloud-synced (private database) first;
     /// falls back to local-only if CloudKit isn't configured for the build.
     private static func makeModelContainer() -> ModelContainer {
-        let schema = Schema([Reminder.self, CustomCategory.self])
+        let schema = CalarmSchema.schema
         let configuration = ModelConfiguration(
             schema: schema,
             cloudKitDatabase: .automatic

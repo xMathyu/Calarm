@@ -13,6 +13,16 @@
 		CA1ABEEF0000000000000010 /* CalarmWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF000000000000000F /* CalarmWidgetsBundle.swift */; };
 		CA1ABEEF0000000000000012 /* CalarmAlarmLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000011 /* CalarmAlarmLiveActivity.swift */; };
 		CA1ABEEF0000000000000016 /* StopAlarmIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000015 /* StopAlarmIntent.swift */; };
+		CA1ABEEF0000000000000020 /* CountdownWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000021 /* CountdownWidget.swift */; };
+		CA1ABEEF0000000000000022 /* NextAlarmWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000023 /* NextAlarmWidget.swift */; };
+		CA1ABEEF0000000000000024 /* NewAlarmControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000025 /* NewAlarmControl.swift */; };
+		CA1ABEEF0000000000000026 /* WidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000027 /* WidgetViews.swift */; };
+		CA1ABEEF0000000000000028 /* WidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000027 /* WidgetViews.swift */; };
+		CA1ABEEF0000000000000029 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF000000000000002A /* WidgetSnapshot.swift */; };
+		CA1ABEEF000000000000002B /* NewAlarmControlIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF000000000000002C /* NewAlarmControlIntent.swift */; };
+		CA1ABEEF000000000000002D /* CountdownMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF000000000000002E /* CountdownMath.swift */; };
+		CA1ABEEF000000000000002F /* ReminderIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000030 /* ReminderIcon.swift */; };
+		CA1ABEEF0000000000000031 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000032 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +65,16 @@
 		CA1ABEEF0000000000000011 /* CalarmAlarmLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalarmAlarmLiveActivity.swift; sourceTree = "<group>"; };
 		CA1ABEEF0000000000000013 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CA1ABEEF0000000000000015 /* StopAlarmIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StopAlarmIntent.swift; path = Calarm/AppIntents/StopAlarmIntent.swift; sourceTree = SOURCE_ROOT; };
+		CA1ABEEF0000000000000021 /* CountdownWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownWidget.swift; sourceTree = "<group>"; };
+		CA1ABEEF0000000000000023 /* NextAlarmWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextAlarmWidget.swift; sourceTree = "<group>"; };
+		CA1ABEEF0000000000000025 /* NewAlarmControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAlarmControl.swift; sourceTree = "<group>"; };
+		CA1ABEEF0000000000000027 /* WidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetViews.swift; sourceTree = "<group>"; };
+		CA1ABEEF000000000000002A /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WidgetSnapshot.swift; path = Calarm/Shared/WidgetSnapshot.swift; sourceTree = SOURCE_ROOT; };
+		CA1ABEEF000000000000002C /* NewAlarmControlIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewAlarmControlIntent.swift; path = Calarm/Shared/NewAlarmControlIntent.swift; sourceTree = SOURCE_ROOT; };
+		CA1ABEEF000000000000002E /* CountdownMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CountdownMath.swift; path = Calarm/Models/CountdownMath.swift; sourceTree = SOURCE_ROOT; };
+		CA1ABEEF0000000000000030 /* ReminderIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReminderIcon.swift; path = Calarm/Models/ReminderIcon.swift; sourceTree = SOURCE_ROOT; };
+		CA1ABEEF0000000000000032 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = Calarm/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
+		CA1ABEEF0000000000000033 /* CalarmWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CalarmWidgets.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -134,9 +154,19 @@
 			children = (
 				CA1ABEEF000000000000000F /* CalarmWidgetsBundle.swift */,
 				CA1ABEEF0000000000000011 /* CalarmAlarmLiveActivity.swift */,
+				CA1ABEEF0000000000000021 /* CountdownWidget.swift */,
+				CA1ABEEF0000000000000023 /* NextAlarmWidget.swift */,
+				CA1ABEEF0000000000000025 /* NewAlarmControl.swift */,
+				CA1ABEEF0000000000000027 /* WidgetViews.swift */,
 				CA1ABEEF000000000000000D /* CalarmAlarmMetadata.swift */,
 				CA1ABEEF0000000000000015 /* StopAlarmIntent.swift */,
+				CA1ABEEF000000000000002A /* WidgetSnapshot.swift */,
+				CA1ABEEF000000000000002C /* NewAlarmControlIntent.swift */,
+				CA1ABEEF000000000000002E /* CountdownMath.swift */,
+				CA1ABEEF0000000000000030 /* ReminderIcon.swift */,
+				CA1ABEEF0000000000000032 /* Localizable.xcstrings */,
 				CA1ABEEF0000000000000013 /* Info.plist */,
+				CA1ABEEF0000000000000033 /* CalarmWidgets.entitlements */,
 			);
 			path = CalarmWidgets;
 			sourceTree = "<group>";
@@ -270,6 +300,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA1ABEEF0000000000000031 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,6 +318,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA1ABEEF0000000000000028 /* WidgetViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +330,14 @@
 				CA1ABEEF0000000000000012 /* CalarmAlarmLiveActivity.swift in Sources */,
 				CA1ABEEF000000000000000E /* CalarmAlarmMetadata.swift in Sources */,
 				CA1ABEEF0000000000000016 /* StopAlarmIntent.swift in Sources */,
+				CA1ABEEF0000000000000020 /* CountdownWidget.swift in Sources */,
+				CA1ABEEF0000000000000022 /* NextAlarmWidget.swift in Sources */,
+				CA1ABEEF0000000000000024 /* NewAlarmControl.swift in Sources */,
+				CA1ABEEF0000000000000026 /* WidgetViews.swift in Sources */,
+				CA1ABEEF0000000000000029 /* WidgetSnapshot.swift in Sources */,
+				CA1ABEEF000000000000002B /* NewAlarmControlIntent.swift in Sources */,
+				CA1ABEEF000000000000002D /* CountdownMath.swift in Sources */,
+				CA1ABEEF000000000000002F /* ReminderIcon.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,6 +562,7 @@
 		CA1ABEEF0000000000000007 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CalarmWidgets/CalarmWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_TEAM = 5QGSG9RD22;
@@ -552,6 +593,7 @@
 		CA1ABEEF0000000000000008 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CalarmWidgets/CalarmWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_TEAM = 5QGSG9RD22;

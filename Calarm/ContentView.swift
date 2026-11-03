@@ -19,7 +19,7 @@ struct ContentView: View {
     let onCountdownChanged: () -> Void
 
     enum TabID: String, Hashable {
-        case alarms, calendar, assistant, settings
+        case alarms, calendar, countdowns, assistant, settings
     }
 
     @State private var selection: TabID = .alarms
@@ -41,6 +41,9 @@ struct ContentView: View {
             // la lectura del calendario esté apagada (entonces va sin eventos).
             Tab("Calendario", systemImage: "calendar", value: TabID.calendar) {
                 CalendarTabView(coordinator: teamsCoordinatorProvider())
+            }
+            Tab("Cuenta regresiva", systemImage: "hourglass", value: TabID.countdowns) {
+                CountdownListView()
             }
             Tab("Asistente", systemImage: "sparkles", value: TabID.assistant) {
                 CalarmChatView()
@@ -68,6 +71,14 @@ struct ContentView: View {
         .modifier(DemoScreenModifier(selection: $selection))
         .onReceive(NotificationCenter.default.publisher(for: .calarmOpenReminder)) { _ in
             selection = .alarms
+        }
+        // «Nueva alarma» del Centro de control: la lista de alarmas abre el editor.
+        .onReceive(NotificationCenter.default.publisher(for: .calarmNewAlarm)) { _ in
+            selection = .alarms
+        }
+        // Un toque en el widget de cuenta regresiva.
+        .onReceive(NotificationCenter.default.publisher(for: .calarmOpenCountdown)) { _ in
+            selection = .countdowns
         }
         // An invitation being accepted: «agregando…» while CloudKit works, then
         // the alarm's name once it's on the list. Before this, the person tapped
@@ -118,6 +129,10 @@ struct ContentView: View {
                 DelegationSettingsView()
             }
         }
+        // Los widgets pintados dentro de la app, para verlos sin la pantalla de inicio.
+        .sheet(isPresented: .constant(DemoData.requestedScreen == "widgets")) {
+            WidgetPreviewGallery()
+        }
         .sheet(isPresented: .constant(DemoData.requestedScreen == "challengePicker")) {
             NavigationStack {
                 ChallengePickerView(selection: $demoChallenge, alarmTitle: "Despertar")
@@ -154,6 +169,7 @@ private struct DemoScreenModifier: ViewModifier {
         content.task {
             switch DemoData.requestedScreen {
             case "calendar", "agenda": selection = .calendar
+            case "countdowns", "countdownDetail", "countdownEditor", "countdownNew": selection = .countdowns
             case "assistant": selection = .assistant
             case "settings", "helpers": selection = .settings
             default: break

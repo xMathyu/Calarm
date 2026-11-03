@@ -49,7 +49,7 @@ struct NextAlarmIntent: AppIntent {
     }
 
     private static func makeSharedContainer() throws -> ModelContainer {
-        let schema = Schema([Reminder.self, CustomCategory.self])
+        let schema = CalarmSchema.schema
         let cloudConfig = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
         do {
             return try ModelContainer(for: schema, configurations: cloudConfig)

@@ -18,6 +18,7 @@
 import EventKit
 import Foundation
 import SwiftData
+import UIKit
 
 enum DemoData {
     static var isRequested: Bool {
@@ -34,7 +35,8 @@ enum DemoData {
 
     /// Screen to open straight away, from `-demoScreen <name>`: list, editor,
     /// recurrence, tones, assistant, settings, helpers, calendar (month view),
-    /// agenda (the events list), onboarding.
+    /// agenda (the events list), onboarding, countdowns (the Cuenta regresiva
+    /// tab), countdownDetail, countdownEditor, countdownNew.
     /// Driving the captures this way keeps them deterministic — no tapping, same
     /// frame every run, in whichever language the app was launched with.
     static var requestedScreen: String? {
@@ -54,6 +56,7 @@ enum DemoData {
         let context = container.mainContext
         try? context.delete(model: Reminder.self)
         try? context.delete(model: CustomCategory.self)
+        try? context.delete(model: CountdownEvent.self)
 
         let health = CustomCategory(
             name: isSpanish ? "Salud" : "Health",
@@ -65,6 +68,9 @@ enum DemoData {
 
         for reminder in reminders(healthCategory: health) {
             context.insert(reminder)
+        }
+        for countdown in countdowns() {
+            context.insert(countdown)
         }
         try? context.save()
 
@@ -205,6 +211,85 @@ enum DemoData {
         )
 
         return [pill, standup, dentist, training, rent, momBirthday, anniversary]
+    }
+
+    /// The Cuenta regresiva tab: one with a photo, one counting the seconds,
+    /// a yearly one and one that already passed.
+    private static func countdowns() -> [CountdownEvent] {
+        let es = isSpanish
+        let concert = CountdownEvent(
+            title: es ? "Concierto de Coldplay" : "Coldplay concert",
+            date: at(hour: 21, minute: 0, dayOffset: 23),
+            includesTime: true,
+            colorHex: "#5856D6",
+            iconKind: .photo,
+            iconValue: "🎤",
+            photoData: demoPhoto()
+        )
+        let trip = CountdownEvent(
+            title: es ? "Viaje a Japón" : "Trip to Japan",
+            date: Calendar.current.startOfDay(for: at(hour: 0, minute: 0, dayOffset: 74)),
+            colorHex: "#FF3B30",
+            iconKind: .emoji,
+            iconValue: "🗾"
+        )
+        let birthday = CountdownEvent(
+            title: es ? "Cumpleaños de Sofía" : "Sofía's birthday",
+            date: Calendar.current.date(byAdding: .year, value: -29, to: at(hour: 0, minute: 0, dayOffset: 9))
+                .map { Calendar.current.startOfDay(for: $0) } ?? Date(),
+            repeatsYearly: true,
+            colorHex: "#FF9500",
+            iconKind: .emoji,
+            iconValue: "🎂"
+        )
+        let match = CountdownEvent(
+            title: es ? "Final del campeonato" : "Championship final",
+            date: at(hour: 18, minute: 30, dayOffset: 1),
+            includesTime: true,
+            colorHex: "#34C759",
+            iconKind: .symbol,
+            iconValue: "sportscourt.fill"
+        )
+        let graduation = CountdownEvent(
+            title: es ? "Graduación" : "Graduation",
+            date: Calendar.current.startOfDay(for: at(hour: 0, minute: 0, dayOffset: -12)),
+            colorHex: "#007AFF",
+            iconKind: .symbol,
+            iconValue: "graduationcap.fill"
+        )
+        return [concert, trip, birthday, match, graduation]
+    }
+
+    /// A drawn «stage» (no bundled asset needed) so the photo card has a photo.
+    private static func demoPhoto() -> Data? {
+        let size = CGSize(width: 1200, height: 800)
+        let image = UIGraphicsImageRenderer(size: size).image { context in
+            let cg = context.cgContext
+            let colors = [UIColor(red: 0.16, green: 0.05, blue: 0.35, alpha: 1).cgColor,
+                          UIColor(red: 0.85, green: 0.2, blue: 0.45, alpha: 1).cgColor] as CFArray
+            if let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0, 1]) {
+                cg.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: 0, y: size.height), options: [])
+            }
+            // Stage lights.
+            for (index, hue) in [0.55, 0.8, 0.12, 0.95].enumerated() {
+                let x = size.width * (0.15 + 0.23 * CGFloat(index))
+                UIColor(hue: hue, saturation: 0.7, brightness: 1, alpha: 0.35).setFill()
+                let beam = UIBezierPath()
+                beam.move(to: CGPoint(x: x, y: 0))
+                beam.addLine(to: CGPoint(x: x - 160, y: size.height))
+                beam.addLine(to: CGPoint(x: x + 160, y: size.height))
+                beam.close()
+                beam.fill()
+            }
+            // The crowd.
+            UIColor.black.withAlphaComponent(0.85).setFill()
+            for i in 0..<40 {
+                let x = CGFloat(i) * 32 - 10
+                let height = CGFloat(60 + (i * 37) % 70)
+                UIBezierPath(ovalIn: CGRect(x: x, y: size.height - height, width: 46, height: height + 40)).fill()
+            }
+        }
+        return image.jpegData(compressionQuality: 0.85)
     }
 
     /// A wall-clock time on a day relative to today, so the list always shows

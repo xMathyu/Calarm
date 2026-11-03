@@ -57,6 +57,9 @@ struct ReminderEditorView: View {
 
     // nil = creating new; otherwise editing existing
     let editingReminder: Reminder?
+    /// A new alarm that arrived with a name: what's on screen is a proposal to
+    /// keep, so the baseline is the empty editor and closing saves it.
+    private let seededTitle: Bool
 
     @State private var title: String
     @State private var notes: String
@@ -113,8 +116,11 @@ struct ReminderEditorView: View {
 
     /// `initialDate` siembra la fecha de una alarma NUEVA (la vista de mes la
     /// pasa cuando se crea desde un día concreto); se ignora al editar.
-    init(editing reminder: Reminder? = nil, initialDate: Date? = nil) {
+    /// `initialTitle` siembra el nombre (una cuenta regresiva pasa el suyo), y
+    /// esa alarma se guarda al cerrar aunque no se toque nada más.
+    init(editing reminder: Reminder? = nil, initialDate: Date? = nil, initialTitle: String? = nil) {
         self.editingReminder = reminder
+        self.seededTitle = reminder == nil && !(initialTitle ?? "").isEmpty
         if let r = reminder {
             _title = State(initialValue: r.title)
             _notes = State(initialValue: r.notes ?? "")
@@ -135,7 +141,7 @@ struct ReminderEditorView: View {
             _isEnabled = State(initialValue: r.isEnabled)
         } else {
             let initialCategory = ReminderCategory.reminder
-            _title = State(initialValue: "")
+            _title = State(initialValue: initialTitle ?? "")
             _notes = State(initialValue: "")
             _date = State(initialValue: initialDate ?? Date().addingTimeInterval(60 * 60))
             _categorySelection = State(initialValue: .builtin(initialCategory))
@@ -228,7 +234,11 @@ struct ReminderEditorView: View {
             // Remember what's already stored so closing an untouched editor
             // doesn't re-save (and re-push) the alarm.
             .onAppear {
-                if autosave.lastCommitted == nil { autosave.lastCommitted = snapshot }
+                if autosave.lastCommitted == nil {
+                    var baseline = snapshot
+                    if seededTitle { baseline.title = "" }
+                    autosave.lastCommitted = baseline
+                }
             }
             .onChange(of: title) { _, newValue in
                 scheduleSuggestionFetch(for: newValue)

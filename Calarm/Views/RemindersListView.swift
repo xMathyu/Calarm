@@ -70,12 +70,24 @@ struct RemindersListView: View {
                     ReminderEditorView(editing: reminder)
                 }
                 .task { await askForReviewIfEarned() }
+                // «Nueva alarma» del Centro de control: al llegar la petición o,
+                // si la app arrancó con ella, al aparecer la lista.
+                .task { openNewEditorIfRequested() }
+                .onReceive(NotificationCenter.default.publisher(for: .calarmNewAlarm)) { _ in
+                    openNewEditorIfRequested()
+                }
                 .onReceive(NotificationCenter.default.publisher(for: .calarmOpenReminder)) { note in
                     guard let id = note.object as? UUID,
                           let reminder = reminders.first(where: { $0.id == id }) else { return }
                     editorReminder = reminder
                 }
         }
+    }
+
+    private func openNewEditorIfRequested() {
+        guard NewAlarmRequest.consume() else { return }
+        editorReminder = nil
+        showingNewEditor = true
     }
 
     /// Asks for an App Store rating on the alarm list, a beat after it appears,
