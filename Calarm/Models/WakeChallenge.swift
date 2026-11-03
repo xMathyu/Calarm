@@ -22,6 +22,7 @@ struct WakeChallenge: Codable, Hashable, Sendable {
     /// levantarse de la cama.
     enum Group: CaseIterable, Identifiable, Sendable {
         case mind
+        case arcade
         case body
         case getUp
 
@@ -30,6 +31,7 @@ struct WakeChallenge: Codable, Hashable, Sendable {
         var localizedTitle: String {
             switch self {
             case .mind: appLocalized("Mente")
+            case .arcade: appLocalized("Arcade")
             case .body: appLocalized("Cuerpo")
             case .getUp: appLocalized("Levantarte")
             }
@@ -47,6 +49,11 @@ struct WakeChallenge: Codable, Hashable, Sendable {
         case colors
         case odd
         case typing
+        // Arcade
+        case flap
+        case hurdles
+        case cannon
+        case sling
         // Cuerpo
         case shake
         case steps
@@ -60,6 +67,7 @@ struct WakeChallenge: Codable, Hashable, Sendable {
         var group: Group {
             switch self {
             case .math, .memory, .order, .pairs, .colors, .odd, .typing: .mind
+            case .flap, .hurdles, .cannon, .sling: .arcade
             case .shake, .steps, .tilt, .reflex: .body
             case .qr: .getUp
             }
@@ -78,6 +86,10 @@ struct WakeChallenge: Codable, Hashable, Sendable {
             case .colors: appLocalized("Colores")
             case .odd: appLocalized("El distinto")
             case .typing: appLocalized("Escribir")
+            case .flap: appLocalized("Vuelo")
+            case .hurdles: appLocalized("Ovejas")
+            case .cannon: appLocalized("Cañón")
+            case .sling: appLocalized("Tirachinas")
             case .shake: appLocalized("Sacudir")
             case .steps: appLocalized("Caminar")
             case .tilt: appLocalized("Laberinto")
@@ -95,6 +107,10 @@ struct WakeChallenge: Codable, Hashable, Sendable {
             case .colors: appLocalized("Toca el color de la tinta, no la palabra que lees.")
             case .odd: appLocalized("Encuentra el emoji que no es como los demás.")
             case .typing: appLocalized("Copia una frase letra por letra, sin autocorrector.")
+            case .flap: appLocalized("Toca para que la abeja suba y pásala por los huecos sin chocar.")
+            case .hurdles: appLocalized("Haz que la oveja salte las vallas: mantén pulsado para las altas.")
+            case .cannon: appLocalized("Apunta, carga y dispara al despertador; cuidado con el viento.")
+            case .sling: appLocalized("Estira la goma y lanza para derribar los despertadores de las torres.")
             case .shake: appLocalized("Sacude el teléfono con ganas hasta llenar la barra.")
             case .steps: appLocalized("Da unos pasos con el teléfono en la mano: cuenta los pasos de verdad.")
             case .tilt: appLocalized("Inclina el teléfono para llevar la bola hasta la salida.")
@@ -112,6 +128,10 @@ struct WakeChallenge: Codable, Hashable, Sendable {
             case .colors: "paintpalette.fill"
             case .odd: "eye.fill"
             case .typing: "keyboard"
+            case .flap: "wind"
+            case .hurdles: "figure.jumprope"
+            case .cannon: "target"
+            case .sling: "square.stack.3d.up.fill"
             case .shake: "iphone.radiowaves.left.and.right"
             case .steps: "figure.walk"
             case .tilt: "circle.dotted.and.circle"

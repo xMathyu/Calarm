@@ -285,7 +285,7 @@ struct ReminderEditorView: View {
                 }
                 .presentationDetents([.medium, .large])
             }
-            // Shared invite delivery (Messages, with generic share fallback). For a
+            // Shared invite delivery through the system share sheet. For a
             // NEW alarm this closes the editor (the reminder was just saved); when
             // sharing an EXISTING one we stay and refresh who has access.
             .inviteDelivery($pendingInvite) {
@@ -699,7 +699,7 @@ struct ReminderEditorView: View {
         } header: {
             Text("Compartir")
         } footer: {
-            Text("Se abrirá Messages con el link para que tus invitados la acepten.")
+            Text("Elige por dónde enviar el link (WhatsApp, Mensajes, Instagram…) para que tus invitados la acepten.")
         }
 
         if !participants.isEmpty {
@@ -775,7 +775,9 @@ struct ReminderEditorView: View {
     private func refreshShare() async {
         guard let r = targetReminder else { return }
         if r.isReceivedShare {
-            sharedBy = ShareOwnerStore.get(r.id)
+            // Read from iCloud, never saved (see `SharedRemindersService.ownerNames`);
+            // until it arrives the section just says it was shared with you.
+            sharedBy = await sharedService.owner(ofReceived: r.id)
             return
         }
         let share = await sharedService.existingShare(for: r)
@@ -783,7 +785,7 @@ struct ReminderEditorView: View {
         participants = share.map { sharedService.participantInfos(of: $0).filter { !$0.isOwner } } ?? []
     }
 
-    /// Prepares the share for an existing alarm and hands off to Messages.
+    /// Prepares the share for an existing alarm and opens the share sheet.
     @MainActor
     private func inviteExisting() async {
         // Make sure whatever the user just typed is on the record before the

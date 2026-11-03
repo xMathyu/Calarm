@@ -2,35 +2,35 @@
 //  ContactInviteFlow.swift
 //  Calarm
 //
-//  Shared "invite people via Messages" delivery used by the alarm editor
-//  (ReminderEditorView), for both creating and sharing an existing alarm, so the
-//  invite experience and wording are identical. Prepare a `CKShare`, then drive
-//  this to open Messages with the link pre-filled — the user picks recipients
-//  right in the Messages "To:" field, so there's a single sheet (no separate
-//  contact picker step).
+//  Shared "send the invite link" delivery used by the alarm editor
+//  (ReminderEditorView) and by trusted-helper invites (DelegationSettingsView),
+//  so the invite experience and wording are identical. Prepare a `CKShare`,
+//  then drive this to open the system share sheet with the link: the user picks
+//  where to send it (WhatsApp, Instagram, Messages, Mail, AirDrop…) and who to
+//  send it to inside that app.
 //
 
-import MessageUI
 import SwiftUI
+import UIKit
 
 /// One invitation ready to be delivered: the prepared share link plus the
-/// reminder title for the message preview.
+/// reminder title for the message.
 struct InviteDelivery: Identifiable, Equatable {
     let id = UUID()
     let title: String
     let url: URL
-    /// Already-localized Messages body; when nil the standard
+    /// Already-localized intro; when nil the standard
     /// "Te invito a '<title>' en Calarm" wording is used.
     var customMessage: String? = nil
 }
 
 extension View {
-    /// Drives the shared "send the share link via Messages, with a generic
-    /// share-sheet fallback when Messages is unavailable" experience.
+    /// Drives the shared "send the share link" experience through the system
+    /// share sheet.
     ///
     /// Set `delivery` to a non-nil value to start; `onFinish` runs once the user
-    /// closes Messages / the fallback sheet (e.g. to dismiss the editor or to
-    /// refresh the detail view's share state).
+    /// sends the link or closes the share sheet (e.g. to dismiss the editor or
+    /// to refresh who has access).
     func inviteDelivery(_ delivery: Binding<InviteDelivery?>, onFinish: @escaping () -> Void = {}) -> some View {
         modifier(InviteDeliveryModifier(delivery: delivery, onFinish: onFinish))
     }
@@ -40,48 +40,71 @@ private struct InviteDeliveryModifier: ViewModifier {
     @Binding var delivery: InviteDelivery?
     let onFinish: () -> Void
 
-    @State private var showingMessages = false
-    @State private var showingFallback = false
+    /// Finds the window this view lives in, so the sheet opens in the right
+    /// window on iPad.
+    @State private var anchor = ShareSheetAnchor()
 
     func body(content: Content) -> some View {
         content
+            .background(ShareSheetAnchorView(anchor: anchor))
             .onChange(of: delivery?.id) { _, newID in
-                guard newID != nil else { return }
-                // Open Messages when the device can send texts (recipients are
-                // chosen right in Messages); otherwise the generic share sheet.
-                if MFMessageComposeViewController.canSendText() {
-                    showingMessages = true
-                } else {
-                    showingFallback = true
-                }
+                guard newID != nil, let invite = delivery else { return }
+                present(invite)
             }
-            // Messages pre-filled with the invite link — the user picks who to
-            // send to in the "To:" field, then taps Enviar.
-            .sheet(isPresented: $showingMessages, onDismiss: finish) {
-                if let invite = delivery {
-                    MessageComposeView(
-                        recipients: [],
-                        body: Self.messageBody(for: invite)
-                    ) { showingMessages = false }
-                }
-            }
-            // Fallback: generic share sheet (AirDrop, Mail, WhatsApp, etc.).
-            .sheet(isPresented: $showingFallback, onDismiss: finish) {
-                if let invite = delivery {
-                    // The share sheet already carries the link as the item, so
-                    // the message only needs the intro and the install hint.
-                    ShareLink(
-                        item: invite.url,
-                        message: Text(verbatim: Self.fallbackMessage(for: invite))
-                    )
-                    .padding()
-                }
-            }
+    }
+
+    /// Opens the share sheet directly from UIKit. SwiftUI's `ShareLink` needs
+    /// the user to tap it, but here the link only exists after the share has
+    /// been prepared in CloudKit.
+    private func present(_ invite: InviteDelivery) {
+        guard let presenter = anchor.topViewController() else {
+            finish()
+            return
+        }
+        // Text first and the link as its own item: Messages and WhatsApp put
+        // the text above the link and build the preview from the link.
+        let controller = UIActivityViewController(
+            activityItems: [InviteTextItem(invite: invite), invite.url],
+            applicationActivities: nil
+        )
+        controller.excludedActivityTypes = [
+            .addToReadingList, .assignToContact, .openInIBooks,
+            .print, .saveToCameraRoll, .markupAsPDF,
+        ]
+        controller.completionWithItemsHandler = { _, _, _, _ in finish() }
+        // iPad shows the sheet as a popover; center it without an arrow.
+        if let popover = controller.popoverPresentationController {
+            popover.sourceView = presenter.view
+            popover.sourceRect = CGRect(x: presenter.view.bounds.midX, y: presenter.view.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
+        presenter.present(controller, animated: true)
     }
 
     private func finish() {
         delivery = nil
         onFinish()
+    }
+}
+
+// MARK: - Message text
+
+/// The text that goes with the link. Also gives Mail a subject.
+private final class InviteTextItem: NSObject, UIActivityItemSource {
+    let invite: InviteDelivery
+
+    init(invite: InviteDelivery) { self.invite = invite }
+
+    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+        ""
+    }
+
+    func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
+        Self.message(for: invite)
+    }
+
+    func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
+        Self.intro(for: invite)
     }
 
     private static func intro(for invite: InviteDelivery) -> String {
@@ -102,19 +125,46 @@ private struct InviteDeliveryModifier: ViewModifier {
         return appLocalized("¿No tienes Calarm? Descárgala aquí:") + "\n" + AppLinks.appStore.absoluteString
     }
 
-    /// Localized invite text for the Messages body. Each link goes on its own
-    /// line so iMessage/Mail render the rich preview.
-    static func messageBody(for invite: InviteDelivery) -> String {
-        var body = intro(for: invite) + "\n" + invite.url.absoluteString
-        if let hint = installHint(for: invite) { body += "\n\n" + hint }
-        return body
-    }
-
-    /// Body for the generic share sheet, which carries the link as its own item
-    /// — so only the wording belongs here.
-    private static func fallbackMessage(for invite: InviteDelivery) -> String {
+    /// The link travels as its own share item, so only the wording goes here.
+    static func message(for invite: InviteDelivery) -> String {
         var body = intro(for: invite)
         if let hint = installHint(for: invite) { body += "\n\n" + hint }
         return body
+    }
+}
+
+// MARK: - Presenting from UIKit
+
+/// Holds a view that sits behind the SwiftUI content, used to reach its window.
+private final class ShareSheetAnchor {
+    weak var view: UIView?
+
+    /// The controller on top of this view's window (e.g. the editor sheet),
+    /// which is the one that can present the share sheet.
+    func topViewController() -> UIViewController? {
+        let window = view?.window ?? UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }?
+            .keyWindow
+        var top = window?.rootViewController
+        while let presented = top?.presentedViewController, !presented.isBeingDismissed {
+            top = presented
+        }
+        return top
+    }
+}
+
+private struct ShareSheetAnchorView: UIViewRepresentable {
+    let anchor: ShareSheetAnchor
+
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        anchor.view = view
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {
+        anchor.view = uiView
     }
 }

@@ -14,7 +14,7 @@
 //  The comparison is against the OWNER's last payload, not the local reminder:
 //  the scan rewrites the local copy from the payload every time, so diffing it
 //  would also fire whenever it undid an edit the recipient made themselves.
-//  Stored in UserDefaults — like `ShareLeadTimesStore` / `ShareOwnerStore` — to
+//  Stored in UserDefaults — like `ShareLeadTimesStore` — to
 //  avoid a SwiftData property and another CloudKit Production schema deploy.
 //
 
@@ -107,8 +107,8 @@ enum ShareChangeNotifier {
     /// Posts "<owner> changed the schedule" for a received share whose schedule
     /// just changed. `reminder` must already carry the new schedule. Awaited, so a
     /// background wake doesn't end before the notification is handed to iOS.
-    static func notifyScheduleChanged(_ reminder: Reminder) async {
-        let owner = ownerName(of: reminder.id)
+    static func notifyScheduleChanged(_ reminder: Reminder, ownerName: String?) async {
+        let owner = ownerName ?? unknownOwner
         let body: String
         if let next = nextRing(of: reminder) {
             let when = next.formatted(
@@ -124,8 +124,8 @@ enum ShareChangeNotifier {
     }
 
     /// Posts "<owner> deleted it" for a received share the owner removed.
-    static func notifyDeleted(_ alarm: Alarm) async {
-        let owner = ownerName(of: alarm.id)
+    static func notifyDeleted(_ alarm: Alarm, ownerName: String?) async {
+        let owner = ownerName ?? unknownOwner
         await post(appLocalized("\(owner) la borró, así que ya no sonará."), about: alarm, log: "borrado")
     }
 
@@ -142,8 +142,10 @@ enum ShareChangeNotifier {
             .min()
     }
 
-    private static func ownerName(of id: UUID) -> String {
-        ShareOwnerStore.get(id)?.name ?? appLocalized("Alguien")
+    /// Stands in for the owner's name when iCloud didn't give it; the notices
+    /// read as "<this> changed the schedule…".
+    private static var unknownOwner: String {
+        appLocalized("Quien te la compartió")
     }
 
     private static func post(_ body: String, about alarm: Alarm, log kind: String) async {

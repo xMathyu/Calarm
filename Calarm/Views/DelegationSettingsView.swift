@@ -53,7 +53,7 @@ struct DelegationSettingsView: View {
                     }
                     .disabled(isWorking)
                 } footer: {
-                    Text("Comparte el enlace por Mensajes. Al aceptarlo, esa persona podrá administrar tus alarmas.")
+                    Text("Comparte el enlace por WhatsApp, Mensajes o donde prefieras. Al aceptarlo, esa persona podrá administrar tus alarmas.")
                 }
 
                 Section {
@@ -91,7 +91,7 @@ struct DelegationSettingsView: View {
         .navigationTitle("Personas de confianza")
         .navigationBarTitleDisplayMode(.inline)
         .task { await refreshParticipants() }
-        // Same Messages-link delivery as sharing a single alarm — the native
+        // Same share-sheet link delivery as sharing a single alarm — the native
         // iCloud collaboration invite (UICloudSharingController) often never
         // reached the invitee.
         .inviteDelivery($pendingInvite) {

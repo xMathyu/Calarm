@@ -41,6 +41,13 @@ enum SharedRemindersError: LocalizedError {
     }
 }
 
+/// Who shared a received alarm, with enough info to look up their Contacts photo.
+struct SharedByPerson: Equatable {
+    var name: String
+    var email: String?
+    var phone: String?
+}
+
 /// A share participant rendered for the UI: who they are and whether they joined.
 struct ShareParticipantInfo: Identifiable {
     let id = UUID()
@@ -101,6 +108,12 @@ final class SharedRemindersService {
     @ObservationIgnored private var scanTask: Task<Void, Never>?
     @ObservationIgnored private var rescanRequested = false
 
+    /// Who shared each received alarm, as iCloud reported it during this
+    /// session. Memory only: Apple's iCloud Extended Share Access entitlement,
+    /// which makes these names readable at all, allows showing them but not
+    /// storing them.
+    @ObservationIgnored private var ownerNames: [UUID: SharedByPerson] = [:]
+
     private static let log = Logger(subsystem: "MathyuSolutions.Calarm", category: "sharing")
 
     init(modelContainer: ModelContainer, scheduler: ReminderScheduler, containerIdentifier: String = "iCloud.MathyuSolutions.Calarm") {
@@ -108,6 +121,8 @@ final class SharedRemindersService {
         self.scheduler = scheduler
         self.containerIdentifier = containerIdentifier
         self.cloudKitContainer = CKContainer(identifier: containerIdentifier)
+        // Older builds saved the owners' names here; see `ownerNames`.
+        UserDefaults.standard.removeObject(forKey: "calarm.shareOwners")
     }
 
     func clearAcceptError() {
@@ -221,13 +236,34 @@ final class SharedRemindersService {
         }
     }
 
-    /// Builds a `SharedByPerson` from a share's owner identity (recipient side).
-    static func owner(from metadata: CKShare.Metadata) -> SharedByPerson {
-        SharedByPerson(
-            name: displayName(metadata.ownerIdentity),
-            email: metadata.ownerIdentity.lookupInfo?.emailAddress,
-            phone: metadata.ownerIdentity.lookupInfo?.phoneNumber
+    /// A share's owner as a person to show (recipient side), or nil when iCloud
+    /// gave no name, email or phone.
+    static func person(_ identity: CKUserIdentity) -> SharedByPerson? {
+        guard let name = knownDisplayName(identity) else { return nil }
+        return SharedByPerson(
+            name: name,
+            email: identity.lookupInfo?.emailAddress,
+            phone: identity.lookupInfo?.phoneNumber
         )
+    }
+
+    /// Who shared a received alarm. Read from iCloud the first time it's asked
+    /// in a session, then from memory. Nil when it can't be read (offline, the
+    /// owner deleted it) or iCloud gives no name.
+    func owner(ofReceived id: UUID) async -> SharedByPerson? {
+        if let known = ownerNames[id] { return known }
+        guard let record = try? await receivedRecord(id: id) else { return nil }
+        return await owner(of: record)
+    }
+
+    /// Reads the owner from the share `record` hangs from, and keeps it in memory.
+    private func owner(of record: CKRecord) async -> SharedByPerson? {
+        guard let shareID = record.share?.recordID,
+              let share = try? await cloudKitContainer.sharedCloudDatabase.record(for: shareID) as? CKShare,
+              let owner = Self.person(share.owner.userIdentity)
+        else { return nil }
+        ownerNames[candidateLocalID(for: record)] = owner
+        return owner
     }
 
     /// Best-effort human name for a CloudKit identity: full name if shared,
@@ -294,23 +330,31 @@ final class SharedRemindersService {
     /// Best effort: `scanSharedDatabase` retries for any deleted invitation whose
     /// record is still visible (offline at the time, or deleted before this existed).
     func leaveShare(forReminderID id: UUID) async {
-        let database = cloudKitContainer.sharedCloudDatabase
         do {
-            // The zone's owner isn't stored locally: try every sharing zone (one
-            // per person who ever shared with us); the one that has it answers.
-            let zones = try await database.allRecordZones()
-                .filter { $0.zoneID.zoneName == Self.sharingZoneName }
-            for zone in zones {
-                let recordID = CKRecord.ID(recordName: id.uuidString, zoneID: zone.zoneID)
-                if let record = try? await database.record(for: recordID) {
-                    await leaveShare(of: record)
-                    return
-                }
+            if let record = try await receivedRecord(id: id) {
+                await leaveShare(of: record)
+                return
             }
             ShareDiagnostics.log("👋 salir del share: el registro \(id.uuidString) ya no está")
         } catch {
             ShareDiagnostics.log("❌ salir del share \(id.uuidString): \(error.localizedDescription)")
         }
+    }
+
+    /// A received alarm's record in the shared database, or nil if it's gone.
+    /// The zone's owner isn't stored locally: try every sharing zone (one per
+    /// person who ever shared with us); the one that has it answers.
+    private func receivedRecord(id: UUID) async throws -> CKRecord? {
+        let database = cloudKitContainer.sharedCloudDatabase
+        let zones = try await database.allRecordZones()
+            .filter { $0.zoneID.zoneName == Self.sharingZoneName }
+        for zone in zones {
+            let recordID = CKRecord.ID(recordName: id.uuidString, zoneID: zone.zoneID)
+            if let record = try? await database.record(for: recordID) {
+                return record
+            }
+        }
+        return nil
     }
 
     /// Deletes, from the shared database, the share `record` hangs from.
@@ -765,7 +809,10 @@ final class SharedRemindersService {
         let context = modelContainer.mainContext
         // No change notification here: the person is accepting the invitation and
         // sees the alarm as it is now.
-        let applied = applyRecord(record, owner: Self.owner(from: metadata), in: context).reminder
+        let applied = applyRecord(record, in: context).reminder
+        if let owner = Self.person(metadata.ownerIdentity) {
+            ownerNames[applied.id] = owner
+        }
         // Re-accepting an invitation the user had deleted should bring it back, so
         // clear any tombstone for it.
         DeletedSharesStore.remove(applied.id)
@@ -834,7 +881,7 @@ final class SharedRemindersService {
             var imported = 0
             var skipped = 0
             var presentIDs: Set<UUID> = []
-            var rescheduled: [Reminder] = []
+            var rescheduled: [(reminder: Reminder, record: CKRecord)] = []
             for zone in zones {
                 // SAFETY: never ingest the delegation zone here. Those records are
                 // someone else's alarms that this device (acting as a helper) only
@@ -870,8 +917,8 @@ final class SharedRemindersService {
                             await leaveShare(of: record)
                             continue
                         }
-                        let applied = applyRecord(record, owner: nil, in: context)
-                        if applied.scheduleChanged { rescheduled.append(applied.reminder) }
+                        let applied = applyRecord(record, in: context)
+                        if applied.scheduleChanged { rescheduled.append((applied.reminder, record)) }
                         imported += 1
                     }
                     token = changes.changeToken
@@ -884,8 +931,9 @@ final class SharedRemindersService {
                 ShareDiagnostics.log("✅ scan: \(imported) recordatorio(s) importado(s)")
                 // The owner moved these to another day/time: tell the person, or
                 // they keep counting on the old time.
-                for reminder in rescheduled {
-                    await ShareChangeNotifier.notifyScheduleChanged(reminder)
+                for (reminder, record) in rescheduled {
+                    let owner = await owner(of: record)
+                    await ShareChangeNotifier.notifyScheduleChanged(reminder, ownerName: owner?.name)
                 }
             } else {
                 ShareDiagnostics.log("scan: sin recordatorios compartidos\(skipped > 0 ? " (\(skipped) borrado(s) ignorado(s))" : "")")
@@ -916,10 +964,9 @@ final class SharedRemindersService {
 
     /// Upserts a shared `CalarmSharedReminder` CKRecord into a local `Reminder`
     /// (marked as a received share). Caller is responsible for saving the context.
-    /// `owner` (when known, i.e. from the accept metadata) is remembered so the
-    /// recipient can see who shared it. Returns the local reminder, and whether
-    /// the owner changed its schedule since this device last saw the record.
-    private func applyRecord(_ record: CKRecord, owner: SharedByPerson?, in context: ModelContext) -> (reminder: Reminder, scheduleChanged: Bool) {
+    /// Returns the local reminder, and whether the owner changed its schedule
+    /// since this device last saw the record.
+    private func applyRecord(_ record: CKRecord, in context: ModelContext) -> (reminder: Reminder, scheduleChanged: Bool) {
         let payload = decodePayload(from: record)
         let customCategoryID = ensureCustomCategory(payload.customCategory, in: context)
         // Reuse the record name as the local UUID so importing twice updates the
@@ -951,11 +998,6 @@ final class SharedRemindersService {
             context.insert(reminder)
         }
         apply(payload, to: reminder, customCategoryID: customCategoryID)
-        // Only overwrite the remembered owner when we actually know it (accept
-        // path), so the scan fallback doesn't wipe a previously captured name.
-        if let owner {
-            ShareOwnerStore.set(owner, for: localID)
-        }
         let scheduleChanged = ShareChangeNotifier.recordSchedule(of: payload, for: localID)
         return (reminder, scheduleChanged)
     }
@@ -991,8 +1033,10 @@ final class SharedRemindersService {
         if !deletedByOwner.isEmpty {
             ShareDiagnostics.log("🗑️ scan: \(deletedByOwner.count) compartido(s) eliminado(s) por el dueño")
         }
+        // The share is gone, so iCloud can't say who owned it anymore: the name
+        // is known only if this session already read it.
         for notice in notices {
-            await ShareChangeNotifier.notifyDeleted(notice)
+            await ShareChangeNotifier.notifyDeleted(notice, ownerName: ownerNames[notice.id]?.name)
         }
     }
 

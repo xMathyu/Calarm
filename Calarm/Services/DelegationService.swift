@@ -492,7 +492,7 @@ final class DelegationService {
     func acceptDelegationShare(metadata: CKShare.Metadata) async {
         do {
             _ = try await cloudKitContainer.accept(metadata)
-            ShareDiagnostics.log("🤝 delegación aceptada de \(SharedRemindersService.displayName(metadata.ownerIdentity))")
+            ShareDiagnostics.log("🤝 delegación aceptada")
             // Nudge any open "Listas que administro" view to reload now that this
             // device can see the principal's zone.
             NotificationCenter.default.post(name: .calarmSharedDataChanged, object: nil)

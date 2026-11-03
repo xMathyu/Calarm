@@ -16,7 +16,7 @@
 //  So they're remembered here, keyed by the local reminder id, and re-applied
 //  after each import.
 //
-//  Stored in UserDefaults — like `ShareOwnerStore` / `DeletedSharesStore` — to
+//  Stored in UserDefaults — like `ShareChangeNotifier` — to
 //  avoid adding a SwiftData property, which would mean another CloudKit
 //  Production schema deploy.
 //

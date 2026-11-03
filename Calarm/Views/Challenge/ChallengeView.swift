@@ -107,6 +107,14 @@ struct ChallengeView: View {
             OddOneOutChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
         case .typing:
             TypingChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .flap:
+            FlapChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .hurdles:
+            HurdlesChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .cannon:
+            CannonChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
+        case .sling:
+            SlingshotChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
         case .shake:
             ShakeChallengeGame(difficulty: challenge.difficulty, onSolved: handleSolved)
         case .steps:

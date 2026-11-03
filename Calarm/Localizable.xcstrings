@@ -21,6 +21,390 @@
         }
       }
     },
+    "Apunta, carga y dispara al despertador; cuidado con el viento." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aim, charge and fire at the alarm clock; mind the wind."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apunta, carga y dispara al despertador; cuidado con el viento."
+          }
+        }
+      }
+    },
+    "Arcade" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arcade"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arcade"
+          }
+        }
+      }
+    },
+    "Arrastra por el campo para apuntar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drag across the field to aim"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrastra por el campo para apuntar"
+          }
+        }
+      }
+    },
+    "Cañón" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cannon"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cañón"
+          }
+        }
+      }
+    },
+    "Derribados %lld de %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Knocked down %lld of %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Derribados %lld de %lld"
+          }
+        }
+      }
+    },
+    "Estira hacia atrás desde la izquierda y suelta" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pull back from the left side and let go"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estira hacia atrás desde la izquierda y suelta"
+          }
+        }
+      }
+    },
+    "Estira la goma y lanza para derribar los despertadores de las torres." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pull back the band and launch to knock the alarm clocks off their towers."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estira la goma y lanza para derribar los despertadores de las torres."
+          }
+        }
+      }
+    },
+    "Fuerza" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuerza"
+          }
+        }
+      }
+    },
+    "Haz que la oveja salte las vallas: mantén pulsado para las altas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Make the sheep jump the fences: press and hold for the tall ones."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz que la oveja salte las vallas: mantén pulsado para las altas."
+          }
+        }
+      }
+    },
+    "Huecos %lld de %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gaps %lld of %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huecos %lld de %lld"
+          }
+        }
+      }
+    },
+    "Impactos %lld de %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hits %lld of %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impactos %lld de %lld"
+          }
+        }
+      }
+    },
+    "Mantén pulsado para cargar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press and hold to charge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantén pulsado para cargar"
+          }
+        }
+      }
+    },
+    "Ovejas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sheep"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ovejas"
+          }
+        }
+      }
+    },
+    "Sin tiros: torre nueva" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Out of shots: new tower"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin tiros: torre nueva"
+          }
+        }
+      }
+    },
+    "Suelta para disparar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Release to fire"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suelta para disparar"
+          }
+        }
+      }
+    },
+    "Tirachinas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slingshot"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tirachinas"
+          }
+        }
+      }
+    },
+    "Tiros: %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shots: %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiros: %lld"
+          }
+        }
+      }
+    },
+    "Toca para que la abeja suba y pásala por los huecos sin chocar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap to lift the bee and fly it through the gaps without crashing."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca para que la abeja suba y pásala por los huecos sin chocar."
+          }
+        }
+      }
+    },
+    "Toca para saltar; mantén pulsado para saltar más alto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap to jump; press and hold to jump higher"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca para saltar; mantén pulsado para saltar más alto"
+          }
+        }
+      }
+    },
+    "Toca para volar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap to fly"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca para volar"
+          }
+        }
+      }
+    },
+    "Vallas %lld de %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fences %lld of %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vallas %lld de %lld"
+          }
+        }
+      }
+    },
+    "Viento %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wind %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viento %lld"
+          }
+        }
+      }
+    },
+    "Vuelo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flight"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuelo"
+          }
+        }
+      }
+    },
+    "¡Choque! Toca para seguir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crash! Tap to keep going"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Choque! Toca para seguir"
+          }
+        }
+      }
+    },
     "¡Dale, sacude!" : {
       "localizations" : {
         "en" : {
@@ -49,6 +433,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¡Sigue!"
+          }
+        }
+      }
+    },
+    "¡Torre despejada!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tower cleared!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Torre despejada!"
+          }
+        }
+      }
+    },
+    "¡Ups! Toca para seguir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oops! Tap to keep going"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Ups! Toca para seguir"
           }
         }
       }
@@ -2996,18 +3412,18 @@
         }
       }
     },
-    "Comparte el enlace por Mensajes. Al aceptarlo, esa persona podrá administrar tus alarmas." : {
+    "Comparte el enlace por WhatsApp, Mensajes o donde prefieras. Al aceptarlo, esa persona podrá administrar tus alarmas." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share the link over Messages. Once they accept, that person will be able to manage your alarms."
+            "value" : "Share the link over WhatsApp, Messages or wherever you like. Once they accept, that person will be able to manage your alarms."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comparte el enlace por Mensajes. Al aceptarlo, esa persona podrá administrar tus alarmas."
+            "value" : "Comparte el enlace por WhatsApp, Mensajes o donde prefieras. Al aceptarlo, esa persona podrá administrar tus alarmas."
           }
         }
       }
@@ -4514,6 +4930,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Elige el tema. \"Automático\" sigue la configuración del sistema."
+          }
+        }
+      }
+    },
+    "Elige por dónde enviar el link (WhatsApp, Mensajes, Instagram…) para que tus invitados la acepten." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose where to send the link (WhatsApp, Messages, Instagram…) so your guests can accept it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige por dónde enviar el link (WhatsApp, Mensajes, Instagram…) para que tus invitados la acepten."
           }
         }
       }
@@ -7512,6 +7944,22 @@
         }
       }
     },
+    "Quien te la compartió" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The person who shared it"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quien te la compartió"
+          }
+        }
+      }
+    },
     "Quitar %@" : {
       "localizations" : {
         "en" : {
@@ -8074,22 +8522,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sacudir"
-          }
-        }
-      }
-    },
-    "Se abrirá Messages con el link para que tus invitados la acepten." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Messages will open with the link so your guests can accept it."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se abrirá Messages con el link para que tus invitados la acepten."
           }
         }
       }
