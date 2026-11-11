@@ -325,6 +325,32 @@ Alemán:
 • Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
+## What's New (1.0.15)
+
+Español:
+```
+• Nuevo: invita a tus amigos a una cuenta regresiva. Les llega un enlace por WhatsApp, Mensajes o donde quieras, y la ven en su Calarm con su foto o su emoji. Si le cambias la fecha, también cambia para ellos
+• Nuevo: con la lista vacía, Calarm te propone alarmas para empezar (despertador, despertador con reto, pastilla y cumpleaños): un toque y ya está armada
+• Nuevo: si Calarm no tiene permiso para programar alarmas, ahora te avisa arriba de la lista, con un botón para dárselo
+• Corregido: el asistente entendía mal algunas fechas y horas: «este sábado 14» acababa en febrero, «de 2 a 4 y de 9 a 11» ponía la segunda a las 9 de la mañana, y una alarma de un solo día se repetía cada semana. A veces también mostraba código en vez de crear la alarma
+```
+
+Inglés:
+```
+• New: invite friends to a countdown. They get a link over WhatsApp, Messages or wherever you like, and see it in their Calarm with its photo or emoji. If you change the date, it changes for them too
+• New: when your list is empty, Calarm suggests alarms to start with (wake up, wake up with a challenge, pill and birthday): one tap and it's set up
+• New: if Calarm isn't allowed to schedule alarms, a warning at the top of the list now tells you, with a button to allow it
+• Fixed: the assistant got some dates and times wrong: “this Saturday the 14th” ended up in February, “from 2 to 4 and from 9 to 11” set the second one for 9 in the morning, and a one-day alarm repeated every week. It also sometimes showed code instead of creating the alarm
+```
+
+Alemán:
+```
+• Neu: Lade Freunde zu einem Countdown ein. Sie bekommen einen Link per WhatsApp, Nachrichten oder wo du willst und sehen ihn in ihrem Calarm mit Foto oder Emoji. Änderst du das Datum, ändert es sich auch bei ihnen
+• Neu: Ist deine Liste leer, schlägt Calarm Wecker für den Anfang vor (Aufwachen, Aufwachen mit Aufgabe, Tablette und Geburtstag): ein Tipp, und er ist eingerichtet
+• Neu: Darf Calarm keine Wecker planen, sagt dir das jetzt ein Hinweis oben in der Liste, mit einer Taste, um es zu erlauben
+• Behoben: Der Assistent stellte manche Wecker auf den falschen Tag oder die falsche Uhrzeit, wiederholte Wecker für einen einzigen Tag jede Woche und zeigte manchmal Code an, statt den Wecker anzulegen
+```
+
 ## What's New (1.0.14)
 
 Español:
