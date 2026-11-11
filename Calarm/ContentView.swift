@@ -158,6 +158,16 @@ struct ContentView: View {
                 ChallengeView(mode: .practice(WakeChallenge(kind: kind, code: kind == .qr ? "demo" : nil), title: appLocalized("Despertador")))
             }
         }
+        // Calarmi Plus: `-demoScreen paywall` (con los retos Arcade resaltados) y
+        // `-demoScreen appIcons`. Con `-demoPlus` se ven como si ya hubiera Plus.
+        .sheet(isPresented: .constant(DemoData.requestedScreen == "paywall")) {
+            PlusPaywallView(highlight: .arcadeChallenges)
+        }
+        .sheet(isPresented: .constant(DemoData.requestedScreen == "appIcons")) {
+            NavigationStack {
+                AppIconPickerView()
+            }
+        }
         #endif
     }
 }

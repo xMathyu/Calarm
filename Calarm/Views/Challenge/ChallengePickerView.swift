@@ -14,6 +14,8 @@ struct ChallengePickerView: View {
 
     @State private var showingRegister = false
     @State private var showingPractice = false
+    @State private var plus = PlusStore.shared
+    @State private var paywall: PlusFeature?
 
     var body: some View {
         List {
@@ -34,6 +36,10 @@ struct ChallengePickerView: View {
                     }
                 } header: {
                     Text(group.localizedTitle)
+                } footer: {
+                    if group == .arcade && !plus.isPlus {
+                        Text("Los retos Arcade vienen con Calarmi Plus. Una alarma que ya tiene uno lo conserva.")
+                    }
                 }
             }
 
@@ -97,6 +103,7 @@ struct ChallengePickerView: View {
                 ChallengeView(mode: .practice(current, title: alarmTitle))
             }
         }
+        .plusPaywall(for: $paywall)
     }
 
     // MARK: - Filas
@@ -104,8 +111,16 @@ struct ChallengePickerView: View {
     @ViewBuilder
     private func kindRow(_ kind: WakeChallenge.Kind?) -> some View {
         let isSelected = selection?.kind == kind
+        // El que ya está elegido nunca se bloquea: puede venir de antes de Plus
+        // o de una alarma que compartió alguien que sí lo tiene.
+        let isLocked = (kind?.requiresPlus ?? false) && !plus.isPlus && !isSelected
         Button {
-            select(kind)
+            if isLocked {
+                Haptics.light()
+                paywall = .arcadeChallenges
+            } else {
+                select(kind)
+            }
         } label: {
             HStack(spacing: DS.Spacing.md) {
                 Image(systemName: kind?.systemImage ?? "bell.slash")
@@ -122,6 +137,9 @@ struct ChallengePickerView: View {
                     }
                 }
                 Spacer(minLength: 0)
+                if isLocked {
+                    PlusBadge()
+                }
                 if isSelected {
                     Image(systemName: "checkmark")
                         .font(.body.weight(.semibold))

@@ -148,6 +148,9 @@ struct CalarmApp: App {
             #endif
             .task {
                 UIApplication.shared.installGlobalKeyboardDismissGesture()
+                // Calarmi Plus: escucha renovaciones y compras hechas fuera de la
+                // app. No bloquea nada del arranque.
+                PlusStore.shared.start()
                 // Bring up the calendar coordinator FIRST so the "Calendario" tab
                 // appears immediately on launch, instead of after the CloudKit work
                 // below finishes (which made the tab show up several seconds late).
@@ -196,6 +199,11 @@ struct CalarmApp: App {
                 // que llegó de iCloud mientras la app estaba abierta).
                 if newPhase == .background {
                     WidgetSnapshotWriter.update(container: modelContainer)
+                }
+                // Una suscripción que caducó o se reembolsó mientras la app
+                // estaba cerrada deja de contar aquí.
+                if newPhase == .active {
+                    Task { await PlusStore.shared.refreshEntitlements() }
                 }
                 if newPhase == .active, settings.onboardingCompleted {
                     challengeCoordinator.presentIfAlerting()

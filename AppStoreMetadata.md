@@ -6,6 +6,78 @@
 
 ---
 
+## Cambio de nombre a Calarmi (para 1.0.16, 2026-11-11)
+
+La app pasa a llamarse **Calarmi**: se recuerda y se pronuncia mejor, y Siri ya no la confunde
+con «alarm» (con «Calarm», «open Calarm» abría el Reloj). Ninguna otra app de la App Store se
+llama así (búsqueda en EE. UU., México, España y Alemania, 2026-11-11).
+
+El nombre de la ficha se cambia en el **appInfo en PREPARE_FOR_SUBMISSION** de la 1.0.16, junto
+con el build que trae el `CFBundleDisplayName` nuevo, para que tienda y pantalla de inicio
+cambien a la vez. Las keywords y los subtítulos no cambian.
+
+| Locale | Antes | Después |
+|---|---|---|
+| es-MX | `Calarm: Alarma y Avisos con IA` (30) | `Calarmi: Alarma, avisos con IA` (30/30) |
+| en-US | `Calarm: AI Alarm Clock` (22) | `Calarmi: AI Alarm Clock` (23/30) |
+| de-DE | `Calarm: Wecker & Erinnerungen` (29) | `Calarmi: Wecker & Erinnerungen` (30/30) |
+
+En es-MX «Calarmi: Alarma y Avisos con IA» tendría 31 caracteres, uno más del límite: la coma
+reemplaza a la «y» sin perder ningún término indexado.
+
+También hay que cambiar «Calarm» por «Calarmi» en la **descripción** y el **texto promocional**
+de los tres locales (la descripción se copia de la versión anterior, así que hay que PATCHearla).
+
+**Qué NO cambia:** el bundle ID (`MathyuSolutions.Calarm`), el contenedor de CloudKit, el App
+Group, los tipos de registro (`CalarmSharedReminder`, `CalarmSharedCountdown`), el esquema
+`calarm://`, el dominio de las invitaciones ni el SKU. Cambiarlos rompería las alarmas
+compartidas, los widgets y los enlaces ya enviados.
+
+---
+
+## Calarmi Plus (compras dentro de la app, para 1.0.16)
+
+Freemium: lo esencial sigue gratis y Plus desbloquea extras. Código en
+`Calarm/Services/PlusStore.swift` y `Calarm/Views/Plus/`.
+
+| Producto | Product ID | Tipo | Precio (EE. UU.) |
+|---|---|---|---|
+| Calarmi Plus anual | `MathyuSolutions.Calarm.plus.yearly` | Suscripción auto-renovable, grupo «Calarmi Plus», 1 año | 9,99 USD, con **prueba gratis de 1 semana** (oferta introductoria) |
+| Calarmi Plus de por vida | `MathyuSolutions.Calarm.plus.lifetime` | No consumible | 24,99 USD |
+
+Los demás países: dejar que Apple calcule los precios equivalentes a partir de EE. UU.
+
+**Qué desbloquea Plus** (solo para ELEGIRLO; lo ya configurado sigue funcionando sin Plus):
+- Retos Arcade: Vuelo, Ovejas, Cañón y Tirachinas.
+- Importar tonos propios desde Archivos.
+- Más de 3 cuentas regresivas propias (las recibidas no cuentan).
+- Íconos de colores: azul, morado, verde y rosa.
+
+**Siempre gratis:** alarmas, repeticiones, calendario, compartir/invitar, personas de confianza,
+Siri, el asistente con IA y los retos de Mente, Cuerpo y Levantarte.
+
+**Antes de crear los productos** (lo hace el titular de la cuenta en App Store Connect):
+1. **Business → Agreements:** firmar el *Paid Apps Agreement* y completar los datos bancarios y fiscales.
+2. **App Store Small Business Program:** inscribirse para pagar 15 % de comisión en vez de 30 %.
+
+**Para la revisión de Apple:**
+- Cada producto necesita nombre, descripción, precio y una **captura de la pantalla de compra**:
+  `-seedDemoData -demoScreen paywall`, lanzado desde Xcode para que cargue `Calarm.storekit`.
+- La descripción de la ficha tiene que enlazar los **Términos de uso**. Se usa el EULA estándar de
+  Apple: `https://www.apple.com/legal/internet-services/itunes/dev/stdeula/`. Añadir al final de
+  la descripción: «Términos de uso: <enlace>» / «Terms of Use: <link>».
+- Los productos se envían **junto con la versión 1.0.16**: el primer envío de una compra dentro
+  de la app tiene que ir con una versión de la app.
+- Nota para el revisor: «Calarmi Plus se ve en Ajustes › Calarmi Plus. Las funciones de Plus
+  aparecen con la etiqueta Plus en Editar alarma › Reto para apagar (grupo Arcade), Sonido ›
+  Importar audio, y al crear la cuarta cuenta regresiva.»
+
+**Probar en local:** el esquema `Calarm` usa `Calarm.storekit`, así que las compras se simulan al
+lanzar desde Xcode (Product › Run). Lanzando con `simctl` la App Store no contesta y la pantalla
+muestra «No se pudo conectar». `-demoPlus` simula tener Plus en Debug.
+
+---
+
 ## Ficha propuesta para 1.0.8 (2026-09-09)
 
 Apple indexa **nombre + subtítulo + keywords como una sola bolsa**: repetir una palabra en

@@ -21,6 +21,8 @@ struct TonePickerView: View {
     @State private var imported = ImportedTonesStore.shared
     @State private var showingImporter = false
     @State private var importError: String?
+    @State private var plus = PlusStore.shared
+    @State private var paywall: PlusFeature?
 
     var body: some View {
         List {
@@ -69,17 +71,33 @@ struct TonePickerView: View {
                     }
                 }
 
+                // Importar es de Plus; los tonos que ya estaban importados siguen
+                // en la lista y se pueden elegir igual.
                 Button {
                     Haptics.light()
-                    showingImporter = true
+                    if plus.isPlus {
+                        showingImporter = true
+                    } else {
+                        paywall = .customTones
+                    }
                 } label: {
-                    Label("Importar audio…", systemImage: "square.and.arrow.down")
+                    HStack {
+                        Label("Importar audio…", systemImage: "square.and.arrow.down")
+                        Spacer(minLength: 0)
+                        if !plus.isPlus {
+                            PlusBadge()
+                        }
+                    }
                 }
                 .disabled(imported.tones.count >= ImportedTonesStore.maxTones)
             } header: {
                 Text("Mis tonos")
             } footer: {
-                Text("Usa un audio tuyo desde Archivos. Calarm lo recorta a 28 segundos y lo repite hasta llenarlos.")
+                if plus.isPlus {
+                    Text("Usa un audio tuyo desde Archivos. Calarmi lo recorta a 28 segundos y lo repite hasta llenarlos.")
+                } else {
+                    Text("Con Calarmi Plus puedes usar un audio tuyo desde Archivos. Calarmi lo recorta a 28 segundos y lo repite hasta llenarlos.")
+                }
             }
         }
         .navigationTitle("Sonido")
@@ -92,6 +110,7 @@ struct TonePickerView: View {
         ) { result in
             handleImport(result)
         }
+        .plusPaywall(for: $paywall)
         .alert(
             appLocalized("No se pudo importar"),
             isPresented: Binding(get: { importError != nil }, set: { if !$0 { importError = nil } })

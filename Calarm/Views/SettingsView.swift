@@ -4,6 +4,7 @@
 //
 
 import AlarmKit
+import StoreKit
 import SwiftData
 import SwiftUI
 
@@ -13,6 +14,10 @@ struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
 
     @State private var showingMirrorAccessAlert = false
+    @State private var plus = PlusStore.shared
+    @State private var showingPaywall = false
+    @State private var isRestoring = false
+    @State private var restoreMessage: String?
 
     let alarmScheduler: AlarmScheduler
     let onTeamsToggleChanged: (Bool) -> Void
@@ -36,6 +41,8 @@ struct SettingsView: View {
                 } footer: {
                     Text("Interruptor general. Cuando esté apagado, no sonará ninguna alarma.")
                 }
+
+                plusSection
 
                 Section {
                     appearancePicker(selection: $settings.appearance)
@@ -261,6 +268,97 @@ struct SettingsView: View {
                 Text("Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarmi.")
             }
             .animation(DS.Motion.snappy, value: alarmScheduler.authorizationState)
+            .sheet(isPresented: $showingPaywall) {
+                PlusPaywallView()
+            }
+            .alert(
+                appLocalized("Restaurar compras"),
+                isPresented: Binding(get: { restoreMessage != nil }, set: { if !$0 { restoreMessage = nil } })
+            ) {
+                Button("Entendido", role: .cancel) {}
+            } message: {
+                Text(restoreMessage ?? "")
+            }
+        }
+    }
+
+    /// Calarmi Plus: qué incluye (o que está activo), el ícono de la app y
+    /// «Restaurar compras», que la App Store exige tener a mano.
+    @ViewBuilder
+    private var plusSection: some View {
+        Section {
+            Button {
+                Haptics.light()
+                showingPaywall = true
+            } label: {
+                HStack(spacing: DS.Spacing.md) {
+                    Image(AppIconOption.current.previewName)
+                        .resizable()
+                        .frame(width: 44, height: 44)
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: DS.Spacing.xxs) {
+                        Text(verbatim: "Calarmi Plus")
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        Group {
+                            if plus.isPlus {
+                                Text("Activo. ¡Gracias por apoyar Calarmi!")
+                            } else {
+                                Text("Retos Arcade, tus propios tonos, cuentas regresivas sin límite e íconos de colores.")
+                            }
+                        }
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                }
+                .contentShape(.rect)
+            }
+            .buttonStyle(.plain)
+
+            NavigationLink {
+                AppIconPickerView()
+            } label: {
+                Label("Ícono de la app", systemImage: "apps.iphone")
+            }
+
+            if !plus.isPlus {
+                Button {
+                    restorePurchases()
+                } label: {
+                    HStack {
+                        Label("Restaurar compras", systemImage: "arrow.clockwise")
+                        if isRestoring {
+                            Spacer()
+                            ProgressView()
+                        }
+                    }
+                }
+                .disabled(isRestoring)
+            }
+        } header: {
+            sectionHeader("Calarmi Plus", systemImage: "sparkles")
+        }
+    }
+
+    private func restorePurchases() {
+        isRestoring = true
+        Task {
+            defer { isRestoring = false }
+            do {
+                try await plus.restore()
+                restoreMessage = plus.isPlus
+                    ? appLocalized("Listo: Calarmi Plus está activo de nuevo.")
+                    : appLocalized("Esta cuenta de Apple no tiene Calarmi Plus. Si lo compraste con otra, inicia sesión con ella en Ajustes › tu nombre.")
+            } catch StoreKitError.userCancelled {
+                // Cerró el inicio de sesión: nada que decir.
+            } catch {
+                restoreMessage = error.localizedDescription
+            }
         }
     }
 

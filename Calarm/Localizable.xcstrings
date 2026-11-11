@@ -1,7 +1,7 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
-    "Calarm no tiene permiso para programar alarmas. Puedes dárselo en Ajustes." : {
+    "Retos Arcade" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12,7 +12,855 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm no tiene permiso para programar alarmas. Puedes dárselo en Ajustes."
+            "value" : "Retos Arcade"
+          }
+        }
+      }
+    },
+    "Tus propios tonos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your own tones"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus propios tonos"
+          }
+        }
+      }
+    },
+    "Cuentas regresivas sin límite" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlimited countdowns"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuentas regresivas sin límite"
+          }
+        }
+      }
+    },
+    "Íconos de colores" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colored icons"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Íconos de colores"
+          }
+        }
+      }
+    },
+    "Vuelo, Ovejas, Cañón y Tirachinas: juegos para apagar la alarma ya bien despierto." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flight, Sheep, Cannon and Slingshot: games that turn the alarm off once you're wide awake."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuelo, Ovejas, Cañón y Tirachinas: juegos para apagar la alarma ya bien despierto."
+          }
+        }
+      }
+    },
+    "Importa cualquier audio desde Archivos y despierta con él." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import any audio from Files and wake up to it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa cualquier audio desde Archivos y despierta con él."
+          }
+        }
+      }
+    },
+    "Sin Plus puedes tener hasta %lld cuentas regresivas propias." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without Plus you can have up to %lld countdowns of your own."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin Plus puedes tener hasta %lld cuentas regresivas propias."
+          }
+        }
+      }
+    },
+    "Cambia el color del ícono en tu pantalla de inicio." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change the color of the icon on your Home Screen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambia el color del ícono en tu pantalla de inicio."
+          }
+        }
+      }
+    },
+    "Requiere Calarmi Plus" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requires Calarmi Plus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requiere Calarmi Plus"
+          }
+        }
+      }
+    },
+    "Lo esencial sigue siendo gratis. Plus suma extras y ayuda a que Calarmi siga mejorando." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The essentials stay free. Plus adds extras and helps Calarmi keep getting better."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo esencial sigue siendo gratis. Plus suma extras y ayuda a que Calarmi siga mejorando."
+          }
+        }
+      }
+    },
+    "Siempre gratis: alarmas, repeticiones, calendario, compartir, Siri y el asistente." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always free: alarms, repeats, calendar, sharing, Siri and the assistant."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siempre gratis: alarmas, repeticiones, calendario, compartir, Siri y el asistente."
+          }
+        }
+      }
+    },
+    "Equivale a %@ al mes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That's %@ a month."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equivale a %@ al mes."
+          }
+        }
+      }
+    },
+    "al año" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "per year"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "al año"
+          }
+        }
+      }
+    },
+    "De por vida" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lifetime"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De por vida"
+          }
+        }
+      }
+    },
+    "Un solo pago, sin renovaciones." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One payment, no renewals."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un solo pago, sin renovaciones."
+          }
+        }
+      }
+    },
+    "una vez" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "one time"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "una vez"
+          }
+        }
+      }
+    },
+    "No se pudo conectar con la App Store." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't connect to the App Store."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo conectar con la App Store."
+          }
+        }
+      }
+    },
+    "Tienes Calarmi Plus" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have Calarmi Plus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tienes Calarmi Plus"
+          }
+        }
+      }
+    },
+    "Es tuyo para siempre. ¡Gracias por apoyar Calarmi!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It's yours forever. Thanks for supporting Calarmi!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es tuyo para siempre. ¡Gracias por apoyar Calarmi!"
+          }
+        }
+      }
+    },
+    "¡Gracias por apoyar Calarmi!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thanks for supporting Calarmi!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Gracias por apoyar Calarmi!"
+          }
+        }
+      }
+    },
+    "Gestionar suscripción" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage Subscription"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestionar suscripción"
+          }
+        }
+      }
+    },
+    "Restaurar compras" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore Purchases"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurar compras"
+          }
+        }
+      }
+    },
+    "Términos de uso" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of Use"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Términos de uso"
+          }
+        }
+      }
+    },
+    "Privacidad" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidad"
+          }
+        }
+      }
+    },
+    "Empezar la prueba gratis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Free Trial"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empezar la prueba gratis"
+          }
+        }
+      }
+    },
+    "Suscribirme por %@ al año" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subscribe for %@ a year"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suscribirme por %@ al año"
+          }
+        }
+      }
+    },
+    "Comprar por %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buy for %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprar por %@"
+          }
+        }
+      }
+    },
+    "Pago único. Plus queda en todos tus dispositivos con la misma cuenta de Apple." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One-time payment. Plus stays on all your devices with the same Apple Account."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pago único. Plus queda en todos tus dispositivos con la misma cuenta de Apple."
+          }
+        }
+      }
+    },
+    "Se renueva sola cada año hasta que la canceles. Puedes cancelarla en Ajustes › tu nombre › Suscripciones, al menos 24 horas antes de la renovación." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renews automatically every year until you cancel. You can cancel in Settings › your name › Subscriptions, at least 24 hours before it renews."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se renueva sola cada año hasta que la canceles. Puedes cancelarla en Ajustes › tu nombre › Suscripciones, al menos 24 horas antes de la renovación."
+          }
+        }
+      }
+    },
+    "%@, luego %@ al año." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, then %2$@ a year."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, luego %@ al año."
+          }
+        }
+      }
+    },
+    "%@ al año." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ a year."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ al año."
+          }
+        }
+      }
+    },
+    "%lld días gratis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld days free"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld días gratis"
+          }
+        }
+      }
+    },
+    "1 mes gratis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 month free"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 mes gratis"
+          }
+        }
+      }
+    },
+    "%lld meses gratis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld months free"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld meses gratis"
+          }
+        }
+      }
+    },
+    "1 año gratis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 year free"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 año gratis"
+          }
+        }
+      }
+    },
+    "Prueba gratis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free trial"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba gratis"
+          }
+        }
+      }
+    },
+    "Compra pendiente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchase Pending"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compra pendiente"
+          }
+        }
+      }
+    },
+    "La compra necesita una aprobación, por ejemplo de quien organiza En familia. Plus se activará solo cuando se apruebe." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The purchase needs approval, for example from your Family Sharing organizer. Plus will turn on by itself once it's approved."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La compra necesita una aprobación, por ejemplo de quien organiza En familia. Plus se activará solo cuando se apruebe."
+          }
+        }
+      }
+    },
+    "No se pudo completar la compra" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Complete the Purchase"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo completar la compra"
+          }
+        }
+      }
+    },
+    "No hay compras que restaurar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Purchases to Restore"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay compras que restaurar"
+          }
+        }
+      }
+    },
+    "Esta cuenta de Apple no tiene Calarmi Plus. Si lo compraste con otra, inicia sesión con ella en Ajustes › tu nombre." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Apple Account doesn't have Calarmi Plus. If you bought it with another one, sign in with it in Settings › your name."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta cuenta de Apple no tiene Calarmi Plus. Si lo compraste con otra, inicia sesión con ella en Ajustes › tu nombre."
+          }
+        }
+      }
+    },
+    "No se pudo restaurar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Restore"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo restaurar"
+          }
+        }
+      }
+    },
+    "Coral" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coral"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coral"
+          }
+        }
+      }
+    },
+    "Rosa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pink"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rosa"
+          }
+        }
+      }
+    },
+    "El ícono coral es gratis; los demás colores vienen con Calarmi Plus." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The coral icon is free; the other colors come with Calarmi Plus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El ícono coral es gratis; los demás colores vienen con Calarmi Plus."
+          }
+        }
+      }
+    },
+    "Ícono de la app" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Icon"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ícono de la app"
+          }
+        }
+      }
+    },
+    "No se pudo cambiar el ícono" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Change the Icon"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo cambiar el ícono"
+          }
+        }
+      }
+    },
+    "Los retos Arcade vienen con Calarmi Plus. Una alarma que ya tiene uno lo conserva." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arcade challenges come with Calarmi Plus. An alarm that already has one keeps it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los retos Arcade vienen con Calarmi Plus. Una alarma que ya tiene uno lo conserva."
+          }
+        }
+      }
+    },
+    "Con Calarmi Plus puedes usar un audio tuyo desde Archivos. Calarmi lo recorta a 28 segundos y lo repite hasta llenarlos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With Calarmi Plus you can use your own audio from Files. Calarmi trims it to 28 seconds and repeats it to fill them."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con Calarmi Plus puedes usar un audio tuyo desde Archivos. Calarmi lo recorta a 28 segundos y lo repite hasta llenarlos."
+          }
+        }
+      }
+    },
+    "Activo. ¡Gracias por apoyar Calarmi!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active. Thanks for supporting Calarmi!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activo. ¡Gracias por apoyar Calarmi!"
+          }
+        }
+      }
+    },
+    "Retos Arcade, tus propios tonos, cuentas regresivas sin límite e íconos de colores." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arcade challenges, your own tones, unlimited countdowns and colored icons."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retos Arcade, tus propios tonos, cuentas regresivas sin límite e íconos de colores."
+          }
+        }
+      }
+    },
+    "Calarmi Plus" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi Plus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi Plus"
+          }
+        }
+      }
+    },
+    "Listo: Calarmi Plus está activo de nuevo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done: Calarmi Plus is active again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo: Calarmi Plus está activo de nuevo."
+          }
+        }
+      }
+    },
+    "Calarmi no tiene permiso para programar alarmas. Puedes dárselo en Ajustes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi isn't allowed to schedule alarms. You can allow it in Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi no tiene permiso para programar alarmas. Puedes dárselo en Ajustes."
           }
         }
       }

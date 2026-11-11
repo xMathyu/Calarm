@@ -18,6 +18,8 @@ struct CountdownListView: View {
     @State private var showingNewEditor = false
     @State private var editingEvent: CountdownEvent?
     @State private var path: [UUID] = []
+    @State private var plus = PlusStore.shared
+    @State private var paywall: PlusFeature?
 
     #if DEBUG
     private static var demoScreenShown = false
@@ -35,7 +37,7 @@ struct CountdownListView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         Haptics.light()
-                        showingNewEditor = true
+                        startNewCountdown()
                     } label: {
                         Image(systemName: "plus")
                             .symbolEffect(.bounce, options: .nonRepeating, value: showingNewEditor)
@@ -54,6 +56,7 @@ struct CountdownListView: View {
             .sheet(item: $editingEvent) { event in
                 CountdownEditorView(editing: event)
             }
+            .plusPaywall(for: $paywall)
             // El widget de cuenta regresiva: al llegar el toque o, si la app
             // arrancó con él, al aparecer la lista.
             .task { openRequestedCountdown() }
@@ -160,6 +163,17 @@ struct CountdownListView: View {
             } label: {
                 deleteLabel(for: event)
             }
+        }
+    }
+
+    /// Sin Plus caben `PlusStore.freeCountdownLimit` cuentas propias; las
+    /// recibidas no cuentan. Las que ya había no se tocan aunque sean más.
+    private func startNewCountdown() {
+        let ownCount = events.filter { !$0.isReceivedShare }.count
+        if plus.canCreateCountdown(ownCount: ownCount) {
+            showingNewEditor = true
+        } else {
+            paywall = .unlimitedCountdowns
         }
     }
 
