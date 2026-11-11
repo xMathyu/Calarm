@@ -513,32 +513,47 @@ Alemán:
 
 ## What's New (1.0.17)
 
+La 1.0.16 nunca salió: se retiró de la revisión y se reenvió como 1.0.17 con el dominio propio, así que
+estas novedades suman las de la 1.0.16.
+
 Español:
 ```
-• Las invitaciones a alarmas y cuentas regresivas ahora llegan con un enlace de calarmi.mathyusolutions.com, la nueva web de Calarmi
-• La política de privacidad se abre en tu idioma, también en portugués
+• Calarm ahora se llama Calarmi: más fácil de recordar y de decir. Tus alarmas, cuentas regresivas y alarmas compartidas siguen igual
+• Ícono nuevo: un despertador cuyas agujas forman un check, con versión para el modo oscuro
+• Nuevo: Calarmi Plus, opcional. Suma los retos Arcade, tus propios tonos desde Archivos, cuentas regresivas sin límite e íconos de colores, con una suscripción anual con 1 semana gratis o un pago único. Lo que ya tenías configurado sigue funcionando sin pagar
+• Nuevo: Calarmi en portugués de Brasil
+• Corregido: los avisos de permisos (calendario, contactos, micrófono…) salían en español aunque usaras la app en inglés
+• Las invitaciones a alarmas y cuentas regresivas llegan con un enlace de calarmi.mathyusolutions.com, la nueva web de Calarmi
 ```
 
 Inglés:
 ```
-• Invitations to alarms and countdowns now come with a calarmi.mathyusolutions.com link, Calarmi's new website
-• The privacy policy opens in your language, Portuguese included
+• Calarm is now Calarmi: easier to remember and to say. Your alarms, countdowns and shared alarms stay the same
+• New icon: an alarm clock whose hands make a check mark, with a Dark Mode version
+• New: Calarmi Plus, optional. It adds Arcade challenges, your own tones from Files, unlimited countdowns and colored app icons, with a yearly subscription with a 1-week free trial or a one-time purchase. Everything you already set up keeps working for free
+• New: Calarmi in Brazilian Portuguese
+• Fixed: permission prompts (calendar, contacts, microphone…) appeared in Spanish even when you used the app in English
+• Invitations to alarms and countdowns come with a calarmi.mathyusolutions.com link, Calarmi's new website
 ```
 
 Alemán:
 ```
-• Einladungen zu Weckern und Countdowns kommen jetzt mit einem Link zu calarmi.mathyusolutions.com, der neuen Website von Calarmi
-• Die Datenschutzerklärung öffnet sich in deiner Sprache
+• Calarm heißt jetzt Calarmi: leichter zu merken und auszusprechen. Deine Wecker, Countdowns und geteilten Wecker bleiben, wie sie sind
+• Neues Symbol: ein Wecker, dessen Zeiger ein Häkchen bilden, mit Version für den Dunkelmodus
+• Neu: Calarmi Plus, optional. Es bringt die Arcade-Aufgaben, eigene Töne aus der Dateien-App, unbegrenzte Countdowns und farbige App-Symbole, als Jahresabo mit 1 Woche gratis oder als Einmalkauf. Alles, was du schon eingerichtet hast, funktioniert weiter kostenlos
+• Neu: Calarmi auf brasilianischem Portugiesisch
+• Behoben: Berechtigungsabfragen (Kalender, Kontakte, Mikrofon …) erschienen auf Spanisch
+• Einladungen zu Weckern und Countdowns kommen mit einem Link zu calarmi.mathyusolutions.com, der neuen Website von Calarmi
 ```
 
 Portugués:
 ```
-• Os convites para alarmes e contagens regressivas agora chegam com um link de calarmi.mathyusolutions.com, o novo site do Calarmi
-• A política de privacidade abre no seu idioma, inclusive em português
+• O app agora se chama Calarmi.
+• Ícone novo: um despertador com os ponteiros formando um check, com versão para o modo escuro.
+• Calarmi em português.
+• Calarmi Plus: desafios Arcade, seus próprios toques, contagens regressivas ilimitadas e ícones coloridos. Tudo o que você já usava continua funcionando.
+• Os convites para alarmes e contagens regressivas chegam com um link de calarmi.mathyusolutions.com, o novo site do Calarmi.
 ```
-
-La 1.0.17 la envía `Tools/appstore/release_after.py` en cuanto la 1.0.16 queda publicada (Apple no
-deja crear una versión nueva mientras otra está en revisión).
 
 ## What's New (1.0.16)
 
