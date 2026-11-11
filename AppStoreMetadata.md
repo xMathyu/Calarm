@@ -1,4 +1,4 @@
-# Calarm — App Store metadata (borrador)
+# Calarmi (antes Calarm) — App Store metadata (borrador)
 
 > **Idioma primario de la tienda: Inglés (EE. UU.)** — verificado por API el 2026-09-09
 > (`app.primaryLocale = en-US`). Los dos únicos locales son `en-US` y `es-MX`. Esto importa:

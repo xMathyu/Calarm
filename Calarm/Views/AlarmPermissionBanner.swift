@@ -73,8 +73,8 @@ struct AlarmPermissionBanner: View {
                     // appLocalized en las dos ramas: un `cond ? a : b` de literales
                     // es un String y Text lo enseñaría sin traducir.
                     Text(isDenied
-                         ? appLocalized("Calarm no tiene permiso para programar alarmas. Puedes dárselo en Ajustes.")
-                         : appLocalized("Falta darle a Calarm permiso para programar alarmas."))
+                         ? appLocalized("Calarmi no tiene permiso para programar alarmas. Puedes dárselo en Ajustes.")
+                         : appLocalized("Falta darle a Calarmi permiso para programar alarmas."))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)

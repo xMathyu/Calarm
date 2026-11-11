@@ -66,7 +66,7 @@ struct CodeScannerView: View {
                         }
                 default:
                     VStack(spacing: DS.Spacing.md) {
-                        message("Calarm necesita la cámara para leer el código. Actívala en Ajustes.", systemImage: "camera.fill")
+                        message("Calarmi necesita la cámara para leer el código. Actívala en Ajustes.", systemImage: "camera.fill")
                         Button("Abrir Ajustes") {
                             if let url = URL(string: UIApplication.openSettingsURLString) {
                                 UIApplication.shared.open(url)

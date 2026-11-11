@@ -15,7 +15,7 @@ import SwiftData
 struct DailyBriefingIntent: AppIntent {
     static let title: LocalizedStringResource = "Resumen del día"
     static let description = IntentDescription(
-        "Calarm te dice qué alarmas tienes hoy con un resumen natural.",
+        "Calarmi te dice qué alarmas tienes hoy con un resumen natural.",
         categoryName: "Alarmas"
     )
     static let openAppWhenRun: Bool = false
@@ -88,7 +88,7 @@ struct DailyBriefingIntent: AppIntent {
         }.joined(separator: "\n")
 
         let instructions = Instructions("""
-        You are a personal assistant for the Calarm app. Given today's alarms, \
+        You are a personal assistant for the Calarmi app. Given today's alarms, \
         produce a brief spoken summary in the user's language (under 60 words). \
         Group similar items when natural (e.g. "tienes 3 reuniones esta mañana"). \
         Use the locale's time format. Be warm but concise. Do NOT include a \

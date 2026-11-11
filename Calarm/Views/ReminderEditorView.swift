@@ -1025,7 +1025,7 @@ struct ReminderEditorView: View {
                     Image(systemName: "sparkles")
                         .foregroundStyle(.tint)
                         .symbolEffect(.bounce, options: .nonRepeating)
-                    Text("Sugerencias de Calarm")
+                    Text("Sugerencias de Calarmi")
                         .font(.subheadline.weight(.semibold))
                     Spacer()
                     Button {

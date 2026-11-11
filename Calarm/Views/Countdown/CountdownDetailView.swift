@@ -362,7 +362,7 @@ struct CountdownDetailView: View {
             pendingInvite = InviteDelivery(
                 title: event.title,
                 url: link,
-                customMessage: appLocalized("Te invito a la cuenta regresiva «\(event.title)» en Calarm")
+                customMessage: appLocalized("Te invito a la cuenta regresiva «\(event.title)» en Calarmi")
             )
         } catch {
             shareError = error.localizedDescription

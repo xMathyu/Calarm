@@ -152,7 +152,7 @@ struct CreateReminderTool: Tool {
 
     var name: String { "create_reminder" }
     var description: String {
-        "Creates a new alarm/reminder in Calarm with title and date. Optional category, recurrence, and lead times. Use ISO 8601 dates."
+        "Creates a new alarm/reminder in Calarmi with title and date. Optional category, recurrence, and lead times. Use ISO 8601 dates."
     }
 
     @Generable

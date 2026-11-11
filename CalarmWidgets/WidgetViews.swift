@@ -70,7 +70,7 @@ struct CountdownWidgetContent: View {
             Image(systemName: "hourglass")
                 .font(.title2)
             if !family.isAccessory {
-                Text("Crea una cuenta regresiva en Calarm")
+                Text("Crea una cuenta regresiva en Calarmi")
                     .font(.caption.weight(.semibold))
                     .multilineTextAlignment(.center)
             }

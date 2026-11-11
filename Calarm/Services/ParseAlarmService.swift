@@ -89,7 +89,7 @@ final class ParseAlarmService {
         let offsetSign = offsetHours >= 0 ? "+" : ""
 
         let instructions = Instructions("""
-        You are an alarm parser for the Calarm iOS app. Given a user's natural-language \
+        You are an alarm parser for the Calarmi iOS app. Given a user's natural-language \
         description, extract structured alarm data and respond ONLY with the requested fields.
 
         Current LOCAL date/time: \(nowLocal)

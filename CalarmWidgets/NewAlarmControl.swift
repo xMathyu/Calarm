@@ -20,6 +20,6 @@ struct NewAlarmControl: ControlWidget {
             }
         }
         .displayName("Nueva alarma")
-        .description("Abre Calarm para crear una alarma.")
+        .description("Abre Calarmi para crear una alarma.")
     }
 }

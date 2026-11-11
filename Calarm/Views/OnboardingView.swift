@@ -51,7 +51,7 @@ struct OnboardingView: View {
             id: 2,
             symbol: "calendar.badge.clock",
             title: "Tus eventos también suenan",
-            detail: "Calarm lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte."
+            detail: "Calarmi lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte."
         ),
         Slide(
             id: 3,
@@ -63,7 +63,7 @@ struct OnboardingView: View {
             id: 4,
             symbol: "bell.badge.fill",
             title: "Un permiso y ya está",
-            detail: "iOS necesita tu permiso para que Calarm programe alarmas que suenen en silencio y sobre la pantalla bloqueada."
+            detail: "iOS necesita tu permiso para que Calarmi programe alarmas que suenen en silencio y sobre la pantalla bloqueada."
         ),
     ]
 

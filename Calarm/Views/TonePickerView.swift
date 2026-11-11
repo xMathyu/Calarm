@@ -47,7 +47,7 @@ struct TonePickerView: View {
                     )
                 }
             } header: {
-                Text("Tonos de Calarm")
+                Text("Tonos de Calarmi")
             } footer: {
                 Text("El tono del sistema se repite hasta que detienes la alarma. Los demás suenan 28 segundos.")
             }

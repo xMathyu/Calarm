@@ -41,7 +41,7 @@ enum CalendarSourceError: Error, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .accessDenied: "Calarm necesita acceso a tu calendario para detectar reuniones."
+        case .accessDenied: "Calarmi necesita acceso a tu calendario para detectar reuniones."
         case .unavailable: "El calendario no está disponible en este dispositivo."
         }
     }

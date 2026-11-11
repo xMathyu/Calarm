@@ -40,7 +40,7 @@ enum ChallengeRequest {
 /// del reto, y es resolverlo lo que la detiene (`ChallengeCoordinator.solve`).
 struct SolveChallengeIntent: LiveActivityIntent {
     static var title: LocalizedStringResource = "Resolver reto"
-    static var description = IntentDescription("Abre Calarm para resolver el reto que apaga la alarma.")
+    static var description = IntentDescription("Abre Calarmi para resolver el reto que apaga la alarma.")
     static var openAppWhenRun: Bool = true
 
     @Parameter(title: "Alarm ID")

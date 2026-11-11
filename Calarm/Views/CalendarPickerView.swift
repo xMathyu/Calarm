@@ -37,7 +37,7 @@ struct CalendarPickerView: View {
                 }
             } footer: {
                 Text(isAllSelected
-                     ? "Calarm mira todos tus calendarios, incluidos los que agregues después."
+                     ? "Calarmi mira todos tus calendarios, incluidos los que agregues después."
                      : "Solo suenan los eventos de los calendarios marcados.")
             }
 

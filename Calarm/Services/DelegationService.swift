@@ -143,7 +143,7 @@ final class DelegationService {
         }
 
         let share = CKShare(recordZoneID: zone.zoneID)
-        share[CKShare.SystemFieldKey.title] = "Mis alarmas (Calarm)" as CKRecordValue
+        share[CKShare.SystemFieldKey.title] = "Mis alarmas (Calarmi)" as CKRecordValue
         share[CKShare.SystemFieldKey.shareType] = Self.shareType as CKRecordValue
         // App icon as the rich-link thumbnail in iMessage/Mail — without it the
         // preview shows the generic iCloud cloud.

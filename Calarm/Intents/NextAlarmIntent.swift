@@ -14,7 +14,7 @@ import SwiftData
 struct NextAlarmIntent: AppIntent {
     static let title: LocalizedStringResource = "Próxima alarma"
     static let description = IntentDescription(
-        "Dice cuál es tu próxima alarma en Calarm.",
+        "Dice cuál es tu próxima alarma en Calarmi.",
         categoryName: "Alarmas"
     )
     static let openAppWhenRun: Bool = false

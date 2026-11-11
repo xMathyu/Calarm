@@ -56,7 +56,7 @@ struct CalarmChatView: View {
             .alert("Permiso denegado", isPresented: $showingPermissionDeniedAlert) {
                 Button("OK") { showingPermissionDeniedAlert = false }
             } message: {
-                Text("Activa el micrófono y reconocimiento de voz en Ajustes → Calarm.")
+                Text("Activa el micrófono y reconocimiento de voz en Ajustes → Calarmi.")
             }
         }
     }

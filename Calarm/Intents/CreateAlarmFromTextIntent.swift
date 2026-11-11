@@ -16,7 +16,7 @@ import SwiftData
 struct CreateAlarmFromTextIntent: AppIntent {
     static let title: LocalizedStringResource = "Crear alarma con IA"
     static let description = IntentDescription(
-        "Describe la alarma en lenguaje natural y Calarm la crea con IA.",
+        "Describe la alarma en lenguaje natural y Calarmi la crea con IA.",
         categoryName: "Alarmas"
     )
     static let openAppWhenRun: Bool = false

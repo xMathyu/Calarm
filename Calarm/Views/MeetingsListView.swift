@@ -60,7 +60,7 @@ struct MeetingsListView: View {
             EmptyStateView(
                 systemImage: "calendar.badge.exclamationmark",
                 title: "Conecta tu calendario",
-                message: "Calarm necesita permiso para leer tus eventos y ponerles alarma.",
+                message: "Calarmi necesita permiso para leer tus eventos y ponerles alarma.",
                 actionTitle: "Permitir acceso"
             ) {
                 Task { await coordinator.requestAccessIfNeeded() }
@@ -69,7 +69,7 @@ struct MeetingsListView: View {
             EmptyStateView(
                 systemImage: "calendar.badge.exclamationmark",
                 title: "Sin acceso al calendario",
-                message: "Calarm no puede leer tus eventos. Toca Abrir Ajustes y en Calendarios elige «Acceso total».",
+                message: "Calarmi no puede leer tus eventos. Toca Abrir Ajustes y en Calendarios elige «Acceso total».",
                 actionTitle: "Abrir Ajustes"
             ) {
                 if let url = URL(string: UIApplication.openSettingsURLString) {

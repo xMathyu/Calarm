@@ -35,7 +35,7 @@ nonisolated enum NewAlarmRequest {
 
 struct NewAlarmControlIntent: AppIntent {
     static let title: LocalizedStringResource = "Nueva alarma"
-    static let description = IntentDescription("Abre Calarm con una alarma nueva lista para llenar.")
+    static let description = IntentDescription("Abre Calarmi con una alarma nueva lista para llenar.")
     static let openAppWhenRun = true
 
     @MainActor

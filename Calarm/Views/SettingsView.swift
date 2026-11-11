@@ -200,8 +200,8 @@ struct SettingsView: View {
                     sectionHeader("Calendario de Apple", systemImage: "calendar")
                 } footer: {
                     VStack(alignment: .leading, spacing: DS.Spacing.sm) {
-                    Text("Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian.")
-                    Text("«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarm en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarm no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina.")
+                    Text("Cuando esté activo, Calarmi leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian.")
+                    Text("«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarmi en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarmi no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina.")
                     }
                 }
 
@@ -237,15 +237,15 @@ struct SettingsView: View {
                     }
                     ShareLink(
                         item: AppLinks.appStore,
-                        subject: Text("Calarm"),
+                        subject: Text("Calarmi"),
                         message: Text("Alarmas que suenan aunque el iPhone esté en silencio: cumpleaños, medicamentos, citas y más.")
                     ) {
-                        Label("Compartir Calarm", systemImage: "square.and.arrow.up")
+                        Label("Compartir Calarmi", systemImage: "square.and.arrow.up")
                     }
                 } header: {
                     sectionHeader("Acerca de", systemImage: "sparkles")
                 } footer: {
-                    Text("Calarm es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más.")
+                    Text("Calarmi es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más.")
                 }
             }
             .formStyle(.grouped)
@@ -258,7 +258,7 @@ struct SettingsView: View {
                 }
                 Button("OK", role: .cancel) {}
             } message: {
-                Text("Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarm.")
+                Text("Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarmi.")
             }
             .animation(DS.Motion.snappy, value: alarmScheduler.authorizationState)
         }

@@ -3,7 +3,7 @@
 //  Calarm
 //
 //  Espejo de las alarmas propias en el Calendario del sistema: un calendario
-//  llamado «Calarm» con una entrada por cada horario de cada alarma activa.
+//  llamado «Calarmi» («Calarm» en las versiones anteriores) con una entrada por cada horario de cada alarma activa.
 //  Opcional, detrás de «Guardar mis alarmas en el Calendario» en Ajustes.
 //
 //  Dos reglas evitan los problemas clásicos de escribir en el calendario:
@@ -30,7 +30,12 @@ import SwiftUI
 
 @MainActor
 final class CalendarMirrorService {
-    static let calendarTitle = "Calarm"
+    nonisolated static let calendarTitle = "Calarmi"
+    /// Con qué título se creaba el calendario antes del cambio de nombre de la
+    /// app. Se sigue reconociendo como propio y NO se renombra: un dispositivo
+    /// con la versión vieja que recibiera por iCloud el calendario ya renombrado
+    /// no lo reconocería, lo leería como uno más y cada alarma sonaría dos veces.
+    nonisolated static let legacyCalendarTitles: Set<String> = ["Calarm"]
     /// Una alarma es un instante; en el calendario ocupa media hora para que se
     /// vea sin tapar la mañana entera.
     static let eventDuration: TimeInterval = 30 * 60
@@ -54,7 +59,7 @@ final class CalendarMirrorService {
 
     /// El calendario que Calarm escribe y que nunca debe leer.
     nonisolated static func isMirrorCalendar(_ calendar: EKCalendar) -> Bool {
-        calendar.title == calendarTitle
+        calendar.title == calendarTitle || legacyCalendarTitles.contains(calendar.title)
     }
 
     // MARK: - Enlace desde el evento

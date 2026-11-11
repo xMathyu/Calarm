@@ -14,7 +14,7 @@ import SwiftData
 struct CreateAlarmIntent: AppIntent {
     static let title: LocalizedStringResource = "Crear alarma"
     static let description = IntentDescription(
-        "Crea una nueva alarma en Calarm. Solo la hora es necesaria; el nombre es opcional.",
+        "Crea una nueva alarma en Calarmi. Solo la hora es necesaria; el nombre es opcional.",
         categoryName: "Alarmas"
     )
     /// Run silently (no Calarm UI). The result dialog is what Siri speaks back.

@@ -6,7 +6,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm isn't allowed to schedule alarms. You can allow it in Settings."
+            "value" : "Arcade challenges"
           }
         },
         "es" : {
@@ -97,18 +97,18 @@
         }
       }
     },
-    "Falta darle a Calarm permiso para programar alarmas." : {
+    "Falta darle a Calarmi permiso para programar alarmas." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm still needs permission to schedule alarms."
+            "value" : "Calarmi still needs permission to schedule alarms."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Falta darle a Calarm permiso para programar alarmas."
+            "value" : "Falta darle a Calarmi permiso para programar alarmas."
           }
         }
       }
@@ -353,34 +353,34 @@
         }
       }
     },
-    "Te invito a la cuenta regresiva «%@» en Calarm" : {
+    "Te invito a la cuenta regresiva «%@» en Calarmi" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Join my countdown “%@” on Calarm"
+            "value" : "Join my countdown “%@” on Calarmi"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Te invito a la cuenta regresiva «%@» en Calarm"
+            "value" : "Te invito a la cuenta regresiva «%@» en Calarmi"
           }
         }
       }
     },
-    "Crea una cuenta regresiva en Calarm" : {
+    "Crea una cuenta regresiva en Calarmi" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Create a countdown in Calarm"
+            "value" : "Create a countdown in Calarmi"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Crea una cuenta regresiva en Calarm"
+            "value" : "Crea una cuenta regresiva en Calarmi"
           }
         }
       }
@@ -545,34 +545,34 @@
         }
       }
     },
-    "Abre Calarm para crear una alarma." : {
+    "Abre Calarmi para crear una alarma." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opens Calarm to create an alarm."
+            "value" : "Opens Calarmi to create an alarm."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Calarm para crear una alarma."
+            "value" : "Abre Calarmi para crear una alarma."
           }
         }
       }
     },
-    "Abre Calarm con una alarma nueva lista para llenar." : {
+    "Abre Calarmi con una alarma nueva lista para llenar." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opens Calarm with a new alarm ready to fill in."
+            "value" : "Opens Calarmi with a new alarm ready to fill in."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Calarm con una alarma nueva lista para llenar."
+            "value" : "Abre Calarmi con una alarma nueva lista para llenar."
           }
         }
       }
@@ -1510,18 +1510,18 @@
         }
       }
     },
-    "¿No tienes Calarm? Descárgala aquí:" : {
+    "¿No tienes Calarmi? Descárgala aquí:" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Don't have Calarm? Get it here:"
+            "value" : "Don't have Calarmi? Get it here:"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¿No tienes Calarm? Descárgala aquí:"
+            "value" : "¿No tienes Calarmi? Descárgala aquí:"
           }
         }
       }
@@ -1574,18 +1574,18 @@
         }
       }
     },
-    "«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarm en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarm no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina." : {
+    "«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarmi en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarmi no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“Save my alarms to Calendar” creates a calendar named Calarm in your Calendar app, with an entry for every active alarm that updates when you change or delete it. Calarm doesn't read that calendar, so nothing rings twice. Turning it off removes that calendar."
+            "value" : "“Save my alarms to Calendar” creates a calendar named Calarmi in your Calendar app, with an entry for every active alarm that updates when you change or delete it. Calarmi doesn't read that calendar, so nothing rings twice. Turning it off removes that calendar."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarm en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarm no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina."
+            "value" : "«Guardar mis alarmas en el Calendario» crea un calendario llamado Calarmi en tu app Calendario, con una entrada por cada alarma activa que se actualiza cuando la cambias o la borras. Calarmi no lee ese calendario, así que nada suena dos veces. Al apagarlo, ese calendario se elimina."
           }
         }
       }
@@ -2421,18 +2421,18 @@
         }
       }
     },
-    "Abre Calarm para resolver el reto que apaga la alarma." : {
+    "Abre Calarmi para resolver el reto que apaga la alarma." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opens Calarm to solve the challenge that turns off the alarm."
+            "value" : "Opens Calarmi to solve the challenge that turns off the alarm."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Calarm para resolver el reto que apaga la alarma."
+            "value" : "Abre Calarmi para resolver el reto que apaga la alarma."
           }
         }
       }
@@ -2566,18 +2566,18 @@
         }
       }
     },
-    "Activa el micrófono y reconocimiento de voz en Ajustes → Calarm." : {
+    "Activa el micrófono y reconocimiento de voz en Ajustes → Calarmi." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enable microphone and speech recognition in Settings → Calarm."
+            "value" : "Enable microphone and speech recognition in Settings → Calarmi."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Activa el micrófono y reconocimiento de voz en Ajustes → Calarm."
+            "value" : "Activa el micrófono y reconocimiento de voz en Ajustes → Calarmi."
           }
         }
       }
@@ -3514,19 +3514,19 @@
         }
       }
     },
-    "Bienvenido a Calarm" : {
+    "Bienvenido a Calarmi" : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Welcome to Calarm"
+            "value" : "Welcome to Calarmi"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bienvenido a Calarm"
+            "value" : "Bienvenido a Calarmi"
           }
         }
       }
@@ -3822,150 +3822,150 @@
         }
       }
     },
-    "Calarm" : {
+    "Calarmi" : {
 
     },
-    "Calarm es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más." : {
+    "Calarmi es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm is an alarm app for personal events: birthdays, anniversaries, reminders, and more."
+            "value" : "Calarmi is an alarm app for personal events: birthdays, anniversaries, reminders, and more."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más."
+            "value" : "Calarmi es una app de alarmas para eventos personales: cumpleaños, aniversarios, recordatorios y más."
           }
         }
       }
     },
-    "Calarm lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte." : {
+    "Calarmi lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm reads your Calendar and gives each event up to 3 alerts. If it's a Teams, Zoom or Meet call, a Join button appears."
+            "value" : "Calarmi reads your Calendar and gives each event up to 3 alerts. If it's a Teams, Zoom or Meet call, a Join button appears."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte."
+            "value" : "Calarmi lee tu Calendario y le pone hasta 3 avisos a cada evento. Si es una reunión de Teams, Zoom o Meet, aparece el botón para unirte."
           }
         }
       }
     },
-    "Calarm mira todos tus calendarios, incluidos los que agregues después." : {
+    "Calarmi mira todos tus calendarios, incluidos los que agregues después." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm watches every one of your calendars, including any you add later."
+            "value" : "Calarmi watches every one of your calendars, including any you add later."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm mira todos tus calendarios, incluidos los que agregues después."
+            "value" : "Calarmi mira todos tus calendarios, incluidos los que agregues después."
           }
         }
       }
     },
-    "Calarm necesita acceso a tu calendario para detectar reuniones." : {
+    "Calarmi necesita acceso a tu calendario para detectar reuniones." : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm needs calendar access to detect meetings."
+            "value" : "Calarmi needs calendar access to detect meetings."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm necesita acceso a tu calendario para detectar reuniones."
+            "value" : "Calarmi necesita acceso a tu calendario para detectar reuniones."
           }
         }
       }
     },
-    "Calarm necesita la cámara para leer el código. Actívala en Ajustes." : {
+    "Calarmi necesita la cámara para leer el código. Actívala en Ajustes." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm needs the camera to read the code. Turn it on in Settings."
+            "value" : "Calarmi needs the camera to read the code. Turn it on in Settings."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm necesita la cámara para leer el código. Actívala en Ajustes."
+            "value" : "Calarmi necesita la cámara para leer el código. Actívala en Ajustes."
           }
         }
       }
     },
-    "Calarm necesita permiso para leer tus eventos y ponerles alarma." : {
+    "Calarmi necesita permiso para leer tus eventos y ponerles alarma." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm needs permission to read your events and set alarms for them."
+            "value" : "Calarmi needs permission to read your events and set alarms for them."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm necesita permiso para leer tus eventos y ponerles alarma."
+            "value" : "Calarmi necesita permiso para leer tus eventos y ponerles alarma."
           }
         }
       }
     },
-    "Calarm no puede leer tus eventos. Toca Abrir Ajustes y en Calendarios elige «Acceso total»." : {
+    "Calarmi no puede leer tus eventos. Toca Abrir Ajustes y en Calendarios elige «Acceso total»." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm can't read your events. Tap Open Settings, and under Calendars choose “Full Access”."
+            "value" : "Calarmi can't read your events. Tap Open Settings, and under Calendars choose “Full Access”."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm no puede leer tus eventos. Toca Abrir Ajustes y en Calendarios elige «Acceso total»."
+            "value" : "Calarmi no puede leer tus eventos. Toca Abrir Ajustes y en Calendarios elige «Acceso total»."
           }
         }
       }
     },
-    "Calarm no tiene permiso para contar tus pasos. Actívalo en Ajustes › Privacidad y seguridad › Movimiento y forma física." : {
+    "Calarmi no tiene permiso para contar tus pasos. Actívalo en Ajustes › Privacidad y seguridad › Movimiento y forma física." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm doesn't have permission to count your steps. Turn it on in Settings › Privacy & Security › Motion & Fitness."
+            "value" : "Calarmi doesn't have permission to count your steps. Turn it on in Settings › Privacy & Security › Motion & Fitness."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm no tiene permiso para contar tus pasos. Actívalo en Ajustes › Privacidad y seguridad › Movimiento y forma física."
+            "value" : "Calarmi no tiene permiso para contar tus pasos. Actívalo en Ajustes › Privacidad y seguridad › Movimiento y forma física."
           }
         }
       }
     },
-    "Calarm te dice qué alarmas tienes hoy con un resumen natural." : {
+    "Calarmi te dice qué alarmas tienes hoy con un resumen natural." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm tells you today's alarms with a natural summary."
+            "value" : "Calarmi tells you today's alarms with a natural summary."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm te dice qué alarmas tienes hoy con un resumen natural."
+            "value" : "Calarmi te dice qué alarmas tienes hoy con un resumen natural."
           }
         }
       }
@@ -4486,18 +4486,18 @@
         }
       }
     },
-    "Compartir Calarm" : {
+    "Compartir Calarmi" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share Calarm"
+            "value" : "Share Calarmi"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compartir Calarm"
+            "value" : "Compartir Calarmi"
           }
         }
       }
@@ -4711,35 +4711,35 @@
         }
       }
     },
-    "Crea una nueva alarma en Calarm con título y hora." : {
+    "Crea una nueva alarma en Calarmi con título y hora." : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Creates a new alarm in Calarm with a title and time."
+            "value" : "Creates a new alarm in Calarmi with a title and time."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Crea una nueva alarma en Calarm con título y hora."
+            "value" : "Crea una nueva alarma en Calarmi con título y hora."
           }
         }
       }
     },
-    "Crea una nueva alarma en Calarm. Solo la hora es necesaria; el nombre es opcional." : {
+    "Crea una nueva alarma en Calarmi. Solo la hora es necesaria; el nombre es opcional." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Creates a new alarm in Calarm. Only the time is required; the name is optional."
+            "value" : "Creates a new alarm in Calarmi. Only the time is required; the name is optional."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Crea una nueva alarma en Calarm. Solo la hora es necesaria; el nombre es opcional."
+            "value" : "Crea una nueva alarma en Calarmi. Solo la hora es necesaria; el nombre es opcional."
           }
         }
       }
@@ -4974,35 +4974,35 @@
         }
       }
     },
-    "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian." : {
+    "Cuando esté activo, Calarmi leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When on, Calarm reads events from your Calendar app and gives each one an alarm at the default alert time. Each event can change its own from its screen. If the event has a Microsoft Teams, Zoom or Google Meet link, a button appears to join.\n\n\"Only events I'm attending\" leaves without an alarm the ones you declined and the ones that belong to someone else, such as those on a shared calendar. Events you gave alerts to by hand don't change."
+            "value" : "When on, Calarmi reads events from your Calendar app and gives each one an alarm at the default alert time. Each event can change its own from its screen. If the event has a Microsoft Teams, Zoom or Google Meet link, a button appears to join.\n\n\"Only events I'm attending\" leaves without an alarm the ones you declined and the ones that belong to someone else, such as those on a shared calendar. Events you gave alerts to by hand don't change."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian."
+            "value" : "Cuando esté activo, Calarmi leerá los eventos de tu app Calendario y le programará una alarma a cada uno con el aviso por defecto. Cada evento puede cambiar el suyo desde su pantalla. Si el evento tiene un enlace de Microsoft Teams, Zoom o Google Meet, aparecerá un botón para unirte.\n\n\"Solo eventos a los que asisto\" deja sin alarma los que rechazaste y los que son de otra persona, como los de un calendario compartido. Los eventos a los que les pusiste avisos a mano no cambian."
           }
         }
       }
     },
-    "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte." : {
+    "Cuando esté activo, Calarmi leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte." : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When on, Calarm reads events from your Calendar app and schedules an alarm 10 minutes before each one. If the event has a Microsoft Teams link, a button appears to join."
+            "value" : "When on, Calarmi reads events from your Calendar app and schedules an alarm 10 minutes before each one. If the event has a Microsoft Teams link, a button appears to join."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuando esté activo, Calarm leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte."
+            "value" : "Cuando esté activo, Calarmi leerá los eventos de tu app Calendario y programará una alarma 10 minutos antes de cada uno. Si el evento tiene un enlace de Microsoft Teams, aparecerá un botón para unirte."
           }
         }
       }
@@ -5313,35 +5313,35 @@
         }
       }
     },
-    "Describe la alarma en lenguaje natural y Calarm la crea con Apple Intelligence." : {
+    "Describe la alarma en lenguaje natural y Calarmi la crea con Apple Intelligence." : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Describe the alarm in natural language and Calarm will create it with Apple Intelligence."
+            "value" : "Describe the alarm in natural language and Calarmi will create it with Apple Intelligence."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Describe la alarma en lenguaje natural y Calarm la crea con Apple Intelligence."
+            "value" : "Describe la alarma en lenguaje natural y Calarmi la crea con Apple Intelligence."
           }
         }
       }
     },
-    "Describe la alarma en lenguaje natural y Calarm la crea con IA." : {
+    "Describe la alarma en lenguaje natural y Calarmi la crea con IA." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Describe the alarm in natural language and Calarm will create it with AI."
+            "value" : "Describe the alarm in natural language and Calarmi will create it with AI."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Describe la alarma en lenguaje natural y Calarm la crea con IA."
+            "value" : "Describe la alarma en lenguaje natural y Calarmi la crea con IA."
           }
         }
       }
@@ -5555,18 +5555,18 @@
         }
       }
     },
-    "Dice cuál es tu próxima alarma en Calarm." : {
+    "Dice cuál es tu próxima alarma en Calarmi." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tells you your next alarm in Calarm."
+            "value" : "Tells you your next alarm in Calarmi."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dice cuál es tu próxima alarma en Calarm."
+            "value" : "Dice cuál es tu próxima alarma en Calarmi."
           }
         }
       }
@@ -6893,18 +6893,18 @@
         }
       }
     },
-    "iOS necesita tu permiso para que Calarm programe alarmas que suenen en silencio y sobre la pantalla bloqueada." : {
+    "iOS necesita tu permiso para que Calarmi programe alarmas que suenen en silencio y sobre la pantalla bloqueada." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iOS needs your permission for Calarm to schedule alarms that ring in silent mode and over the lock screen."
+            "value" : "iOS needs your permission for Calarmi to schedule alarms that ring in silent mode and over the lock screen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iOS necesita tu permiso para que Calarm programe alarmas que suenen en silencio y sobre la pantalla bloqueada."
+            "value" : "iOS necesita tu permiso para que Calarmi programe alarmas que suenen en silencio y sobre la pantalla bloqueada."
           }
         }
       }
@@ -8189,35 +8189,35 @@
         }
       }
     },
-    "Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarm." : {
+    "Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarmi." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To save your alarms, open Settings and under Calendars choose “Full Access” for Calarm."
+            "value" : "To save your alarms, open Settings and under Calendars choose “Full Access” for Calarmi."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarm."
+            "value" : "Para guardar tus alarmas, abre Ajustes y en Calendarios elige «Acceso total» para Calarmi."
           }
         }
       }
     },
-    "Para invitar amigos a tus eventos, Calarm necesita acceder a tus contactos." : {
+    "Para invitar amigos a tus eventos, Calarmi necesita acceder a tus contactos." : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To invite friends to your events, Calarm needs access to your contacts."
+            "value" : "To invite friends to your events, Calarmi needs access to your contacts."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para invitar amigos a tus eventos, Calarm necesita acceder a tus contactos."
+            "value" : "Para invitar amigos a tus eventos, Calarmi necesita acceder a tus contactos."
           }
         }
       }
@@ -10001,18 +10001,18 @@
         }
       }
     },
-    "Sugerencias de Calarm" : {
+    "Sugerencias de Calarmi" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm suggestions"
+            "value" : "Calarmi suggestions"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sugerencias de Calarm"
+            "value" : "Sugerencias de Calarmi"
           }
         }
       }
@@ -10033,51 +10033,51 @@
         }
       }
     },
-    "Te invito a '%@' en Calarm" : {
+    "Te invito a '%@' en Calarmi" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You're invited to '%@' in Calarm"
+            "value" : "You're invited to '%@' in Calarmi"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Te invito a '%@' en Calarm"
+            "value" : "Te invito a '%@' en Calarmi"
           }
         }
       }
     },
-    "Te invito a '%1$@' en Calarm — acepta aquí: %2$@" : {
+    "Te invito a '%1$@' en Calarmi — acepta aquí: %2$@" : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You're invited to '%1$@' in Calarm — accept here: %2$@"
+            "value" : "You're invited to '%1$@' in Calarmi — accept here: %2$@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Te invito a '%1$@' en Calarm — acepta aquí: %2$@"
+            "value" : "Te invito a '%1$@' en Calarmi — acepta aquí: %2$@"
           }
         }
       }
     },
-    "Te invito a ser mi persona de confianza en Calarm: podrás ver y administrar mis alarmas desde tu teléfono." : {
+    "Te invito a ser mi persona de confianza en Calarmi: podrás ver y administrar mis alarmas desde tu teléfono." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I'm inviting you to be my trusted helper in Calarm: you'll be able to see and manage my alarms from your phone."
+            "value" : "I'm inviting you to be my trusted helper in Calarmi: you'll be able to see and manage my alarms from your phone."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Te invito a ser mi persona de confianza en Calarm: podrás ver y administrar mis alarmas desde tu teléfono."
+            "value" : "Te invito a ser mi persona de confianza en Calarmi: podrás ver y administrar mis alarmas desde tu teléfono."
           }
         }
       }
@@ -10414,18 +10414,18 @@
         }
       }
     },
-    "Tonos de Calarm" : {
+    "Tonos de Calarmi" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calarm tones"
+            "value" : "Calarmi tones"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tonos de Calarm"
+            "value" : "Tonos de Calarmi"
           }
         }
       }
@@ -10639,18 +10639,18 @@
         }
       }
     },
-    "Usa un audio tuyo desde Archivos. Calarm lo recorta a 28 segundos y lo repite hasta llenarlos." : {
+    "Usa un audio tuyo desde Archivos. Calarmi lo recorta a 28 segundos y lo repite hasta llenarlos." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use your own audio from Files. Calarm trims it to 28 seconds and repeats it to fill them."
+            "value" : "Use your own audio from Files. Calarmi trims it to 28 seconds and repeats it to fill them."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usa un audio tuyo desde Archivos. Calarm lo recorta a 28 segundos y lo repite hasta llenarlos."
+            "value" : "Usa un audio tuyo desde Archivos. Calarmi lo recorta a 28 segundos y lo repite hasta llenarlos."
           }
         }
       }
@@ -10671,19 +10671,19 @@
         }
       }
     },
-    "Ve a Ajustes → Calarm → Contactos y activa el acceso para invitar amigos." : {
+    "Ve a Ajustes → Calarmi → Contactos y activa el acceso para invitar amigos." : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Go to Settings → Calarm → Contacts and enable access to invite friends."
+            "value" : "Go to Settings → Calarmi → Contacts and enable access to invite friends."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ve a Ajustes → Calarm → Contactos y activa el acceso para invitar amigos."
+            "value" : "Ve a Ajustes → Calarmi → Contactos y activa el acceso para invitar amigos."
           }
         }
       }

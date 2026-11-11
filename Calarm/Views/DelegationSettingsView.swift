@@ -141,7 +141,7 @@ struct DelegationSettingsView: View {
                 pendingInvite = InviteDelivery(
                     title: appLocalized("Mis alarmas"),
                     url: url,
-                    customMessage: appLocalized("Te invito a ser mi persona de confianza en Calarm: podrás ver y administrar mis alarmas desde tu teléfono.")
+                    customMessage: appLocalized("Te invito a ser mi persona de confianza en Calarmi: podrás ver y administrar mis alarmas desde tu teléfono.")
                 )
             } catch {
                 errorMessage = error.localizedDescription

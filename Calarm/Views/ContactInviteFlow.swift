@@ -108,7 +108,7 @@ private final class InviteTextItem: NSObject, UIActivityItemSource {
     }
 
     private static func intro(for invite: InviteDelivery) -> String {
-        invite.customMessage ?? appLocalized("Te invito a '\(invite.title)' en Calarm")
+        invite.customMessage ?? appLocalized("Te invito a '\(invite.title)' en Calarmi")
     }
 
     /// Closes the invite for whoever doesn't have Calarm yet — a bare iCloud
@@ -122,7 +122,7 @@ private final class InviteTextItem: NSObject, UIActivityItemSource {
     /// the fallback when building our own link fails).
     private static func installHint(for invite: InviteDelivery) -> String? {
         guard !InviteLink.isInvite(invite.url) else { return nil }
-        return appLocalized("¿No tienes Calarm? Descárgala aquí:") + "\n" + AppLinks.appStore.absoluteString
+        return appLocalized("¿No tienes Calarmi? Descárgala aquí:") + "\n" + AppLinks.appStore.absoluteString
     }
 
     /// The link travels as its own share item, so only the wording goes here.

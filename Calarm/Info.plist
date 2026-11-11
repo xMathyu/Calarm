@@ -3,28 +3,20 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>Calarm</string>
-	<key>CFBundleSpokenName</key>
-	<string>Ka larm</string>
+	<string>Calarmi</string>
 	<key>INAlternativeAppNames</key>
 	<array>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Calarm</string>
+			<key>INAlternativeAppNamePronunciationHint</key>
+			<string>ka larm</string>
+		</dict>
 		<dict>
 			<key>INAlternativeAppName</key>
 			<string>Cal Alarm</string>
 			<key>INAlternativeAppNamePronunciationHint</key>
 			<string>cal alarm</string>
-		</dict>
-		<dict>
-			<key>INAlternativeAppName</key>
-			<string>Call Arm</string>
-			<key>INAlternativeAppNamePronunciationHint</key>
-			<string>call arm</string>
-		</dict>
-		<dict>
-			<key>INAlternativeAppName</key>
-			<string>Call Alarm</string>
-			<key>INAlternativeAppNamePronunciationHint</key>
-			<string>call alarm</string>
 		</dict>
 	</array>
 	<key>CKSharingSupported</key>
@@ -32,21 +24,21 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSAlarmKitUsageDescription</key>
-	<string>Calarm necesita programar alarmas para avisarte antes de tus reuniones y recordatorios.</string>
+	<string>Calarmi necesita programar alarmas para avisarte antes de tus reuniones y recordatorios.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Calarm usa la cámara para leer el código QR o de barras que apaga una alarma con el reto «Código QR».</string>
+	<string>Calarmi usa la cámara para leer el código QR o de barras que apaga una alarma con el reto «Código QR».</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>Calarm lee tus eventos del calendario para ponerles alarma y detectar enlaces de Microsoft Teams. Si lo activas en Ajustes, también guarda tus alarmas en un calendario llamado Calarm.</string>
+	<string>Calarmi lee tus eventos del calendario para ponerles alarma y detectar enlaces de Microsoft Teams. Si lo activas en Ajustes, también guarda tus alarmas en un calendario llamado Calarmi.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Calarm usa tus contactos para mostrar la foto de quienes comparten alarmas contigo. Si no das acceso, se muestran sus iniciales.</string>
+	<string>Calarmi usa tus contactos para mostrar la foto de quienes comparten alarmas contigo. Si no das acceso, se muestran sus iniciales.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Calarm usa el movimiento para contar tus pasos y sacudidas en los retos que apagan la alarma.</string>
+	<string>Calarmi usa el movimiento para contar tus pasos y sacudidas en los retos que apagan la alarma.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Calarm usa el micrófono para que le hables al asistente con IA y este cree alarmas dictándolas con tu voz.</string>
+	<string>Calarmi usa el micrófono para que le hables al asistente con IA y este cree alarmas dictándolas con tu voz.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Calarm transcribe tu voz en el dispositivo para que el asistente con IA entienda lo que le dices.</string>
+	<string>Calarmi transcribe tu voz en el dispositivo para que el asistente con IA entienda lo que le dices.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

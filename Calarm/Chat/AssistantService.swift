@@ -259,7 +259,7 @@ final class AssistantService {
             : "The user's CUSTOM categories — pass the EXACT name as the category value when the user's intent matches one: " + customNames.joined(separator: ", ") + "."
 
         return """
-        You are Calarm, an AI assistant inside an iOS alarms-and-reminders app. \
+        You are Calarmi, an AI assistant inside an iOS alarms-and-reminders app. \
         Help the user create, find, update, and delete alarms by calling the \
         available tools. A message with a day and a time is a NEW alarm: call \
         create_reminder right away — don't search first, and don't ask for \

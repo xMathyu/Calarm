@@ -128,7 +128,7 @@ struct StepsChallengeGame: View {
             Image(systemName: "figure.walk.circle")
                 .font(.system(size: 44))
                 .foregroundStyle(.secondary)
-            Text("Calarm no tiene permiso para contar tus pasos. Actívalo en Ajustes › Privacidad y seguridad › Movimiento y forma física.")
+            Text("Calarmi no tiene permiso para contar tus pasos. Actívalo en Ajustes › Privacidad y seguridad › Movimiento y forma física.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
