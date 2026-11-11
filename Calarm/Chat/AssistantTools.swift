@@ -41,7 +41,11 @@ private enum ToolHelpers {
     }
 
     static func recurrence(fromSlug slug: String?, weekdayNames: [String]?) -> RecurrenceRule {
-        AlarmSuggestionsService.recurrence(
+        // An explicit "once" is the model saying "este sábado", not "todos los
+        // sábados" — it still lists the day now and then, and that must not
+        // turn a one-off into a weekly alarm.
+        if slug?.lowercased() == "once" { return .once }
+        return AlarmSuggestionsService.recurrence(
             fromSlug: slug ?? "once",
             weekdays: AlarmSuggestionsService.weekdays(fromNames: weekdayNames)
         )
@@ -65,6 +69,16 @@ private enum ToolHelpers {
     /// stored, but it never rings, and the model should say so.
     static func willEverRing(date: Date, recurrence: RecurrenceRule) -> Bool {
         !RecurrenceEngine.nextOccurrences(rule: recurrence, baseDate: date, count: 1).isEmpty
+    }
+
+    /// Birthdays and anniversaries the model left at midnight ring at 09:00:
+    /// "el 15 de marzo" carries no time, and a 00:00 alarm wakes the user up.
+    static func defaultingDayEventTime(_ date: Date, categorySlug: String?) -> Date {
+        guard let slug = categorySlug?.lowercased(), slug == "birthday" || slug == "anniversary" else { return date }
+        let calendar = Calendar.current
+        let time = calendar.dateComponents([.hour, .minute], from: date)
+        guard time.hour == 0, time.minute == 0 else { return date }
+        return calendar.date(bySettingHour: 9, minute: 0, second: 0, of: date) ?? date
     }
 
     static func leadTimes(fromMinutes minutes: [Int]?) -> [AlarmLeadTime] {
@@ -114,11 +128,27 @@ private enum ToolHelpers {
     }
 }
 
+// MARK: - Turn context
+
+/// What the user just wrote, and what this turn created, for checks the
+/// model can't be trusted with.
+@MainActor
+final class AssistantTurnContext {
+    private(set) var userText = ""
+    var createdThisTurn: [UUID] = []
+
+    func begin(_ text: String) {
+        userText = text
+        createdThisTurn = []
+    }
+}
+
 // MARK: - Create reminder
 
 struct CreateReminderTool: Tool {
     let modelContainer: ModelContainer
     let scheduler: ReminderScheduler
+    let turn: AssistantTurnContext
 
     var name: String { "create_reminder" }
     var description: String {
@@ -130,16 +160,16 @@ struct CreateReminderTool: Tool {
         @Guide(description: "Short, clear title for the alarm. Don't include the date or time.")
         let title: String
 
-        @Guide(description: "When the alarm fires, naive ISO 8601 in the user's LOCAL time (no Z, no offset): YYYY-MM-DDTHH:MM:SS. Must be in the future. For birthdays/anniversaries with no time specified, use 09:00:00.")
+        @Guide(description: "When the alarm fires, naive ISO 8601 in the user's LOCAL time (no Z, no offset): YYYY-MM-DDTHH:MM:SS. Must be in the future. Take the day from the list of next days in the instructions. For birthdays/anniversaries with no time specified, use 09:00:00.")
         let dateISO: String
 
         @Guide(description: "Category. A built-in (birthday, anniversary, event, reminder, other) OR the EXACT name of one of the user's custom categories listed in the instructions. Match birthdays (cumpleaños) → birthday, anniversaries → anniversary, meetings → event, generic → reminder. Prefer a custom category when the user's intent clearly matches one.")
         let category: String?
 
-        @Guide(description: "Recurrence. EXACTLY one of: once, daily, weekly, monthly, yearly. CRITICAL — read HOW OFTEN the user says it repeats, and IGNORE words that are part of the alarm's NAME: 'every year'/'cada año'/'todos los años'/'yearly'/'anual' → yearly. 'every month'/'cada mes'/'todos los meses' → monthly. 'every week'/'cada semana'/'todas las semanas' → weekly. A named weekday ('todos los lunes'/'every Monday'/'los martes y jueves') → weekly, and ALSO fill weekdays. 'every day'/'cada día'/'todos los días'/'daily' AS THE FREQUENCY → daily. Only use 'once' if the user gave a SPECIFIC date with NO recurrence words. Example: 'Cumple de mamá el 28 de febrero todos los años' → yearly (NEVER once). Example: 'mi daily todos los lunes' → weekly on monday, because 'daily' is the meeting's NAME, not the frequency (NEVER daily).")
+        @Guide(description: "Recurrence. EXACTLY one of: once, daily, weekly, monthly, yearly. CRITICAL — read HOW OFTEN the user says it repeats, and IGNORE words that are part of the alarm's NAME: 'every year'/'cada año'/'todos los años'/'yearly'/'anual' → yearly. 'every month'/'cada mes'/'todos los meses' → monthly. 'every week'/'cada semana'/'todas las semanas' → weekly. A named weekday ('todos los lunes'/'every Monday'/'los martes y jueves') → weekly, and ALSO fill weekdays. 'every day'/'cada día'/'todos los días'/'daily' AS THE FREQUENCY → daily. Only use 'once' if the user gave a SPECIFIC date with NO recurrence words — a single upcoming day like 'este sábado', 'el sábado 14' or 'this Friday' is once. Example: 'Cumple de mamá el 28 de febrero todos los años' → yearly (NEVER once). Example: 'mi daily todos los lunes' → weekly on monday, because 'daily' is the meeting's NAME, not the frequency (NEVER daily).")
         let recurrence: String?
 
-        @Guide(description: "Weekday names, ONLY when the user names specific days of the week. English lowercase: monday, tuesday, wednesday, thursday, friday, saturday, sunday. Examples: 'todos los lunes'/'every Monday' → [\"monday\"]. 'los martes y jueves' → [\"tuesday\", \"thursday\"]. 'entre semana'/'weekdays' → [\"monday\",\"tuesday\",\"wednesday\",\"thursday\",\"friday\"]. Null when no specific day was named. Filling this makes the alarm weekly on those days, and the date is moved to the next matching day automatically.")
+        @Guide(description: "Weekday names, ONLY when the user names specific days of the week. English lowercase: monday, tuesday, wednesday, thursday, friday, saturday, sunday. Examples: 'todos los lunes'/'every Monday' → [\"monday\"]. 'los martes y jueves' → [\"tuesday\", \"thursday\"]. 'entre semana'/'weekdays' → [\"monday\",\"tuesday\",\"wednesday\",\"thursday\",\"friday\"]. Null when no specific day was named, and null for a single upcoming day like 'este sábado 14' (that is a one-time alarm). Filling this makes the alarm weekly on those days, and the date is moved to the next matching day automatically.")
         let weekdays: [String]?
 
         @Guide(description: "Lead times in MINUTES before the alarm. Supported values map to: 0 (at-start), 5, 10, 15, 30, 45, 60 (1h), 120 (2h), 180 (3h), 360 (6h), 720 (12h), 1440 (1 day), 2880 (2 days), 10080 (1 week). Other values snap to the closest. Examples: [0] = at start only, [120] = 2 hours before, [60, 1440] = 1 hour + 1 day before. Birthdays should often include [0, 1440] for at-start + 1 day before.")
@@ -148,34 +178,92 @@ struct CreateReminderTool: Tool {
 
     @MainActor
     func call(arguments: Arguments) async throws -> String {
-        guard let parsedDate = ToolHelpers.parseDate(arguments.dateISO) else {
+        guard let modelDate = ToolHelpers.parseDate(arguments.dateISO) else {
             return "Error: invalid date \(arguments.dateISO). Use ISO 8601 like 2026-03-15T08:00:00."
         }
+        let parsedDate = ToolHelpers.defaultingDayEventTime(modelDate, categorySlug: arguments.category)
 
-        let recurrence = ToolHelpers.recurrence(
+        var recurrence = ToolHelpers.recurrence(
             fromSlug: arguments.recurrence,
             weekdayNames: arguments.weekdays
         )
+        // "este sábado 14" is a one-off even when the model says weekly.
+        if case .weekly = recurrence, AssistantService.meansSingleDay(turn.userText) {
+            recurrence = .once
+        }
         let date = ToolHelpers.resolveDate(parsedDate, for: recurrence)
+        let context = modelContainer.mainContext
+        let locale = LocalizationManager.shared.currentLocale
+        let existing = (try? context.fetch(FetchDescriptor<Reminder>())) ?? []
+        let sameTitle = { (other: Reminder) in
+            other.isEnabled && other.title.localizedCaseInsensitiveCompare(arguments.title) == .orderedSame
+        }
+
+        // The assistant retries a turn when the model claimed a change it never
+        // made, and the model sometimes repeats a call it already did (or calls
+        // once per time of a multi-time alarm): neither may leave the user with
+        // the same alarm twice.
+        if let twin = existing.first(where: { other in
+            sameTitle(other) && other.allSchedules.contains {
+                abs($0.date.timeIntervalSince(date)) < 60 && $0.recurrence == recurrence
+            }
+        }) {
+            let dateStr = ToolHelpers.formatDate(date, locale: locale)
+            return "Already existed, not created again: '\(twin.title)' for \(dateStr). It is saved — confirm it to the user."
+        }
+
+        // "avísame el 20, un día antes también": the notice is a lead time of
+        // the same alarm, but the model also creates a second alarm on the 19th.
+        let notices = AssistantService.advanceNoticeMinutes(in: turn.userText)
+        for earlier in existing where turn.createdThisTurn.contains(earlier.id) && sameTitle(earlier) {
+            let minutesAfterThis = Int((earlier.date.timeIntervalSince(date) / 60).rounded())
+            if notices.contains(minutesAfterThis) {
+                return "Not created: that moment is the advance notice of '\(earlier.title)', which already rings then. Confirm it to the user."
+            }
+            if notices.contains(-minutesAfterThis) {
+                let earlierID = earlier.id
+                await scheduler.cancelAlarms(for: earlier)
+                context.delete(earlier)
+                turn.createdThisTurn.removeAll { $0 == earlierID }
+                NotificationCenter.default.post(name: .calarmReminderDeleted, object: earlierID)
+            }
+        }
+        let leadMinutes = notices.isEmpty ? arguments.leadTimesMinutes : [0] + notices
+
+        // "de 2 a 4 y de 9 a 11": one alarm ringing at every start time, even
+        // when the model only created the first one.
+        let calendar = Calendar.current
+        let minuteOfDay = calendar.component(.hour, from: date) * 60 + calendar.component(.minute, from: date)
+        let starts = AssistantService.rangeStartTimes(in: turn.userText)
+        let extraSchedules: [AlarmSchedule] = starts.count > 1 && starts.contains(minuteOfDay)
+            ? starts.filter { $0 != minuteOfDay }.compactMap { start in
+                calendar.date(bySettingHour: start / 60, minute: start % 60, second: 0, of: date)
+                    .map { AlarmSchedule(date: $0, recurrence: recurrence) }
+            }
+            : []
 
         let reminder = Reminder(
             title: arguments.title,
             date: date,
             recurrence: recurrence,
-            leadTimes: ToolHelpers.leadTimes(fromMinutes: arguments.leadTimesMinutes)
+            leadTimes: ToolHelpers.leadTimes(fromMinutes: leadMinutes)
         )
+        reminder.additionalSchedules = extraSchedules
         ToolHelpers.applyCategory(arguments.category, to: reminder)
-        let context = modelContainer.mainContext
         context.insert(reminder)
         try context.save()
+        turn.createdThisTurn.append(reminder.id)
         await scheduler.syncAlarms(for: reminder)
         NotificationCenter.default.post(name: .calarmLocalRemindersChanged, object: nil)
 
-        let dateStr = ToolHelpers.formatDate(date, locale: LocalizationManager.shared.currentLocale)
+        let dateStr = ToolHelpers.formatDate(date, locale: locale)
+        let alsoAt = extraSchedules.isEmpty
+            ? ""
+            : " It also rings at " + extraSchedules.map { $0.date.formatted(date: .omitted, time: .shortened) }.joined(separator: ", ") + " (same alarm — don't create those again)."
         let warning = ToolHelpers.willEverRing(date: date, recurrence: recurrence)
             ? ""
             : " WARNING: that date is already in the past, so this alarm will never ring — tell the user and offer to move it."
-        return "Created reminder '\(arguments.title)' for \(dateStr), repeating: \(recurrence.localizedSummary). ID: \(reminder.id.uuidString)\(warning)"
+        return "Created reminder '\(arguments.title)' for \(dateStr), repeating: \(recurrence.localizedSummary).\(alsoAt) ID: \(reminder.id.uuidString)\(warning)"
     }
 }
 
@@ -236,7 +324,9 @@ struct ListRemindersTool: Tool {
             }
         }
 
-        if filtered.isEmpty { return "[]" }
+        // A bare "[]" made the model search again and again until the
+        // context window ran out.
+        if filtered.isEmpty { return "No alarms in that range." }
         let lines = filtered.map { reminder -> String in
             let next = RecurrenceEngine.nextOccurrences(
                 rule: reminder.recurrence, baseDate: reminder.date, count: 1
@@ -273,7 +363,9 @@ struct SearchRemindersTool: Tool {
             $0.title.lowercased().contains(q) || ($0.notes ?? "").lowercased().contains(q)
         }.prefix(10)
 
-        if matches.isEmpty { return "[]" }
+        if matches.isEmpty {
+            return "No alarm matches \"\(arguments.query)\". Don't search again: tell the user and ask which alarm they mean."
+        }
         let lines = matches.map { reminder -> String in
             let dateStr = ToolHelpers.formatDate(reminder.date, locale: LocalizationManager.shared.currentLocale)
             return "- id=\(reminder.id.uuidString) | \(reminder.title) | \(dateStr) | category=\(reminder.category.rawValue)"
@@ -345,7 +437,7 @@ struct UpdateReminderTool: Tool {
         let newWeekdays = AlarmSuggestionsService.weekdays(fromNames: arguments.weekdays)
         var recurrenceChanged = false
         if let rec = arguments.recurrence {
-            reminder.recurrence = AlarmSuggestionsService.recurrence(fromSlug: rec, weekdays: newWeekdays)
+            reminder.recurrence = ToolHelpers.recurrence(fromSlug: rec, weekdayNames: arguments.weekdays)
             recurrenceChanged = true
         } else if !newWeekdays.isEmpty {
             reminder.recurrence = .weekly(interval: 1, weekdays: newWeekdays)
