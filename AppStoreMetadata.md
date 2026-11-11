@@ -510,6 +510,34 @@ Alemán:
 • Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
+## What's New (1.0.16)
+
+Español:
+```
+• Calarm ahora se llama Calarmi: más fácil de recordar y de decir. Tus alarmas, cuentas regresivas y alarmas compartidas siguen igual
+• Nuevo: Calarmi Plus, opcional. Suma los retos Arcade, tus propios tonos desde Archivos, cuentas regresivas sin límite e íconos de colores, con una suscripción anual con 1 semana gratis o un pago único. Lo que ya tenías configurado sigue funcionando sin pagar
+• Nuevo: Calarmi en portugués de Brasil
+• Corregido: los avisos de permisos (calendario, contactos, micrófono…) salían en español aunque usaras la app en inglés
+```
+
+Inglés:
+```
+• Calarm is now Calarmi: easier to remember and to say. Your alarms, countdowns and shared alarms stay the same
+• New: Calarmi Plus, optional. It adds Arcade challenges, your own tones from Files, unlimited countdowns and colored app icons, with a yearly subscription with a 1-week free trial or a one-time purchase. Everything you already set up keeps working for free
+• New: Calarmi in Brazilian Portuguese
+• Fixed: permission prompts (calendar, contacts, microphone…) appeared in Spanish even when you used the app in English
+```
+
+Alemán:
+```
+• Calarm heißt jetzt Calarmi: leichter zu merken und auszusprechen. Deine Wecker, Countdowns und geteilten Wecker bleiben, wie sie sind
+• Neu: Calarmi Plus, optional. Es bringt die Arcade-Aufgaben, eigene Töne aus der Dateien-App, unbegrenzte Countdowns und farbige App-Symbole, als Jahresabo mit 1 Woche gratis oder als Einmalkauf. Alles, was du schon eingerichtet hast, funktioniert weiter kostenlos
+• Neu: Calarmi auf brasilianischem Portugiesisch
+• Behoben: Berechtigungsabfragen (Kalender, Kontakte, Mikrofon …) erschienen auf Spanisch
+```
+
+Portugués (pt-BR): ver «Novidades (1.0.16)» en la sección de Brasil.
+
 ## What's New (1.0.15)
 
 Español:
