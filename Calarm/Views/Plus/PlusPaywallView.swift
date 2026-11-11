@@ -40,8 +40,6 @@ struct PlusPaywallView: View {
                     featureList
                     if store.isPlus {
                         activeCard
-                    } else {
-                        planPicker
                     }
                 }
                 .padding(.horizontal, DS.Spacing.xl)
@@ -159,9 +157,31 @@ struct PlusPaywallView: View {
 
     @ViewBuilder
     private var planPicker: some View {
+        #if DEBUG
+        if let demo = DemoPrices.current {
+            VStack(spacing: DS.Spacing.sm) {
+                planCard(.yearly, title: appLocalized("Anual"),
+                         detail: appLocalized("Equivale a \(demo.monthly) al mes."),
+                         badge: appLocalized("\(7) días gratis"),
+                         price: demo.yearly, priceCaption: appLocalized("al año"))
+                planCard(.lifetime, title: appLocalized("De por vida"),
+                         detail: appLocalized("Un solo pago, sin renovaciones."),
+                         badge: nil,
+                         price: demo.lifetime, priceCaption: appLocalized("una vez"))
+            }
+        } else {
+            livePlanPicker
+        }
+        #else
+        livePlanPicker
+        #endif
+    }
+
+    @ViewBuilder
+    private var livePlanPicker: some View {
         switch store.loadState {
         case .loaded:
-            VStack(spacing: DS.Spacing.md) {
+            VStack(spacing: DS.Spacing.sm) {
                 if let yearly = store.yearly {
                     planCard(
                         .yearly,
@@ -194,11 +214,11 @@ struct PlusPaywallView: View {
                 .buttonStyle(.bordered)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, DS.Spacing.lg)
+            .padding(.vertical, DS.Spacing.sm)
         case .idle, .loading:
             ProgressView()
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, DS.Spacing.xxl)
+                .padding(.vertical, DS.Spacing.lg)
         }
     }
 
@@ -247,11 +267,12 @@ struct PlusPaywallView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .padding(DS.Spacing.lg)
+            .padding(.horizontal, DS.Spacing.lg)
+            .padding(.vertical, DS.Spacing.md)
             .background(RoundedRectangle(cornerRadius: DS.Radius.lg, style: .continuous).fill(Color.dsCard))
             .overlay {
                 RoundedRectangle(cornerRadius: DS.Radius.lg, style: .continuous)
-                    .strokeBorder(isSelected ? Color.accentColor : Color.clear, lineWidth: 2)
+                    .strokeBorder(isSelected ? Color.accentColor : Color.dsDivider.opacity(0.4), lineWidth: isSelected ? 2 : 1)
             }
             .contentShape(.rect)
         }
@@ -288,8 +309,12 @@ struct PlusPaywallView: View {
 
     // MARK: - Compra
 
+    /// Planes, botón y letra pequeña fijos abajo: el precio se ve siempre, sin
+    /// tener que desplazarse hasta él.
     private var purchaseBar: some View {
         VStack(spacing: DS.Spacing.sm) {
+            planPicker
+                .padding(.bottom, DS.Spacing.xs)
             Button(action: buy) {
                 ZStack {
                     Text(callToAction)
@@ -305,7 +330,7 @@ struct PlusPaywallView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .disabled(selectedProduct == nil || isWorking)
+            .disabled((selectedProduct == nil && !isDemo) || isWorking)
 
             if let legal = legalText {
                 Text(legal)
@@ -333,7 +358,20 @@ struct PlusPaywallView: View {
         plan == .yearly ? store.yearly : store.lifetime
     }
 
+    private var isDemo: Bool {
+        #if DEBUG
+        DemoPrices.current != nil
+        #else
+        false
+        #endif
+    }
+
     private var callToAction: String {
+        #if DEBUG
+        if let demo = DemoPrices.current {
+            return plan == .yearly ? appLocalized("Empezar la prueba gratis") : appLocalized("Comprar por \(demo.lifetime)")
+        }
+        #endif
         guard let product = selectedProduct else { return appLocalized("Continuar") }
         if plan == .yearly {
             return trialOffer(for: product) != nil
@@ -346,11 +384,17 @@ struct PlusPaywallView: View {
     /// Lo que la App Store pide mostrar junto al botón de una suscripción: qué
     /// se cobra, cada cuánto, que se renueva sola y cómo cancelarla.
     private var legalText: String? {
-        guard let product = selectedProduct else { return nil }
-        guard plan == .yearly else {
-            return appLocalized("Pago único. Plus queda en todos tus dispositivos con la misma cuenta de Apple.")
-        }
         let renewal = appLocalized("Se renueva sola cada año hasta que la canceles. Puedes cancelarla en Ajustes › tu nombre › Suscripciones, al menos 24 horas antes de la renovación.")
+        let oneTime = appLocalized("Pago único. Plus queda en todos tus dispositivos con la misma cuenta de Apple.")
+        #if DEBUG
+        if let demo = DemoPrices.current {
+            return plan == .yearly
+                ? appLocalized("\(appLocalized("\(7) días gratis")), luego \(demo.yearly) al año.") + " " + renewal
+                : oneTime
+        }
+        #endif
+        guard let product = selectedProduct else { return nil }
+        guard plan == .yearly else { return oneTime }
         if let offer = trialOffer(for: product) {
             return appLocalized("\(trialDescription(offer)), luego \(product.displayPrice) al año.") + " " + renewal
         }
@@ -423,3 +467,31 @@ struct PlusPaywallView: View {
         }
     }
 }
+
+#if DEBUG
+/// `-demoPrices`: la pantalla de compra con precios de muestra, para capturas.
+/// Lanzando con `simctl` StoreKit no carga `Calarm.storekit` y la pantalla se
+/// queda en «No se pudo conectar». Los precios son los de App Store Connect
+/// en la tienda que corresponde al idioma: México, Brasil o EE. UU.
+private struct DemoPrices {
+    let yearly: String
+    let monthly: String
+    let lifetime: String
+
+    static var current: DemoPrices? {
+        guard ProcessInfo.processInfo.arguments.contains("-demoPrices") else { return nil }
+        let locale = LocalizationManager.shared.currentLocale
+        let (code, yearly, lifetime): (String, Decimal, Decimal) = switch locale.language.languageCode?.identifier {
+        case "es": ("MXN", 199, 499)
+        case "pt": ("BRL", Decimal(string: "59.90")!, Decimal(string: "149.90")!)
+        default: ("USD", Decimal(string: "9.99")!, Decimal(string: "24.99")!)
+        }
+        let style = Decimal.FormatStyle.Currency(code: code, locale: locale)
+        return DemoPrices(
+            yearly: yearly.formatted(style),
+            monthly: (yearly / 12).formatted(style),
+            lifetime: lifetime.formatted(style)
+        )
+    }
+}
+#endif
