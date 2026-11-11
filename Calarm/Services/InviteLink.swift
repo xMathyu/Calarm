@@ -20,6 +20,14 @@
 import Foundation
 
 enum InviteLink {
+    /// What an invitation is for. Each kind has its own path (`/i/` alarms,
+    /// `/c/` countdowns): builds that predate countdowns only claim `/i/`, so
+    /// they ignore a countdown link instead of importing it as a broken alarm.
+    enum Kind: String {
+        case alarm = "i"
+        case countdown = "c"
+    }
+
     /// Host that serves the invitation pages. Must match the `applinks:` entry
     /// in Calarm.entitlements, or iOS opens the link in Safari instead.
     static let host = "calarm-puce.vercel.app"
@@ -66,6 +74,11 @@ enum InviteLink {
         let y: String?
         /// The CloudKit share URL, which is what the app actually needs.
         let s: String
+        /// `"c"` for a countdown; absent for an alarm (every older link).
+        var k: String? = nil
+        /// Countdowns only: whether `d` carries a meaningful time of day. All-day
+        /// events show just the date.
+        var h: Bool? = nil
     }
 
     private static var encoder: JSONEncoder {
@@ -88,8 +101,10 @@ enum InviteLink {
     /// sending `shareURL` directly — a plain link still works, it just previews
     /// poorly.
     static func make(
+        kind: Kind = .alarm,
         title: String,
         date: Date,
+        hasTime: Bool = true,
         tintHex: String?,
         emoji: String? = nil,
         symbol: String? = nil,
@@ -108,7 +123,9 @@ enum InviteLink {
             c: tintHex,
             e: emoji,
             y: symbol,
-            s: shareURL.absoluteString
+            s: shareURL.absoluteString,
+            k: kind == .countdown ? "c" : nil,
+            h: kind == .countdown ? hasTime : nil
         )
 
         guard let data = try? encoder.encode(payload) else { return nil }
@@ -117,7 +134,7 @@ enum InviteLink {
         components.host = host
         // The trailing slash is the site's canonical form; without it Vercel
         // answers with a redirect.
-        components.path = "/i/\(base64URLEncoded(data))/"
+        components.path = "/\(kind.rawValue)/\(base64URLEncoded(data))/"
         if let photo, !photo.isEmpty {
             // base64url's alphabet is already query-safe.
             components.percentEncodedQuery = "\(photoQueryName)=\(base64URLEncoded(photo))"
@@ -133,20 +150,25 @@ enum InviteLink {
         dataSegment(of: url) != nil
     }
 
+    /// Whether an invitation link is for an alarm or a countdown.
+    static func kind(of url: URL) -> Kind? {
+        dataSegment(of: url)?.kind
+    }
+
     /// The payload segment of an invitation URL, whichever door it came through:
-    /// `https://<host>/i/<payload>/` or `calarm://i/<payload>/`.
-    private static func dataSegment(of url: URL) -> String? {
+    /// `https://<host>/i/<payload>/` or `calarm://i/<payload>/` (`c` for a
+    /// countdown).
+    private static func dataSegment(of url: URL) -> (segment: String, kind: Kind)? {
         if url.scheme?.lowercased() == scheme {
             // In `calarm://i/<payload>/` the "i" parses as the host.
-            guard url.host() == "i" else { return nil }
-            return url.pathComponents.first { $0 != "/" }
+            guard let kind = url.host().flatMap(Kind.init(rawValue:)),
+                  let segment = url.pathComponents.first(where: { $0 != "/" }) else { return nil }
+            return (segment, kind)
         }
-        guard url.host() == host, url.path().hasPrefix("/i/") else { return nil }
-        return url.path()
-            .dropFirst("/i/".count)
-            .split(separator: "/")
-            .first
-            .map(String.init)
+        guard url.host() == host else { return nil }
+        let parts = url.path().split(separator: "/")
+        guard parts.count >= 2, let kind = Kind(rawValue: String(parts[0])) else { return nil }
+        return (String(parts[1]), kind)
     }
 
     /// Recovers the CloudKit share URL from an incoming invitation link.
@@ -155,7 +177,7 @@ enum InviteLink {
     /// other than iCloud — the link arrives from outside the app, so it is not
     /// to be trusted.
     static func shareURL(from url: URL) -> URL? {
-        guard let segment = dataSegment(of: url),
+        guard let segment = dataSegment(of: url)?.segment,
               let data = base64URLDecoded(segment),
               let payload = try? decoder.decode(Payload.self, from: data),
               payload.v == version,

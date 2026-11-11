@@ -1,0 +1,5 @@
+# Lo que generan capture_all.sh y slides/make.py: se regenera en minutos y pesa
+# decenas de MB, así que no se versiona. La fuente de verdad son los scripts.
+shots/
+slides/*.png
+slides/*.html

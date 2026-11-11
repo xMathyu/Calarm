@@ -77,8 +77,9 @@ struct ShareParticipantInfo: Identifiable {
 @MainActor
 final class SharedRemindersService {
     let containerIdentifier: String
-    private let cloudKitContainer: CKContainer
-    private let modelContainer: ModelContainer
+    // Internal (not private): `SharedRemindersService+Countdowns.swift` shares them.
+    let cloudKitContainer: CKContainer
+    let modelContainer: ModelContainer
     /// Cancels the alarms of received shares the owner deleted.
     private let scheduler: ReminderScheduler
 
@@ -94,14 +95,19 @@ final class SharedRemindersService {
     enum IncomingShareStatus: Equatable {
         case accepting
         case accepted(reminderID: UUID, title: String, ownerName: String?)
+        /// Same two steps for an invitation to a countdown.
+        case acceptingCountdown
+        case acceptedCountdown(id: UUID, title: String, ownerName: String?)
+
+        var isAccepting: Bool { self == .accepting || self == .acceptingCountdown }
     }
-    private(set) var incomingShare: IncomingShareStatus?
+    var incomingShare: IncomingShareStatus?
 
     /// Invitations just accepted. A scan that listed the shared zones before
     /// `accept()` finished — or right after, while CloudKit still catches up —
     /// doesn't see the new zone, so without this it would take the freshly
     /// ingested copy for one the owner deleted and remove it.
-    @ObservationIgnored private var acceptingIDs: Set<UUID> = []
+    @ObservationIgnored var acceptingIDs: Set<UUID> = []
 
     /// The scan in progress. A request that arrives meanwhile waits for it and
     /// gets one more pass (`rescanRequested`) instead of starting its own.
@@ -112,7 +118,7 @@ final class SharedRemindersService {
     /// session. Memory only: Apple's iCloud Extended Share Access entitlement,
     /// which makes these names readable at all, allows showing them but not
     /// storing them.
-    @ObservationIgnored private var ownerNames: [UUID: SharedByPerson] = [:]
+    @ObservationIgnored var ownerNames: [UUID: SharedByPerson] = [:]
 
     private static let log = Logger(subsystem: "MathyuSolutions.Calarm", category: "sharing")
 
@@ -131,8 +137,8 @@ final class SharedRemindersService {
 
     /// Shows the «agregando…» toast from the moment the invitation link is
     /// opened, before its metadata is even fetched.
-    func beginAcceptingShare() {
-        incomingShare = .accepting
+    func beginAcceptingShare(countdown: Bool = false) {
+        incomingShare = countdown ? .acceptingCountdown : .accepting
     }
 
     func clearIncomingShare() {
@@ -257,7 +263,7 @@ final class SharedRemindersService {
     }
 
     /// Reads the owner from the share `record` hangs from, and keeps it in memory.
-    private func owner(of record: CKRecord) async -> SharedByPerson? {
+    func owner(of record: CKRecord) async -> SharedByPerson? {
         guard let shareID = record.share?.recordID,
               let share = try? await cloudKitContainer.sharedCloudDatabase.record(for: shareID) as? CKShare,
               let owner = Self.person(share.owner.userIdentity)
@@ -358,7 +364,7 @@ final class SharedRemindersService {
     }
 
     /// Deletes, from the shared database, the share `record` hangs from.
-    private func leaveShare(of record: CKRecord) async {
+    func leaveShare(of record: CKRecord) async {
         guard let shareID = record.share?.recordID else {
             ShareDiagnostics.log("⚠️ salir del share: '\(record.recordID.recordName)' no referencia ningún share")
             return
@@ -437,7 +443,7 @@ final class SharedRemindersService {
     /// Keeps the guard past the scan that may have started before `accept()`,
     /// and a while longer for the shared database to list the new zone. An owner
     /// deleting the alarm inside that window is caught by the next scan.
-    private func releaseAcceptGuard(_ id: UUID?) async {
+    func releaseAcceptGuard(_ id: UUID?) async {
         guard let id else { return }
         if let running = scanTask { await running.value }
         try? await Task.sleep(for: .seconds(30))
@@ -447,7 +453,7 @@ final class SharedRemindersService {
     /// `hierarchicalRootRecordID` is the modern accessor; fall back to the
     /// deprecated `rootRecordID` so we always resolve the shared record's ID.
     /// A zone-wide share (delegation) has neither.
-    private static func rootRecordID(of metadata: CKShare.Metadata) -> CKRecord.ID? {
+    static func rootRecordID(of metadata: CKShare.Metadata) -> CKRecord.ID? {
         metadata.hierarchicalRootRecordID ?? (metadata.rootRecordID as CKRecord.ID?)
     }
 
@@ -494,9 +500,9 @@ final class SharedRemindersService {
 
     // MARK: - Private helpers
 
-    private static let sharingZoneName = "SharedRemindersZone"
+    static let sharingZoneName = "SharedRemindersZone"
 
-    private func ensureCloudKitAccountAvailable() async throws {
+    func ensureCloudKitAccountAvailable() async throws {
         do {
             switch try await cloudKitContainer.accountStatus() {
             case .available:
@@ -515,7 +521,7 @@ final class SharedRemindersService {
         }
     }
 
-    private func ensureSharingZone() async throws -> CKRecordZone {
+    func ensureSharingZone() async throws -> CKRecordZone {
         let zoneID = CKRecordZone.ID(zoneName: Self.sharingZoneName, ownerName: CKCurrentUserDefaultName)
         let database = cloudKitContainer.privateCloudDatabase
         do {
@@ -529,7 +535,7 @@ final class SharedRemindersService {
         }
     }
 
-    private func prepareExistingShareForInvite(_ share: CKShare, database: CKDatabase) async throws -> CKShare {
+    func prepareExistingShareForInvite(_ share: CKShare, database: CKDatabase) async throws -> CKShare {
         // Shares created before public-link support used `.none`, which denies
         // anyone opening the invite link ("Item Unavailable / no permission").
         // Upgrade such a share in place so re-sharing an old alarm just works.
@@ -542,7 +548,7 @@ final class SharedRemindersService {
         return try await shareWithInviteURL(share, database: database)
     }
 
-    private func fetchRootRecord(for recordID: CKRecord.ID) async throws -> CKRecord? {
+    func fetchRootRecord(for recordID: CKRecord.ID) async throws -> CKRecord? {
         let database = cloudKitContainer.privateCloudDatabase
         do {
             return try await database.record(for: recordID)
@@ -554,7 +560,7 @@ final class SharedRemindersService {
         }
     }
 
-    private func fetchShare(attachedTo record: CKRecord, database: CKDatabase) async throws -> CKShare? {
+    func fetchShare(attachedTo record: CKRecord, database: CKDatabase) async throws -> CKShare? {
         guard let shareReference = record.share else { return nil }
         do {
             return try await database.record(for: shareReference.recordID) as? CKShare
@@ -567,7 +573,7 @@ final class SharedRemindersService {
         }
     }
 
-    private func savedShare(from saveResults: [CKRecord.ID: Result<CKRecord, any Error>], id: CKRecord.ID) throws -> CKShare {
+    func savedShare(from saveResults: [CKRecord.ID: Result<CKRecord, any Error>], id: CKRecord.ID) throws -> CKShare {
         guard let result = saveResults[id] else {
             ShareDiagnostics.log("❌ guardar share: CloudKit no devolvió resultado")
             throw SharedRemindersError.shareUnavailable
@@ -585,7 +591,7 @@ final class SharedRemindersService {
         }
     }
 
-    private func shareWithInviteURL(_ share: CKShare, database: CKDatabase) async throws -> CKShare {
+    func shareWithInviteURL(_ share: CKShare, database: CKDatabase) async throws -> CKShare {
         if share.url != nil { return share }
 
         if let fetched = try? await database.record(for: share.recordID) as? CKShare,
@@ -598,7 +604,7 @@ final class SharedRemindersService {
         throw SharedRemindersError.shareURLUnavailable
     }
 
-    private func fetchExistingShare(for recordID: CKRecord.ID) async throws -> CKShare? {
+    func fetchExistingShare(for recordID: CKRecord.ID) async throws -> CKShare? {
         let database = cloudKitContainer.privateCloudDatabase
         guard let record = try await fetchRootRecord(for: recordID) else { return nil }
         return try await fetchShare(attachedTo: record, database: database)
@@ -609,7 +615,7 @@ final class SharedRemindersService {
         return nsError.domain == CKError.errorDomain && nsError.code == code.rawValue
     }
 
-    private static func diagnosticDescription(for error: Error) -> String {
+    static func diagnosticDescription(for error: Error) -> String {
         let nsError = error as NSError
         if nsError.domain == CKError.errorDomain,
            let code = CKError.Code(rawValue: nsError.code) {
@@ -825,7 +831,7 @@ final class SharedRemindersService {
     /// Right after accepting, the shared record can take a moment to appear in
     /// the shared database. Retry a few times before giving up so the reminder
     /// doesn't silently fail to import.
-    private func fetchSharedRecordWithRetries(_ rootRecordID: CKRecord.ID) async throws -> CKRecord {
+    func fetchSharedRecordWithRetries(_ rootRecordID: CKRecord.ID) async throws -> CKRecord {
         let database = cloudKitContainer.sharedCloudDatabase
         for attempt in 1...5 {
             do {
@@ -882,6 +888,9 @@ final class SharedRemindersService {
             var skipped = 0
             var presentIDs: Set<UUID> = []
             var rescheduled: [(reminder: Reminder, record: CKRecord)] = []
+            // Shared countdowns live in the same zones, as their own record type.
+            var countdownRecords: [CKRecord] = []
+            var countdownIDs: Set<UUID> = []
             for zone in zones {
                 // SAFETY: never ingest the delegation zone here. Those records are
                 // someone else's alarms that this device (acting as a helper) only
@@ -897,11 +906,28 @@ final class SharedRemindersService {
                     for (ckRecordID, modResult) in changes.modificationResultsByID {
                         guard case .success(let modification) = modResult else {
                             // Unreadable this time, but it exists: keep the local copy
-                            // instead of treating it as deleted.
-                            if let id = UUID(uuidString: ckRecordID.recordName) { presentIDs.insert(id) }
+                            // instead of treating it as deleted. Its type is unknown,
+                            // so it counts for alarms and countdowns alike.
+                            if let id = UUID(uuidString: ckRecordID.recordName) {
+                                presentIDs.insert(id)
+                                countdownIDs.insert(id)
+                            }
                             continue
                         }
                         let record = modification.record
+                        if record.recordType == Self.countdownRecordType {
+                            let id = candidateLocalID(for: record)
+                            countdownIDs.insert(id)
+                            // Removed from the list on this account: out of the share,
+                            // and never imported again (see the alarm case below).
+                            if DeletedSharesStore.contains(id) {
+                                skipped += 1
+                                await leaveShare(of: record)
+                            } else {
+                                countdownRecords.append(record)
+                            }
+                            continue
+                        }
                         guard record.recordType == "CalarmSharedReminder" else { continue }
                         let recordID = candidateLocalID(for: record)
                         presentIDs.insert(recordID)
@@ -942,9 +968,11 @@ final class SharedRemindersService {
             // deleted or unshared (their record is no longer present), and any
             // copy of an invitation the person deleted.
             await removeStaleCopies(presentIDs: presentIDs, in: context)
+            applyReceivedCountdowns(countdownRecords, presentIDs: countdownIDs, in: context)
             // Drop tombstones whose owner record is gone, so a fresh re-invite with
-            // the same id can be accepted again.
-            DeletedSharesStore.prune(presentIDs: presentIDs)
+            // the same id can be accepted again. Countdown ids count too, or their
+            // tombstones would be dropped on every scan.
+            DeletedSharesStore.prune(presentIDs: presentIDs.union(countdownIDs))
             // Same for the recipient's personal avisos — a re-share starts fresh.
             ShareLeadTimesStore.prune(presentIDs: presentIDs)
             ShareChangeNotifier.prune(presentIDs: presentIDs)
@@ -1107,7 +1135,7 @@ final class SharedRemindersService {
 
     /// Center-crops + scales `image` to `size × size`. Keeps the thumbnail tight
     /// to where the subject lives without distortion.
-    private func resized(_ image: UIImage, to size: CGFloat) -> UIImage {
+    func resized(_ image: UIImage, to size: CGFloat) -> UIImage {
         let target = CGSize(width: size, height: size)
         let renderer = UIGraphicsImageRenderer(size: target)
         return renderer.image { _ in
@@ -1123,7 +1151,7 @@ final class SharedRemindersService {
 
     /// Renders a tinted square badge with arbitrary icon content (SF Symbol or
     /// emoji) to PNG data for use as the share thumbnail.
-    private func renderIconThumbnail<Content: View>(tint: Color, @ViewBuilder content: () -> Content) -> Data? {
+    func renderIconThumbnail<Content: View>(tint: Color, @ViewBuilder content: () -> Content) -> Data? {
         let view = ZStack {
             RoundedRectangle(cornerRadius: 56, style: .continuous)
                 .fill(

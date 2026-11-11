@@ -42,6 +42,16 @@ struct ChallengeView: View {
         return false
     }
 
+    /// El aviso de práctica y el botón Cerrar. Las capturas de la tienda
+    /// (`-demoScreen challenge…`) abren el reto en práctica, porque no hay una
+    /// alarma sonando, pero tienen que enseñarlo como se ve cuando suena.
+    private var showsPracticeChrome: Bool {
+        #if DEBUG
+        if DemoData.requestedScreen?.hasPrefix("challenge") == true { return false }
+        #endif
+        return isPractice
+    }
+
     var body: some View {
         NavigationStack {
             VStack(spacing: DS.Spacing.xl) {
@@ -59,7 +69,7 @@ struct ChallengeView: View {
             .navigationTitle(challenge.kind.localizedTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if isPractice {
+                if showsPracticeChrome {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cerrar") { dismiss() }
                     }
@@ -77,12 +87,12 @@ struct ChallengeView: View {
             Image(systemName: "bell.and.waves.left.and.right.fill")
                 .font(.system(size: 36))
                 .foregroundStyle(settings.accentColor)
-                .symbolEffect(.variableColor.iterative, options: .repeating, isActive: !isPractice && !solved)
+                .symbolEffect(.variableColor.iterative, options: .repeating, isActive: !showsPracticeChrome && !solved)
             Text(title.isEmpty ? appLocalized("Alarma") : title)
                 .font(.title2.weight(.bold))
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
-            Text(isPractice ? "Modo de prueba: la alarma no está sonando." : "Resuelve el reto para apagar la alarma")
+            Text(showsPracticeChrome ? "Modo de prueba: la alarma no está sonando." : "Resuelve el reto para apagar la alarma")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

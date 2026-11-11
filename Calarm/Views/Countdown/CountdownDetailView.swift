@@ -4,21 +4,33 @@
 //
 //  Una cuenta regresiva a pantalla grande: la foto (o el color) de fondo, los
 //  días en grande y, si tiene hora, la cuenta segundo a segundo. Desde aquí se
-//  puede poner una alarma para ese día.
+//  puede poner una alarma para ese día e invitar amigos (o, en una recibida,
+//  ver quién la compartió).
 //
 
+import CloudKit
 import SwiftData
 import SwiftUI
 
 struct CountdownDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(SharedRemindersService.self) private var sharedService
 
     let event: CountdownEvent
 
     @State private var showingEditor = false
     @State private var showingAlarmEditor = false
     @State private var confirmingDelete = false
+
+    // Compartir
+    @State private var existingShare: CKShare?
+    @State private var participants: [ShareParticipantInfo] = []
+    @State private var sharedBy: SharedByPerson?
+    @State private var isPreparingShare = false
+    @State private var pendingInvite: InviteDelivery?
+    @State private var shareError: String?
+    @State private var showingManageSheet = false
 
     var body: some View {
         ScrollView {
@@ -33,10 +45,13 @@ struct CountdownDetailView: View {
         .background(Color(.systemGroupedBackground))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Editar") {
-                    Haptics.light()
-                    showingEditor = true
+            // Una recibida es de quien la compartió: aquí solo se mira.
+            if !event.isReceivedShare {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Editar") {
+                        Haptics.light()
+                        showingEditor = true
+                    }
                 }
             }
         }
@@ -48,12 +63,37 @@ struct CountdownDetailView: View {
             ReminderEditorView(editing: nil, initialDate: alarmDate, initialTitle: event.title)
         }
         .confirmationDialog(
-            appLocalized("¿Borrar esta cuenta regresiva?"),
+            appLocalized(event.isReceivedShare ? "¿Quitar esta cuenta regresiva de tu lista?" : "¿Borrar esta cuenta regresiva?"),
             isPresented: $confirmingDelete,
             titleVisibility: .visible
         ) {
-            Button("Borrar", role: .destructive) { deleteAfterLeaving() }
+            Button(appLocalized(event.isReceivedShare ? "Quitar" : "Borrar"), role: .destructive) { deleteAfterLeaving() }
+        } message: {
+            if event.isReceivedShare {
+                Text("Dejarás de recibir sus cambios. Para volver a tenerla, pide que te la compartan otra vez.")
+            }
         }
+        // Mandar el enlace por WhatsApp, Mensajes…; al cerrar, ver quién se unió.
+        .inviteDelivery($pendingInvite) {
+            Task { await refreshShare() }
+        }
+        .sheet(isPresented: $showingManageSheet, onDismiss: { Task { await refreshShare() } }) {
+            if let share = existingShare {
+                CloudSharingView(
+                    share: share,
+                    container: CKContainer(identifier: sharedService.containerIdentifier)
+                ) { showingManageSheet = false }
+            }
+        }
+        .alert("Error al compartir", isPresented: Binding(
+            get: { shareError != nil },
+            set: { if !$0 { shareError = nil } }
+        )) {
+            Button("OK") { shareError = nil }
+        } message: {
+            Text(shareError ?? "")
+        }
+        .task { await refreshShare() }
     }
 
     // MARK: - Hero
@@ -137,6 +177,10 @@ struct CountdownDetailView: View {
     @ViewBuilder
     private var details: some View {
         VStack(spacing: DS.Spacing.md) {
+            if event.isReceivedShare {
+                sharedByCard
+            }
+
             if let notes = event.notes, !notes.isEmpty {
                 Text(notes)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -148,13 +192,107 @@ struct CountdownDetailView: View {
                     showingAlarmEditor = true
                 }
             }
-            actionRow(title: appLocalized("Borrar"), systemImage: "trash", tint: .red) {
+
+            if !event.isReceivedShare {
+                actionRow(
+                    title: appLocalized("Invitar amigos"),
+                    systemImage: "person.badge.plus",
+                    tint: event.color,
+                    isWorking: isPreparingShare
+                ) {
+                    Task { await invite() }
+                }
+                .disabled(isPreparingShare)
+
+                if !participants.isEmpty {
+                    participantsCard
+                }
+            }
+
+            actionRow(
+                title: appLocalized(event.isReceivedShare ? "Quitar de mi lista" : "Borrar"),
+                systemImage: event.isReceivedShare ? "minus.circle" : "trash",
+                tint: .red
+            ) {
                 confirmingDelete = true
             }
         }
     }
 
-    private func actionRow(title: String, systemImage: String, tint: Color, action: @escaping () -> Void) -> some View {
+    /// Quién la compartió (se lee de iCloud cada vez; no se guarda).
+    private var sharedByCard: some View {
+        HStack(spacing: DS.Spacing.md) {
+            if let sharedBy {
+                PersonAvatarView(name: sharedBy.name, email: sharedBy.email, phone: sharedBy.phone, size: 40)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(sharedBy.name)
+                        .font(.subheadline.weight(.semibold))
+                    Text("Te compartió esta cuenta regresiva")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                Image(systemName: "person.2.fill")
+                    .foregroundStyle(event.color)
+                    .frame(width: 28)
+                Text("Compartida contigo")
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardSurface(padding: DS.Spacing.lg)
+    }
+
+    /// Quién aceptó la invitación, y el acceso a gestionarla (quitar a alguien
+    /// o dejar de compartir).
+    private var participantsCard: some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            HStack(spacing: DS.Spacing.xs) {
+                Image(systemName: "person.2.fill").font(.caption)
+                Text("Personas")
+                    .font(.footnote.weight(.semibold))
+                    .textCase(.uppercase)
+                Spacer()
+                if existingShare != nil {
+                    Button("Gestionar") {
+                        Haptics.light()
+                        showingManageSheet = true
+                    }
+                    .font(.footnote.weight(.semibold))
+                }
+            }
+            .foregroundStyle(.secondary)
+            ForEach(participants) { person in
+                HStack(spacing: DS.Spacing.md) {
+                    PersonAvatarView(name: person.name, email: person.email, phone: person.phone, size: 34)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(person.name)
+                            .font(.subheadline)
+                            .lineLimit(1)
+                        Text(person.statusLabel)
+                            .font(.caption)
+                            .foregroundStyle(person.status == .accepted ? .green : .secondary)
+                    }
+                    Spacer()
+                    if person.status == .accepted {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardSurface(padding: DS.Spacing.lg)
+    }
+
+    private func actionRow(
+        title: String,
+        systemImage: String,
+        tint: Color,
+        isWorking: Bool = false,
+        action: @escaping () -> Void
+    ) -> some View {
         Button {
             Haptics.light()
             action()
@@ -167,6 +305,7 @@ struct CountdownDetailView: View {
                 Text(title)
                     .foregroundStyle(tint == .red ? .red : .primary)
                 Spacer()
+                if isWorking { ProgressView() }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .cardSurface(padding: DS.Spacing.lg)
@@ -189,11 +328,67 @@ struct CountdownDetailView: View {
         return Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: target) ?? target
     }
 
+    // MARK: - Compartir
+
+    /// Prepara el share en iCloud y abre la hoja de compartir con un enlace de
+    /// Calarm, que enseña la cuenta (y la ofrece a quien aún no tiene la app).
+    @MainActor
+    private func invite() async {
+        isPreparingShare = true
+        defer { isPreparingShare = false }
+        do {
+            let share = try await sharedService.prepareShare(forCountdown: event)
+            guard let url = share.url else {
+                shareError = SharedRemindersError.shareURLUnavailable.errorDescription
+                return
+            }
+            existingShare = share
+            // Sin el enlace propio no hay invitación: un enlace de iCloud a
+            // secas lo abriría como alarma una versión anterior de la app.
+            guard let link = InviteLink.make(
+                kind: .countdown,
+                title: event.title,
+                date: event.target(),
+                hasTime: event.includesTime,
+                tintHex: event.colorHex,
+                emoji: event.iconKind == .emoji && isEmojiIcon(event.iconValue) ? event.iconValue : nil,
+                symbol: event.iconKind == .symbol ? event.iconValue : nil,
+                photo: event.iconKind == .photo ? event.photoData.flatMap(InvitePhoto.thumbnail(from:)) : nil,
+                shareURL: url
+            ) else {
+                shareError = SharedRemindersError.shareURLUnavailable.errorDescription
+                return
+            }
+            pendingInvite = InviteDelivery(
+                title: event.title,
+                url: link,
+                customMessage: appLocalized("Te invito a la cuenta regresiva «\(event.title)» en Calarm")
+            )
+        } catch {
+            shareError = error.localizedDescription
+        }
+    }
+
+    /// Quién la compartió (recibida) o quién se unió (propia).
+    @MainActor
+    private func refreshShare() async {
+        if event.isReceivedShare {
+            sharedBy = await sharedService.owner(ofReceived: event.id)
+            return
+        }
+        let share = await sharedService.existingShare(forCountdown: event)
+        existingShare = share
+        participants = share.map { sharedService.participantInfos(of: $0).filter { !$0.isOwner } } ?? []
+    }
+
     /// Vuelve a la lista y borra después: si se borra con la pantalla todavía
     /// puesta, SwiftUI la redibuja leyendo un modelo que ya no existe (y se cae).
     private func deleteAfterLeaving() {
         let event = event
         let context = modelContext
+        let sharing = sharedService
+        let id = event.id
+        let wasReceived = event.isReceivedShare
         // Desde el editor: primero se va la hoja, luego esta pantalla.
         let fromEditor = showingEditor
         showingEditor = false
@@ -204,6 +399,7 @@ struct CountdownDetailView: View {
             try? await Task.sleep(for: .milliseconds(450))
             context.delete(event)
             try? context.save()
+            await sharing.countdownDeleted(id: id, wasReceived: wasReceived)
         }
     }
 }

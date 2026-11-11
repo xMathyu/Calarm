@@ -170,6 +170,30 @@ For people who refuse to miss what matters.
 
 ---
 
+## Capturas (1.0.15) — subidas al borrador el 2026-11-10
+
+El 82 % de las primeras descargas llega desde la búsqueda (279 de 339 en 90 días), y el
+resultado de búsqueda solo enseña las **tres primeras** capturas. Las de 1.0.8 abrían con la
+lista, un cumpleaños y el selector de recurrencia: nada de lo que distingue a Calarm de otro
+despertador. Orden nuevo, 7 por set (iPhone 6.9" y iPad 13", en es-MX, en-US y de-DE):
+
+| # | Pantalla (`-demoScreen`) | en-US |
+|---|---|---|
+| 1 | `list` (ahora con «Despertador» arriba, con reto) | Rings loud even when your iPhone is *silent* |
+| 2 | `challenge` (cálculo) | Solve a game to *turn it off* |
+| 3 | `countdowns` | Count down the days to *what matters* |
+| 4 | `editor` (cumpleaños) | Birthdays that repeat *on their own*, every year |
+| 5 | `widgets` | Your next alarm, right on your *Home Screen* |
+| 6 | `agenda` («Join in Teams») | Your meetings, with a *real alarm* |
+| 7 | `assistant` | Just say it — with *Apple Intelligence* |
+
+Salieron la recurrencia y los tonos. Para el reto se probaron también Vuelo, Parejas, Ovejas,
+Cañón y el selector: los Arcade dejan media pantalla vacía en el primer fotograma y el selector
+es un formulario largo; el cálculo llena la pantalla y se entiende sin leer. La cuenta regresiva
+de demo se llamaba «Concierto de Coldplay»: ahora «Concierto en el estadio», sin artistas reales.
+Titulares de es y de en `Tools/appstore/slides/make.py`. Todo se regenera con
+`Tools/appstore/capture_all.sh` + `make.py` (ver su README).
+
 ## Capturas (1.0.8) — reales, generadas del simulador
 
 Las de mayo eran renders generados (`ChatGPT Image May 23, 2026…`), en inglés, con la lista
@@ -604,7 +628,35 @@ Inglés:
 
 ### Promotional Text (170 char, editable sin re-revisión de App)
 
-Español (104 char):
+**Publicado el 2026-11-10 sobre 1.0.14** (los tres locales, por API). El anterior («No es
+solo para despertarte…») no nombraba los retos para despertar ni la cuenta regresiva, que
+son lo nuevo y lo que más distingue a Calarm de otro despertador. **Al crear 1.0.15 hay que
+volver a PATCHearlo:** `POST /v1/appStoreVersions` deja el texto promocional vacío.
+
+es-MX (167 char):
+```
+Nuevo: retos para despertar. Resuelve un cálculo, un juego de memoria o un nivel arcade para apagar la alarma y no volver a dormirte. Y cuentas regresivas con widgets.
+```
+
+en-US (164 char):
+```
+New: wake-up challenges. Solve a math problem, a memory game or an arcade level to turn the alarm off, so you stop sleeping through it. Plus countdowns and widgets.
+```
+
+de-DE (163 char):
+```
+Neu: Weck-Challenges. Löse eine Rechenaufgabe, ein Memory oder ein Arcade-Level, um den Wecker auszuschalten – nie wieder verschlafen. Dazu Countdowns und Widgets.
+```
+
+Anterior (el que estaba publicado en 1.0.14 hasta el 2026-11-10):
+```
+No es solo para despertarte: pastillas, cumpleaños, citas, pagos y turnos. Suena fuerte aunque el iPhone esté en silencio, bloqueado o en Enfoque.
+```
+```
+Not just for waking up: meds, birthdays, appointments, bills and shifts. Rings loud even when your iPhone is silent, locked or in Focus.
+```
+
+Anterior (los tonos) — español (104 char):
 ```
 Ahora eliges cómo suena cada alarma: seis tonos nuevos, o tu propio audio importado desde Archivos.
 ```

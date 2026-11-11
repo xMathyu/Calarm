@@ -17,11 +17,11 @@ struct IncomingShareToast: View {
     var body: some View {
         Group {
             switch status {
-            case .accepting:
+            case .accepting, .acceptingCountdown:
                 content
-            case .accepted(let reminderID, _, _):
+            case .accepted(let id, _, _), .acceptedCountdown(let id, _, _):
                 Button {
-                    onOpen(reminderID)
+                    onOpen(id)
                 } label: {
                     content
                 }
@@ -64,10 +64,10 @@ struct IncomingShareToast: View {
     @ViewBuilder
     private var icon: some View {
         switch status {
-        case .accepting:
+        case .accepting, .acceptingCountdown:
             ProgressView()
                 .controlSize(.small)
-        case .accepted:
+        case .accepted, .acceptedCountdown:
             Image(systemName: "checkmark.circle.fill")
                 .font(.title3)
                 .foregroundStyle(.green)
@@ -83,12 +83,22 @@ struct IncomingShareToast: View {
             let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
             let name = trimmed.isEmpty ? appLocalized("Alarma") : trimmed
             return appLocalized("«\(name)» ya está en tus alarmas")
+        case .acceptingCountdown:
+            return appLocalized("Agregando la cuenta regresiva compartida…")
+        case .acceptedCountdown(_, let title, _):
+            let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+            let name = trimmed.isEmpty ? appLocalized("Cuenta regresiva") : trimmed
+            return appLocalized("«\(name)» ya está en tus cuentas regresivas")
         }
     }
 
     private var subtitle: String? {
-        guard case .accepted(_, _, let ownerName) = status, let ownerName else { return nil }
-        return appLocalized("Compartida por \(ownerName)")
+        switch status {
+        case .accepted(_, _, let ownerName?), .acceptedCountdown(_, _, let ownerName?):
+            return appLocalized("Compartida por \(ownerName)")
+        default:
+            return nil
+        }
     }
 }
 

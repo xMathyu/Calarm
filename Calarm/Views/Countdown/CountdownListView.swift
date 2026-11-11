@@ -11,6 +11,7 @@ import SwiftUI
 
 struct CountdownListView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(SharedRemindersService.self) private var sharedService
 
     @Query(sort: [SortDescriptor(\CountdownEvent.date)]) private var events: [CountdownEvent]
 
@@ -73,6 +74,8 @@ struct CountdownListView: View {
                 case "countdownDetail": path = [first.id]
                 case "countdownEditor": editingEvent = first
                 case "countdownNew": showingNewEditor = true
+                case "countdownReceived":
+                    if let received = events.first(where: \.isReceivedShare) { path = [received.id] }
                 default: break
                 }
             }
@@ -128,29 +131,34 @@ struct CountdownListView: View {
         .listRowInsets(EdgeInsets(top: DS.Spacing.xs, leading: DS.Spacing.lg, bottom: DS.Spacing.xs, trailing: DS.Spacing.lg))
         .listRowSeparator(.hidden)
         .listRowBackground(Color.clear)
+        // Una recibida no se edita (es de quien la compartió), solo se quita.
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button(role: .destructive) {
                 delete(event)
             } label: {
-                Label("Borrar", systemImage: "trash")
+                deleteLabel(for: event)
             }
-            Button {
-                editingEvent = event
-            } label: {
-                Label("Editar", systemImage: "pencil")
+            if !event.isReceivedShare {
+                Button {
+                    editingEvent = event
+                } label: {
+                    Label("Editar", systemImage: "pencil")
+                }
+                .tint(.gray)
             }
-            .tint(.gray)
         }
         .contextMenu {
-            Button {
-                editingEvent = event
-            } label: {
-                Label("Editar", systemImage: "pencil")
+            if !event.isReceivedShare {
+                Button {
+                    editingEvent = event
+                } label: {
+                    Label("Editar", systemImage: "pencil")
+                }
             }
             Button(role: .destructive) {
                 delete(event)
             } label: {
-                Label("Borrar", systemImage: "trash")
+                deleteLabel(for: event)
             }
         }
     }
@@ -181,12 +189,23 @@ struct CountdownListView: View {
         return (upcoming, past)
     }
 
+    private func deleteLabel(for event: CountdownEvent) -> some View {
+        event.isReceivedShare
+            ? Label("Quitar", systemImage: "minus.circle")
+            : Label("Borrar", systemImage: "trash")
+    }
+
+    /// Borrar una propia también la quita a los invitados; quitar una recibida
+    /// deja una marca para que no vuelva y sale del share.
     private func delete(_ event: CountdownEvent) {
+        let id = event.id
+        let wasReceived = event.isReceivedShare
         withAnimation(DS.Motion.smooth) {
             modelContext.delete(event)
         }
         try? modelContext.save()
         Haptics.warning()
+        Task { await sharedService.countdownDeleted(id: id, wasReceived: wasReceived) }
     }
 }
 

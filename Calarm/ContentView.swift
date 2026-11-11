@@ -85,25 +85,36 @@ struct ContentView: View {
         // the link and watched the list for several seconds with no sign of life.
         .overlay(alignment: .top) {
             if let status = sharedService.incomingShare {
-                IncomingShareToast(status: status) { reminderID in
+                IncomingShareToast(status: status) { id in
                     sharedService.clearIncomingShare()
-                    NotificationCenter.default.post(name: .calarmOpenReminder, object: reminderID)
+                    if case .acceptedCountdown = status {
+                        CountdownOpenRequest.post(id)
+                    } else {
+                        NotificationCenter.default.post(name: .calarmOpenReminder, object: id)
+                    }
                 }
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
         .animation(DS.Motion.bouncy, value: sharedService.incomingShare)
         .onChange(of: sharedService.incomingShare) { _, status in
-            guard case .accepted = status else { return }
-            Haptics.success()
             // Show the list it landed on, wherever the person was.
-            selection = .alarms
+            switch status {
+            case .accepted:
+                Haptics.success()
+                selection = .alarms
+            case .acceptedCountdown:
+                Haptics.success()
+                selection = .countdowns
+            default:
+                break
+            }
         }
         .task(id: sharedService.incomingShare) {
             guard let status = sharedService.incomingShare else { return }
             // The confirmation goes away on its own; the «agregando…» one only
             // if the accept never reports back (CloudKit stuck without a network).
-            let delay: Duration = status == .accepting ? .seconds(60) : .seconds(4)
+            let delay: Duration = status.isAccepting ? .seconds(60) : .seconds(4)
             try? await Task.sleep(for: delay)
             guard !Task.isCancelled else { return }
             sharedService.clearIncomingShare()
@@ -142,7 +153,9 @@ struct ContentView: View {
         // `-demoScreen challenge-<kind>` con el rawValue de `WakeChallenge.Kind`.
         .fullScreenCover(isPresented: .constant(Self.demoChallengeKind != nil)) {
             if let kind = Self.demoChallengeKind {
-                ChallengeView(mode: .practice(WakeChallenge(kind: kind, code: kind == .qr ? "demo" : nil), title: "Despertar"))
+                // Con el nombre de la alarma de demo («Despertador» / «Wake up»),
+                // que sale en las capturas de los dos idiomas.
+                ChallengeView(mode: .practice(WakeChallenge(kind: kind, code: kind == .qr ? "demo" : nil), title: appLocalized("Despertador")))
             }
         }
         #endif
@@ -169,7 +182,7 @@ private struct DemoScreenModifier: ViewModifier {
         content.task {
             switch DemoData.requestedScreen {
             case "calendar", "agenda": selection = .calendar
-            case "countdowns", "countdownDetail", "countdownEditor", "countdownNew": selection = .countdowns
+            case "countdowns", "countdownDetail", "countdownEditor", "countdownNew", "countdownReceived": selection = .countdowns
             case "assistant": selection = .assistant
             case "settings", "helpers": selection = .settings
             default: break

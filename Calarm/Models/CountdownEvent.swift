@@ -35,6 +35,11 @@ final class CountdownEvent {
     @Attribute(.externalStorage) var photoData: Data? = nil
     var createdAt: Date = Date()
     var updatedAt: Date = Date()
+    /// Llegó por una invitación: es la copia de solo lectura de la cuenta de
+    /// otra persona, que se actualiza con cada escaneo de la base compartida.
+    /// OJO: columna nueva de SwiftData (`CD_isReceivedShare` en
+    /// `CD_CountdownEvent`): hay que desplegar el esquema antes de publicar.
+    var isReceivedShare: Bool = false
 
     static let defaultColorHex = "#FF2D55"
     static let defaultEmoji = "🎉"

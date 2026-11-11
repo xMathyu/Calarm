@@ -98,33 +98,30 @@ enum DemoData {
               let calendar = store.defaultCalendarForNewEvents else { return }
 
         let es = isSpanish
-        // Relative to now (rounded to the half hour) so every capture run shows
-        // the three of them as upcoming, whatever time it is.
-        let planned: [(String, Double, Int, String?, String?)] = [
-            (es ? "Revisión de diseño" : "Design review", 1.5, 60, es ? "Oficina" : "Office", nil),
-            (es ? "Reunión con el equipo" : "Team sync", 3.5, 30, nil,
+        // Tomorrow at office hours, so every capture run shows the same three
+        // meetings under «Mañana», whatever time it is. They used to be relative
+        // to now, and a run at 9 p.m. put the team sync at midnight.
+        let planned: [(String, Int, Int, Int, String?, String?)] = [
+            (es ? "Revisión de diseño" : "Design review", 9, 30, 60, es ? "Oficina" : "Office", nil),
+            (es ? "Reunión con el equipo" : "Team sync", 11, 0, 30, nil,
              "https://teams.microsoft.com/l/meetup-join/19%3ameeting_demo%40thread.v2/0"),
-            (es ? "Uno a uno con Ana" : "One-on-one with Ana", 5.5, 30, es ? "Sala 2" : "Room 2", nil),
+            (es ? "Uno a uno con Ana" : "One-on-one with Ana", 16, 30, 30, es ? "Sala 2" : "Room 2", nil),
         ]
 
-        // Clear anything a previous run left behind, so the tab looks the same
-        // on every capture.
+        // Clear anything a previous run left behind (today's included, from the
+        // runs that seeded relative to now), so the tab looks the same every time.
         let dayStart = Calendar.current.startOfDay(for: Date())
-        let dayEnd = Calendar.current.date(byAdding: .day, value: 1, to: dayStart) ?? dayStart
+        let rangeEnd = Calendar.current.date(byAdding: .day, value: 2, to: dayStart) ?? dayStart
         let existing = store.events(matching: store.predicateForEvents(
-            withStart: dayStart, end: dayEnd, calendars: [calendar]
+            withStart: dayStart, end: rangeEnd, calendars: [calendar]
         ))
         for event in existing { try? store.remove(event, span: .thisEvent) }
 
-        let halfHour: TimeInterval = 1800
-        let base = Date(timeIntervalSince1970:
-            (Date().timeIntervalSince1970 / halfHour).rounded(.down) * halfHour)
-
-        for (title, hoursAhead, minutes, location, url) in planned {
+        for (title, hour, minute, minutes, location, url) in planned {
             let event = EKEvent(eventStore: store)
             event.calendar = calendar
             event.title = title
-            event.startDate = base.addingTimeInterval(hoursAhead * 3600)
+            event.startDate = at(hour: hour, minute: minute, dayOffset: 1)
             event.endDate = event.startDate.addingTimeInterval(TimeInterval(minutes * 60))
             event.location = location
             if let url { event.notes = url }
@@ -135,6 +132,21 @@ enum DemoData {
 
     private static func reminders(healthCategory: CustomCategory) -> [Reminder] {
         let es = isSpanish
+
+        // La ficha se llama «AI Alarm Clock» y casi todos llegan buscando un
+        // despertador: la primera captura tiene que enseñar uno, con su reto.
+        // Diario y no de lunes a viernes, para que salga sea el día de la semana
+        // que sea; anclado HOY a las 7, para ser la primera de la lista (que se
+        // ordena por la fecha ancla) aunque su próxima vez sea mañana.
+        let wakeUp = Reminder(
+            title: es ? "Despertador" : "Wake up",
+            date: at(hour: 7, minute: 0, dayOffset: 0),
+            category: .reminder,
+            symbolName: "alarm.fill",
+            recurrence: .daily(interval: 1),
+            leadTimes: [.atStart]
+        )
+        wakeUp.challenge = WakeChallenge(kind: .math)
 
         let pill = Reminder(
             title: es ? "Pastilla de la mañana" : "Morning pill",
@@ -210,7 +222,7 @@ enum DemoData {
             leadTimes: [.atStart, .week1]
         )
 
-        return [pill, standup, dentist, training, rent, momBirthday, anniversary]
+        return [wakeUp, pill, standup, dentist, training, rent, momBirthday, anniversary]
     }
 
     /// The Cuenta regresiva tab: one with a photo, one counting the seconds,
@@ -218,7 +230,8 @@ enum DemoData {
     private static func countdowns() -> [CountdownEvent] {
         let es = isSpanish
         let concert = CountdownEvent(
-            title: es ? "Concierto de Coldplay" : "Coldplay concert",
+            // Sin nombres de artistas reales: esto sale en las capturas de la tienda.
+            title: es ? "Concierto en el estadio" : "Stadium concert",
             date: at(hour: 21, minute: 0, dayOffset: 23),
             includesTime: true,
             colorHex: "#5856D6",
@@ -257,7 +270,16 @@ enum DemoData {
             iconKind: .symbol,
             iconValue: "graduationcap.fill"
         )
-        return [concert, trip, birthday, match, graduation]
+        // Una que llegó por invitación: la tarjeta lleva el icono de compartida.
+        let wedding = CountdownEvent(
+            title: es ? "Boda de Ana y Luis" : "Ana & Luis's wedding",
+            date: Calendar.current.startOfDay(for: at(hour: 0, minute: 0, dayOffset: 41)),
+            colorHex: "#AF52DE",
+            iconKind: .emoji,
+            iconValue: "💍"
+        )
+        wedding.isReceivedShare = true
+        return [concert, trip, birthday, match, graduation, wedding]
     }
 
     /// A drawn «stage» (no bundled asset needed) so the photo card has a photo.

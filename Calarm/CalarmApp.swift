@@ -317,7 +317,7 @@ struct CalarmApp: App {
         // Feedback from the first instant: fetching the metadata, accepting and
         // ingesting are three CloudKit round trips, and the list only changes at
         // the very end — several seconds of nothing otherwise.
-        sharedRemindersService.beginAcceptingShare()
+        sharedRemindersService.beginAcceptingShare(countdown: InviteLink.kind(of: url) == .countdown)
         do {
             let metadata = try await sharedRemindersService.shareMetadata(for: shareURL)
             ShareDiagnostics.log("📥 invitación recibida (enlace Calarm)")
@@ -352,6 +352,16 @@ struct CalarmApp: App {
             sharedRemindersService.clearIncomingShare()
             await delegationService.acceptDelegationShare(metadata: metadata)
             PendingShare.clear()
+            return
+        }
+        // A countdown (its own record type) becomes a countdown, not an alarm.
+        if SharedRemindersService.isCountdownShare(metadata) {
+            do {
+                try await sharedRemindersService.acceptCountdownShare(metadata: metadata)
+                PendingShare.clear()
+            } catch {
+                PendingShare.log.error("Countdown share ingest failed: \(error.localizedDescription)")
+            }
             return
         }
         do {

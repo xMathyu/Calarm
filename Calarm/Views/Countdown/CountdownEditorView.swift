@@ -13,6 +13,7 @@ import SwiftUI
 struct CountdownEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(SharedRemindersService.self) private var sharedService
 
     /// nil = nueva.
     let event: CountdownEvent?
@@ -303,6 +304,9 @@ struct CountdownEditorView: View {
         target.photoData = iconKind == .photo ? photoData : nil
         target.updatedAt = Date()
         try? modelContext.save()
+        // Si está compartida, los invitados ven el cambio (no-op si no lo está).
+        let sharing = sharedService
+        Task { await sharing.pushUpdateIfShared(countdown: target) }
         Haptics.success()
         dismiss()
     }
@@ -314,12 +318,16 @@ struct CountdownEditorView: View {
         }
         guard let event else { return }
         let context = modelContext
+        let sharing = sharedService
+        let id = event.id
+        let wasReceived = event.isReceivedShare
         Haptics.warning()
         dismiss()
         Task {
             try? await Task.sleep(for: .milliseconds(400))
             context.delete(event)
             try? context.save()
+            await sharing.countdownDeleted(id: id, wasReceived: wasReceived)
         }
     }
 }

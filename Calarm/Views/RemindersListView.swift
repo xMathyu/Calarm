@@ -20,11 +20,19 @@ struct RemindersListView: View {
 
     @State private var showingNewEditor = false
     @State private var editorReminder: Reminder?
+    @State private var starterTemplate: AlarmTemplate?
     @State private var filterCategories: Set<ReminderCategory> = []
 
     var body: some View {
         NavigationStack {
             content
+                // Fijo bajo el título: si Calarm no puede programar alarmas no
+                // suena ninguna, y hasta ahora eso solo se veía en Ajustes.
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    AlarmPermissionBanner {
+                        await reminderScheduler.syncAlarms(for: reminders)
+                    }
+                }
                 .navigationTitle("Alarmas")
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -69,6 +77,9 @@ struct RemindersListView: View {
                 .sheet(item: $editorReminder) { reminder in
                     ReminderEditorView(editing: reminder)
                 }
+                .sheet(item: $starterTemplate) { template in
+                    ReminderEditorView(template: template)
+                }
                 .task { await askForReviewIfEarned() }
                 // «Nueva alarma» del Centro de control: al llegar la petición o,
                 // si la app arrancó con ella, al aparecer la lista.
@@ -105,17 +116,17 @@ struct RemindersListView: View {
     private var content: some View {
         let visible = filteredReminders
         let shared = sharedWithMeReminders
-        if visible.isEmpty && shared.isEmpty {
+        if visible.isEmpty && shared.isEmpty && filterCategories.isEmpty {
+            StarterAlarmsView(
+                onPick: { starterTemplate = $0 },
+                onBlank: { showingNewEditor = true }
+            )
+        } else if visible.isEmpty && shared.isEmpty {
             EmptyStateView(
                 systemImage: "bell.badge.fill",
-                title: filterCategories.isEmpty ? "Sin alarmas" : "Sin resultados",
-                message: filterCategories.isEmpty
-                    ? "Toca + para crear tu primera alarma — cumpleaños, aniversario, recordatorio, lo que necesites."
-                    : "Ningún recordatorio coincide con tus filtros.",
-                actionTitle: filterCategories.isEmpty ? "Nueva alarma" : nil
-            ) {
-                showingNewEditor = true
-            }
+                title: "Sin resultados",
+                message: "Ningún recordatorio coincide con tus filtros."
+            )
         } else {
             List {
                 ForEach(groups(from: visible), id: \.title) { group in

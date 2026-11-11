@@ -83,6 +83,12 @@ final class AlarmScheduler {
         location: String? = nil,
         challenge: WakeChallenge? = nil
     ) async throws -> UUID {
+        #if DEBUG
+        // Las capturas de la tienda (`-demoScreen`) no programan nada: la primera
+        // llamada a AlarmKit saca el permiso del sistema, que tapa la pantalla, y en
+        // Xcode 27 no se puede aceptar sin tocar el simulador a mano.
+        if DemoData.requestedScreen != nil { return UUID() }
+        #endif
         let fingerprint = Self.contentHash(
             title: title,
             symbolName: symbolName,

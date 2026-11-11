@@ -27,25 +27,35 @@ SHOT_LOCALE = {"de": "en"}
 
 SLIDES = [
     # (locale, orden, archivo de captura, título, palabra destacada)
-    ("es", 1, "es-1-lista.png", "Suena fuerte aunque el iPhone esté en {}", "silencio"),
-    ("es", 2, "es-2-editor.png", "Cumpleaños que se repiten {}, cada año", "solos"),
-    ("es", 3, "es-3-recurrencia.png", "Cada 2 semanas, lunes y miércoles, {}", "cada 21 días"),
-    ("es", 4, "es-4-calendario.png", "Tus reuniones, con alarma {}", "de verdad"),
-    ("es", 5, "es-5-asistente.png", "Díselo y listo, con {}", "Apple Intelligence"),
-    ("es", 6, "es-4-tonos.png", "Elige {} cada alarma", "cómo suena"),
-    ("en", 1, "en-1-list.png", "Rings loud even when your iPhone is {}", "silent"),
-    ("en", 2, "en-2-editor.png", "Birthdays that repeat {}, every year", "on their own"),
-    ("en", 3, "en-3-repeat.png", "Every 2 weeks, Mondays and Wednesdays, {}", "every 21 days"),
-    ("en", 4, "en-4-calendar.png", "Your meetings, with a {}", "real alarm"),
-    ("en", 5, "en-5-assistant.png", "Just say it — with {}", "Apple Intelligence"),
-    ("en", 6, "en-6-tones.png", "Choose {} each alarm sounds", "how"),
-    ("de", 1, "en-1-list.png", "Klingelt laut, auch wenn dein iPhone {} ist", "stumm"),
-    ("de", 2, "en-2-editor.png", "Geburtstage, die sich {} wiederholen", "von selbst"),
-    ("de", 3, "en-3-repeat.png", "Alle 2 Wochen, montags und mittwochs, {}", "alle 21 Tage"),
-    ("de", 4, "en-4-calendar.png", "Deine Termine, mit einem {}", "echten Alarm"),
-    ("de", 5, "en-5-assistant.png", "Sag es einfach — mit {}", "Apple Intelligence"),
-    ("de", 6, "en-6-tones.png", "Wähle, {} jeder Alarm klingt", "wie"),
+    #
+    # Orden de 1.0.15. El 82 % de las descargas llega desde la búsqueda, y el
+    # resultado de búsqueda solo enseña las TRES primeras: ahí va lo que distingue
+    # a Calarm de otro despertador (el reto para apagarla y la cuenta regresiva).
+    # Salieron la recurrencia y los tonos, que eran formularios.
+    ("es", 1, "es-1.png", "Suena fuerte aunque el iPhone esté en {}", "silencio"),
+    ("es", 2, "es-2.png", "Resuelve un juego para {}", "apagarla"),
+    ("es", 3, "es-3.png", "Cuenta los días que faltan para {}", "lo que importa"),
+    ("es", 4, "es-4.png", "Cumpleaños que se repiten {}, cada año", "solos"),
+    ("es", 5, "es-5.png", "Tu próxima alarma, en la {}", "pantalla de inicio"),
+    ("es", 6, "es-6.png", "Tus reuniones, con alarma {}", "de verdad"),
+    ("es", 7, "es-7.png", "Díselo y listo, con {}", "Apple Intelligence"),
+    ("en", 1, "en-1.png", "Rings loud even when your iPhone is {}", "silent"),
+    ("en", 2, "en-2.png", "Solve a game to {}", "turn it off"),
+    ("en", 3, "en-3.png", "Count down the days to {}", "what matters"),
+    ("en", 4, "en-4.png", "Birthdays that repeat {}, every year", "on their own"),
+    ("en", 5, "en-5.png", "Your next alarm, right on your {}", "Home Screen"),
+    ("en", 6, "en-6.png", "Your meetings, with a {}", "real alarm"),
+    ("en", 7, "en-7.png", "Just say it — with {}", "Apple Intelligence"),
+    ("de", 1, "en-1.png", "Klingelt laut, auch wenn dein iPhone {} ist", "stumm"),
+    ("de", 2, "en-2.png", "Löse ein Spiel, um ihn {}", "auszuschalten"),
+    ("de", 3, "en-3.png", "Zähle die Tage bis zu {}", "deinem großen Tag"),
+    ("de", 4, "en-4.png", "Geburtstage, die sich {} wiederholen", "von selbst"),
+    ("de", 5, "en-5.png", "Dein nächster Wecker auf dem {}", "Home-Bildschirm"),
+    ("de", 6, "en-6.png", "Deine Termine, mit einem {}", "echten Alarm"),
+    ("de", 7, "en-7.png", "Sag es einfach — mit {}", "Apple Intelligence"),
 ]
+# Las capturas `<locale>-<n>.png` las saca ../capture_all.sh, que lleva la
+# pantalla de demo de cada número: si se cambia el orden aquí, cambiarlo allí.
 
 PAGE = """<!doctype html>
 <html><head><meta charset="utf-8"><style>

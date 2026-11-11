@@ -1,6 +1,374 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
+    "Calarm no tiene permiso para programar alarmas. Puedes dárselo en Ajustes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm isn't allowed to schedule alarms. You can allow it in Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm no tiene permiso para programar alarmas. Puedes dárselo en Ajustes."
+          }
+        }
+      }
+    },
+    "De lunes a viernes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekdays"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De lunes a viernes"
+          }
+        }
+      }
+    },
+    "Despertador" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wake up"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Despertador"
+          }
+        }
+      }
+    },
+    "Despertador con reto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wake up with a challenge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Despertador con reto"
+          }
+        }
+      }
+    },
+    "Elige una para empezar. Se crea al cerrar el editor y la cambias cuando quieras." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick one to start. It's saved when you close the editor, and you can change it anytime."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige una para empezar. Se crea al cerrar el editor y la cambias cuando quieras."
+          }
+        }
+      }
+    },
+    "Empezar de cero" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start from scratch"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empezar de cero"
+          }
+        }
+      }
+    },
+    "Falta darle a Calarm permiso para programar alarmas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarm still needs permission to schedule alarms."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta darle a Calarm permiso para programar alarmas."
+          }
+        }
+      }
+    },
+    "Pastilla" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pill"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pastilla"
+          }
+        }
+      }
+    },
+    "Resuelve un juego para apagarla" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solve a game to turn it off"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resuelve un juego para apagarla"
+          }
+        }
+      }
+    },
+    "Se repite cada año, con su foto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeats every year, with their photo"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se repite cada año, con su foto"
+          }
+        }
+      }
+    },
+    "Todos los días" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every day"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos los días"
+          }
+        }
+      }
+    },
+    "Tu primera alarma" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your first alarm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu primera alarma"
+          }
+        }
+      }
+    },
+    "Tus alarmas no van a sonar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your alarms won't ring"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus alarmas no van a sonar"
+          }
+        }
+      }
+    },
+    "Quitar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar"
+          }
+        }
+      }
+    },
+    "Gestionar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestionar"
+          }
+        }
+      }
+    },
+    "Agregando la cuenta regresiva compartida…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adding the shared countdown…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregando la cuenta regresiva compartida…"
+          }
+        }
+      }
+    },
+    "«%@» ya está en tus cuentas regresivas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” is now in your countdowns"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» ya está en tus cuentas regresivas"
+          }
+        }
+      }
+    },
+    "¿Quitar esta cuenta regresiva de tu lista?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove this countdown from your list?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Quitar esta cuenta regresiva de tu lista?"
+          }
+        }
+      }
+    },
+    "Dejarás de recibir sus cambios. Para volver a tenerla, pide que te la compartan otra vez." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You'll stop getting its updates. To get it back, ask for it to be shared with you again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejarás de recibir sus cambios. Para volver a tenerla, pide que te la compartan otra vez."
+          }
+        }
+      }
+    },
+    "Quitar de mi lista" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove from my list"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar de mi lista"
+          }
+        }
+      }
+    },
+    "Te compartió esta cuenta regresiva" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shared this countdown with you"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te compartió esta cuenta regresiva"
+          }
+        }
+      }
+    },
+    "Compartida contigo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shared with you"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartida contigo"
+          }
+        }
+      }
+    },
+    "Te invito a la cuenta regresiva «%@» en Calarm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join my countdown “%@” on Calarm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te invito a la cuenta regresiva «%@» en Calarm"
+          }
+        }
+      }
+    },
     "Crea una cuenta regresiva en Calarm" : {
       "localizations" : {
         "en" : {
@@ -7365,6 +7733,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No pude entender la alarma: %@"
+          }
+        }
+      }
+    },
+    "No pude guardar ningún cambio. ¿Me lo repites con el día y la hora?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I couldn't save any change. Could you say it again with the day and time?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No pude guardar ningún cambio. ¿Me lo repites con el día y la hora?"
           }
         }
       }

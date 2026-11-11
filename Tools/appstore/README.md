@@ -41,14 +41,26 @@ xcrun simctl install $DEVICE <ruta>/Calarm.app
 xcrun simctl privacy $DEVICE grant calendar MathyuSolutions.Calarm
 xcrun simctl status_bar $DEVICE override --time "9:41" --batteryState charged --batteryLevel 100
 
-./capture.sh es list  shots/es-1-lista.png seed    # "seed" siembra datos de demo
-./capture.sh es editor shots/es-2-editor.png
-./capture_page.sh es 0 shots/onb-es-0.png          # slides de bienvenida
+DEVICE=<iPhone> WAIT=15 ./capture_all.sh               # shots/es-1.png … en-7.png
+DEVICE=<iPad> WAIT=15 PREFIX=ipad- ./capture_all.sh    # shots/ipad-es-1.png …
+./capture.sh es list shots/es-1.png seed               # una sola; "seed" siembra datos de demo
+./capture_page.sh es 0 shots/onb-es-0.png              # slides de bienvenida
 
 python3 slides/make.py          # compone los titulares → slide-*.png (1320×2868)
 python3 slides/make.py ipad     # → slide-ipad-*.png (2064×2752)
 ./upload_shots.py APP_IPHONE_67 "<locId>=slide-es-*.png"
 ```
+
+El orden de las capturas vive en dos sitios que tienen que coincidir: `SCREENS` en
+`capture_all.sh` y `SLIDES` en `slides/make.py`. `shots/` y los `slide-*.png` no se versionan.
+
+**El permiso de alarmas ya no hay que aceptarlo (desde 2026-11-10).** En DEBUG, con
+`-demoScreen`, `AlarmScheduler.schedule` no llama a AlarmKit y el aviso de permiso de la lista
+no se pinta, así que el diálogo del sistema nunca sale. En Xcode 27 no hay Simulator.app y la
+ventana de DeviceHub no siempre queda al frente: mandar Return a ciegas puede caer en otra app.
+El acceso al calendario sí es TCC: `xcrun simctl privacy <UDID> grant calendar MathyuSolutions.Calarm`
+**antes** del primer arranque. Si el diálogo ya salió, no se va ni cerrando la app: reiniciar el
+simulador (`simctl shutdown` + `bootstatus -b`) lo quita y el permiso concedido se conserva.
 
 `DemoData.swift` (solo DEBUG) llena la app con siete alarmas, una categoría propia y tres
 eventos de calendario; `-demoScreen` abre una pantalla directa. Los títulos siguen el idioma
@@ -56,10 +68,4 @@ de lanzamiento, porque el título de una alarma es contenido del usuario.
 
 **El árbol de accesibilidad del simulador no expone las vistas de la app**, así que AXPress no
 sirve y los toques por coordenadas fallan la mitad de las veces: de ahí el router por
-argumentos. Lo único que hay que atender a mano es el permiso de alarmas, una vez por
-instalación, con Enter sobre la ventana del simulador:
-
-```sh
-osascript -e 'tell application "Simulator" to activate' -e 'delay 1' \
-          -e 'tell application "System Events" to key code 36'
-```
+argumentos, y de ahí que las capturas no dependan de tocar nada.

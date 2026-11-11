@@ -207,8 +207,13 @@ final class AppSettings {
     }
 
     /// Resolved accent color — the custom one if set, otherwise the asset default.
+    ///
+    /// The asset is named explicitly instead of `Color.accentColor`: that one is
+    /// "the accent of the context" and, passed to `.tint`, it can resolve to the
+    /// system blue if UIKit was already busy before the first frame — the App
+    /// Store screenshot runs (`-seedDemoData`) came out blue because of it.
     var accentColor: Color {
-        accentColorHex.flatMap(Color.init(hex:)) ?? .accentColor
+        accentColorHex.flatMap(Color.init(hex:)) ?? Color("AccentColor")
     }
 
     init(defaults: UserDefaults = .standard) {

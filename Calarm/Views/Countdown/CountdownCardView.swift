@@ -21,6 +21,8 @@ struct CountdownCardContent {
     var iconKind: ReminderIconKind
     var iconValue: String
     var photoData: Data?
+    /// Llegó por una invitación: la fecha lleva el icono de compartida.
+    var isReceivedShare: Bool = false
 
     func target(now: Date) -> Date {
         CountdownMath.target(date: date, includesTime: includesTime, repeatsYearly: repeatsYearly, now: now)
@@ -45,7 +47,8 @@ extension CountdownEvent {
             color: color,
             iconKind: iconKind,
             iconValue: iconValue,
-            photoData: photoData
+            photoData: photoData,
+            isReceivedShare: isReceivedShare
         )
     }
 }
@@ -156,6 +159,11 @@ struct CountdownDateLabel: View {
     var body: some View {
         let target = content.target(now: now)
         HStack(spacing: DS.Spacing.xs) {
+            if content.isReceivedShare {
+                Image(systemName: "person.2.fill")
+                    .font(.caption.weight(.bold))
+                    .accessibilityLabel(Text("Compartida contigo"))
+            }
             if content.repeatsYearly {
                 Image(systemName: "repeat")
                     .font(.caption.weight(.bold))

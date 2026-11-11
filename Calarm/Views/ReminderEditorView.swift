@@ -118,9 +118,17 @@ struct ReminderEditorView: View {
     /// pasa cuando se crea desde un día concreto); se ignora al editar.
     /// `initialTitle` siembra el nombre (una cuenta regresiva pasa el suyo), y
     /// esa alarma se guarda al cerrar aunque no se toque nada más.
-    init(editing reminder: Reminder? = nil, initialDate: Date? = nil, initialTitle: String? = nil) {
+    /// `template` llena todo el editor desde una alarma de arranque de la lista
+    /// vacía; también se guarda al cerrar, porque elegirla ya es pedirla.
+    init(
+        editing reminder: Reminder? = nil,
+        initialDate: Date? = nil,
+        initialTitle: String? = nil,
+        template: AlarmTemplate? = nil
+    ) {
         self.editingReminder = reminder
-        self.seededTitle = reminder == nil && !(initialTitle ?? "").isEmpty
+        let seedTitle = template?.title ?? initialTitle ?? ""
+        self.seededTitle = reminder == nil && !seedTitle.isEmpty
         if let r = reminder {
             _title = State(initialValue: r.title)
             _notes = State(initialValue: r.notes ?? "")
@@ -140,22 +148,24 @@ struct ReminderEditorView: View {
             _challenge = State(initialValue: r.challenge)
             _isEnabled = State(initialValue: r.isEnabled)
         } else {
-            let initialCategory = ReminderCategory.reminder
-            _title = State(initialValue: initialTitle ?? "")
+            let initialCategory = template?.category ?? ReminderCategory.reminder
+            _title = State(initialValue: seedTitle)
             _notes = State(initialValue: "")
-            _date = State(initialValue: initialDate ?? Date().addingTimeInterval(60 * 60))
+            _date = State(initialValue: template?.firstDate() ?? initialDate ?? Date().addingTimeInterval(60 * 60))
             _categorySelection = State(initialValue: .builtin(initialCategory))
             _iconKind = State(initialValue: .symbol)
-            _symbolName = State(initialValue: initialCategory.defaultSymbol)
+            _symbolName = State(initialValue: template?.symbol ?? initialCategory.defaultSymbol)
             _photoData = State(initialValue: nil)
-            _recurrence = State(initialValue: .once)
+            _recurrence = State(initialValue: template?.recurrence ?? .once)
             _additionalSchedules = State(initialValue: [])
             // El aviso predeterminado de Ajustes, leído sin el entorno (aquí
             // todavía no existe). Queda visible en la fila "Aviso" antes de
             // guardar, así que nadie se entera tarde de que la alarma se adelanta.
-            _leadTimes = State(initialValue: [AppSettings.storedDefaultLeadTime()])
+            // Las plantillas traen el suyo: un despertador que se adelanta
+            // 15 minutos por un ajuste que nadie recuerda haber tocado no sirve.
+            _leadTimes = State(initialValue: template?.leadTimes ?? [AppSettings.storedDefaultLeadTime()])
             _tone = State(initialValue: nil)
-            _challenge = State(initialValue: nil)
+            _challenge = State(initialValue: template?.challenge)
             _isEnabled = State(initialValue: true)
         }
     }
