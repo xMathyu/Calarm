@@ -511,6 +511,35 @@ Alemán:
 • Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
+## What's New (1.0.17)
+
+Español:
+```
+• Las invitaciones a alarmas y cuentas regresivas ahora llegan con un enlace de calarmi.mathyusolutions.com, la nueva web de Calarmi
+• La política de privacidad se abre en tu idioma, también en portugués
+```
+
+Inglés:
+```
+• Invitations to alarms and countdowns now come with a calarmi.mathyusolutions.com link, Calarmi's new website
+• The privacy policy opens in your language, Portuguese included
+```
+
+Alemán:
+```
+• Einladungen zu Weckern und Countdowns kommen jetzt mit einem Link zu calarmi.mathyusolutions.com, der neuen Website von Calarmi
+• Die Datenschutzerklärung öffnet sich in deiner Sprache
+```
+
+Portugués:
+```
+• Os convites para alarmes e contagens regressivas agora chegam com um link de calarmi.mathyusolutions.com, o novo site do Calarmi
+• A política de privacidade abre no seu idioma, inclusive em português
+```
+
+La 1.0.17 la envía `Tools/appstore/release_after.py` en cuanto la 1.0.16 queda publicada (Apple no
+deja crear una versión nueva mientras otra está en revisión).
+
 ## What's New (1.0.16)
 
 Español:
