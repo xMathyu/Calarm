@@ -61,10 +61,10 @@ Alemania y España 9,99 € / 29,99 € · Perú S/ 44,90. Captura de revisión 
 **Siempre gratis:** alarmas, repeticiones, calendario, compartir/invitar, personas de confianza,
 Siri, el asistente con IA y los retos de Mente, Cuerpo y Levantarte.
 
-**Para poder cobrar** (lo hace el titular de la cuenta):
-1. **Business → Agreements:** la nueva versión del *Paid Apps Agreement* se aceptó el 2026-11-11 y
-   quedó en «Pending User Info»: faltan la **cuenta bancaria** y el **U.S. Tax Questionnaire**
-   (W-8BEN, persona en Perú). Sin eso Apple no activa las compras.
+**Para poder cobrar** (hecho el 2026-11-11):
+1. **Business → Agreements:** *Paid Apps Agreement* **activo desde el 2026-11-11**, con la cuenta
+   del BCP (soles; Apple paga en USD), el certificado de estatus extranjero y el W-8BEN (RUC como
+   número fiscal; sin tratado, así que Apple retiene 30 % de las ventas en EE. UU.).
 2. **App Store Small Business Program** (`developer.apple.com/app-store/small-business-program/enroll/`):
    15 % de comisión en vez de 30 %. Solicitud enviada el 2026-11-11 (sin cuentas asociadas); Apple
    confirma por correo.
