@@ -66,7 +66,8 @@ Siri, el asistente con IA y los retos de Mente, Cuerpo y Levantarte.
    quedó en «Pending User Info»: faltan la **cuenta bancaria** y el **U.S. Tax Questionnaire**
    (W-8BEN, persona en Perú). Sin eso Apple no activa las compras.
 2. **App Store Small Business Program** (`developer.apple.com/app-store/small-business-program/enroll/`):
-   15 % de comisión en vez de 30 %. El formulario pide declarar las cuentas de desarrollador asociadas.
+   15 % de comisión en vez de 30 %. Solicitud enviada el 2026-11-11 (sin cuentas asociadas); Apple
+   confirma por correo.
 
 **Para la revisión de Apple:**
 - Cada producto necesita nombre, descripción, precio y una **captura de la pantalla de compra**:
