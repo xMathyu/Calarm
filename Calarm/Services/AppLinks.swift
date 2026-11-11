@@ -18,11 +18,16 @@ enum AppLinks {
     /// App Store exige enlazarlo desde la pantalla de compra de una suscripción.
     static let terms = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
 
+    /// La web de Calarmi.
+    static let website = URL(string: "https://calarmi.mathyusolutions.com/")!
+
     /// La política de privacidad de la web, en el idioma de la app.
     static var privacy: URL {
-        let isSpanish = LocalizationManager.shared.currentLocale.language.languageCode?.identifier == "es"
-        return URL(string: isSpanish
-                   ? "https://calarm-puce.vercel.app/privacidad/"
-                   : "https://calarm-puce.vercel.app/en/privacy/")!
+        let path = switch LocalizationManager.shared.currentLocale.language.languageCode?.identifier {
+        case "es": "privacidad/"
+        case "pt": "pt/privacidade/"
+        default: "en/privacy/"
+        }
+        return website.appending(path: path)
     }
 }

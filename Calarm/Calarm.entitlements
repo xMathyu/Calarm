@@ -4,7 +4,9 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
+		<string>applinks:calarmi.mathyusolutions.com</string>
 		<string>applinks:calarm-puce.vercel.app</string>
+		<string>applinks:calarmi.vercel.app</string>
 	</array>
 	<key>aps-environment</key>
 	<string>development</string>

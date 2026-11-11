@@ -3,7 +3,7 @@
 //  Calarm
 //
 //  Calarm's own invitation links, e.g.
-//  `https://calarm-puce.vercel.app/i/<payload>/`.
+//  `https://calarmi.mathyusolutions.com/i/<payload>/`.
 //
 //  Before these, invites travelled as the raw `icloud.com/share/…` URL. That
 //  link only previews nicely inside iMessage, never shows *when* the alarm
@@ -30,7 +30,12 @@ enum InviteLink {
 
     /// Host that serves the invitation pages. Must match the `applinks:` entry
     /// in Calarm.entitlements, or iOS opens the link in Safari instead.
-    static let host = "calarm-puce.vercel.app"
+    static let host = "calarmi.mathyusolutions.com"
+
+    /// Hosts of links already sent. They stay in `applinks:` and are still
+    /// accepted, so an old invitation keeps opening the app. The web also uses
+    /// the first one in the Smart App Banner, since every app version knows it.
+    static let legacyHosts: Set<String> = ["calarm-puce.vercel.app", "calarmi.vercel.app"]
 
     /// Second door: `calarm://i/<payload>/`, declared in Info.plist.
     ///
@@ -167,7 +172,7 @@ enum InviteLink {
                   let segment = url.pathComponents.first(where: { $0 != "/" }) else { return nil }
             return (segment, kind)
         }
-        guard url.host() == host else { return nil }
+        guard let urlHost = url.host(), urlHost == host || legacyHosts.contains(urlHost) else { return nil }
         let parts = url.path().split(separator: "/")
         guard parts.count >= 2, let kind = Kind(rawValue: String(parts[0])) else { return nil }
         return (String(parts[1]), kind)

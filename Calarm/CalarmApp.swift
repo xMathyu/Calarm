@@ -126,7 +126,7 @@ struct CalarmApp: App {
             .environment(\.locale, localization.currentLocale)
             // Forces every Text(...) to re-evaluate after a language switch.
             .id(localization.revision)
-            // Invitations arriving as Calarm links (calarm-puce.vercel.app/i/…).
+            // Invitations arriving as Calarmi links (calarmi.mathyusolutions.com/i/…).
             // The CloudKit share metadata callbacks never fire for these, since
             // iOS only raises those for icloud.com URLs it opens itself.
             .onOpenURL { url in
