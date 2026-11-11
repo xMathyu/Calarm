@@ -49,8 +49,8 @@ Freemium: lo esencial sigue gratis y Plus desbloquea extras. Código en
 `22567120`, anual `6833343681`, de por vida `6833345416`. Textos en en-US, es-MX, de-DE y pt-BR;
 disponibles en los 175 países; prueba gratis de 1 semana en los 175. Precios equivalentes de
 Apple a partir de EE. UU., por ejemplo: Brasil R$ 59,90 / R$ 149,90 · México MX$ 199 / MX$ 499 ·
-Alemania y España 9,99 € / 29,99 € · Perú S/ 44,90. Los dos quedan en **MISSING_METADATA** hasta
-subir la captura para la revisión (ver abajo).
+Alemania y España 9,99 € / 29,99 € · Perú S/ 44,90. Captura de revisión subida el mismo día
+(paywall en inglés con `-demoPrices`): los dos están en **READY_TO_SUBMIT**.
 
 **Qué desbloquea Plus** (solo para ELEGIRLO; lo ya configurado sigue funcionando sin Plus):
 - Retos Arcade: Vuelo, Ovejas, Cañón y Tirachinas.
@@ -61,9 +61,12 @@ subir la captura para la revisión (ver abajo).
 **Siempre gratis:** alarmas, repeticiones, calendario, compartir/invitar, personas de confianza,
 Siri, el asistente con IA y los retos de Mente, Cuerpo y Levantarte.
 
-**Antes de crear los productos** (lo hace el titular de la cuenta en App Store Connect):
-1. **Business → Agreements:** firmar el *Paid Apps Agreement* y completar los datos bancarios y fiscales.
-2. **App Store Small Business Program:** inscribirse para pagar 15 % de comisión en vez de 30 %.
+**Para poder cobrar** (lo hace el titular de la cuenta):
+1. **Business → Agreements:** la nueva versión del *Paid Apps Agreement* se aceptó el 2026-11-11 y
+   quedó en «Pending User Info»: faltan la **cuenta bancaria** y el **U.S. Tax Questionnaire**
+   (W-8BEN, persona en Perú). Sin eso Apple no activa las compras.
+2. **App Store Small Business Program** (`developer.apple.com/app-store/small-business-program/enroll/`):
+   15 % de comisión en vez de 30 %. El formulario pide declarar las cuentas de desarrollador asociadas.
 
 **Para la revisión de Apple:**
 - Cada producto necesita nombre, descripción, precio y una **captura de la pantalla de compra**:
@@ -104,9 +107,22 @@ ficha pt-BR ya no promete un idioma que la app no tiene. Se añade al crear la 1
 **appInfoLocalization** pt-BR (nombre y subtítulo) en el appInfo editable y un
 **appStoreVersionLocalization** pt-BR (descripción, keywords, promo, novedades).
 
-**Capturas:** mientras no haya capturas pt-BR, la ficha hereda las de en-US (idioma primario).
-Hacen falta `DemoData` en portugués y los rótulos de `Tools/appstore/slides` en portugués; el
-2026-11-11 no se pudieron hacer porque el runtime de iOS 27.0 del simulador se rompió.
+**Capturas (hechas el 2026-11-11, sin subir porque la localización pt-BR nace con la 1.0.16):**
+6 por set (iPhone 6.9" e iPad 13"), las de la tabla de 1.0.15 menos la 7 (asistente), que la ficha
+pt-BR no promete hasta probarlo en portugués. `DemoData` siembra títulos en portugués y
+`capture.sh pt` lanza con `-AppleLanguages "(pt-BR)" -AppleLocale pt_BR` (hora en 24 h, «R$ 59,90»):
+
+```sh
+DEVICE=<iPhone> WAIT=10 LANGS=pt ./capture_all.sh
+DEVICE=<iPad> WAIT=15 LANGS=pt PREFIX=ipad- ./capture_all.sh
+python3 slides/make.py iphone pt && python3 slides/make.py ipad pt
+./upload_shots.py APP_IPHONE_67 "<locId pt-BR>=slide-pt-*.png"
+./upload_shots.py APP_IPAD_PRO_3GEN_129 "<locId pt-BR>=slide-ipad-pt-*.png"
+```
+
+Titulares: Toca alto mesmo com o iPhone no *silencioso* · Resolva um jogo para *desligar* ·
+Conte os dias até *o que importa* · Aniversários que se repetem *todo ano* · Seu próximo alarme,
+direto na *Tela de Início* · Suas reuniões, com um alarme *de verdade*.
 
 - **Nome (27/30):** `Calarmi: Alarme e Lembretes`
 - **Subtítulo (30/30):** `Despertador, remédios e agenda`

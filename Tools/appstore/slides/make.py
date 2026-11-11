@@ -53,6 +53,15 @@ SLIDES = [
     ("de", 5, "en-5.png", "Dein nächster Wecker auf dem {}", "Home-Bildschirm"),
     ("de", 6, "en-6.png", "Deine Termine, mit einem {}", "echten Alarm"),
     ("de", 7, "en-7.png", "Sag es einfach — mit {}", "Apple Intelligence"),
+    # Brasil (1.0.16): capturas propias en portugués, con -AppleLocale pt_BR para
+    # que la hora salga en 24 h. Sin la 7 (asistente): la ficha pt-BR no lo
+    # promete hasta probarlo en portugués en un dispositivo.
+    ("pt", 1, "pt-1.png", "Toca alto mesmo com o iPhone no {}", "silencioso"),
+    ("pt", 2, "pt-2.png", "Resolva um jogo para {}", "desligar"),
+    ("pt", 3, "pt-3.png", "Conte os dias até {}", "o que importa"),
+    ("pt", 4, "pt-4.png", "Aniversários que se repetem {}", "todo ano"),
+    ("pt", 5, "pt-5.png", "Seu próximo alarme, direto na {}", "Tela de Início"),
+    ("pt", 6, "pt-6.png", "Suas reuniões, com um alarme {}", "de verdade"),
 ]
 # Las capturas `<locale>-<n>.png` las saca ../capture_all.sh, que lleva la
 # pantalla de demo de cada número: si se cambia el orden aquí, cambiarlo allí.
@@ -138,5 +147,8 @@ def build(locale, order, shot, template, highlight, profile="iphone"):
 if __name__ == "__main__":
     import sys
     profile = sys.argv[1] if len(sys.argv) > 1 else "iphone"
+    # Opcional: solo unos locales, p. ej. `make.py iphone pt`.
+    only = set(sys.argv[2:])
     for slide in SLIDES:
-        build(*slide, profile=profile)
+        if not only or slide[0] in only:
+            build(*slide, profile=profile)

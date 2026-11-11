@@ -3,6 +3,7 @@
 #
 #   DEVICE=<udid> ./capture_all.sh              → shots/es-1.png … shots/en-7.png (iPhone)
 #   DEVICE=<udid> PREFIX=ipad- ./capture_all.sh → shots/ipad-es-1.png …        (iPad)
+#   DEVICE=<udid> LANGS=pt ./capture_all.sh     → shots/pt-1.png … (Brasil)
 #
 # El número de cada captura es su posición en la ficha y tiene que coincidir con
 # SLIDES en slides/make.py. Cada captura vuelve a sembrar los datos de demo: los
@@ -19,7 +20,7 @@ mkdir -p "$HERE/shots"
 
 SCREENS=(list challenge countdowns editor widgets agenda assistant)
 
-for LANG_TAG in es en; do
+for LANG_TAG in ${LANGS:-es en}; do
   for i in "${!SCREENS[@]}"; do
     n=$((i + 1))
     "$HERE/capture.sh" "$LANG_TAG" "${SCREENS[$i]}" "$HERE/shots/${PREFIX}${LANG_TAG}-${n}.png" seed

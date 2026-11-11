@@ -10,7 +10,7 @@
 //  DEBUG only, and only when asked for explicitly:
 //    xcrun simctl launch booted MathyuSolutions.Calarm -seedDemoData -AppleLanguages "(es)"
 //
-//  Titles follow the launch language, because an alarm's title is user content:
+//  Titles follow the launch language (es, en or pt), because an alarm's title is user content:
 //  the English screenshots need English alarms.
 //
 
@@ -45,8 +45,18 @@ enum DemoData {
         return args[i + 1]
     }
 
-    private static var isSpanish: Bool {
-        (Locale.preferredLanguages.first ?? "es").hasPrefix("es")
+    private static var demoLanguage: String {
+        String((Locale.preferredLanguages.first ?? "es").prefix(2))
+    }
+
+    /// The same title in Spanish, English and Brazilian Portuguese, picked by
+    /// the launch language (`-AppleLanguages`).
+    private static func t(_ es: String, _ en: String, _ pt: String) -> String {
+        switch demoLanguage {
+        case "es": es
+        case "pt": pt
+        default: en
+        }
     }
 
     /// Wipes whatever is stored and writes the screenshot set. Destructive on
@@ -59,7 +69,7 @@ enum DemoData {
         try? context.delete(model: CountdownEvent.self)
 
         let health = CustomCategory(
-            name: isSpanish ? "Salud" : "Health",
+            name: t("Salud", "Health", "Saúde"),
             colorHex: "#34C759",
             iconValue: "cross.case.fill",
             sortOrder: 0
@@ -97,15 +107,14 @@ enum DemoData {
         guard EKEventStore.authorizationStatus(for: .event) == .fullAccess,
               let calendar = store.defaultCalendarForNewEvents else { return }
 
-        let es = isSpanish
         // Tomorrow at office hours, so every capture run shows the same three
         // meetings under «Mañana», whatever time it is. They used to be relative
         // to now, and a run at 9 p.m. put the team sync at midnight.
         let planned: [(String, Int, Int, Int, String?, String?)] = [
-            (es ? "Revisión de diseño" : "Design review", 9, 30, 60, es ? "Oficina" : "Office", nil),
-            (es ? "Reunión con el equipo" : "Team sync", 11, 0, 30, nil,
+            (t("Revisión de diseño", "Design review", "Revisão de design"), 9, 30, 60, t("Oficina", "Office", "Escritório"), nil),
+            (t("Reunión con el equipo", "Team sync", "Reunião com a equipe"), 11, 0, 30, nil,
              "https://teams.microsoft.com/l/meetup-join/19%3ameeting_demo%40thread.v2/0"),
-            (es ? "Uno a uno con Ana" : "One-on-one with Ana", 16, 30, 30, es ? "Sala 2" : "Room 2", nil),
+            (t("Uno a uno con Ana", "One-on-one with Ana", "1:1 com a Ana"), 16, 30, 30, t("Sala 2", "Room 2", "Sala 2"), nil),
         ]
 
         // Clear anything a previous run left behind (today's included, from the
@@ -131,7 +140,6 @@ enum DemoData {
     }
 
     private static func reminders(healthCategory: CustomCategory) -> [Reminder] {
-        let es = isSpanish
 
         // La ficha se llama «AI Alarm Clock» y casi todos llegan buscando un
         // despertador: la primera captura tiene que enseñar uno, con su reto.
@@ -139,7 +147,7 @@ enum DemoData {
         // que sea; anclado HOY a las 7, para ser la primera de la lista (que se
         // ordena por la fecha ancla) aunque su próxima vez sea mañana.
         let wakeUp = Reminder(
-            title: es ? "Despertador" : "Wake up",
+            title: t("Despertador", "Wake up", "Despertador"),
             date: at(hour: 7, minute: 0, dayOffset: 0),
             category: .reminder,
             symbolName: "alarm.fill",
@@ -149,7 +157,7 @@ enum DemoData {
         wakeUp.challenge = WakeChallenge(kind: .math)
 
         let pill = Reminder(
-            title: es ? "Pastilla de la mañana" : "Morning pill",
+            title: t("Pastilla de la mañana", "Morning pill", "Remédio da manhã"),
             date: at(hour: 8, minute: 0, dayOffset: 1),
             category: .reminder,
             symbolName: "pills.fill",
@@ -159,7 +167,7 @@ enum DemoData {
         pill.customCategoryID = healthCategory.id
 
         let standup = Reminder(
-            title: es ? "Reunión con el equipo" : "Team sync",
+            title: t("Reunión con el equipo", "Team sync", "Reunião com a equipe"),
             date: at(hour: 17, minute: 30, dayOffset: 0),
             category: .event,
             symbolName: "person.2.fill",
@@ -168,7 +176,7 @@ enum DemoData {
         )
 
         let dentist = Reminder(
-            title: es ? "Cita con el dentista" : "Dentist appointment",
+            title: t("Cita con el dentista", "Dentist appointment", "Consulta no dentista"),
             date: at(hour: 16, minute: 0, dayOffset: 3),
             category: .event,
             symbolName: "cross.case.fill",
@@ -178,7 +186,7 @@ enum DemoData {
         dentist.customCategoryID = healthCategory.id
 
         let training = Reminder(
-            title: es ? "Entrenamiento" : "Training",
+            title: t("Entrenamiento", "Training", "Treino"),
             date: at(hour: 17, minute: 0, dayOffset: 2),
             category: .other,
             symbolName: "figure.run",
@@ -196,7 +204,7 @@ enum DemoData {
         ]
 
         let rent = Reminder(
-            title: es ? "Pagar la renta" : "Pay the rent",
+            title: t("Pagar la renta", "Pay the rent", "Pagar o aluguel"),
             date: at(hour: 9, minute: 0, dayOffset: 12),
             category: .reminder,
             symbolName: "creditcard.fill",
@@ -205,7 +213,7 @@ enum DemoData {
         )
 
         let momBirthday = Reminder(
-            title: es ? "Cumpleaños de mamá" : "Mom's birthday",
+            title: t("Cumpleaños de mamá", "Mom's birthday", "Aniversário da mamãe"),
             date: at(hour: 9, minute: 0, dayOffset: 26),
             category: .birthday,
             symbolName: "birthday.cake.fill",
@@ -214,7 +222,7 @@ enum DemoData {
         )
 
         let anniversary = Reminder(
-            title: es ? "Aniversario con Ana" : "Anniversary with Ana",
+            title: t("Aniversario con Ana", "Anniversary with Ana", "Aniversário de casamento"),
             date: at(hour: 20, minute: 0, dayOffset: 48),
             category: .anniversary,
             symbolName: "heart.fill",
@@ -228,10 +236,9 @@ enum DemoData {
     /// The Cuenta regresiva tab: one with a photo, one counting the seconds,
     /// a yearly one and one that already passed.
     private static func countdowns() -> [CountdownEvent] {
-        let es = isSpanish
         let concert = CountdownEvent(
             // Sin nombres de artistas reales: esto sale en las capturas de la tienda.
-            title: es ? "Concierto en el estadio" : "Stadium concert",
+            title: t("Concierto en el estadio", "Stadium concert", "Show no estádio"),
             date: at(hour: 21, minute: 0, dayOffset: 23),
             includesTime: true,
             colorHex: "#5856D6",
@@ -240,14 +247,14 @@ enum DemoData {
             photoData: demoPhoto()
         )
         let trip = CountdownEvent(
-            title: es ? "Viaje a Japón" : "Trip to Japan",
+            title: t("Viaje a Japón", "Trip to Japan", "Viagem ao Japão"),
             date: Calendar.current.startOfDay(for: at(hour: 0, minute: 0, dayOffset: 74)),
             colorHex: "#FF3B30",
             iconKind: .emoji,
             iconValue: "🗾"
         )
         let birthday = CountdownEvent(
-            title: es ? "Cumpleaños de Sofía" : "Sofía's birthday",
+            title: t("Cumpleaños de Sofía", "Sofía's birthday", "Aniversário da Sofia"),
             date: Calendar.current.date(byAdding: .year, value: -29, to: at(hour: 0, minute: 0, dayOffset: 9))
                 .map { Calendar.current.startOfDay(for: $0) } ?? Date(),
             repeatsYearly: true,
@@ -256,7 +263,7 @@ enum DemoData {
             iconValue: "🎂"
         )
         let match = CountdownEvent(
-            title: es ? "Final del campeonato" : "Championship final",
+            title: t("Final del campeonato", "Championship final", "Final do campeonato"),
             date: at(hour: 18, minute: 30, dayOffset: 1),
             includesTime: true,
             colorHex: "#34C759",
@@ -264,7 +271,7 @@ enum DemoData {
             iconValue: "sportscourt.fill"
         )
         let graduation = CountdownEvent(
-            title: es ? "Graduación" : "Graduation",
+            title: t("Graduación", "Graduation", "Formatura"),
             date: Calendar.current.startOfDay(for: at(hour: 0, minute: 0, dayOffset: -12)),
             colorHex: "#007AFF",
             iconKind: .symbol,
@@ -272,7 +279,7 @@ enum DemoData {
         )
         // Una que llegó por invitación: la tarjeta lleva el icono de compartida.
         let wedding = CountdownEvent(
-            title: es ? "Boda de Ana y Luis" : "Ana & Luis's wedding",
+            title: t("Boda de Ana y Luis", "Ana & Luis's wedding", "Casamento da Ana e do Luis"),
             date: Calendar.current.startOfDay(for: at(hour: 0, minute: 0, dayOffset: 41)),
             colorHex: "#AF52DE",
             iconKind: .emoji,
