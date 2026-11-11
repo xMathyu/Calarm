@@ -142,6 +142,7 @@ Novo: desafios para acordar. Resolva uma conta, um jogo de memória ou uma fase 
 **Novidades (1.0.16):**
 ```
 • O app agora se chama Calarmi.
+• Ícone novo: um despertador com os ponteiros formando um check, com versão para o modo escuro.
 • Calarmi em português.
 • Calarmi Plus: desafios Arcade, seus próprios toques, contagens regressivas ilimitadas e ícones coloridos. Tudo o que você já usava continua funcionando.
 ```
@@ -515,6 +516,7 @@ Alemán:
 Español:
 ```
 • Calarm ahora se llama Calarmi: más fácil de recordar y de decir. Tus alarmas, cuentas regresivas y alarmas compartidas siguen igual
+• Ícono nuevo: un despertador cuyas agujas forman un check, con versión para el modo oscuro
 • Nuevo: Calarmi Plus, opcional. Suma los retos Arcade, tus propios tonos desde Archivos, cuentas regresivas sin límite e íconos de colores, con una suscripción anual con 1 semana gratis o un pago único. Lo que ya tenías configurado sigue funcionando sin pagar
 • Nuevo: Calarmi en portugués de Brasil
 • Corregido: los avisos de permisos (calendario, contactos, micrófono…) salían en español aunque usaras la app en inglés
@@ -523,6 +525,7 @@ Español:
 Inglés:
 ```
 • Calarm is now Calarmi: easier to remember and to say. Your alarms, countdowns and shared alarms stay the same
+• New icon: an alarm clock whose hands make a check mark, with a Dark Mode version
 • New: Calarmi Plus, optional. It adds Arcade challenges, your own tones from Files, unlimited countdowns and colored app icons, with a yearly subscription with a 1-week free trial or a one-time purchase. Everything you already set up keeps working for free
 • New: Calarmi in Brazilian Portuguese
 • Fixed: permission prompts (calendar, contacts, microphone…) appeared in Spanish even when you used the app in English
@@ -531,6 +534,7 @@ Inglés:
 Alemán:
 ```
 • Calarm heißt jetzt Calarmi: leichter zu merken und auszusprechen. Deine Wecker, Countdowns und geteilten Wecker bleiben, wie sie sind
+• Neues Symbol: ein Wecker, dessen Zeiger ein Häkchen bilden, mit Version für den Dunkelmodus
 • Neu: Calarmi Plus, optional. Es bringt die Arcade-Aufgaben, eigene Töne aus der Dateien-App, unbegrenzte Countdowns und farbige App-Symbole, als Jahresabo mit 1 Woche gratis oder als Einmalkauf. Alles, was du schon eingerichtet hast, funktioniert weiter kostenlos
 • Neu: Calarmi auf brasilianischem Portugiesisch
 • Behoben: Berechtigungsabfragen (Kalender, Kontakte, Mikrofon …) erschienen auf Spanisch
