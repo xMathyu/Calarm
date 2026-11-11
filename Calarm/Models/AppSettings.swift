@@ -46,6 +46,7 @@ enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
     case system = "system"
     case spanish = "es"
     case english = "en"
+    case portuguese = "pt-BR"
 
     var id: String { rawValue }
 
@@ -54,6 +55,7 @@ enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
         case .system: appLocalized("Automático")
         case .spanish: appLocalized("Español")
         case .english: appLocalized("Inglés")
+        case .portuguese: appLocalized("Portugués")
         }
     }
 
@@ -62,6 +64,7 @@ enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
         case .system: "globe"
         case .spanish: "globe.europe.africa.fill"
         case .english: "globe.americas.fill"
+        case .portuguese: "globe.americas"
         }
     }
 
@@ -71,6 +74,7 @@ enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
         case .system: nil
         case .spanish: "es"
         case .english: "en"
+        case .portuguese: "pt-BR"
         }
     }
 }

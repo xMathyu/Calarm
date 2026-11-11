@@ -69,6 +69,8 @@ final class LocalizationManager: @unchecked Sendable {
         switch code {
         case "en":
             return Locale(identifier: "en_US")
+        case "pt-BR":
+            return Locale(identifier: "pt_BR")
         case "es":
             // Keep using the system's Spanish region (es_PE, es_MX, es_ES, …)
             // if it's already Spanish-speaking — Spanish formatting is

@@ -119,7 +119,9 @@ enum InviteLink {
             t: title,
             d: date,
             tz: TimeZone.current.identifier,
-            l: languageCode == "en" ? "en" : "es",
+            // La web elige el idioma de la página con esto; una versión vieja
+            // de la web toma todo lo que no sea "en" como español.
+            l: ["en", "pt"].contains(languageCode) ? languageCode : "es",
             c: tintHex,
             e: emoji,
             y: symbol,

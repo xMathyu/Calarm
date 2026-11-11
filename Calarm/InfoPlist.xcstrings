@@ -1,0 +1,167 @@
+{
+  "sourceLanguage" : "es",
+  "strings" : {
+    "NSAlarmKitUsageDescription" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi needs to schedule alarms to alert you before your meetings and reminders."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi necesita programar alarmas para avisarte antes de tus reuniones y recordatorios."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Calarmi precisa programar alarmes para avisar você antes das suas reuniões e lembretes."
+          }
+        }
+      }
+    },
+    "NSCalendarsFullAccessUsageDescription" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi reads your calendar events to set alarms for them and detect Microsoft Teams links. If you turn it on in Settings, it also saves your alarms to a calendar named Calarmi."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi lee tus eventos del calendario para ponerles alarma y detectar enlaces de Microsoft Teams. Si lo activas en Ajustes, también guarda tus alarmas en un calendario llamado Calarmi."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Calarmi lê os eventos do seu calendário para colocar alarmes neles e detectar links do Microsoft Teams. Se você ativar em Ajustes, ele também salva seus alarmes em um calendário chamado Calarmi."
+          }
+        }
+      }
+    },
+    "NSCameraUsageDescription" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi uses the camera to read the QR code or barcode that turns off an alarm with the “QR code” challenge."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi usa la cámara para leer el código QR o de barras que apaga una alarma con el reto «Código QR»."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Calarmi usa a câmera para ler o QR code ou o código de barras que desliga um alarme com o desafio “Código QR”."
+          }
+        }
+      }
+    },
+    "NSContactsUsageDescription" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi uses your contacts to show the photo of the people who share alarms with you. Without access, their initials are shown."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi usa tus contactos para mostrar la foto de quienes comparten alarmas contigo. Si no das acceso, se muestran sus iniciales."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Calarmi usa seus contatos para mostrar a foto de quem compartilha alarmes com você. Sem acesso, aparecem as iniciais."
+          }
+        }
+      }
+    },
+    "NSMicrophoneUsageDescription" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi uses the microphone so you can talk to the AI assistant and have it create alarms from your voice."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi usa el micrófono para que le hables al asistente con IA y este cree alarmas dictándolas con tu voz."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Calarmi usa o microfone para você falar com o assistente de IA e ele criar alarmes a partir da sua voz."
+          }
+        }
+      }
+    },
+    "NSMotionUsageDescription" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi uses motion to count your steps and shakes in the challenges that turn off the alarm."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi usa el movimiento para contar tus pasos y sacudidas en los retos que apagan la alarma."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Calarmi usa o movimento para contar seus passos e sacudidas nos desafios que desligam o alarme."
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi transcribes your voice on the device so the AI assistant understands what you say."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi transcribe tu voz en el dispositivo para que el asistente con IA entienda lo que le dices."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Calarmi transcreve sua voz no dispositivo para que o assistente de IA entenda o que você diz."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

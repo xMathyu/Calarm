@@ -45,7 +45,12 @@ Freemium: lo esencial sigue gratis y Plus desbloquea extras. Código en
 | Calarmi Plus anual | `MathyuSolutions.Calarm.plus.yearly` | Suscripción auto-renovable, grupo «Calarmi Plus», 1 año | 9,99 USD, con **prueba gratis de 1 semana** (oferta introductoria) |
 | Calarmi Plus de por vida | `MathyuSolutions.Calarm.plus.lifetime` | No consumible | 24,99 USD |
 
-Los demás países: dejar que Apple calcule los precios equivalentes a partir de EE. UU.
+**Creados en App Store Connect el 2026-11-11** (por API): grupo
+`22567120`, anual `6833343681`, de por vida `6833345416`. Textos en en-US, es-MX, de-DE y pt-BR;
+disponibles en los 175 países; prueba gratis de 1 semana en los 175. Precios equivalentes de
+Apple a partir de EE. UU., por ejemplo: Brasil R$ 59,90 / R$ 149,90 · México MX$ 199 / MX$ 499 ·
+Alemania y España 9,99 € / 29,99 € · Perú S/ 44,90. Los dos quedan en **MISSING_METADATA** hasta
+subir la captura para la revisión (ver abajo).
 
 **Qué desbloquea Plus** (solo para ELEGIRLO; lo ya configurado sigue funcionando sin Plus):
 - Retos Arcade: Vuelo, Ovejas, Cañón y Tirachinas.
@@ -62,7 +67,10 @@ Siri, el asistente con IA y los retos de Mente, Cuerpo y Levantarte.
 
 **Para la revisión de Apple:**
 - Cada producto necesita nombre, descripción, precio y una **captura de la pantalla de compra**:
-  `-seedDemoData -demoScreen paywall`, lanzado desde Xcode para que cargue `Calarm.storekit`.
+  `-seedDemoData -demoScreen paywall -demoPrices -AppleLanguages "(en)"` (`-demoPrices` pinta los
+  planes con los precios de la tienda del idioma sin StoreKit, así que sirve también con `simctl`).
+  Se sube con `POST /v1/subscriptionAppStoreReviewScreenshots` y
+  `/v1/inAppPurchaseAppStoreReviewScreenshots`.
 - La descripción de la ficha tiene que enlazar los **Términos de uso**. Se usa el EULA estándar de
   Apple: `https://www.apple.com/legal/internet-services/itunes/dev/stdeula/`. Añadir al final de
   la descripción: «Términos de uso: <enlace>» / «Terms of Use: <link>».
@@ -75,6 +83,94 @@ Siri, el asistente con IA y los retos de Mente, Cuerpo y Levantarte.
 **Probar en local:** el esquema `Calarm` usa `Calarm.storekit`, así que las compras se simulan al
 lanzar desde Xcode (Product › Run). Lanzando con `simctl` la App Store no contesta y la pantalla
 muestra «No se pudo conectar». `-demoPlus` simula tener Plus en Debug.
+
+**Descripción de la 1.0.16 en los locales que ya existen:** además de cambiar Calarm → Calarmi,
+el párrafo de tonos ya no puede decir que importar audio es gratis. Añadir antes del cierre:
+- es-MX: «CALARMI PLUS (OPCIONAL) — Calarmi es gratis. Calarmi Plus suma los retos Arcade, tus
+  propios tonos desde Archivos, cuentas regresivas sin límite e íconos de colores. Suscripción
+  anual con 1 semana gratis, o un pago único de por vida. La suscripción se renueva sola;
+  cancélala cuando quieras en los ajustes de tu cuenta de Apple.» + «Términos de uso: <EULA>».
+- en-US: «CALARMI PLUS (OPTIONAL) — Calarmi is free. Calarmi Plus adds Arcade challenges, your
+  own tones from Files, unlimited countdowns and colored icons. Yearly subscription with a 1-week
+  free trial, or a one-time lifetime purchase. The subscription renews automatically; cancel
+  anytime in your Apple Account settings.» + «Terms of Use: <EULA>».
+
+---
+
+## Brasil: ficha pt-BR (para 1.0.16)
+
+La app ya habla portugués (UI, permisos, widgets, Siri y la página de invitación), así que la
+ficha pt-BR ya no promete un idioma que la app no tiene. Se añade al crear la 1.0.16: un
+**appInfoLocalization** pt-BR (nombre y subtítulo) en el appInfo editable y un
+**appStoreVersionLocalization** pt-BR (descripción, keywords, promo, novedades).
+
+**Capturas:** mientras no haya capturas pt-BR, la ficha hereda las de en-US (idioma primario).
+Hacen falta `DemoData` en portugués y los rótulos de `Tools/appstore/slides` en portugués; el
+2026-11-11 no se pudieron hacer porque el runtime de iOS 27.0 del simulador se rompió.
+
+- **Nome (27/30):** `Calarmi: Alarme e Lembretes`
+- **Subtítulo (30/30):** `Despertador, remédios e agenda`
+- **Palavras-chave (96/100):**
+```
+aniversário,consulta,medicamento,pílula,calendário,reunião,boleto,plantão,família,teams,contagem
+```
+`boleto` (pagos con vencimiento) y `plantão` (turnos de salud) son los términos locales de
+«pago» y «turno».
+
+**Texto promocional (168/170):**
+```
+Novo: desafios para acordar. Resolva uma conta, um jogo de memória ou uma fase arcade para desligar o alarme e não voltar a dormir. E contagens regressivas com widgets.
+```
+
+**Novidades (1.0.16):**
+```
+• O app agora se chama Calarmi.
+• Calarmi em português.
+• Calarmi Plus: desafios Arcade, seus próprios toques, contagens regressivas ilimitadas e ícones coloridos. Tudo o que você já usava continua funcionando.
+```
+
+**Descrição:**
+```
+Os alarmes do Relógio servem para te acordar. O Calarmi toca tão alto quanto — mesmo com o iPhone no silencioso, bloqueado ou em Foco — para todo o resto: o remédio das 8h, o aniversário da sua mãe, a consulta no dentista, o boleto que vence dia 3.
+
+MAIS QUE UM DESPERTADOR
+• Remédios e consultas: todo dia, às segundas e quartas, ou a cada 21 dias. E vários horários em um só alarme, para os que você toma três vezes ao dia.
+• Aniversários e datas especiais: coloque a foto da pessoa e ele se repete todo ano sem você mexer.
+• Contas e vencimentos: dia 3 de todo mês, sem falta.
+• Plantões e rotinas: segunda às 17h e sábado às 11h, no mesmo alarme.
+
+DESAFIOS PARA ACORDAR DE VERDADE
+Para desligar o alarme, resolva uma conta, um jogo de memória ou dê alguns passos. Se você parar o alarme sem resolver, ele volta a tocar.
+
+CONTAGEM REGRESSIVA
+Conte os dias que faltam para uma viagem, um show ou um aniversário, com foto e widgets na Tela de Início. Compartilhe com quem vai junto.
+
+SEUS EVENTOS DO CALENDÁRIO, COM ALARME DE VERDADE
+O Calarmi lê o Calendário da Apple e coloca até 3 alertas em cada evento: no início, 15 minutos antes, uma hora antes. Se o evento tiver endereço, quando tocar aparece "Ir" no lugar de "Adiar": ele para o alarme e abre o Mapas com a rota. Se for uma reunião do Teams, Zoom ou Google Meet, aparece "Entrar" e você entra sem procurar o link.
+
+CONTROLE SEM DESBLOQUEAR
+Pare ou adie o alarme que está tocando pela Atividade ao Vivo e pela Dynamic Island.
+
+PESSOAS DE CONFIANÇA
+Deixe alguém da família ou da sua confiança administrar seus alarmes pelo próprio celular: o que essa pessoa programar toca no seu iPhone. O convite vai por link e você remove o acesso quando quiser.
+
+SEUS ALARMES EM TODOS OS SEUS DISPOSITIVOS
+Sincronizam pelo seu iCloud. Sem conta nova, sem senha nova.
+
+SEM ANÚNCIOS, SEM RASTREAMENTO, SEM SERVIDORES NOSSOS
+Seus alarmes são seus. Sem cadastro, sem análise de terceiros, não vendemos nada.
+
+CALARMI PLUS (OPCIONAL)
+O Calarmi é grátis. O Calarmi Plus adiciona os desafios Arcade, seus próprios toques do app Arquivos, contagens regressivas ilimitadas e ícones coloridos. Assinatura anual com 1 semana grátis, ou pagamento único vitalício. A assinatura renova automaticamente; cancele quando quiser nos ajustes da sua Conta Apple.
+
+Termos de uso: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+
+Para quem não quer perder o que importa.
+```
+
+La descripción no menciona el asistente ni Siri a propósito: las frases de Siri en portugués y el
+asistente con mensajes en portugués están implementados pero **sin probar en un dispositivo**.
+Cuando se prueben, añadir el párrafo «FALE E PRONTO» con un ejemplo real que haya funcionado.
 
 ---
 

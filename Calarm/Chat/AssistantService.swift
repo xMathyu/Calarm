@@ -250,7 +250,7 @@ final class AssistantService {
 
         let languageRule = replyLanguage.map {
             "The user writes in \($0): ALWAYS reply in \($0), even when a name or word in their message is in another language."
-        } ?? "Reply in the language the user wrote their last message in (Spanish → Spanish, English → English). Only if you truly can't tell: \(locale.identifier)."
+        } ?? "Reply in the language the user wrote their last message in (Spanish → Spanish, English → English, Portuguese → Portuguese). Only if you truly can't tell: \(locale.identifier)."
 
         let customNames = (CategoryStore.shared?.customCategories.map(\.name) ?? [])
             .filter { !$0.isEmpty }
@@ -391,15 +391,19 @@ final class AssistantService {
         .joined(separator: "\n")
     }
 
-    /// "Spanish" or "English" when the message clearly is one of them (the
-    /// app's two languages), nil for a bare "ok" or anything ambiguous.
+    /// "Spanish", "English" or "Portuguese" when the message clearly is one of
+    /// them (the app's languages), nil for a bare "ok" or anything ambiguous.
     nonisolated static func detectLanguage(of text: String) -> String? {
         let recognizer = NLLanguageRecognizer()
-        recognizer.languageConstraints = [.spanish, .english]
+        recognizer.languageConstraints = [.spanish, .english, .portuguese]
         recognizer.processString(text)
         guard let (language, confidence) = recognizer.languageHypotheses(withMaximum: 1).first,
               confidence >= 0.9 else { return nil }
-        return language == .spanish ? "Spanish" : "English"
+        switch language {
+        case .spanish: return "Spanish"
+        case .portuguese: return "Portuguese"
+        default: return "English"
+        }
     }
 
     /// Spells out which half of the day a time range means before the model

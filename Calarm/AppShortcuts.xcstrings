@@ -15,6 +15,12 @@
             "state" : "translated",
             "value" : "${applicationName} agenda una alarma"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} agenda um alarme"
+          }
         }
       }
     },
@@ -31,6 +37,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "${applicationName} crear alarma"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} criar alarme"
           }
         }
       }
@@ -49,6 +61,12 @@
             "state" : "translated",
             "value" : "${applicationName} cuál es mi próxima alarma"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} qual é meu próximo alarme"
+          }
         }
       }
     },
@@ -65,6 +83,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "${applicationName} cuándo es mi siguiente alarma"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} quando é meu próximo alarme"
           }
         }
       }
@@ -83,6 +107,12 @@
             "state" : "translated",
             "value" : "${applicationName} entiende esto"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} entenda isso"
+          }
         }
       }
     },
@@ -96,6 +126,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} inteligente"
+          }
+        },
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "${applicationName} inteligente"
@@ -117,6 +153,12 @@
             "state" : "translated",
             "value" : "${applicationName} mis alarmas de hoy"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} meus alarmes de hoje"
+          }
         }
       }
     },
@@ -133,6 +175,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "${applicationName} nueva alarma"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} novo alarme"
           }
         }
       }
@@ -151,6 +199,12 @@
             "state" : "translated",
             "value" : "${applicationName} pon una alarma"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} coloca um alarme"
+          }
         }
       }
     },
@@ -167,6 +221,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "${applicationName} próxima alarma"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} próximo alarme"
           }
         }
       }
@@ -185,6 +245,12 @@
             "state" : "translated",
             "value" : "${applicationName} qué tengo hoy"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} o que eu tenho hoje"
+          }
         }
       }
     },
@@ -201,6 +267,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "${applicationName} resumen del día"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} resumo do dia"
           }
         }
       }
@@ -219,6 +291,12 @@
             "state" : "translated",
             "value" : "Agrega una alarma en ${applicationName}"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione um alarme no ${applicationName}"
+          }
         }
       }
     },
@@ -235,6 +313,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alarmas de hoy en ${applicationName}"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alarmes de hoje no ${applicationName}"
           }
         }
       }
@@ -253,6 +337,12 @@
             "state" : "translated",
             "value" : "Crear alarma con IA en ${applicationName}"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar alarme com IA no ${applicationName}"
+          }
         }
       }
     },
@@ -269,6 +359,12 @@
             "state" : "translated",
             "value" : "Crear alarma en ${applicationName}"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar alarme no ${applicationName}"
+          }
         }
       }
     },
@@ -284,6 +380,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cuál es mi próxima alarma en ${applicationName}"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qual é meu próximo alarme no ${applicationName}"
           }
         }
       }
@@ -302,6 +404,12 @@
             "state" : "translated",
             "value" : "Nueva alarma en ${applicationName}"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novo alarme no ${applicationName}"
+          }
         }
       }
     },
@@ -318,6 +426,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pídele a ${applicationName} que cree una alarma"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peça ao ${applicationName} para criar um alarme"
           }
         }
       }
@@ -336,6 +450,12 @@
             "state" : "translated",
             "value" : "Pon una alarma con ${applicationName}"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloque um alarme com o ${applicationName}"
+          }
         }
       }
     },
@@ -352,6 +472,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pon una alarma en ${applicationName}"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloque um alarme no ${applicationName}"
           }
         }
       }
@@ -370,6 +496,12 @@
             "state" : "translated",
             "value" : "Ponme una alarma en ${applicationName}"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cria um alarme no ${applicationName}"
+          }
         }
       }
     },
@@ -386,6 +518,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Programa una alarma en ${applicationName}"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programe um alarme no ${applicationName}"
           }
         }
       }
@@ -404,6 +542,12 @@
             "state" : "translated",
             "value" : "Próxima alarma en ${applicationName}"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo alarme no ${applicationName}"
+          }
         }
       }
     },
@@ -419,6 +563,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Qué tengo hoy en ${applicationName}"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que eu tenho hoje no ${applicationName}"
           }
         }
       }
@@ -436,6 +586,12 @@
             "state" : "translated",
             "value" : "Recuérdame con ${applicationName}"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Me lembre com o ${applicationName}"
+          }
         }
       }
     },
@@ -452,6 +608,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resumen del día en ${applicationName}"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumo do dia no ${applicationName}"
           }
         }
       }

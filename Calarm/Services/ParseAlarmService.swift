@@ -112,7 +112,7 @@ final class ParseAlarmService {
           dateISO must be the NEXT occurrence of that weekday.
         - leadTimesMinutes: list of minutes before. [0]=at-start, [0,60]=at-start and 1h before, [1440]=1 day. Default [0].
 
-        Be concise. Respect the user's language (Spanish or English).
+        Be concise. Respect the user's language (Spanish, English or Portuguese).
         """)
 
         let session = LanguageModelSession(
