@@ -244,7 +244,8 @@ extension SharedRemindersService {
             iconKindRaw: event.iconKindRaw,
             iconValue: event.iconValue,
             photo: sharedPhoto(for: event),
-            updatedAt: event.updatedAt
+            updatedAt: event.updatedAt,
+            invitePreview: InvitePreview(countdown: event)
         )
         if let data = try? JSONEncoder().encode(payload) {
             record["payload"] = data as CKRecordValue
@@ -302,4 +303,8 @@ struct SharedCountdownPayload: Codable {
     /// JPEG de hasta 1080 px (`sharedPhoto`), solo si el icono es la foto.
     var photo: Data?
     var updatedAt: Date
+    /// Zona horaria, idioma, color e ícono para la página de invitación, que
+    /// lee la cuenta de CloudKit (ver `InvitePreview`). Ausente en payloads de
+    /// versiones anteriores a la 1.0.18.
+    var invitePreview: InvitePreview? = nil
 }

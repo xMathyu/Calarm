@@ -103,8 +103,9 @@ private final class InviteTextItem: NSObject, UIActivityItemSource {
         Self.message(for: invite)
     }
 
+    /// Mail's subject: the message's first line, the one that carries the news.
     func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
-        Self.intro(for: invite)
+        Self.intro(for: invite).components(separatedBy: "\n").first ?? ""
     }
 
     private static func intro(for invite: InviteDelivery) -> String {
@@ -130,6 +131,45 @@ private final class InviteTextItem: NSObject, UIActivityItemSource {
         var body = intro(for: invite)
         if let hint = installHint(for: invite) { body += "\n\n" + hint }
         return body
+    }
+}
+
+// MARK: - Invitation wording
+
+/// The text of an alarm or countdown invitation, written the way invites in
+/// other apps read (Partiful, Apple Invites, WhatsApp groups): a first line
+/// with the news, which is also what the notification and the chat list
+/// show, then one short line that asks to join. The link goes last, on its
+/// own, and its preview card carries the rest.
+enum InviteMessage {
+    /// "⏰ Despertar — mañana, 7:30" + "Únete a mi alarma en Calarmi…".
+    static func alarm(title: String, emoji: String?, date: Date) -> String {
+        let headline = "\(emoji ?? "⏰") \(title) — \(when(date))"
+        return headline + "\n" + appLocalized("Únete a mi alarma en Calarmi para que también suene en tu iPhone:")
+    }
+
+    /// "🎂 ¡Faltan 12 días para Cumpleaños de Ana!" + "Únete a mi cuenta
+    /// regresiva en Calarmi:".
+    static func countdown(title: String, emoji: String?, status: CountdownStatus) -> String {
+        let news: String = switch status {
+        case .upcoming(let days) where days == 1: appLocalized("¡Falta 1 día para \(title)!")
+        case .upcoming(let days): appLocalized("¡Faltan \(days) días para \(title)!")
+        case .today: appLocalized("¡\(title) es hoy!")
+        case .past: title
+        }
+        return "\(emoji ?? "⏳") \(news)\n" + appLocalized("Únete a mi cuenta regresiva en Calarmi:")
+    }
+
+    /// "mañana, 7:30", "tomorrow at 7:30 AM", "9 feb 2027, 7:30": the system's
+    /// own relative wording, in the app's language.
+    private static func when(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = LocalizationManager.shared.currentLocale
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        formatter.doesRelativeDateFormatting = true
+        formatter.formattingContext = .middleOfSentence
+        return formatter.string(from: date)
     }
 }
 

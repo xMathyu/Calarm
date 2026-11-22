@@ -345,14 +345,15 @@ struct CountdownDetailView: View {
             existingShare = share
             // Sin el enlace propio no hay invitación: un enlace de iCloud a
             // secas lo abriría como alarma una versión anterior de la app.
+            let preview = InvitePreview(countdown: event)
             guard let link = InviteLink.make(
                 kind: .countdown,
                 title: event.title,
                 date: event.target(),
                 hasTime: event.includesTime,
-                tintHex: event.colorHex,
-                emoji: event.iconKind == .emoji && isEmojiIcon(event.iconValue) ? event.iconValue : nil,
-                symbol: event.iconKind == .symbol ? event.iconValue : nil,
+                tintHex: preview.tintHex,
+                emoji: preview.emoji,
+                symbol: preview.symbol,
                 photo: event.iconKind == .photo ? event.photoData.flatMap(InvitePhoto.thumbnail(from:)) : nil,
                 shareURL: url
             ) else {
@@ -362,7 +363,11 @@ struct CountdownDetailView: View {
             pendingInvite = InviteDelivery(
                 title: event.title,
                 url: link,
-                customMessage: appLocalized("Te invito a la cuenta regresiva «\(event.title)» en Calarmi")
+                customMessage: InviteMessage.countdown(
+                    title: event.title,
+                    emoji: preview.emoji,
+                    status: event.status()
+                )
             )
         } catch {
             shareError = error.localizedDescription

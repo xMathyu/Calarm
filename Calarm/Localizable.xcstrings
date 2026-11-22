@@ -1651,24 +1651,112 @@
         }
       }
     },
-    "Te invito a la cuenta regresiva «%@» en Calarmi" : {
+    "¡%@ es hoy!" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Join my countdown “%@” on Calarmi"
+            "value" : "%@ is today!"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Te invito a la cuenta regresiva «%@» en Calarmi"
+            "value" : "¡%@ es hoy!"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Te convido para a contagem regressiva “%@” no Calarmi"
+            "value" : "%@ é hoje!"
+          }
+        }
+      }
+    },
+    "¡Falta 1 día para %@!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 day until %@!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Falta 1 día para %@!"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta 1 dia para %@!"
+          }
+        }
+      }
+    },
+    "¡Faltan %lld días para %@!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld days until %@!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Faltan %lld días para %@!"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faltam %lld dias para %@!"
+          }
+        }
+      }
+    },
+    "Únete a mi alarma en Calarmi para que también suene en tu iPhone:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join my alarm on Calarmi so it rings on your iPhone too:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Únete a mi alarma en Calarmi para que también suene en tu iPhone:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Participe do meu alarme no Calarmi para ele tocar também no seu iPhone:"
+          }
+        }
+      }
+    },
+    "Únete a mi cuenta regresiva en Calarmi:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join my countdown on Calarmi:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Únete a mi cuenta regresiva en Calarmi:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Participe da minha contagem regressiva no Calarmi:"
           }
         }
       }

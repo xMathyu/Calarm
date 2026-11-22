@@ -825,28 +825,29 @@ struct ReminderEditorView: View {
             // previews with the alarm's name and time, and so whoever doesn't
             // have the app yet lands on a page that offers it. Falling back to
             // the raw share URL keeps invites working if encoding ever fails.
-            // The card shows the alarm as the list does: its own color (a custom
-            // category's too, not just the built-in tint) and its own icon,
-            // resolved like `ReminderRowView` does. A photo travels as a tiny
-            // thumbnail; the category's symbol goes along in case it doesn't fit.
-            let style = categoryStore.style(for: r)
-            let ownIcon = r.symbolName.flatMap { $0.isEmpty ? nil : $0 }
-            let categorySymbol = style.iconKind == .symbol ? style.iconValue : "bell.fill"
-            let linkSymbol: String? = switch r.iconKind {
-            case .emoji: nil
-            case .symbol: ownIcon ?? categorySymbol
-            case .photo: categorySymbol
-            }
+            // Usually the link is just the share's token and the website reads the
+            // alarm from CloudKit. The rest only fills the JSON link built when
+            // the share URL has an odd shape: the card shows the alarm as the
+            // list does (`InvitePreview`), and a photo travels as a thumbnail.
+            let preview = InvitePreview(reminder: r, style: categoryStore.style(for: r))
             let inviteURL = InviteLink.make(
                 title: r.title,
                 date: r.date,
-                tintHex: style.color.toHex(),
-                emoji: r.iconKind == .emoji ? (ownIcon ?? "⭐️") : nil,
-                symbol: linkSymbol,
+                tintHex: preview.tintHex,
+                emoji: preview.emoji,
+                symbol: preview.symbol,
                 photo: r.iconKind == .photo ? r.photoData.flatMap(InvitePhoto.thumbnail(from:)) : nil,
                 shareURL: url
             ) ?? url
-            pendingInvite = InviteDelivery(title: r.title, url: inviteURL)
+            pendingInvite = InviteDelivery(
+                title: r.title,
+                url: inviteURL,
+                customMessage: InviteMessage.alarm(
+                    title: r.title,
+                    emoji: preview.emoji,
+                    date: r.date
+                )
+            )
         } catch {
             shareError = error.localizedDescription
         }

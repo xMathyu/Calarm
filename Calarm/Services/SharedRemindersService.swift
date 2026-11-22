@@ -170,6 +170,11 @@ final class SharedRemindersService {
             let record: CKRecord
             if let existingRecord = try await fetchRootRecord(for: recordID) {
                 if let existingShare = try await fetchShare(attachedTo: existingRecord, database: database) {
+                    // La página de invitación lee la alarma de este registro: que
+                    // lleve lo último (y el `invitePreview`, si lo compartió una
+                    // versión anterior).
+                    writeFields(from: reminder, to: existingRecord)
+                    _ = try? await database.modifyRecords(saving: [existingRecord], deleting: [])
                     let readyShare = try await prepareExistingShareForInvite(existingShare, database: database)
                     ShareDiagnostics.log("✅ share existente listo (url=\(readyShare.url != nil))")
                     return readyShare
@@ -712,7 +717,11 @@ final class SharedRemindersService {
                 : reminder.additionalSchedules.map {
                     SharePayload.ScheduleInfo(date: $0.date, recurrenceData: $0.recurrenceData)
                 },
-            challengeData: reminder.challenge == nil ? nil : reminder.challengeData
+            challengeData: reminder.challenge == nil ? nil : reminder.challengeData,
+            invitePreview: InvitePreview(
+                reminder: reminder,
+                style: CategoryStore.shared?.style(for: reminder) ?? CategoryStyle(builtin: reminder.category)
+            )
         )
     }
 
@@ -1217,6 +1226,11 @@ struct SharePayload: Codable {
     /// lo conserve en invitados y personas de confianza. Opcional/ausente = sin
     /// reto (emisores anteriores).
     var challengeData: Data? = nil
+    /// Lo que la página de invitación necesita y el resto del payload no dice
+    /// (zona horaria, idioma, color e ícono resueltos). La web lo lee de
+    /// CloudKit para dibujar un enlace que solo lleva el token del share.
+    /// Opcional/ausente en payloads de versiones anteriores a la 1.0.18.
+    var invitePreview: InvitePreview? = nil
 
     struct CustomCategoryInfo: Codable {
         var id: String

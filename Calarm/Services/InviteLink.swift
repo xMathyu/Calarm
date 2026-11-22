@@ -3,18 +3,26 @@
 //  Calarm
 //
 //  Calarm's own invitation links, e.g.
-//  `https://calarmi.mathyusolutions.com/i/<payload>/`.
+//  `https://calarmi.mathyusolutions.com/c/07628shg9cGxsh2Moi-46rp9A/`.
 //
 //  Before these, invites travelled as the raw `icloud.com/share/…` URL. That
 //  link only previews nicely inside iMessage, never shows *when* the alarm
 //  rings, and is a dead end for anyone who doesn't have Calarm yet — which is
 //  most people receiving an invitation.
 //
-//  The whole invitation is encoded into the URL itself: there is no server
-//  storing anything. The website decodes the same payload to render the preview
-//  card, and the app decodes it to recover the CloudKit share URL it must
-//  accept. `src/lib/invite.ts` in the calarm-web repo is the other half of this
-//  contract — the two must be changed together.
+//  Two shapes of the data segment exist:
+//  - The share token (1.0.18+): the id of the CloudKit share, the part after
+//    `icloud.com/share/`. That is all the link carries (~64 characters). The
+//    app rebuilds the share URL from it. The website reads the alarm itself
+//    from CloudKit (`src/lib/cloudkit.ts` in calarm-web), using the share's
+//    root record and the `InvitePreview` stored in its payload.
+//  - JSON (before 1.0.18): the whole invitation, base64url JSON with the full
+//    share URL (~330 characters). Links already sent use it, so it is still
+//    read. It is also still built as a fallback, when a share URL doesn't have
+//    the usual shape. `src/lib/invite.ts` in calarm-web decodes it.
+//
+//  There is no server storing anything of ours either way. Both shapes are a
+//  contract with the website — change them together.
 //
 
 import Foundation
@@ -56,6 +64,18 @@ enum InviteLink {
 
     /// Only CloudKit share URLs are ever carried or accepted.
     private static let shareURLPrefix = "https://www.icloud.com/share/"
+
+    /// Characters a share token may have, same rule as `SHARE_TOKEN` on the web.
+    /// A share URL with anything else (a query, a new shape) gets a JSON link.
+    private static let tokenAlphabet = Set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".unicodeScalars)
+
+    /// The language the website writes the invitation page in: "es", "en" or
+    /// "pt". Older versions of the website read anything but "en" as Spanish.
+    static func pageLanguage(
+        _ code: String = LocalizationManager.shared.currentLocale.language.languageCode?.identifier ?? "es"
+    ) -> String {
+        ["en", "pt"].contains(code) ? code : "es"
+    }
 
     /// The invitation, as it travels inside the link. Field names are
     /// single-letter on purpose: they end up in a URL people see.
@@ -105,6 +125,10 @@ enum InviteLink {
     /// the payload can't be encoded, in which case callers should fall back to
     /// sending `shareURL` directly — a plain link still works, it just previews
     /// poorly.
+    ///
+    /// Usually the link carries only the share's token, and every other
+    /// argument goes unused: the website reads them from CloudKit. They fill
+    /// the JSON link built when the share URL has an unexpected shape.
     static func make(
         kind: Kind = .alarm,
         title: String,
@@ -119,14 +143,24 @@ enum InviteLink {
     ) -> URL? {
         guard shareURL.absoluteString.hasPrefix(shareURLPrefix) else { return nil }
 
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = host
+
+        // The token is enough: the website reads the rest from CloudKit.
+        if let token = shareToken(of: shareURL) {
+            // The trailing slash is the site's canonical form; without it Vercel
+            // answers with a redirect.
+            components.path = "/\(kind.rawValue)/\(token)/"
+            return components.url
+        }
+
         let payload = Payload(
             v: version,
             t: title,
             d: date,
             tz: TimeZone.current.identifier,
-            // La web elige el idioma de la página con esto; una versión vieja
-            // de la web toma todo lo que no sea "en" como español.
-            l: ["en", "pt"].contains(languageCode) ? languageCode : "es",
+            l: pageLanguage(languageCode),
             c: tintHex,
             e: emoji,
             y: symbol,
@@ -136,17 +170,28 @@ enum InviteLink {
         )
 
         guard let data = try? encoder.encode(payload) else { return nil }
-        var components = URLComponents()
-        components.scheme = "https"
-        components.host = host
-        // The trailing slash is the site's canonical form; without it Vercel
-        // answers with a redirect.
         components.path = "/\(kind.rawValue)/\(base64URLEncoded(data))/"
         if let photo, !photo.isEmpty {
             // base64url's alphabet is already query-safe.
             components.percentEncodedQuery = "\(photoQueryName)=\(base64URLEncoded(photo))"
         }
         return components.url
+    }
+
+    /// The token of `https://www.icloud.com/share/<token>#<title>`. The
+    /// `#<title>` fragment is dropped: CloudKit finds a share by its token, and
+    /// the fragment is only a display hint.
+    private static func shareToken(of url: URL) -> String? {
+        let string = url.absoluteString
+        guard string.hasPrefix(shareURLPrefix) else { return nil }
+        let token = string.dropFirst(shareURLPrefix.count).prefix { $0 != "#" }
+        return isShareToken(token) ? String(token) : nil
+    }
+
+    /// A JSON segment is never this short (its smallest payload is ~150
+    /// characters), so the length alone tells the two shapes apart.
+    private static func isShareToken(_ token: Substring) -> Bool {
+        (10...64).contains(token.count) && token.unicodeScalars.allSatisfy(tokenAlphabet.contains)
     }
 
     // MARK: - Reading
@@ -184,8 +229,15 @@ enum InviteLink {
     /// other than iCloud — the link arrives from outside the app, so it is not
     /// to be trusted.
     static func shareURL(from url: URL) -> URL? {
-        guard let segment = dataSegment(of: url)?.segment,
-              let data = base64URLDecoded(segment),
+        guard let segment = dataSegment(of: url)?.segment else { return nil }
+
+        // A token can't escape iCloud's prefix: its alphabet has no `/`, `?`,
+        // `#` or `@`.
+        if isShareToken(Substring(segment)) {
+            return URL(string: shareURLPrefix + segment)
+        }
+
+        guard let data = base64URLDecoded(segment),
               let payload = try? decoder.decode(Payload.self, from: data),
               payload.v == version,
               payload.s.hasPrefix(shareURLPrefix)
@@ -214,5 +266,64 @@ enum InviteLink {
             base64.append(String(repeating: "=", count: 4 - remainder))
         }
         return Data(base64Encoded: base64)
+    }
+}
+
+// MARK: - Preview for the website
+
+/// What the invitation page needs that the rest of a shared payload doesn't
+/// say. Stored, optional, in the root record's `payload` JSON
+/// (`SharePayload.invitePreview`, `SharedCountdownPayload.invitePreview`), so
+/// the website can draw a link that carries only the share token. Adding it
+/// changed no CloudKit schema. Older apps ignore the key.
+///
+/// `src/lib/cloudkit.ts` in calarm-web reads it. Keep the field names in sync.
+struct InvitePreview: Codable, Equatable {
+    /// IANA zone of the sender, so the page shows the time they meant.
+    var timeZone: String
+    /// "es", "en" or "pt": the page's language.
+    var language: String
+    /// The color of the tile, `#RRGGBB`.
+    var tintHex: String?
+    /// The emoji drawn as the icon, when there is one.
+    var emoji: String?
+    /// Otherwise the SF Symbol name; the website draws a look-alike.
+    var symbol: String?
+
+    init(tintHex: String?, emoji: String?, symbol: String?) {
+        self.timeZone = TimeZone.current.identifier
+        self.language = InviteLink.pageLanguage()
+        self.tintHex = tintHex
+        self.emoji = emoji
+        self.symbol = symbol
+    }
+
+    /// An alarm drawn the way the list draws it (`ReminderRowView`): its
+    /// category's color (a custom category's too, not just the built-in tint)
+    /// and its own icon. A photo is read from the payload, but the category's
+    /// symbol goes along in case the photo can't be drawn.
+    @MainActor
+    init(reminder: Reminder, style: CategoryStyle) {
+        let ownIcon = reminder.symbolName.flatMap { $0.isEmpty ? nil : $0 }
+        let categorySymbol = style.iconKind == .symbol ? style.iconValue : "bell.fill"
+        let symbol: String? = switch reminder.iconKind {
+        case .emoji: nil
+        case .symbol: ownIcon ?? categorySymbol
+        case .photo: categorySymbol
+        }
+        self.init(
+            tintHex: style.color.toHex(),
+            emoji: reminder.iconKind == .emoji ? (ownIcon ?? "⭐️") : nil,
+            symbol: symbol
+        )
+    }
+
+    /// A countdown: its color and its emoji or symbol.
+    init(countdown event: CountdownEvent) {
+        self.init(
+            tintHex: event.colorHex,
+            emoji: event.iconKind == .emoji && isEmojiIcon(event.iconValue) ? event.iconValue : nil,
+            symbol: event.iconKind == .symbol ? event.iconValue : nil
+        )
     }
 }
