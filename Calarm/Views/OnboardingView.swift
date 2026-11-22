@@ -12,10 +12,14 @@ import SwiftUI
 
 struct OnboardingView: View {
     @Environment(AppSettings.self) private var settings
+    @Environment(SharedRemindersService.self) private var sharedService
 
     private enum Step: Equatable {
         case slides
         case requestingAlarms
+        /// «¿Cómo te llamas?», obligatorio: es lo que ven quienes comparten con
+        /// esta persona (iCloud no les da su nombre; ver `ShareNames`).
+        case name
         case finished
         case error(String)
     }
@@ -73,6 +77,13 @@ struct OnboardingView: View {
         ZStack {
             backgroundGradient
 
+            if step == .name {
+                NameEntryView { name in
+                    Task { await sharedService.saveMyName(name) }
+                    complete()
+                }
+                .transition(.move(edge: .trailing).combined(with: .opacity))
+            } else {
             VStack(spacing: 0) {
                 skipButton
 
@@ -91,6 +102,7 @@ struct OnboardingView: View {
                     .padding(.horizontal, DS.Spacing.xxxl)
                     .padding(.top, DS.Spacing.lg)
                     .padding(.bottom, DS.Spacing.xxl)
+            }
             }
         }
         .interactiveDismissDisabled(true)
@@ -176,7 +188,7 @@ struct OnboardingView: View {
         case .requestingAlarms:
             ProgressView("Solicitando permiso de alarmas…")
                 .controlSize(.regular)
-        case .finished:
+        case .name, .finished:
             EmptyView()
         case .error(let message):
             VStack(spacing: DS.Spacing.md) {
@@ -184,7 +196,7 @@ struct OnboardingView: View {
                     .font(.subheadline)
                     .foregroundStyle(.orange)
                     .multilineTextAlignment(.center)
-                Button("Continuar de todas formas") { complete() }
+                Button("Continuar de todas formas") { askForName() }
                     .buttonStyle(.bordered)
                 Button("Reintentar", action: startFlow)
                     .buttonStyle(.borderedProminent)
@@ -210,8 +222,15 @@ struct OnboardingView: View {
             defer { isWorking = false }
             step = .requestingAlarms
             _ = try? await alarmScheduler.requestAuthorization()
-            complete()
+            askForName()
         }
+    }
+
+    /// Último paso, salvo que ya tenga nombre (puesto en otro dispositivo de la
+    /// misma cuenta de iCloud).
+    private func askForName() {
+        guard ShareNames.myName == nil else { return complete() }
+        withAnimation(DS.Motion.smooth) { step = .name }
     }
 
     private func complete() {

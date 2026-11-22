@@ -12,8 +12,11 @@ struct SettingsView: View {
     @Environment(AppSettings.self) private var settings
     @Environment(ReminderScheduler.self) private var reminderScheduler
     @Environment(\.modelContext) private var modelContext
+    @Environment(SharedRemindersService.self) private var sharedService
 
     @State private var showingMirrorAccessAlert = false
+    /// «Tu nombre»: lo que ven quienes comparten con esta persona (`ShareNames`).
+    @State private var myName = ShareNames.myName ?? ""
     @State private var plus = PlusStore.shared
     @State private var showingPaywall = false
     @State private var isRestoring = false
@@ -64,6 +67,18 @@ struct SettingsView: View {
                     sectionHeader("Categorías", systemImage: "square.grid.2x2.fill")
                 } footer: {
                     Text("Crea categorías propias con su color y emoji o ícono.")
+                }
+
+                Section {
+                    TextField("Tu nombre", text: $myName)
+                        .textContentType(.name)
+                        .textInputAutocapitalization(.words)
+                        .submitLabel(.done)
+                        .onSubmit(saveMyName)
+                } header: {
+                    sectionHeader("Tu nombre", systemImage: "person.crop.circle.fill")
+                } footer: {
+                    Text("Así te ven las personas con las que compartes alarmas y cuentas regresivas. iCloud no le da tu nombre a Calarmi, por eso se pide aquí.")
                 }
 
                 Section {
@@ -257,6 +272,10 @@ struct SettingsView: View {
             }
             .formStyle(.grouped)
             .navigationTitle("Ajustes")
+            // Lo escrito en «Tu nombre» se guarda también al salir sin pulsar Listo.
+            .onDisappear(perform: saveMyName)
+            // Puesto desde el aviso de otra pantalla, o en otro dispositivo.
+            .onAppear { myName = ShareNames.myName ?? "" }
             .alert("Sin acceso al calendario", isPresented: $showingMirrorAccessAlert) {
                 Button("Abrir Ajustes") {
                     if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -465,6 +484,17 @@ struct SettingsView: View {
             get: { settings.alarmTone },
             set: { if let tone = $0 { settings.alarmTone = tone } }
         )
+    }
+
+    /// El nombre es obligatorio: borrarlo del todo deja el que había.
+    private func saveMyName() {
+        let typed = myName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !typed.isEmpty else {
+            myName = ShareNames.myName ?? ""
+            return
+        }
+        guard typed != ShareNames.myName else { return }
+        Task { await sharedService.saveMyName(typed) }
     }
 
     private func sectionHeader(_ title: LocalizedStringKey, systemImage: String) -> some View {

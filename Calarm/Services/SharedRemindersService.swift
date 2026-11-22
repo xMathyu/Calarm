@@ -51,7 +51,7 @@ struct SharedByPerson: Equatable {
 /// A share participant rendered for the UI: who they are and whether they joined.
 struct ShareParticipantInfo: Identifiable {
     let id = UUID()
-    let name: String
+    var name: String
     let email: String?
     let phone: String?
     let status: CKShare.ParticipantAcceptanceStatus
@@ -59,6 +59,11 @@ struct ShareParticipantInfo: Identifiable {
     /// Stable CloudKit user id — link-joined (public) participants often carry
     /// no email/phone in `lookupInfo`, so removal matches on this first.
     var userRecordName: String? = nil
+    /// The participant's id in this share, the same on both sides: the key of
+    /// the name they published themselves (`ShareNames`).
+    var participantID: String? = nil
+    /// False while `name` is only the «Alguien» placeholder.
+    var hasName: Bool = true
 
     /// Localized acceptance label, e.g. "Aceptó" / "Pendiente".
     var statusLabel: String {
@@ -102,6 +107,68 @@ final class SharedRemindersService {
         var isAccepting: Bool { self == .accepting || self == .acceptingCountdown }
     }
     var incomingShare: IncomingShareStatus?
+
+    /// The person has no name yet: `ContentView` shows the «¿Cómo te llamas?»
+    /// sheet, which can't be dismissed without one. Without it, whoever shares
+    /// with them sees «Alguien»: iCloud never gives the name of someone who
+    /// joined through the invitation link (see `ShareNames`). New people set it
+    /// in the onboarding; this catches everyone who was already using the app.
+    var asksForName = false
+
+    /// Re-checked on launch, on every return to the app and when iCloud brings
+    /// a name set on another device (which closes the sheet).
+    func refreshNameRequirement() {
+        asksForName = ShareNames.myName == nil
+    }
+    /// Shares joined while the person had no name yet: it gets published there
+    /// as soon as they type it.
+    @ObservationIgnored private var sharesAwaitingName: [CKShare] = []
+    /// Received shares whose name publishing already ran this session, so the
+    /// scan doesn't fetch them again every time.
+    @ObservationIgnored private var namedShareIDs: Set<CKRecord.ID> = []
+
+    /// Right after joining a share (alarm, countdown or trusted-people list):
+    /// publish this person's name there, or ask for it.
+    func announceMyself(in share: CKShare) {
+        guard ShareNames.myName != nil else {
+            sharesAwaitingName.append(share)
+            asksForName = true
+            return
+        }
+        Task { await ShareNames.publishMine(in: [share], container: cloudKitContainer) }
+    }
+
+    /// The name typed in the alert or in Settings: saved, then published on
+    /// every share this person is in (the scan finds the received ones).
+    func saveMyName(_ name: String) async {
+        await ShareNames.setMyName(name, container: cloudKitContainer)
+        asksForName = ShareNames.myName == nil
+        let waiting = sharesAwaitingName
+        sharesAwaitingName = []
+        namedShareIDs = []
+        await ShareNames.publishMine(in: waiting, container: cloudKitContainer)
+        await importAllSharedReminders()
+    }
+
+    /// After a scan: this person's name goes on every received share they're
+    /// in. The share records usually come with the zone's changes; any that
+    /// didn't are fetched once per session. With no name yet, it's asked once.
+    private func publishMyName(found shares: [CKShare], referenced shareIDs: Set<CKRecord.ID>) async {
+        guard !shareIDs.isEmpty || !shares.isEmpty else { return }
+        guard ShareNames.myName != nil else {
+            asksForName = true
+            return
+        }
+        var all = shares.filter { !namedShareIDs.contains($0.recordID) }
+        let missing = shareIDs.subtracting(shares.map(\.recordID)).subtracting(namedShareIDs)
+        if !missing.isEmpty,
+           let fetched = try? await cloudKitContainer.sharedCloudDatabase.records(for: Array(missing)) {
+            all += fetched.values.compactMap { try? $0.get() as? CKShare }
+        }
+        guard !all.isEmpty else { return }
+        namedShareIDs.formUnion(all.map(\.recordID))
+        await ShareNames.publishMine(in: all, container: cloudKitContainer)
+    }
 
     /// Invitations just accepted. A scan that listed the shared zones before
     /// `accept()` finished — or right after, while CloudKit still catches up —
@@ -236,15 +303,59 @@ final class SharedRemindersService {
     /// status), for showing who has joined inline in the owner's detail view.
     func participantInfos(of share: CKShare) -> [ShareParticipantInfo] {
         share.participants.map { participant in
-            ShareParticipantInfo(
-                name: Self.displayName(participant.userIdentity),
+            let known = Self.knownDisplayName(participant.userIdentity)
+            return ShareParticipantInfo(
+                name: known ?? appLocalized("Alguien"),
                 email: participant.userIdentity.lookupInfo?.emailAddress,
                 phone: participant.userIdentity.lookupInfo?.phoneNumber,
                 status: participant.acceptanceStatus,
                 isOwner: participant.role == .owner,
-                userRecordName: participant.userIdentity.userRecordID?.recordName
+                userRecordName: participant.userIdentity.userRecordID?.recordName,
+                participantID: participant.participantID,
+                hasName: known != nil
             )
         }
+    }
+
+    /// Same, filling in the name each person published for themselves wherever
+    /// iCloud gave none (people who joined through the invitation link always
+    /// arrive nameless). Also publishes this person's own name for the share,
+    /// so the people on the other side see who shared it.
+    func namedParticipantInfos(of share: CKShare) async -> [ShareParticipantInfo] {
+        Task { await ShareNames.publishMine(in: [share], container: cloudKitContainer) }
+        var infos = participantInfos(of: share)
+        let nameless = infos.compactMap { info -> (participantID: String, userRecordName: String?)? in
+            guard !info.hasName, let id = info.participantID else { return nil }
+            return (id, info.userRecordName)
+        }
+        let published = await ShareNames.names(for: nameless, container: cloudKitContainer)
+        for index in infos.indices {
+            if let id = infos[index].participantID, let name = published[id] {
+                infos[index].name = name
+                infos[index].hasName = true
+            }
+        }
+        return infos
+    }
+
+    /// Who shared what was just accepted, when iCloud didn't say: the name the
+    /// owner published, kept in memory like the rest of `ownerNames`.
+    func rememberOwner(of share: CKShare, for id: UUID) {
+        guard ownerNames[id] == nil else { return }
+        Task {
+            if let owner = await ownerPerson(of: share) { ownerNames[id] = owner }
+        }
+    }
+
+    /// A share's owner as a person to show, from iCloud or, failing that, from
+    /// the name they published themselves (`ShareNames`).
+    func ownerPerson(of share: CKShare) async -> SharedByPerson? {
+        if let owner = Self.person(share.owner.userIdentity) { return owner }
+        let published = await ShareNames.names(
+            for: [(share.owner.participantID, share.owner.userIdentity.userRecordID?.recordName)],
+            container: cloudKitContainer
+        )
+        return published[share.owner.participantID].map { SharedByPerson(name: $0, email: nil, phone: nil) }
     }
 
     /// A share's owner as a person to show (recipient side), or nil when iCloud
@@ -271,7 +382,7 @@ final class SharedRemindersService {
     func owner(of record: CKRecord) async -> SharedByPerson? {
         guard let shareID = record.share?.recordID,
               let share = try? await cloudKitContainer.sharedCloudDatabase.record(for: shareID) as? CKShare,
-              let owner = Self.person(share.owner.userIdentity)
+              let owner = await ownerPerson(of: share)
         else { return nil }
         ownerNames[candidateLocalID(for: record)] = owner
         return owner
@@ -422,7 +533,7 @@ final class SharedRemindersService {
         let guardedID = Self.rootRecordID(of: metadata).flatMap { UUID(uuidString: $0.recordName) }
         if let guardedID { acceptingIDs.insert(guardedID) }
         do {
-            _ = try await cloudKitContainer.accept(metadata)
+            let acceptedShare = try await cloudKitContainer.accept(metadata)
             ShareDiagnostics.log("✅ accept() OK")
             let reminder = try await ingestSharedRecord(from: metadata)
             acceptErrorMessage = nil
@@ -433,6 +544,8 @@ final class SharedRemindersService {
             )
             Self.log.info("acceptShare: ingested shared reminder OK")
             ShareDiagnostics.log("✅ ingesta completa")
+            announceMyself(in: acceptedShare)
+            rememberOwner(of: acceptedShare, for: reminder.id)
             Task { await releaseAcceptGuard(guardedID) }
         } catch {
             let wrapped = SharedRemindersError.acceptFailed(error)
@@ -597,6 +710,9 @@ final class SharedRemindersService {
     }
 
     func shareWithInviteURL(_ share: CKShare, database: CKDatabase) async throws -> CKShare {
+        // Every invitation (alarm, countdown, trusted people) comes through here:
+        // the owner's name goes on the share for whoever accepts it.
+        Task { await ShareNames.publishMine(in: [share], container: cloudKitContainer) }
         if share.url != nil { return share }
 
         if let fetched = try? await database.record(for: share.recordID) as? CKShare,
@@ -900,6 +1016,10 @@ final class SharedRemindersService {
             // Shared countdowns live in the same zones, as their own record type.
             var countdownRecords: [CKRecord] = []
             var countdownIDs: Set<UUID> = []
+            // The shares behind what's imported, to publish this person's name
+            // there (`publishMyName`). Share records often come with the changes.
+            var shareRecords: [CKShare] = []
+            var importedShareIDs: Set<CKRecord.ID> = []
             for zone in zones {
                 // SAFETY: never ingest the delegation zone here. Those records are
                 // someone else's alarms that this device (acting as a helper) only
@@ -924,6 +1044,10 @@ final class SharedRemindersService {
                             continue
                         }
                         let record = modification.record
+                        if let share = record as? CKShare {
+                            shareRecords.append(share)
+                            continue
+                        }
                         if record.recordType == Self.countdownRecordType {
                             let id = candidateLocalID(for: record)
                             countdownIDs.insert(id)
@@ -934,6 +1058,7 @@ final class SharedRemindersService {
                                 await leaveShare(of: record)
                             } else {
                                 countdownRecords.append(record)
+                                if let shareID = record.share?.recordID { importedShareIDs.insert(shareID) }
                             }
                             continue
                         }
@@ -954,6 +1079,7 @@ final class SharedRemindersService {
                         }
                         let applied = applyRecord(record, in: context)
                         if applied.scheduleChanged { rescheduled.append((applied.reminder, record)) }
+                        if let shareID = record.share?.recordID { importedShareIDs.insert(shareID) }
                         imported += 1
                     }
                     token = changes.changeToken
@@ -985,6 +1111,10 @@ final class SharedRemindersService {
             // Same for the recipient's personal avisos — a re-share starts fresh.
             ShareLeadTimesStore.prune(presentIDs: presentIDs)
             ShareChangeNotifier.prune(presentIDs: presentIDs)
+            await publishMyName(
+                found: shareRecords.filter { importedShareIDs.contains($0.recordID) },
+                referenced: importedShareIDs
+            )
         } catch {
             Self.log.error("importAllSharedReminders failed: \(error.localizedDescription, privacy: .public)")
             ShareDiagnostics.log("❌ scan error: \(error.localizedDescription)")

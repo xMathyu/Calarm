@@ -88,7 +88,12 @@ struct CalarmApp: App {
         AppDelegate.remoteChangeHandler = resyncSharedData
         // An invitation deleted on another device of this iCloud account: the
         // re-scan drops this device's copy too.
-        DeletedSharesStore.startSyncing(onChange: resyncSharedData)
+        // Same channel (iCloud key-value) carries the name set on another device:
+        // the «¿Cómo te llamas?» sheet closes on its own when it arrives.
+        DeletedSharesStore.startSyncing(onChange: {
+            sharedRemindersService.refreshNameRequirement()
+            await resyncSharedData()
+        })
 
         // Los widgets leen un resumen que escribe la app: se rehace tras cada
         // guardado de SwiftData (editor, lista, asistente, Siri, cuentas
@@ -107,6 +112,18 @@ struct CalarmApp: App {
         #if DEBUG
         if DemoData.isRequested {
             DemoData.seed(into: modelContainer, settings: settings)
+        }
+        if ProcessInfo.processInfo.arguments.contains("-demoNoName") {
+            ShareNames.forgetForDemo()
+        }
+        // `-demoAlarmIn <segundos>`: una alarma de prueba que suena dentro de
+        // tanto, para ver sonar una alarma de verdad (p. ej. tras `-demoLoseAlarms`).
+        let launchArgs = ProcessInfo.processInfo.arguments
+        if let i = launchArgs.firstIndex(of: "-demoAlarmIn"), i + 1 < launchArgs.count,
+           let seconds = Double(launchArgs[i + 1]) {
+            let reminder = Reminder(title: "Prueba AlarmKit", date: Date().addingTimeInterval(seconds))
+            modelContainer.mainContext.insert(reminder)
+            try? modelContainer.mainContext.save()
         }
         #endif
     }
@@ -168,7 +185,28 @@ struct CalarmApp: App {
                 // Aparte: el aviso del permiso espera a que la persona conteste, y
                 // el arranque de abajo no tiene por qué esperarla.
                 Task { await requestCalendarAccessIfNeeded() }
+                // Sin nombre, la hoja «¿Cómo te llamas?» (ver `ShareNames`).
+                sharedRemindersService.refreshNameRequirement()
+                #if DEBUG
+                // `-demoLoseAlarms`: el sistema «pierde» las alarmas y el store no
+                // se entera, como en el iPhone de Mathyu (2026-11-21). El sync de
+                // abajo tiene que volver a programarlas.
+                let args = ProcessInfo.processInfo.arguments
+                if args.contains("-demoLoseAlarms") {
+                    alarmScheduler.dropSystemAlarmsKeepingStore()
+                    ShareDiagnostics.log("🧪 alarmas quitadas de AlarmKit: quedan \(alarmScheduler.systemAlarmCount)")
+                }
+                #endif
                 await syncAllReminders()
+                #if DEBUG
+                if args.contains("-demoLoseAlarms") || args.contains("-demoAlarmCount") {
+                    ShareDiagnostics.log("🧪 AlarmKit tiene \(alarmScheduler.systemAlarmCount) alarma(s)")
+                }
+                // `-demoAskName`: la hoja «¿Cómo te llamas?», como sin nombre puesto.
+                if args.contains("-demoAskName") {
+                    sharedRemindersService.asksForName = true
+                }
+                #endif
                 // Si arranca con una alarma con reto sonando, el reto sale ya.
                 challengeCoordinator.presentIfAlerting()
                 // Cancel system alarms that no longer belong to anything: tracked
@@ -215,6 +253,7 @@ struct CalarmApp: App {
                 }
                 if newPhase == .active, settings.onboardingCompleted {
                     challengeCoordinator.presentIfAlerting()
+                    sharedRemindersService.refreshNameRequirement()
                     Task { await syncAllReminders() }
                     Task { await teamsCoordinator?.sync() }
                     // Re-scan on foreground — this is when a freshly accepted

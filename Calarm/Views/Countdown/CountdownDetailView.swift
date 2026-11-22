@@ -383,7 +383,12 @@ struct CountdownDetailView: View {
         }
         let share = await sharedService.existingShare(forCountdown: event)
         existingShare = share
+        // Los nombres que cada invitado publicó (iCloud no da el de quien entra
+        // por el enlace); mientras llegan, la lista ya se ve.
         participants = share.map { sharedService.participantInfos(of: $0).filter { !$0.isOwner } } ?? []
+        if let share {
+            participants = await sharedService.namedParticipantInfos(of: share).filter { !$0.isOwner }
+        }
     }
 
     /// Vuelve a la lista y borra después: si se borra con la pantalla todavía

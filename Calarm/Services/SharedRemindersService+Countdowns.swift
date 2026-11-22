@@ -132,7 +132,7 @@ extension SharedRemindersService {
         let guardedID = Self.rootRecordID(of: metadata).flatMap { UUID(uuidString: $0.recordName) }
         if let guardedID { acceptingIDs.insert(guardedID) }
         do {
-            _ = try await cloudKitContainer.accept(metadata)
+            let acceptedShare = try await cloudKitContainer.accept(metadata)
             guard let rootRecordID = Self.rootRecordID(of: metadata) else {
                 throw SharedRemindersError.shareUnavailable
             }
@@ -158,6 +158,8 @@ extension SharedRemindersService {
                 ownerName: Self.knownDisplayName(metadata.ownerIdentity)
             )
             ShareDiagnostics.log("✅ cuenta regresiva '\(event.title)' agregada")
+            announceMyself(in: acceptedShare)
+            rememberOwner(of: acceptedShare, for: event.id)
             Task { await releaseAcceptGuard(guardedID) }
         } catch {
             ShareDiagnostics.log("❌ aceptar cuenta: \(error.localizedDescription)")

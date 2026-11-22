@@ -8,6 +8,10 @@
 		<string>applinks:calarm-puce.vercel.app</string>
 		<string>applinks:calarmi.vercel.app</string>
 	</array>
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
 	<key>aps-environment</key>
 	<string>development</string>
 	<key>com.apple.developer.icloud-container-identifiers</key>

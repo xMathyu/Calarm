@@ -16017,6 +16017,138 @@
           }
         }
       }
+    },
+    "¿Cómo te llamas?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's your name?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cómo te llamas?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qual é o seu nome?"
+          }
+        }
+      }
+    },
+    "Tu nombre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your name"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu nombre"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu nome"
+          }
+        }
+      }
+    },
+    "Así te verán quienes comparten alarmas y cuentas regresivas contigo. Puedes cambiarlo en Ajustes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is how people who share alarms and countdowns with you will see you. You can change it in Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Así te verán quienes comparten alarmas y cuentas regresivas contigo. Puedes cambiarlo en Ajustes."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É assim que as pessoas que compartilham alarmes e contagens regressivas com você vão te ver. Você pode mudar isso nos Ajustes."
+          }
+        }
+      }
+    },
+    "Así te ven las personas con las que compartes alarmas y cuentas regresivas. iCloud no le da tu nombre a Calarmi, por eso se pide aquí." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is how the people you share alarms and countdowns with see you. iCloud doesn't give Calarmi your name, so it's asked here."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Así te ven las personas con las que compartes alarmas y cuentas regresivas. iCloud no le da tu nombre a Calarmi, por eso se pide aquí."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É assim que as pessoas com quem você compartilha alarmes e contagens regressivas te veem. O iCloud não passa seu nome para o Calarmi, por isso ele é pedido aqui."
+          }
+        }
+      }
+    },
+    "o escríbelo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "or type it"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o escríbelo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ou digite"
+          }
+        }
+      }
+    },
+    "Apple no compartió tu nombre. Escríbelo aquí." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple didn't share your name. Type it here."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple no compartió tu nombre. Escríbelo aquí."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Apple não compartilhou seu nome. Digite aqui."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

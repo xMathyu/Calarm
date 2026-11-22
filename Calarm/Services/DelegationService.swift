@@ -200,7 +200,7 @@ final class DelegationService {
     /// owner (the principal themselves).
     func participantInfos() async -> [ShareParticipantInfo] {
         guard let share = await existingZoneShare() else { return [] }
-        return sharing.participantInfos(of: share).filter { !$0.isOwner }
+        return await sharing.namedParticipantInfos(of: share).filter { !$0.isOwner }
     }
 
     /// Removes a helper from the share. Matches by CloudKit user id first —
@@ -491,8 +491,10 @@ final class DelegationService {
     /// the principal's shared zone, surfaced read/write via `helperFetch…`.
     func acceptDelegationShare(metadata: CKShare.Metadata) async {
         do {
-            _ = try await cloudKitContainer.accept(metadata)
+            let acceptedShare = try await cloudKitContainer.accept(metadata)
             ShareDiagnostics.log("🤝 delegación aceptada")
+            // Que quien me invitó vea mi nombre en «Personas de confianza».
+            sharing.announceMyself(in: acceptedShare)
             // Nudge any open "Listas que administro" view to reload now that this
             // device can see the principal's zone.
             NotificationCenter.default.post(name: .calarmSharedDataChanged, object: nil)
@@ -510,7 +512,8 @@ final class DelegationService {
         for zone in zones where zone.zoneID.zoneName == Self.zoneName {
             let shareID = CKRecord.ID(recordName: CKRecordNameZoneWideShare, zoneID: zone.zoneID)
             let share = try? await database.record(for: shareID) as? CKShare
-            let name = SharedRemindersService.displayName(share?.owner.userIdentity)
+            let published = if let share { await sharing.ownerPerson(of: share)?.name } else { String?.none }
+            let name = published ?? SharedRemindersService.displayName(share?.owner.userIdentity)
             principals.append(DelegationPrincipal(id: zone.zoneID.ownerName, zoneID: zone.zoneID, name: name))
         }
         return principals

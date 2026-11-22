@@ -110,6 +110,20 @@ struct ContentView: View {
                 break
             }
         }
+        // Everyone needs a name: whoever shares with this person would see
+        // «Alguien» otherwise, since iCloud doesn't give it (see `ShareNames`).
+        // New people set it in the onboarding; this sheet catches everyone who
+        // was already using the app, and can't be closed without one.
+        .sheet(isPresented: Binding(
+            get: { sharedService.asksForName && settings.onboardingCompleted },
+            set: { _ in }
+        )) {
+            NameEntryView { name in
+                Task { await sharedService.saveMyName(name) }
+                sharedService.asksForName = false
+            }
+            .interactiveDismissDisabled()
+        }
         .task(id: sharedService.incomingShare) {
             guard let status = sharedService.incomingShare else { return }
             // The confirmation goes away on its own; the «agregando…» one only
