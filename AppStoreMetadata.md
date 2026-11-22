@@ -511,6 +511,40 @@ Alemán:
 • Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
+## What's New (1.0.18)
+
+Español:
+```
+• Nuevo: tu nombre. Lo pones una vez, o lo tomas de tu cuenta de Apple, y quienes comparten alarmas y cuentas regresivas contigo ven quién eres en lugar de «Alguien»
+• Corregido: una alarma podía quedarse sin programar y no sonar, por ejemplo una que te compartieron. Ahora Calarmi revisa cada alarma con el sistema y la vuelve a programar si hace falta, y ya no suena repetida
+• Corregido: al posponer una alarma con varios avisos, los pospuestos se acumulaban y sonaban varios a la vez. Ahora queda uno solo, y «Detener» los calla todos
+• Las invitaciones llegan con un enlace más corto y un mensaje que dice de un vistazo de qué se trata
+```
+
+Inglés:
+```
+• New: your name. Set it once, or take it from your Apple Account, and people who share alarms and countdowns with you see who you are instead of "Someone"
+• Fixed: an alarm could end up unscheduled and not ring, for example one shared with you. Calarmi now checks every alarm with the system and schedules it again when needed, and it no longer rings twice
+• Fixed: snoozing an alarm with several alerts stacked the snoozes so several rang at once. Now there's just one, and Stop silences them all
+• Invitations come with a shorter link and a message that says at a glance what it's about
+```
+
+Alemán:
+```
+• Neu: dein Name. Gib ihn einmal ein oder übernimm ihn aus deinem Apple Account, und wer Wecker und Countdowns mit dir teilt, sieht, wer du bist, statt „Someone"
+• Behoben: Ein Wecker konnte ungeplant bleiben und nicht klingeln, zum Beispiel ein mit dir geteilter. Calarmi prüft jetzt jeden Wecker beim System und plant ihn bei Bedarf neu, und er klingelt nicht mehr doppelt
+• Behoben: Beim Schlummern eines Weckers mit mehreren Erinnerungen stapelten sich die Schlummerzeiten und mehrere klingelten gleichzeitig. Jetzt bleibt nur eine, und „Stopp" beendet alle
+• Einladungen kommen mit einem kürzeren Link und einer Nachricht, die auf einen Blick sagt, worum es geht
+```
+
+Portugués:
+```
+• Novo: seu nome. Defina uma vez, ou use o da sua conta Apple, e quem compartilha alarmes e contagens regressivas com você vê quem você é em vez de "Alguém".
+• Corrigido: um alarme podia ficar sem agendamento e não tocar, por exemplo um compartilhado com você. Agora o Calarmi confere cada alarme com o sistema e agenda de novo quando precisa, e ele não toca mais repetido.
+• Corrigido: ao adiar um alarme com vários avisos, os adiamentos se acumulavam e vários tocavam juntos. Agora fica só um, e "Parar" silencia todos.
+• Os convites chegam com um link mais curto e uma mensagem que diz de cara do que se trata.
+```
+
 ## What's New (1.0.17)
 
 La 1.0.16 nunca salió: se retiró de la revisión y se reenvió como 1.0.17 con el dominio propio, así que
