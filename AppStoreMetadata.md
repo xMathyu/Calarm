@@ -922,7 +922,7 @@ Inglés:
 
 | Categoría | Recolectamos | Para qué | Asociado al usuario | Tracking |
 |---|---|---|---|---|
-| Contact Info | No | — | — | — |
+| Contact Info | **Name** (desde 1.0.18) | App Functionality: el nombre que la persona escribe (o da «Continuar con Apple») para que quienes comparten con ella la vean en «Personas» / «Compartido por». Se guarda en la base pública de CloudKit de la app (`CalarmPersonName`). **Hay que declararlo en App Store Connect → App Privacy.** | Sí | No |
 | Health & Fitness | No | — | — | — |
 | Financial Info | No | — | — | — |
 | Location | No | — | — | — |
