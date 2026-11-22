@@ -59,6 +59,14 @@ struct CalarmApp: App {
         // proceso, así que el hook llega aunque la app estuviera cerrada.
         StopAlarmIntent.onStop = { alarmID in
             await challengeCoordinator.userStopped(alarmID: alarmID)
+            // Lo que quede sonando o pospuesto de la misma alarma (otro de sus
+            // avisos) se calla con el mismo «Detener».
+            await alarmScheduler.userStopped(alarmID: alarmID)
+        }
+        // «Posponer» en una alarma con varios avisos: los pospuestos no se
+        // apilan con los avisos que vienen detrás.
+        SnoozeAlarmIntent.onSnooze = { alarmID in
+            await alarmScheduler.userSnoozed(alarmID: alarmID)
         }
         self.alarmScheduler = alarmScheduler
         self.calendarSource = calendarSource

@@ -280,6 +280,118 @@ final class AlarmScheduler {
         }
     }
 
+    // MARK: - Varios avisos de una misma alarma
+
+    /// Cuánto puede llegar el siguiente aviso después de que termine un posponer
+    /// y aun así contar como «a la vez».
+    static let snoozeMergeWindow: TimeInterval = 60
+
+    /// Hook de «Posponer».
+    ///
+    /// Una alarma con varios avisos (20 min antes, 10 antes y a la hora) son
+    /// varias alarmas de AlarmKit, cada una con su propio posponer, y los
+    /// pospuestos se apilaban: el aviso de las 9:40 pospuesto 10 minutos volvía
+    /// a sonar a las 9:50 junto con el aviso de las 9:50, a las 10:00 sonaban
+    /// tres a la vez, y había que detenerlas una por una (2026-11-21).
+    ///
+    /// Ahora de cada alarma queda una sola cosa por volver a sonar:
+    /// - lo que siga sonando o pospuesto de esa misma alarma se calla;
+    /// - si otro aviso de la alarma suena antes de que acabe el posponer (o casi
+    ///   a la vez), el pospuesto se detiene y ese aviso hace de posponer.
+    ///
+    /// `true` cuando el posponer quedó en manos del siguiente aviso.
+    @discardableResult
+    func userSnoozed(alarmID: UUID, now: Date = Date()) -> Bool {
+        guard let owner = store.owner(ofAlarmID: alarmID),
+              let systemAlarms = try? manager.alarms
+        else { return false }
+        let entries = store.allEntries(forOwner: owner.ownerID)
+        stopRingingOrSnoozed(entries, systemAlarms: systemAlarms, except: alarmID, now: now)
+
+        // Lo que dura el posponer se lee de la propia alarma: es el que tenía
+        // Ajustes cuando se programó, que puede no ser el de ahora.
+        guard let snooze = systemAlarms.first(where: { $0.id == alarmID })?.countdownDuration?.postAlert,
+              let next = Self.avisoCoveringSnooze(
+                  entries,
+                  snoozedID: alarmID,
+                  snoozeSeconds: snooze,
+                  inSystem: Set(systemAlarms.map(\.id)),
+                  now: now
+              )
+        else { return false }
+        try? manager.stop(id: alarmID)
+        let when = next.formatted(date: .omitted, time: .shortened)
+        ShareDiagnostics.log("🔕 Posponer: el aviso de las \(when) hace de posponer")
+        return true
+    }
+
+    /// Hook de «Detener»: lo demás de la misma alarma que esté sonando o
+    /// pospuesto se calla también. Antes detener una dejaba sonando las otras.
+    func userStopped(alarmID: UUID, now: Date = Date()) {
+        guard let owner = store.owner(ofAlarmID: alarmID),
+              let systemAlarms = try? manager.alarms
+        else { return }
+        stopRingingOrSnoozed(
+            store.allEntries(forOwner: owner.ownerID),
+            systemAlarms: systemAlarms,
+            except: alarmID,
+            now: now
+        )
+    }
+
+    private func stopRingingOrSnoozed(
+        _ entries: [(alarmID: UUID, fireDate: Date)],
+        systemAlarms: [Alarm],
+        except keep: UUID,
+        now: Date
+    ) {
+        let states = Dictionary(systemAlarms.map { ($0.id, $0.state) }, uniquingKeysWith: { first, _ in first })
+        let toStop = Self.ringingOrSnoozed(entries, states: states, except: keep, now: now)
+        for id in toStop {
+            try? manager.stop(id: id)
+        }
+        if !toStop.isEmpty {
+            ShareDiagnostics.log("🔕 Se callan \(toStop.count) aviso(s) repetidos de la misma alarma")
+        }
+    }
+
+    /// Las alarmas de `entries` que están sonando o pospuestas, salvo `keep`.
+    ///
+    /// Una en cuenta regresiva cuya hora todavía no llegó NO es un posponer: es
+    /// la cuenta previa (Ajustes › Cuenta regresiva) de un aviso que aún no ha
+    /// sonado, y se deja. `stopActive` no hace esa distinción.
+    static func ringingOrSnoozed(
+        _ entries: [(alarmID: UUID, fireDate: Date)],
+        states: [UUID: Alarm.State],
+        except keep: UUID,
+        now: Date
+    ) -> [UUID] {
+        entries.compactMap { entry in
+            guard entry.alarmID != keep, let state = states[entry.alarmID] else { return nil }
+            if state == .alerting { return entry.alarmID }
+            if state == .scheduled { return nil }
+            return entry.fireDate <= now ? entry.alarmID : nil
+        }
+    }
+
+    /// El aviso de la misma alarma que suena antes de que termine el posponer, o
+    /// como mucho `snoozeMergeWindow` después. Solo cuenta uno que AlarmKit
+    /// tenga de verdad (`inSystem`): si el sistema lo perdió, quitar el posponer
+    /// dejaría la alarma muda.
+    static func avisoCoveringSnooze(
+        _ entries: [(alarmID: UUID, fireDate: Date)],
+        snoozedID: UUID,
+        snoozeSeconds: TimeInterval,
+        inSystem: Set<UUID>,
+        now: Date
+    ) -> Date? {
+        let deadline = now.addingTimeInterval(snoozeSeconds + snoozeMergeWindow)
+        return entries
+            .filter { $0.alarmID != snoozedID && $0.fireDate > now && $0.fireDate <= deadline && inSystem.contains($0.alarmID) }
+            .map(\.fireDate)
+            .min()
+    }
+
     // MARK: - Private
 
     /// IDs of alarms in a non-`.scheduled` state: alerting right now, or counting
