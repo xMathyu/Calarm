@@ -38,6 +38,7 @@ final class ReminderScheduler {
     func syncAlarms(for reminder: Reminder) async {
         isWorking = true
         defer { isWorking = false }
+        scheduler.forgetLostAlarms()
         await applyReminder(reminder)
         if settings.calendarMirrorEnabled { mirror.apply(reminder) }
     }
@@ -46,6 +47,8 @@ final class ReminderScheduler {
     func syncAlarms(for reminders: [Reminder]) async {
         isWorking = true
         defer { isWorking = false }
+        // Lo que el sistema haya perdido vuelve a programarse en este mismo pase.
+        scheduler.forgetLostAlarms()
         for reminder in reminders {
             await applyReminder(reminder)
         }

@@ -100,6 +100,10 @@ final class SyncCoordinator {
             let tone = settings.alarmTone
             let countdown = settings.countdown
 
+            // Las de eventos viven en el mismo store: lo que AlarmKit haya
+            // perdido se programa de nuevo en el bucle de abajo.
+            scheduler.forgetLostAlarms()
+
             for meeting in fetched {
                 let leadTimes = preferences.activeLeadTimes(for: meeting)
                 let fireDates = leadTimes

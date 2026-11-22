@@ -18,8 +18,12 @@ enum ShareDiagnostics {
     static func log(_ message: String) {
         let now = Date()
         let cal = Calendar.current
+        // Con el día: el registro abarca varios, y sin él no se sabía de cuándo
+        // era cada línea.
         let stamp = String(
-            format: "%02d:%02d:%02d",
+            format: "%02d/%02d %02d:%02d:%02d",
+            cal.component(.day, from: now),
+            cal.component(.month, from: now),
             cal.component(.hour, from: now),
             cal.component(.minute, from: now),
             cal.component(.second, from: now)

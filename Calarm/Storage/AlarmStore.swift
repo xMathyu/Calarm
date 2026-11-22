@@ -77,6 +77,16 @@ final class AlarmStore {
         persist()
     }
 
+    /// Varias de una vez, guardando una sola vez.
+    func remove(_ entries: [(ownerID: String, fireDate: Date)]) {
+        for (ownerID, fireDate) in entries {
+            guard var list = cache[ownerID] else { continue }
+            list.removeAll { abs($0.fireDate.timeIntervalSince(fireDate)) < 1 }
+            cache[ownerID] = list.isEmpty ? nil : list
+        }
+        persist()
+    }
+
     func removeAll(forOwner ownerID: String) {
         cache.removeValue(forKey: ownerID)
         persist()

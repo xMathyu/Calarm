@@ -42,6 +42,11 @@ extension LocalizedStringResource {
 final class AlarmScheduler {
     private let manager: AlarmManager
     private let store: AlarmStore
+    /// Errores de AlarmKit ya anotados en Diagnóstico en este arranque. El sync
+    /// corre muchas veces, una alarma son hasta 32 horas y el registro guarda
+    /// 120 líneas: sin permiso, una línea por alarma y hora lo llenaba en un
+    /// solo pase (visto en el simulador). Cada error distinto se anota una vez.
+    private var reportedFailures: Set<String> = []
 
     init(manager: AlarmManager = .shared, store: AlarmStore) {
         self.manager = manager
@@ -89,6 +94,52 @@ final class AlarmScheduler {
         // Xcode 27 no se puede aceptar sin tocar el simulador a mano.
         if DemoData.requestedScreen != nil { return UUID() }
         #endif
+        // Una misma hora de la misma alarma, una sola vez a la vez. Al arrancar
+        // corren varios syncs en paralelo y, mientras uno esperaba a AlarmKit,
+        // el otro no encontraba la entrada en el store y programaba otra: tras
+        // reprogramar 152 alarmas perdidas, AlarmKit tenía 433 (simulador,
+        // 2026-11-21). Las sobrantes solo se limpiaban en el siguiente arranque
+        // en frío y, mientras tanto, la alarma sonaba dos o tres veces.
+        let key = "\(ownerID)|\(Int(fireDate.timeIntervalSince1970.rounded()))"
+        if let running = pendingSchedules[key] {
+            return try await running.value
+        }
+        let task = Task {
+            try await performSchedule(
+                ownerID: ownerID,
+                fireDate: fireDate,
+                title: title,
+                symbolName: symbolName,
+                category: category,
+                snooze: snooze,
+                tone: tone,
+                countdown: countdown,
+                meetingURL: meetingURL,
+                location: location,
+                challenge: challenge
+            )
+        }
+        pendingSchedules[key] = task
+        defer { pendingSchedules[key] = nil }
+        return try await task.value
+    }
+
+    /// Lo que se está programando ahora mismo, por alarma y hora (ver `schedule`).
+    private var pendingSchedules: [String: Task<UUID, any Error>] = [:]
+
+    private func performSchedule(
+        ownerID: String,
+        fireDate: Date,
+        title: String,
+        symbolName: String,
+        category: ReminderCategory,
+        snooze: SnoozeInterval,
+        tone: AlarmTone,
+        countdown: AlarmCountdown,
+        meetingURL: URL?,
+        location: String?,
+        challenge: WakeChallenge?
+    ) async throws -> UUID {
         let fingerprint = Self.contentHash(
             title: title,
             symbolName: symbolName,
@@ -126,10 +177,84 @@ final class AlarmScheduler {
             challenge: challenge,
             alarmID: alarmID
         )
-        _ = try await manager.schedule(id: alarmID, configuration: configuration)
+        // Mientras AlarmKit la programa, el store todavía no la conoce: que
+        // `reconcileWithSystem` no la tome por huérfana (ver `inFlight`).
+        inFlight.insert(alarmID)
+        defer { inFlight.remove(alarmID) }
+        do {
+            _ = try await manager.schedule(id: alarmID, configuration: configuration)
+        } catch {
+            // Una alarma que AlarmKit no acepta no suena. Antes el error solo
+            // quedaba en un `lastError` que no se muestra en ningún sitio.
+            if reportedFailures.insert("\(error)").inserted {
+                let when = fireDate.formatted(date: .abbreviated, time: .shortened)
+                ShareDiagnostics.log("❌ AlarmKit no programó '\(title)' (\(when)), ni otras con el mismo error: \(error)")
+            }
+            throw error
+        }
         store.store(alarmID: alarmID, forOwner: ownerID, fireDate: fireDate, contentHash: fingerprint)
+        scheduledThisRun[alarmID] = Date()
         return alarmID
     }
+
+    /// Cuándo se programó, en este arranque, cada alarma (para el diagnóstico de
+    /// `forgetLostAlarms`).
+    private var scheduledThisRun: [UUID: Date] = [:]
+
+    /// Alarmas que AlarmKit ya puede tener pero que el store aún no apuntó,
+    /// porque `schedule` sigue esperando la respuesta.
+    ///
+    /// Al arrancar corren a la vez varios syncs (el `.task`, el de `.active`,
+    /// el del calendario, el de tras escanear lo compartido), y
+    /// `reconcileWithSystem` cancelaba como desconocida una alarma recién
+    /// aceptada por AlarmKit cuya respuesta aún no había llegado. Luego el
+    /// store la apuntaba como programada sin que existiera, y no sonaba nunca.
+    /// Visto en el simulador el 2026-11-21 («programada hace 0 s»); es la
+    /// explicación más probable de la alarma compartida que no sonó ese día.
+    private var inFlight: Set<UUID> = []
+
+    /// Olvida las entradas del store cuya alarma ya no está en AlarmKit, para que
+    /// el próximo `schedule` de esa hora la programe de nuevo.
+    ///
+    /// `schedule` se fía del store: si ya hay una entrada para esa hora con el
+    /// mismo contenido, no llama a AlarmKit. Si el sistema pierde la alarma por
+    /// su cuenta, el store sigue diciendo que está programada, nada la vuelve a
+    /// programar y no suena. Pasó el 2026-11-21 con una alarma compartida: el
+    /// log del iPhone mostraba que AlarmKit no tenía nada antes del día 27, y a
+    /// las 18:29 la app intentó cancelar la alarma de las 16:30 y AlarmKit
+    /// respondió «Alarm does not exist».
+    ///
+    /// Solo cuenta lo que todavía no tenía que sonar: una alarma que ya sonó sale
+    /// de AlarmKit, y esa entrada la limpia `cancelOrphans` como siempre.
+    @discardableResult
+    func forgetLostAlarms(now: Date = Date()) -> Int {
+        // Sin la lista del sistema no se puede saber qué falta, así que no se toca nada.
+        guard let systemAlarms = try? manager.alarms else { return 0 }
+        let scheduledIDs = Set(systemAlarms.map(\.id))
+        let lost = store.allEntries().filter { $0.fireDate > now && !scheduledIDs.contains($0.alarmID) }
+        guard !lost.isEmpty else { return 0 }
+        store.remove(lost.map { ($0.ownerID, $0.fireDate) })
+        let detail = lost.prefix(3).map { entry in
+            let when = entry.fireDate.formatted(date: .abbreviated, time: .shortened)
+            let age = scheduledThisRun[entry.alarmID].map { "programada hace \(Int(now.timeIntervalSince($0))) s" } ?? "de antes"
+            return "\(entry.ownerID.prefix(14))… \(when), \(age)"
+        }.joined(separator: "; ")
+        ShareDiagnostics.log("⚠️ AlarmKit había perdido \(lost.count) alarma(s) de \(systemAlarms.count) (\(detail)): se vuelven a programar")
+        return lost.count
+    }
+
+    #if DEBUG
+    /// Lo que AlarmKit tiene programado de esta app, para comprobar arreglos.
+    var systemAlarmCount: Int { (try? manager.alarms.count) ?? -1 }
+
+    /// Simula que el sistema perdió las alarmas: las cancela en AlarmKit sin
+    /// tocar el store (`-demoLoseAlarms`).
+    func dropSystemAlarmsKeepingStore() {
+        for alarm in (try? manager.alarms) ?? [] {
+            try? manager.cancel(id: alarm.id)
+        }
+    }
+    #endif
 
     /// Everything the person sees or hears when the alarm fires, in one string.
     /// A `nil` stored hash (an entry written by a build that predates this) never
@@ -229,9 +354,15 @@ final class AlarmScheduler {
         }
 
         guard let systemAlarms = try? manager.alarms else { return }
-        let knownIDs = Set(store.allEntries().map(\.alarmID))
+        // Las que se están programando ahora mismo aún no están en el store.
+        let knownIDs = Set(store.allEntries().map(\.alarmID)).union(inFlight)
+        var cancelled = 0
         for alarm in systemAlarms where !knownIDs.contains(alarm.id) {
             try? manager.cancel(id: alarm.id)
+            cancelled += 1
+        }
+        if cancelled > 0 {
+            ShareDiagnostics.log("🧹 \(cancelled) alarma(s) de AlarmKit que la app ya no conocía, canceladas")
         }
     }
 
