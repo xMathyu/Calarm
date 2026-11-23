@@ -12,3 +12,8 @@ build/
 # Python bytecode (ci_scripts/asc.py)
 __pycache__/
 *.pyc
+
+# Configuración de Firebase: el repo es público. Xcode Cloud la escribe desde la
+# variable secreta GOOGLE_SERVICE_INFO_PLIST_BASE64 (ci_scripts/ci_pre_xcodebuild.sh);
+# en local, copiarla de calarmi-firebase/.secrets/.
+Calarm/GoogleService-Info.plist

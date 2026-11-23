@@ -23,6 +23,9 @@
 		CA1ABEEF000000000000002D /* CountdownMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF000000000000002E /* CountdownMath.swift */; };
 		CA1ABEEF000000000000002F /* ReminderIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000030 /* ReminderIcon.swift */; };
 		CA1ABEEF0000000000000031 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CA1ABEEF0000000000000032 /* Localizable.xcstrings */; };
+		6AFB00052FF0000500000005 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6AFB00022FF0000200000002 /* FirebaseAuth */; };
+		6AFB00062FF0000600000006 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6AFB00032FF0000300000003 /* FirebaseFirestore */; };
+		6AFB00072FF0000700000007 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 6AFB00042FF0000400000004 /* FirebaseMessaging */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,6 +112,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AEE00A12FEE0001000000A1 /* ElegantEmojiPicker in Frameworks */,
+				6AFB00052FF0000500000005 /* FirebaseAuth in Frameworks */,
+				6AFB00062FF0000600000006 /* FirebaseFirestore in Frameworks */,
+				6AFB00072FF0000700000007 /* FirebaseMessaging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +200,9 @@
 			name = Calarm;
 			packageProductDependencies = (
 				6AEE00A32FEE0003000000A3 /* ElegantEmojiPicker */,
+				6AFB00022FF0000200000002 /* FirebaseAuth */,
+				6AFB00032FF0000300000003 /* FirebaseFirestore */,
+				6AFB00042FF0000400000004 /* FirebaseMessaging */,
 			);
 			productName = Calarm;
 			productReference = 6A070F6C2FB579BB0003A4DF /* Calarm.app */;
@@ -276,6 +285,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				6AEE00A22FEE0002000000A2 /* XCRemoteSwiftPackageReference "Elegant-Emoji-Picker" */,
+				6AFB00012FF0000100000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6A070F6D2FB579BB0003A4DF /* Products */;
@@ -714,6 +724,14 @@
 				kind = branch;
 			};
 		};
+		6AFB00012FF0000100000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -721,6 +739,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6AEE00A22FEE0002000000A2 /* XCRemoteSwiftPackageReference "Elegant-Emoji-Picker" */;
 			productName = ElegantEmojiPicker;
+		};
+		6AFB00022FF0000200000002 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AFB00012FF0000100000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		6AFB00032FF0000300000003 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AFB00012FF0000100000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		6AFB00042FF0000400000004 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AFB00012FF0000100000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

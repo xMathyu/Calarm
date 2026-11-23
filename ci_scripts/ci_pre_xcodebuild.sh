@@ -55,4 +55,24 @@ grep "CURRENT_PROJECT_VERSION = " "$PBXPROJ" || echo "  (none found)"
 
 UPDATED_COUNT=$(grep -c "CURRENT_PROJECT_VERSION = $BUILD_NUMBER;" "$PBXPROJ" || true)
 echo "✓ Set CURRENT_PROJECT_VERSION = $BUILD_NUMBER in $UPDATED_COUNT build configurations"
+
+# Configuración de Firebase (lo compartido vive en Firestore desde la 1.1). El
+# repo es público, así que el archivo no está en git: Xcode Cloud lo escribe
+# desde la variable secreta GOOGLE_SERVICE_INFO_PLIST_BASE64 (el plist en
+# base64: `base64 -i GoogleService-Info.plist | pbcopy`). Sin él la app arranca
+# pero no puede compartir, así que una compilación de Xcode Cloud sin la
+# variable falla aquí en vez de llegar a TestFlight rota.
+GOOGLE_PLIST="$REPO_PATH/Calarm/GoogleService-Info.plist"
+if [ -n "${GOOGLE_SERVICE_INFO_PLIST_BASE64:-}" ]; then
+    echo "$GOOGLE_SERVICE_INFO_PLIST_BASE64" | base64 --decode > "$GOOGLE_PLIST"
+    plutil -lint "$GOOGLE_PLIST"
+    echo "✓ GoogleService-Info.plist escrito desde GOOGLE_SERVICE_INFO_PLIST_BASE64"
+elif [ -f "$GOOGLE_PLIST" ]; then
+    echo "▸ GoogleService-Info.plist ya presente"
+elif [ -n "${CI_XCODE_CLOUD:-}${CI_WORKSPACE:-}" ]; then
+    echo "✗ Falta GoogleService-Info.plist: define GOOGLE_SERVICE_INFO_PLIST_BASE64 (secreta) en el workflow de Xcode Cloud"
+    exit 1
+else
+    echo "⚠️ GoogleService-Info.plist no está: lo compartido quedará apagado en esta compilación"
+fi
 echo "════════════════════════════════════════"
