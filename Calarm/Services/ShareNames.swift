@@ -66,6 +66,12 @@ enum ShareNames {
         NSUbiquitousKeyValueStore.default.removeObject(forKey: cloudKey)
         UserDefaults.standard.removeObject(forKey: localKey)
     }
+
+    /// Los datos de demostración traen nombre: si no, la hoja obligatoria
+    /// «¿Cómo te llamas?» tapa las capturas de la tienda (`-demoScreen`).
+    static func setForDemo(_ name: String) {
+        UserDefaults.standard.set(name, forKey: localKey)
+    }
     #endif
 
     // MARK: - Publicar

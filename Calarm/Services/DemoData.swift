@@ -88,6 +88,10 @@ enum DemoData {
         // itself skip it — unless the run is specifically about the welcome
         // slides (`-demoScreen onboarding`).
         settings.onboardingCompleted = requestedScreen != "onboarding"
+        // Sin nombre sale la hoja obligatoria «¿Cómo te llamas?» encima de todo.
+        if ShareNames.myName == nil {
+            ShareNames.setForDemo(t("Ana", "Ana", "Ana"))
+        }
 
         // La pestaña Calendario abre en la vista de mes; `agenda` pide la lista
         // de eventos de siempre (la captura del botón «Unirse en Teams»).
