@@ -961,9 +961,42 @@ Inglés:
 
 > Cuando agreguemos iCloud sync: actualizar a "User Content → stored in iCloud private database (Apple). End-to-end encrypted."
 
+### Lo compartido pasa a Firebase (1.1, rama `firebase-sharing`) — revisar App Privacy ANTES de enviar
+
+Desde la 1.1 las alarmas y cuentas regresivas **compartidas** y las personas de confianza viven en
+Firebase (proyecto `calarmi`, Firestore en `nam5`, Google como proveedor), para compartir con Android
+(contrato: `calarmi-firebase/DESIGN.md`). Las alarmas propias NO cambian: siguen solo en el
+teléfono + iCloud privado. Nada llega a Firebase hasta que la persona usa algo compartido (invitar,
+aceptar, personas de confianza, o una invitación de CloudKit que migra): ahí se abre una sesión
+**anónima** de Firebase Auth. No hay Analytics ni Crashlytics (no van en el binario).
+
+Qué se guarda en Firebase y qué hay que declarar en App Store Connect → App Privacy (todo
+**App Functionality**, **asociado al usuario** —el uid anónimo—, **sin tracking**):
+
+| Categoría (ASC) | Dato | Dónde | Cambio respecto a 1.0.19 |
+|---|---|---|---|
+| Contact Info → **Name** | El nombre que pone la persona | `users/{uid}.name`, `members`/`helpers` de cada share o lista, `ownerName` de sus invitaciones | Ya declarado; ahora también en servidores de Google (Firebase), no solo en CloudKit |
+| Identifiers → **User ID** | uid anónimo de Firebase Auth | `users/{uid}`, `memberUids`, `helperUids`, `updatedBy` | **Nuevo: declarar** |
+| Identifiers → **Device ID** | Token de push de FCM (e ID de instalación de Firebase) | `users/{uid}.tokens` | **Nuevo: declarar** (solo de quien comparte) |
+| User Content → **Photos or Videos** | La foto de una alarma o cuenta compartida (JPEG ≤ 1080 px; miniatura ≤ 60 KB en la invitación) | `shares/{id}/photo/current`, `invites/{token}.photo`, `delegations/{uid}/reminders` | **Cambia**: antes solo local / iCloud; ahora sale del dispositivo si se comparte |
+| User Content → **Other User Content** | Título, notas, fechas, repetición, avisos, categoría, ícono, reto y tono de lo compartido; idioma y zona horaria de la vista previa | `shares/{id}`, `invites/{token}`, `delegations/{uid}/reminders` | **Nuevo: declarar** |
+
+- La invitación (`invites/{token}`) la puede leer cualquiera que tenga el enlace (como el enlace
+  público de iCloud), y la web la usa para la vista previa: título, fecha, nombre de quien invita y
+  miniatura.
+- Al dejar de compartir o borrar, el share, su foto y la invitación (revocada) se borran; al salir,
+  la persona se quita de `members`. El usuario anónimo y `users/{uid}` no se borran solos (no
+  activar la limpieza automática de anónimos: rompería lo compartido).
+- **Política de privacidad (web)**: añadir Firebase/Google como encargado del tratamiento de lo
+  compartido, los datos de la tabla, que la invitación es legible con el enlace y cómo pedir el
+  borrado.
+- Mientras queden participantes en un `CKShare` viejo, el dueño sigue escribiendo también en CloudKit
+  (base compartida de Apple), así que la fila de CloudKit no desaparece todavía.
+
 ### Privacy Policy URL
 - Sugerencia: hosteado en GitHub Pages o Notion. URL ejemplo: `https://calarm.mathyusolutions.com/privacy`
 - Contenido mínimo: qué se accede (calendario, fotos, AlarmKit), dónde se guarda (local), que no hay servidor ni tracking.
+- 1.1: ya hay servidor para lo compartido (Firebase); ver la sección anterior.
 
 ---
 
