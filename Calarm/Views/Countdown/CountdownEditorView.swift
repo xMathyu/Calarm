@@ -20,6 +20,8 @@ struct CountdownEditorView: View {
     /// Quien la presenta se encarga de cerrar y borrar (el detalle tiene que
     /// irse antes de que el modelo desaparezca). Sin él, el editor la borra solo.
     var onDelete: (() -> Void)? = nil
+    /// Llegó ya llena desde una alarma (`init(seed:)`).
+    private var isSeeded = false
 
     @State private var draftID: UUID
     @State private var title: String
@@ -58,6 +60,25 @@ struct CountdownEditorView: View {
         _iconValue = State(initialValue: event?.iconValue ?? CountdownEvent.defaultEmoji)
         _photoData = State(initialValue: event?.photoData)
         _preparedPhoto = State(initialValue: event?.photoData)
+    }
+
+    /// Una cuenta regresiva NUEVA que nace de otra cosa (hoy, de una alarma):
+    /// el editor se abre ya lleno y la persona solo confirma con «Crear».
+    init(seed: CountdownSeed) {
+        self.init(editing: nil)
+        isSeeded = true
+        _title = State(initialValue: seed.title)
+        _notes = State(initialValue: seed.notes)
+        _date = State(initialValue: seed.date)
+        _includesTime = State(initialValue: seed.includesTime)
+        _repeatsYearly = State(initialValue: seed.repeatsYearly)
+        if let hex = seed.colorHex { _colorHex = State(initialValue: hex) }
+        _iconKind = State(initialValue: seed.iconKind)
+        _iconValue = State(initialValue: seed.iconValue)
+        _photoData = State(initialValue: seed.photoData)
+        // Sin reducir todavía: la reduce `preparePhoto` al aparecer, como si
+        // la persona la acabara de elegir.
+        _preparedPhoto = State(initialValue: nil)
     }
 
     /// Dentro de un mes a las 20:00: la hora típica de un concierto, por si
@@ -103,7 +124,7 @@ struct CountdownEditorView: View {
                     TextField("Notas (opcional)", text: $notes, axis: .vertical)
                         .lineLimit(1...4)
                 } footer: {
-                    if event == nil {
+                    if event == nil, !isSeeded {
                         Text("Por ejemplo «Concierto de Coldplay» o «Viaje a Japón».")
                     }
                 }
@@ -184,7 +205,11 @@ struct CountdownEditorView: View {
                 }
             }
             .onAppear {
-                if event == nil { titleFocused = true }
+                // Una que llega ya con nombre no necesita el teclado encima.
+                if event == nil, trimmedTitle.isEmpty { titleFocused = true }
+                // La foto que trae una cuenta nueva llega sin reducir (no-op si
+                // ya lo está o no hay foto).
+                preparePhoto(photoData)
             }
             .onChange(of: photoData) { _, newValue in
                 preparePhoto(newValue)
@@ -330,4 +355,20 @@ struct CountdownEditorView: View {
             await sharing.countdownDeleted(id: id, wasReceived: wasReceived)
         }
     }
+}
+
+/// Con qué se llena una cuenta regresiva nueva que nace de otra cosa (una
+/// alarma). `Identifiable` para presentarla con `sheet(item:)`.
+struct CountdownSeed: Identifiable {
+    let id = UUID()
+    var title: String
+    var notes: String
+    var date: Date
+    var includesTime: Bool
+    var repeatsYearly: Bool
+    /// nil = el color por defecto de las cuentas regresivas.
+    var colorHex: String?
+    var iconKind: ReminderIconKind
+    var iconValue: String
+    var photoData: Data?
 }

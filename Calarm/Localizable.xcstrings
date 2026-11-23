@@ -16106,6 +16106,50 @@
         }
       }
     },
+    "Crear cuenta regresiva" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create countdown"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear cuenta regresiva"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar contagem regressiva"
+          }
+        }
+      }
+    },
+    "Cuenta los días que faltan para la próxima vez que suene, en la pestaña Cuenta regresiva." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Counts down the days until it next rings, in the Countdown tab."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta los días que faltan para la próxima vez que suene, en la pestaña Cuenta regresiva."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conta os dias que faltam para a próxima vez que tocar, na aba Contagem regressiva."
+          }
+        }
+      }
+    },
     "o escríbelo" : {
       "localizations" : {
         "en" : {

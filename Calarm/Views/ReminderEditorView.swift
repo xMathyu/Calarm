@@ -114,6 +114,11 @@ struct ReminderEditorView: View {
     @State private var sharedBy: SharedByPerson?
     @State private var showingManageSheet = false
 
+    // «Crear cuenta regresiva»: el espejo de «Poner una alarma para ese día»
+    // del detalle de una cuenta regresiva.
+    @State private var countdownSeed: CountdownSeed?
+    @State private var paywall: PlusFeature?
+
     /// `initialDate` siembra la fecha de una alarma NUEVA (la vista de mes la
     /// pasa cuando se crea desde un día concreto); se ignora al editar.
     /// `initialTitle` siembra el nombre (una cuenta regresiva pasa el suyo), y
@@ -224,6 +229,10 @@ struct ReminderEditorView: View {
                 categorySection
                 statusSection
 
+                if targetReminder != nil, let next = nextRing, Self.worthCountingDown(next.rule) {
+                    countdownSection(next)
+                }
+
                 if let target = targetReminder {
                     if target.isReceivedShare {
                         sharedBySection
@@ -321,6 +330,10 @@ struct ReminderEditorView: View {
                     ) { showingManageSheet = false }
                 }
             }
+            .sheet(item: $countdownSeed) { seed in
+                CountdownEditorView(seed: seed)
+            }
+            .plusPaywall(for: $paywall)
             .alert("Error al compartir", isPresented: Binding(
                 get: { shareError != nil },
                 set: { if !$0 { shareError = nil } }
@@ -664,6 +677,75 @@ struct ReminderEditorView: View {
                  ? "La alarma sonará según los horarios y avisos de arriba."
                  : "La alarma está apagada: no sonará hasta que la enciendas.")
         }
+    }
+
+    // MARK: - Cuenta regresiva
+
+    /// La próxima vez que suena, entre todos sus horarios, con la regla del
+    /// horario que la da. nil = ya no vuelve a sonar, y entonces no hay nada
+    /// que contar (igual que el detalle de una cuenta regresiva pasada no
+    /// ofrece poner alarma).
+    private var nextRing: (date: Date, rule: RecurrenceRule)? {
+        let schedules = [(date, recurrence)] + additionalSchedules.map { ($0.date, $0.recurrence) }
+        return schedules
+            .compactMap { base, rule in
+                RecurrenceEngine.nextOccurrences(rule: rule, baseDate: base, count: 1).first.map { ($0, rule) }
+            }
+            .min { $0.0 < $1.0 }
+    }
+
+    /// Una alarma diaria o semanal siempre está a pocos días: una cuenta hasta
+    /// la próxima no dice nada. El botón sale para las de una vez, las
+    /// mensuales y las anuales (cumpleaños, aniversarios, pagos).
+    private static func worthCountingDown(_ rule: RecurrenceRule) -> Bool {
+        switch rule {
+        case .daily, .weekly: false
+        case .once, .monthly, .yearly: true
+        }
+    }
+
+    private func countdownSection(_ next: (date: Date, rule: RecurrenceRule)) -> some View {
+        Section {
+            Button {
+                Haptics.light()
+                startCountdown(at: next)
+            } label: {
+                Label("Crear cuenta regresiva", systemImage: "hourglass")
+            }
+        } footer: {
+            Text("Cuenta los días que faltan para la próxima vez que suene, en la pestaña Cuenta regresiva.")
+        }
+    }
+
+    /// Abre el editor de cuenta regresiva lleno con lo que se ve en pantalla:
+    /// nombre, notas, la próxima vez que suena (con hora), el ícono o la foto y
+    /// el color de la categoría. Una alarma anual pasa a «Repetir cada año».
+    /// El tope de cuentas propias sin Plus es el mismo que en la pestaña.
+    private func startCountdown(at next: (date: Date, rule: RecurrenceRule)) {
+        let own = FetchDescriptor<CountdownEvent>(predicate: #Predicate { $0.isReceivedShare == false })
+        let ownCount = (try? modelContext.fetchCount(own)) ?? 0
+        guard PlusStore.shared.canCreateCountdown(ownCount: ownCount) else {
+            paywall = .unlimitedCountdowns
+            return
+        }
+
+        let usesPhoto = iconKind == .photo && photoData != nil
+        let trimmedNotes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
+        let repeatsYearly: Bool
+        if case .yearly(1) = next.rule { repeatsYearly = true } else { repeatsYearly = false }
+
+        countdownSeed = CountdownSeed(
+            title: title.trimmingCharacters(in: .whitespacesAndNewlines),
+            notes: trimmedNotes,
+            date: next.date,
+            includesTime: true,
+            repeatsYearly: repeatsYearly,
+            colorHex: style.color.toHex(),
+            // Sin foto, el ícono de la alarma (símbolo o emoji) tal cual.
+            iconKind: usesPhoto ? .photo : (isEmojiIcon(symbolName) ? .emoji : .symbol),
+            iconValue: symbolName,
+            photoData: usesPhoto ? photoData : nil
+        )
     }
 
     private var iconEditor: some View {
