@@ -511,6 +511,28 @@ Alemán:
 • Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
+## What's New (1.0.19)
+
+Español:
+```
+• Nuevo: desde una alarma de cumpleaños, aniversario o pago, crea con un toque una cuenta regresiva de los días que faltan. Llega ya lista con su nombre, foto o ícono y color
+```
+
+Inglés:
+```
+• New: from a birthday, anniversary or payment alarm, create a countdown of the days left with one tap. It comes ready with its name, photo or icon and color
+```
+
+Alemán:
+```
+• Neu: Erstelle mit einem Tipp aus einem Geburtstags-, Jahrestags- oder Zahlungswecker einen Countdown der verbleibenden Tage. Er kommt fertig mit Name, Foto oder Symbol und Farbe
+```
+
+Portugués:
+```
+• Novo: a partir de um alarme de aniversário, data especial ou pagamento, crie com um toque uma contagem regressiva dos dias que faltam. Ela já vem pronta com nome, foto ou ícone e cor.
+```
+
 ## What's New (1.0.18)
 
 Español:
