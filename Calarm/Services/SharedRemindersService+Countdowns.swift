@@ -3,18 +3,20 @@
 //  Calarm
 //
 //  Compartir una cuenta regresiva con amigos, con la misma maquinaria que las
-//  alarmas: un registro por cuenta en la zona `SharedRemindersZone` del dueño,
-//  con su `CKShare` de enlace público, y una copia de solo lectura en cada
-//  invitado que se rehace en cada escaneo de la base compartida.
+//  alarmas. Desde la 1.1 las invitaciones nuevas son shares de Firestore
+//  (`kind: "countdown"`, ver `SharedRemindersService+Firestore`); lo de CloudKit
+//  que queda aquí sirve a las cuentas que ya se habían compartido: un registro
+//  por cuenta en la zona `SharedRemindersZone` del dueño, con su `CKShare` de
+//  enlace público, y una copia de solo lectura en cada invitado que se rehace
+//  en cada escaneo de la base compartida.
 //
 //  Va en su propio tipo de registro, `CalarmSharedCountdown`, y no en
 //  `CalarmSharedReminder`: las versiones anteriores de la app importan TODO
 //  registro de ese tipo como alarma, y con este lo ignoran. Por lo mismo su
 //  enlace usa `/c/` en vez de `/i/` (`InviteLink`).
 //
-//  OJO: tipo de registro nuevo (con un solo campo, `payload` BYTES), así que
-//  hay que desplegar el esquema a Production antes de publicar. Todo lo que se
-//  añada después va dentro de `SharedCountdownPayload`, nunca como columna.
+//  Todo lo que se añada va dentro de `SharedCountdownPayload`, nunca como
+//  columna (sería otro despliegue del esquema a Production).
 //
 
 import CloudKit
@@ -27,87 +29,40 @@ extension SharedRemindersService {
     static let countdownRecordType = "CalarmSharedCountdown"
     static let countdownShareType = "com.mathyusolutions.calarm.countdown"
 
-    /// Lado mayor de la foto que viaja dentro del registro: un registro de
-    /// CloudKit no puede pasar de 1 MB, y la tarjeta no necesita más.
+    /// Lado mayor de la foto que viaja con la cuenta: un registro de CloudKit no
+    /// puede pasar de 1 MB, y en Firestore las reglas aceptan hasta 600 KB.
     private static let sharedPhotoMaxPixelSize = 1080
-    private static let sharedPhotoMaxBytes = 600_000
+    static let sharedPhotoMaxBytes = 600_000
 
     // MARK: - Dueño
 
-    /// Crea (o reutiliza) el share de una cuenta regresiva y lo deja listo para
-    /// mandar por enlace.
-    func prepareShare(forCountdown event: CountdownEvent) async throws -> CKShare {
-        do {
-            try await ensureCloudKitAccountAvailable()
-            ShareDiagnostics.log("↗️ preparando share de cuenta '\(event.title)'")
-            let zone = try await ensureSharingZone()
-            let recordID = CKRecord.ID(recordName: event.id.uuidString, zoneID: zone.zoneID)
-            let database = cloudKitContainer.privateCloudDatabase
-
-            let record: CKRecord
-            if let existing = try await fetchRootRecord(for: recordID) {
-                if let share = try await fetchShare(attachedTo: existing, database: database) {
-                    // Lo último que cambió viaja con la invitación nueva.
-                    writeCountdown(event, to: existing)
-                    _ = try? await database.modifyRecords(saving: [existing], deleting: [])
-                    return try await prepareExistingShareForInvite(share, database: database)
-                }
-                record = existing
-            } else {
-                record = CKRecord(recordType: Self.countdownRecordType, recordID: recordID)
-            }
-            writeCountdown(event, to: record)
-
-            let share = CKShare(rootRecord: record, shareID: CKRecord.ID(
-                recordName: "share-\(event.id.uuidString)",
-                zoneID: zone.zoneID
-            ))
-            share[CKShare.SystemFieldKey.title] = event.title as CKRecordValue
-            share[CKShare.SystemFieldKey.shareType] = Self.countdownShareType as CKRecordValue
-            if let thumbnail = countdownThumbnail(for: event) {
-                share[CKShare.SystemFieldKey.thumbnailImageData] = thumbnail as CKRecordValue
-            }
-            // Como en las alarmas: quien recibe el enlace entra como «público».
-            share.publicPermission = .readOnly
-
-            let results = try await database.modifyRecords(saving: [record, share], deleting: [])
-            let saved = try savedShare(from: results.saveResults, id: share.recordID)
-            let ready = try await shareWithInviteURL(saved, database: database)
-            ShareDiagnostics.log("✅ share de cuenta creado (url=\(ready.url != nil))")
-            return ready
-        } catch let error as SharedRemindersError {
-            ShareDiagnostics.log("❌ preparar share de cuenta: \(error.localizedDescription)")
-            throw error
-        } catch {
-            ShareDiagnostics.log("❌ preparar share de cuenta: \(Self.diagnosticDescription(for: error))")
-            throw SharedRemindersError.shareCreationFailed(error)
-        }
-    }
-
-    /// El share de una cuenta, sin crearlo; nil si nunca se compartió.
+    /// El share de CloudKit de una cuenta compartida antes de la 1.1, sin
+    /// crearlo; nil si nunca se compartió así.
     func existingShare(forCountdown event: CountdownEvent) async -> CKShare? {
         let zoneID = CKRecordZone.ID(zoneName: Self.sharingZoneName, ownerName: CKCurrentUserDefaultName)
         let recordID = CKRecord.ID(recordName: event.id.uuidString, zoneID: zoneID)
         return try? await fetchExistingShare(for: recordID)
     }
 
-    /// El dueño la editó: reescribe el registro compartido para que los
-    /// invitados lo vean (por push o en su próximo escaneo). No hace nada si
-    /// nunca se compartió o si es una recibida.
+    /// El dueño la editó: reescribe el share de Firestore y, mientras exista, el
+    /// registro de CloudKit, para que los invitados lo vean (por push o en su
+    /// próximo escaneo). No hace nada si nunca se compartió o si es una recibida.
     func pushUpdateIfShared(countdown event: CountdownEvent) async {
         guard !event.isReceivedShare else { return }
+        await pushFirestoreUpdate(countdown: event)
         let zoneID = CKRecordZone.ID(zoneName: Self.sharingZoneName, ownerName: CKCurrentUserDefaultName)
         let recordID = CKRecord.ID(recordName: event.id.uuidString, zoneID: zoneID)
         let database = cloudKitContainer.privateCloudDatabase
         guard let record = try? await database.record(for: recordID) else { return }
-        writeCountdown(event, to: record)
+        let token = FirestoreShareStore.owned(event.id)?.inviteToken ?? countdownPayload(from: record)?.firebaseToken
+        writeCountdown(event, to: record, firebaseToken: token)
         _ = try? await database.modifyRecords(saving: [record], deleting: [])
         ShareDiagnostics.log("↻ push cuenta '\(event.title)'")
     }
 
-    /// Después de borrar una cuenta: el dueño quita el registro compartido (los
-    /// invitados la pierden en su próximo escaneo); el invitado deja una marca
-    /// para que no vuelva y se sale del share.
+    /// Después de borrar una cuenta: el dueño quita el share (los invitados la
+    /// pierden en su próxima lectura); el invitado deja una marca para que no
+    /// vuelva y se sale del share.
     func countdownDeleted(id: UUID, wasReceived: Bool) async {
         if wasReceived {
             DeletedSharesStore.add(id)
@@ -117,9 +72,10 @@ extension SharedRemindersService {
         }
     }
 
-    // MARK: - Invitado
+    // MARK: - Invitado (CloudKit)
 
-    /// Una invitación a una cuenta regresiva (y no a una alarma o a la delegación).
+    /// Una invitación de CloudKit a una cuenta regresiva (y no a una alarma o a
+    /// la delegación).
     static func isCountdownShare(_ metadata: CKShare.Metadata) -> Bool {
         if metadata.rootRecord?.recordType == countdownRecordType { return true }
         return metadata.share[CKShare.SystemFieldKey.shareType] as? String == countdownShareType
@@ -143,7 +99,9 @@ extension SharedRemindersService {
                 record = try await fetchSharedRecordWithRetries(rootRecordID)
             }
             let context = modelContainer.mainContext
-            guard let event = applyCountdownRecord(record, in: context) else {
+            guard let payload = countdownPayload(from: record),
+                  let event = applyReceivedCountdownPayload(payload, localID: countdownLocalID(record, payload), in: context)
+            else {
                 throw SharedRemindersError.shareUnavailable
             }
             if let owner = Self.person(metadata.ownerIdentity) {
@@ -160,6 +118,11 @@ extension SharedRemindersService {
             ShareDiagnostics.log("✅ cuenta regresiva '\(event.title)' agregada")
             announceMyself(in: acceptedShare)
             rememberOwner(of: acceptedShare, for: event.id)
+            // Un enlace `/c/` viejo de una cuenta que el dueño ya pasó a Firestore.
+            if let token = payload.firebaseToken {
+                let migration = CloudKitMigration(id: event.id, token: token, record: record)
+                Task { await migrateReceivedCloudKitShares([migration]) }
+            }
             Task { await releaseAcceptGuard(guardedID) }
         } catch {
             ShareDiagnostics.log("❌ aceptar cuenta: \(error.localizedDescription)")
@@ -169,39 +132,59 @@ extension SharedRemindersService {
         }
     }
 
-    /// Lo que el escaneo de la base compartida encontró de cuentas regresivas:
-    /// actualiza las copias y quita las que el dueño borró o dejó de compartir.
-    /// Solo se llama tras un escaneo sin errores.
-    func applyReceivedCountdowns(_ records: [CKRecord], presentIDs: Set<UUID>, in context: ModelContext) {
+    /// Las cuentas que encontró el escaneo de CloudKit: actualiza las copias.
+    /// Las que ya no están las quita `removeStaleCountdowns`.
+    func applyReceivedCountdowns(_ records: [CKRecord], in context: ModelContext) {
+        var applied = 0
         for record in records {
-            _ = applyCountdownRecord(record, in: context)
+            guard let payload = countdownPayload(from: record) else { continue }
+            if applyReceivedCountdownPayload(payload, localID: countdownLocalID(record, payload), in: context) != nil {
+                applied += 1
+            }
         }
-        let descriptor = FetchDescriptor<CountdownEvent>(predicate: #Predicate { $0.isReceivedShare })
-        let received = (try? context.fetch(descriptor)) ?? []
-        let gone = received.filter {
-            DeletedSharesStore.contains($0.id)
-                || (!presentIDs.contains($0.id) && !acceptingIDs.contains($0.id))
-        }
-        for event in gone {
-            context.delete(event)
-        }
-        if !records.isEmpty || !gone.isEmpty {
+        if applied > 0 {
             try? context.save()
-            ShareDiagnostics.log("scan: \(records.count) cuenta(s) compartida(s), \(gone.count) quitada(s)")
+            ShareDiagnostics.log("scan: \(applied) cuenta(s) compartida(s)")
         }
     }
 
-    // MARK: - Registro
+    /// Quita las cuentas recibidas que su origen da por borradas (el dueño la
+    /// borró, dejó de compartirla o sacó a esta persona) y las que la persona
+    /// quitó de su lista. Un origen cuya lectura falló (`nil`) no quita nada.
+    func removeStaleCountdowns(
+        cloudKitPresent: Set<UUID>?,
+        firestorePresent: Set<UUID>?,
+        tracked: Set<UUID>,
+        in context: ModelContext
+    ) {
+        let descriptor = FetchDescriptor<CountdownEvent>(predicate: #Predicate { $0.isReceivedShare })
+        guard let received = try? context.fetch(descriptor), !received.isEmpty else { return }
+        let local = Set(received.map(\.id))
+        let stale = ShareMigration.staleReceived(
+            local: local,
+            cloudKitPresent: cloudKitPresent,
+            firestorePresent: firestorePresent,
+            firestoreTracked: tracked,
+            accepting: acceptingIDs,
+            tombstoned: local.filter(DeletedSharesStore.contains)
+        )
+        let gone = received.filter { stale.byOwner.contains($0.id) || stale.byMe.contains($0.id) }
+        guard !gone.isEmpty else { return }
+        for event in gone {
+            context.delete(event)
+        }
+        try? context.save()
+        ShareDiagnostics.log("scan: \(gone.count) cuenta(s) compartida(s) quitada(s)")
+    }
 
-    /// Inserta o actualiza la copia local de una cuenta recibida. Como con las
-    /// alarmas, varios dispositivos pueden haber insertado su copia: se queda la
-    /// más antigua.
+    // MARK: - Copia local
+
+    /// Inserta o actualiza la copia local de una cuenta recibida (de CloudKit o
+    /// de Firestore). Como con las alarmas, varios dispositivos pueden haber
+    /// insertado su copia: se queda la más antigua. Nil si el id es de una cuenta
+    /// propia: nunca se pisa con una ajena.
     @discardableResult
-    private func applyCountdownRecord(_ record: CKRecord, in context: ModelContext) -> CountdownEvent? {
-        guard let data = record["payload"] as? Data,
-              let payload = try? JSONDecoder().decode(SharedCountdownPayload.self, from: data)
-        else { return nil }
-        let localID = UUID(uuidString: record.recordID.recordName) ?? UUID(uuidString: payload.id) ?? UUID()
+    func applyReceivedCountdownPayload(_ payload: SharedCountdownPayload, localID: UUID, in context: ModelContext) -> CountdownEvent? {
         let descriptor = FetchDescriptor<CountdownEvent>(
             predicate: #Predicate { $0.id == localID },
             sortBy: [SortDescriptor(\.createdAt)]
@@ -209,16 +192,15 @@ extension SharedRemindersService {
         let matches = (try? context.fetch(descriptor)) ?? []
         let event: CountdownEvent
         if let oldest = matches.first {
+            guard oldest.isReceivedShare else { return nil }
             event = oldest
-            for duplicate in matches.dropFirst() {
+            for duplicate in matches.dropFirst() where duplicate.isReceivedShare {
                 context.delete(duplicate)
             }
         } else {
             event = CountdownEvent(id: localID)
             context.insert(event)
         }
-        // Nunca pisar una cuenta propia con una ajena del mismo id.
-        if matches.first != nil, !event.isReceivedShare { return event }
         event.title = payload.title
         event.notes = payload.notes
         event.date = payload.date
@@ -233,8 +215,20 @@ extension SharedRemindersService {
         return event
     }
 
-    private func writeCountdown(_ event: CountdownEvent, to record: CKRecord) {
-        let payload = SharedCountdownPayload(
+    // MARK: - Registro de CloudKit
+
+    func countdownPayload(from record: CKRecord) -> SharedCountdownPayload? {
+        guard let data = record["payload"] as? Data else { return nil }
+        return try? JSONDecoder().decode(SharedCountdownPayload.self, from: data)
+    }
+
+    private func countdownLocalID(_ record: CKRecord, _ payload: SharedCountdownPayload) -> UUID {
+        UUID(uuidString: record.recordID.recordName) ?? UUID(uuidString: payload.id) ?? UUID()
+    }
+
+    /// Todo lo que lleva una cuenta compartida, con la foto ya reducida.
+    func makeCountdownPayload(_ event: CountdownEvent, firebaseToken: String? = nil) -> SharedCountdownPayload {
+        SharedCountdownPayload(
             version: SharedCountdownPayload.currentVersion,
             id: event.id.uuidString,
             title: event.title,
@@ -247,42 +241,33 @@ extension SharedRemindersService {
             iconValue: event.iconValue,
             photo: sharedPhoto(for: event),
             updatedAt: event.updatedAt,
-            invitePreview: InvitePreview(countdown: event)
+            invitePreview: InvitePreview(countdown: event),
+            firebaseToken: firebaseToken
         )
-        if let data = try? JSONEncoder().encode(payload) {
+    }
+
+    func writeCountdown(_ event: CountdownEvent, to record: CKRecord, firebaseToken: String? = nil) {
+        if let data = try? JSONEncoder().encode(makeCountdownPayload(event, firebaseToken: firebaseToken)) {
             record["payload"] = data as CKRecordValue
         }
     }
 
     /// La foto de fondo, reducida hasta que quepa holgada en el registro.
-    private func sharedPhoto(for event: CountdownEvent) -> Data? {
+    func sharedPhoto(for event: CountdownEvent) -> Data? {
         guard event.iconKind == .photo, let data = event.photoData else { return nil }
-        for side in [Self.sharedPhotoMaxPixelSize, 800, 600] {
+        return Self.sharedJPEG(from: data)
+    }
+
+    /// Una foto reducida (≤ 1080 px) que cabe en lo que aceptan CloudKit y las
+    /// reglas de Firestore (`shares/{id}/photo/current`, ≤ 600 KB).
+    static func sharedJPEG(from data: Data) -> Data? {
+        for side in [sharedPhotoMaxPixelSize, 800, 600] {
             if let small = CountdownPhoto.prepared(from: data, maxPixelSize: side),
-               small.count <= Self.sharedPhotoMaxBytes {
+               small.count <= sharedPhotoMaxBytes {
                 return small
             }
         }
         return nil
-    }
-
-    /// La vista previa del share (la que iCloud enseña al aceptarla): la foto, o
-    /// el emoji/símbolo sobre el color de la cuenta.
-    private func countdownThumbnail(for event: CountdownEvent) -> Data? {
-        if event.iconKind == .photo, let data = event.photoData, let image = UIImage(data: data) {
-            return resized(image, to: 256).pngData()
-        }
-        let tint = event.color
-        if event.iconKind == .emoji, isEmojiIcon(event.iconValue) {
-            return renderIconThumbnail(tint: tint) {
-                Text(event.iconValue).font(.system(size: 150))
-            }
-        }
-        return renderIconThumbnail(tint: tint) {
-            Image(systemName: event.iconKind == .symbol ? event.iconValue : "hourglass")
-                .font(.system(size: 128, weight: .semibold))
-                .foregroundStyle(.white)
-        }
     }
 }
 
@@ -309,4 +294,7 @@ struct SharedCountdownPayload: Codable {
     /// lee la cuenta de CloudKit (ver `InvitePreview`). Ausente en payloads de
     /// versiones anteriores a la 1.0.18.
     var invitePreview: InvitePreview? = nil
+    /// 1.1: el token de la invitación de Firestore del mismo share (ver
+    /// `SharePayload.firebaseToken`).
+    var firebaseToken: String? = nil
 }

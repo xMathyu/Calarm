@@ -72,16 +72,42 @@ struct CalarmApp: App {
         self.calendarSource = calendarSource
         self.modelContainer = modelContainer
 
-        // Silent CloudKit push: the owner of an alarm shared with us edited or
-        // deleted it (a new time also posts a notification, see
-        // `ShareChangeNotifier`), OR, for a principal, a trusted helper edited/
-        // deleted one of their alarms in the delegation zone. Installed here, not
-        // as an `.onReceive`, so it also runs when the push wakes the app in the
-        // background with no window.
-        let resyncSharedData: () async -> Void = {
-            await sharedRemindersService.importAllSharedReminders()
-            if settings.delegationEnabled {
-                await delegationService.pullPrincipalChanges()
+        // Silent push: the owner of an alarm shared with us edited or deleted it
+        // (a new time also posts a notification, see `ShareChangeNotifier`), OR,
+        // for a principal, a trusted helper edited/deleted one of their alarms.
+        // A Firebase data message names what changed (`SharePush`), so only that
+        // is read; a CloudKit push (shares from before 1.1) re-scans everything.
+        // Installed here, not as an `.onReceive`, so it also runs when the push
+        // wakes the app in the background with no window.
+        let resyncSharedData: (SharePush?) async -> Void = { push in
+            if let push {
+                switch push.type {
+                case .share:
+                    switch push.event {
+                    case "updated":
+                        await sharedRemindersService.syncFirestoreShare(docID: push.id)
+                    case "deleted", "removed":
+                        // The copy goes (with its «X la borró» notice).
+                        await sharedRemindersService.importAllSharedReminders(cloudKit: false)
+                    default:
+                        // joined/left: only the owner's «Personas» changes, and it
+                        // re-reads on `.calarmSharedDataChanged`.
+                        break
+                    }
+                case .delegationReminder:
+                    // A helper changed one of this principal's alarms (helpers'
+                    // own screens just reload).
+                    if push.principal == FirebaseSession.shared.uid, settings.delegationEnabled {
+                        await delegationService.pullPrincipalChanges()
+                    }
+                case .delegation:
+                    break
+                }
+            } else {
+                await sharedRemindersService.importAllSharedReminders()
+                if settings.delegationEnabled {
+                    await delegationService.pullPrincipalChanges()
+                }
             }
             await Self.syncAllReminders(in: modelContainer, with: reminderScheduler)
         }
@@ -92,7 +118,7 @@ struct CalarmApp: App {
         // the «¿Cómo te llamas?» sheet closes on its own when it arrives.
         DeletedSharesStore.startSyncing(onChange: {
             sharedRemindersService.refreshNameRequirement()
-            await resyncSharedData()
+            await resyncSharedData(nil)
         })
 
         // Los widgets leen un resumen que escribe la app: se rehace tras cada
@@ -151,9 +177,10 @@ struct CalarmApp: App {
             .environment(\.locale, localization.currentLocale)
             // Forces every Text(...) to re-evaluate after a language switch.
             .id(localization.revision)
-            // Invitations arriving as Calarmi links (calarmi.mathyusolutions.com/i/…).
-            // The CloudKit share metadata callbacks never fire for these, since
-            // iOS only raises those for icloud.com URLs it opens itself.
+            // Invitations arriving as Calarmi links: `…/s/<token>/` or
+            // `calarm://s/<token>` (Firestore, 1.1+) and `…/i/…`, `…/c/…` (CloudKit,
+            // links sent before). The CloudKit share metadata callbacks never fire
+            // for these, since iOS only raises those for icloud.com URLs it opens itself.
             .onOpenURL { url in
                 handleOpenURL(url)
             }
@@ -173,6 +200,11 @@ struct CalarmApp: App {
             #endif
             .task {
                 UIApplication.shared.installGlobalKeyboardDismissGesture()
+                // A Firestore invitation opened before the person had a name
+                // resumes once they type it (`saveMyName`).
+                sharedRemindersService.resumeInvite = { token in
+                    await acceptFirestoreInvite(token)
+                }
                 // Calarmi Plus: escucha renovaciones y compras hechas fuera de la
                 // app. No bloquea nada del arranque.
                 PlusStore.shared.start()
@@ -221,15 +253,37 @@ struct CalarmApp: App {
                     await acceptIncomingShare(pending)
                 }
                 // Reliable fallback: scan the shared DB for received reminders,
-                // since the acceptance callback is unreliable in SwiftUI.
+                // since the acceptance callback is unreliable in SwiftUI. Also
+                // reads Firestore (shares since 1.1).
                 await sharedRemindersService.importAllSharedReminders()
                 await syncAllReminders()
+                // Shares made before 1.1: their Firestore twin and invitation, with
+                // the token in the CloudKit record so invitees move over
+                // (calarmi-firebase/DESIGN.md › «Migración desde CloudKit»).
+                await sharedRemindersService.migrateOwnedCloudKitShares()
+                sharedRemindersService.startFirestoreListener()
                 // Subscribe so owner edits/deletes arrive via silent push (the
                 // scan above stays as a fallback if a push is missed).
                 await sharedRemindersService.ensureSharedSubscription()
                 // Delegation sync: pull helper changes (they ring here), push our
                 // own changes up, and subscribe for future helper edits.
+                #if DEBUG
+                // `-firebaseSmokeTest`: el recorrido contra el proyecto real (ver
+                // `FirebaseSmokeTest`), en un simulador aparte.
+                if FirebaseSmokeTest.isRequested {
+                    await FirebaseSmokeTest.run(
+                        sharing: sharedRemindersService,
+                        delegation: delegationService,
+                        settings: settings,
+                        container: modelContainer
+                    )
+                }
+                if FirebaseSmokeTest.isCleanupRequested {
+                    await FirebaseSmokeTest.cleanUpUser()
+                }
+                #endif
                 if settings.delegationEnabled {
+                    await delegationService.migrateCloudKitDelegationIfNeeded()
                     await delegationService.ensurePrincipalSubscription()
                     await delegationService.pullPrincipalChanges()
                     await delegationService.reconcileUp()
@@ -245,6 +299,8 @@ struct CalarmApp: App {
                 // que llegó de iCloud mientras la app estaba abierta).
                 if newPhase == .background {
                     WidgetSnapshotWriter.update(container: modelContainer)
+                    // Away from the screen, pushes take over.
+                    sharedRemindersService.stopFirestoreListener()
                 }
                 // Una suscripción que caducó o se reembolsó mientras la app
                 // estaba cerrada deja de contar aquí.
@@ -261,6 +317,8 @@ struct CalarmApp: App {
                     Task {
                         await sharedRemindersService.importAllSharedReminders()
                         await syncAllReminders()
+                        // On screen, Firestore changes arrive live.
+                        sharedRemindersService.startFirestoreListener()
                         await requestChangeNotificationsIfNeeded()
                     }
                     if settings.delegationEnabled {
@@ -354,8 +412,50 @@ struct CalarmApp: App {
             NotificationCenter.default.post(name: .calarmOpenReminder, object: reminderID)
             return
         }
+        // Una invitación de Firestore (1.1+): alarma, cuenta o personas de confianza.
+        if let token = InviteLink.firestoreToken(from: url) {
+            Task { await acceptFirestoreInvite(token) }
+            return
+        }
         guard InviteLink.isInvite(url) else { return }
         Task { await acceptInviteLink(url) }
+    }
+
+    /// Accepts a Firestore invitation (`…/s/<token>/` or `calarm://s/<token>`):
+    /// reads `invites/{token}`, whose kind decides where it goes — an alarm or
+    /// countdown joins the share and lands on the list; a trusted-people list
+    /// joins the principal's list (nothing rings here).
+    @MainActor
+    private func acceptFirestoreInvite(_ token: String) async {
+        ShareDiagnostics.log("📥 invitación recibida (Firestore)")
+        // Feedback from the first instant, as with the CloudKit links.
+        sharedRemindersService.beginAcceptingShare()
+        do {
+            let invite = try await sharedRemindersService.fetchInvite(token)
+            switch invite.kind {
+            case .delegation:
+                // Not an alarm for this list: the «agregando…» toast doesn't apply.
+                sharedRemindersService.clearIncomingShare()
+                do {
+                    try await delegationService.joinFirestoreDelegation(invite)
+                } catch SharedRemindersError.nameRequired {
+                    // Joins once the person types their name (the sheet is up).
+                    if !sharedRemindersService.invitesAwaitingName.contains(token) {
+                        sharedRemindersService.invitesAwaitingName.append(token)
+                    }
+                }
+            case .alarm, .countdown:
+                // `acceptFirestoreShare` shows its own progress and result.
+                try await sharedRemindersService.acceptFirestoreShare(invite)
+                await syncAllReminders()
+                await requestChangeNotificationsIfNeeded()
+                sharedRemindersService.startFirestoreListener()
+            }
+        } catch {
+            PendingShare.log.error("Firestore invite failed: \(error.localizedDescription)")
+            ShareDiagnostics.log("❌ invitación (Firestore): \(error.localizedDescription)")
+            sharedRemindersService.reportAcceptFailure(error)
+        }
     }
 
     /// Accepts an invitation that arrived through one of Calarm's own links.

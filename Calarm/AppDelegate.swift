@@ -12,9 +12,10 @@ extension Notification.Name {
     /// Posted when a CloudKit share invitation's metadata is captured. The
     /// notification's `object` is the `CKShare.Metadata`.
     static let calarmDidAcceptShare = Notification.Name("CalarmDidAcceptShare")
-    /// Posted when a silent CloudKit push says the shared database changed (owner
-    /// edited/deleted a shared reminder), AFTER the app has re-synced it — so open
-    /// screens (e.g. "Listas que administro") can reload.
+    /// Posted when a silent push (CloudKit, or a Firebase data message) says
+    /// something shared changed (owner edited/deleted a shared reminder, someone
+    /// joined or left), AFTER the app has re-synced it — so open screens (e.g.
+    /// "Listas que administro", «Personas») can reload.
     static let calarmSharedDataChanged = Notification.Name("CalarmSharedDataChanged")
     /// Posted by code paths that create/edit reminders outside the main editor
     /// (e.g. the AI assistant tools) so delegation can mirror the change up. On an
@@ -57,16 +58,21 @@ enum PendingShare {
 /// Installs the scene delegate (the only channel that reliably sees share metadata
 /// on cold launch) and catches the app-delegate acceptance callback as a fallback.
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    /// Re-syncs what a silent CloudKit push is about. Set by `CalarmApp` at launch,
-    /// because a push can wake the app in the background with no window — and so
-    /// no SwiftUI `.onReceive` to do the work.
-    static var remoteChangeHandler: (() async -> Void)?
+    /// Re-syncs what a silent push is about: a Firebase data message (`SharePush`)
+    /// or, when nil, a CloudKit one. Set by `CalarmApp` at launch, because a push
+    /// can wake the app in the background with no window — and so no SwiftUI
+    /// `.onReceive` to do the work.
+    static var remoteChangeHandler: ((SharePush?) async -> Void)?
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        // Needed to receive CloudKit's silent push when a shared reminder changes.
+        // Firebase first: what's shared (Firestore) and its pushes (FCM). Nothing
+        // reaches its servers until the person uses something shared.
+        FirebaseSession.shared.configure()
+        // Needed to receive the silent pushes (CloudKit's, and FCM's through APNs)
+        // when something shared changes.
         application.registerForRemoteNotifications()
         // So a shared alarm's change notice also shows while Calarm is open.
         UNUserNotificationCenter.current().delegate = self
@@ -90,18 +96,36 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         PendingShare.store(cloudKitShareMetadata, source: "appDelegate")
     }
 
-    /// Silent CloudKit push: the shared database changed. Re-sync before calling
-    /// the completion handler — iOS suspends the app right after it, which cut a
-    /// background import short: the alarm kept its old time until the next launch.
+    /// FCM maps its token to this device's APNs token. By hand: Firebase's app
+    /// delegate proxy is off (`FirebaseAppDelegateProxyEnabled` = NO in Info.plist).
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        FirebaseSession.shared.setAPNsToken(deviceToken)
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: any Error) {
+        ShareDiagnostics.log("❌ registro de push: \(error.localizedDescription)")
+    }
+
+    /// Silent push: a Firebase data message (`type`/`event`/`id`, see
+    /// calarmi-firebase/DESIGN.md › Push) or CloudKit's "the shared database
+    /// changed". Re-sync before calling the completion handler — iOS suspends the
+    /// app right after it, which cut a background import short: the alarm kept
+    /// its old time until the next launch.
     func application(
         _ application: UIApplication,
         didReceiveRemoteNotification userInfo: [AnyHashable: Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
-        PendingShare.log.info("Remote notification (CloudKit) received")
-        ShareDiagnostics.log("🔔 push CloudKit recibido")
+        let push = SharePush(userInfo: userInfo)
+        if let push {
+            PendingShare.log.info("Remote notification (Firebase) received")
+            ShareDiagnostics.log("🔔 push Firebase: \(push.type.rawValue) \(push.event)")
+        } else {
+            PendingShare.log.info("Remote notification (CloudKit) received")
+            ShareDiagnostics.log("🔔 push CloudKit recibido")
+        }
         Task {
-            await Self.remoteChangeHandler?()
+            await Self.remoteChangeHandler?(push)
             NotificationCenter.default.post(name: .calarmSharedDataChanged, object: nil)
             completionHandler(.newData)
         }

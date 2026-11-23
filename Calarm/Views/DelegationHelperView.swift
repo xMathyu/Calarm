@@ -4,11 +4,11 @@
 //
 //  Helper-side UI: lists the alarm lists this user has been trusted to manage and
 //  lets them create/edit/delete alarms FOR that person. Everything is read/written
-//  directly in the shared CloudKit zone — never inserted into the helper's own
+//  directly in the principal's documents (Firestore, or the shared CloudKit zone
+//  of a principal on an old version) — never inserted into the helper's own
 //  store — so delegated alarms never ring on the helper's phone.
 //
 
-import CloudKit
 import SwiftUI
 
 struct DelegationHelperView: View {
@@ -138,12 +138,12 @@ struct DelegationPrincipalAlarmsView: View {
     }
 
     private func reload() async {
-        reminders = await delegation.helperFetchReminders(in: principal.zoneID)
+        reminders = await delegation.helperFetchReminders(for: principal)
         isLoading = false
     }
 
     private func delete(_ item: DelegatedReminder) async {
-        await delegation.helperDelete(recordID: item.recordID)
+        await delegation.helperDelete(item, for: principal)
         Haptics.warning()
         await reload()
     }

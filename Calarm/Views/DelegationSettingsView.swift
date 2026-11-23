@@ -3,7 +3,8 @@
 //  Calarm
 //
 //  Principal-side UI for "Personas de confianza": turn delegation on/off, invite
-//  trusted helpers (read/write to the whole alarm list), and revoke them.
+//  trusted helpers (read/write to the whole alarm list), and revoke them. The
+//  list lives in Firestore (`DelegationService`), so a helper can be on Android.
 //
 
 import CloudKit
@@ -91,9 +92,8 @@ struct DelegationSettingsView: View {
         .navigationTitle("Personas de confianza")
         .navigationBarTitleDisplayMode(.inline)
         .task { await refreshParticipants() }
-        // Same share-sheet link delivery as sharing a single alarm — the native
-        // iCloud collaboration invite (UICloudSharingController) often never
-        // reached the invitee.
+        // Same share-sheet link delivery as sharing a single alarm (a
+        // `…/s/<token>/` invitation link).
         .inviteDelivery($pendingInvite) {
             Task { await refreshParticipants() }
         }
@@ -119,8 +119,7 @@ struct DelegationSettingsView: View {
         isWorking = true
         Task {
             do {
-                _ = try await delegation.prepareZoneShare()
-                await delegation.mirrorAllLocalReminders()
+                try await delegation.enable()
                 settings.delegationEnabled = true
                 await refreshParticipants()
             } catch {
@@ -134,10 +133,7 @@ struct DelegationSettingsView: View {
         isWorking = true
         Task {
             do {
-                let share = try await delegation.prepareZoneShare()
-                guard let url = share.url else {
-                    throw SharedRemindersError.shareURLUnavailable
-                }
+                let url = try await delegation.inviteURL()
                 pendingInvite = InviteDelivery(
                     title: appLocalized("Mis alarmas"),
                     url: url,
@@ -159,11 +155,7 @@ struct DelegationSettingsView: View {
     }
 
     private func revoke(_ person: ShareParticipantInfo) async {
-        await delegation.removeHelper(
-            userRecordName: person.userRecordName,
-            email: person.email,
-            phone: person.phone
-        )
+        await delegation.removeHelper(person)
         await refreshParticipants()
         Haptics.warning()
     }

@@ -24,7 +24,7 @@ struct CountdownDetailView: View {
     @State private var confirmingDelete = false
 
     // Compartir
-    @State private var existingShare: CKShare?
+    @State private var shareOverview: SharedRemindersService.ShareOverview?
     @State private var participants: [ShareParticipantInfo] = []
     @State private var sharedBy: SharedByPerson?
     @State private var isPreparingShare = false
@@ -78,11 +78,10 @@ struct CountdownDetailView: View {
             Task { await refreshShare() }
         }
         .sheet(isPresented: $showingManageSheet, onDismiss: { Task { await refreshShare() } }) {
-            if let share = existingShare {
-                CloudSharingView(
-                    share: share,
-                    container: CKContainer(identifier: sharedService.containerIdentifier)
-                ) { showingManageSheet = false }
+            if let overview = shareOverview {
+                ShareManageView(itemID: event.id, overview: overview) {
+                    await sharedService.shareOverview(forCountdown: event)
+                }
             }
         }
         .alert("Error al compartir", isPresented: Binding(
@@ -94,6 +93,10 @@ struct CountdownDetailView: View {
             Text(shareError ?? "")
         }
         .task { await refreshShare() }
+        // Alguien se unió o salió (push o la escucha de Firestore).
+        .onReceive(NotificationCenter.default.publisher(for: .calarmSharedDataChanged)) { _ in
+            Task { await refreshShare() }
+        }
     }
 
     // MARK: - Hero
@@ -219,7 +222,7 @@ struct CountdownDetailView: View {
         }
     }
 
-    /// Quién la compartió (se lee de iCloud cada vez; no se guarda).
+    /// Quién la compartió (de Firestore, o de iCloud si llegó antes de la 1.1).
     private var sharedByCard: some View {
         HStack(spacing: DS.Spacing.md) {
             if let sharedBy {
@@ -254,7 +257,7 @@ struct CountdownDetailView: View {
                     .font(.footnote.weight(.semibold))
                     .textCase(.uppercase)
                 Spacer()
-                if existingShare != nil {
+                if shareOverview?.isShared == true {
                     Button("Gestionar") {
                         Haptics.light()
                         showingManageSheet = true
@@ -330,36 +333,16 @@ struct CountdownDetailView: View {
 
     // MARK: - Compartir
 
-    /// Prepara el share en iCloud y abre la hoja de compartir con un enlace de
-    /// Calarm, que enseña la cuenta (y la ofrece a quien aún no tiene la app).
+    /// Prepara el share en Firestore y abre la hoja de compartir con su enlace
+    /// (`…/s/<token>/`), que enseña la cuenta y ofrece la app (iPhone o Android)
+    /// a quien aún no la tiene.
     @MainActor
     private func invite() async {
         isPreparingShare = true
         defer { isPreparingShare = false }
         do {
-            let share = try await sharedService.prepareShare(forCountdown: event)
-            guard let url = share.url else {
-                shareError = SharedRemindersError.shareURLUnavailable.errorDescription
-                return
-            }
-            existingShare = share
-            // Sin el enlace propio no hay invitación: un enlace de iCloud a
-            // secas lo abriría como alarma una versión anterior de la app.
+            let link = try await sharedService.prepareFirestoreInvite(forCountdown: event)
             let preview = InvitePreview(countdown: event)
-            guard let link = InviteLink.make(
-                kind: .countdown,
-                title: event.title,
-                date: event.target(),
-                hasTime: event.includesTime,
-                tintHex: preview.tintHex,
-                emoji: preview.emoji,
-                symbol: preview.symbol,
-                photo: event.iconKind == .photo ? event.photoData.flatMap(InvitePhoto.thumbnail(from:)) : nil,
-                shareURL: url
-            ) else {
-                shareError = SharedRemindersError.shareURLUnavailable.errorDescription
-                return
-            }
             pendingInvite = InviteDelivery(
                 title: event.title,
                 url: link,
@@ -381,14 +364,11 @@ struct CountdownDetailView: View {
             sharedBy = await sharedService.owner(ofReceived: event.id)
             return
         }
-        let share = await sharedService.existingShare(forCountdown: event)
-        existingShare = share
-        // Los nombres que cada invitado publicó (iCloud no da el de quien entra
-        // por el enlace); mientras llegan, la lista ya se ve.
-        participants = share.map { sharedService.participantInfos(of: $0).filter { !$0.isOwner } } ?? []
-        if let share {
-            participants = await sharedService.namedParticipantInfos(of: share).filter { !$0.isOwner }
-        }
+        // Los miembros de Firestore y, si se compartió antes de la 1.1, los del
+        // `CKShare` que sigan ahí.
+        let overview = await sharedService.shareOverview(forCountdown: event)
+        shareOverview = overview
+        participants = overview.people
     }
 
     /// Vuelve a la lista y borra después: si se borra con la pantalla todavía

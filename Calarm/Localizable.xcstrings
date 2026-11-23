@@ -16193,6 +16193,226 @@
           }
         }
       }
+    },
+    "Compartir no está disponible en esta versión de la app." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sharing isn't available in this version of the app."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir no está disponible en esta versión de la app."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar não está disponível nesta versão do app."
+          }
+        }
+      }
+    },
+    "No se pudo conectar para compartir: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't connect to share: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo conectar para compartir: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível conectar para compartilhar: %@"
+          }
+        }
+      }
+    },
+    "Primero escribe tu nombre: así te verán las personas con quienes compartes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First enter your name: it's how the people you share with will see you."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primero escribe tu nombre: así te verán las personas con quienes compartes."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeiro digite seu nome: é assim que as pessoas com quem você compartilha vão te ver."
+          }
+        }
+      }
+    },
+    "Esta invitación ya no es válida. Pide que te la envíen otra vez." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This invitation is no longer valid. Ask for it to be sent again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta invitación ya no es válida. Pide que te la envíen otra vez."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este convite não é mais válido. Peça para enviarem de novo."
+          }
+        }
+      }
+    },
+    "Esta alarma se compartió desde otro dispositivo. Invita desde ese dispositivo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This alarm was shared from another device. Invite from that device."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta alarma se compartió desde otro dispositivo. Invita desde ese dispositivo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este alarme foi compartilhado de outro dispositivo. Convide a partir desse dispositivo."
+          }
+        }
+      }
+    },
+    "Aún no se ha unido nadie." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No one has joined yet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no se ha unido nadie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguém entrou ainda."
+          }
+        }
+      }
+    },
+    "Desliza a la izquierda sobre una persona para quitarla." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe left on a person to remove them."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza a la izquierda sobre una persona para quitarla."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deslize para a esquerda sobre uma pessoa para removê-la."
+          }
+        }
+      }
+    },
+    "Dejar de compartir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop sharing"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejar de compartir"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parar de compartilhar"
+          }
+        }
+      }
+    },
+    "¿Dejar de compartir?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop sharing?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Dejar de compartir?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parar de compartilhar?"
+          }
+        }
+      }
+    },
+    "Quienes la tienen dejarán de recibirla. Tu copia se queda." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Everyone who has it will stop receiving it. Your copy stays."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quienes la tienen dejarán de recibirla. Tu copia se queda."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem tem deixará de recebê-lo. Sua cópia continua."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

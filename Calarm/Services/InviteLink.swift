@@ -24,6 +24,12 @@
 //  There is no server storing anything of ours either way. Both shapes are a
 //  contract with the website — change them together.
 //
+//  Since 1.1 new invitations are Firestore ones: `/s/<token>/` (and
+//  `calarm://s/<token>`), where the token is the id of `invites/{token}`
+//  (calarmi-firebase/DESIGN.md › Enlaces). The document says whether it's an
+//  alarm, a countdown or a trusted-people list, so one path serves all three.
+//  `/i/` and `/c/` stay readable: they are the CloudKit invitations already sent.
+//
 
 import Foundation
 
@@ -194,12 +200,47 @@ enum InviteLink {
         (10...64).contains(token.count) && token.unicodeScalars.allSatisfy(tokenAlphabet.contains)
     }
 
+    // MARK: - Firestore invitations (1.1+)
+
+    /// Path of a Firestore invitation (`/s/<token>/`), shared with Android and
+    /// the website.
+    static let firestorePath = "s"
+
+    /// `https://calarmi.mathyusolutions.com/s/<token>/`. The trailing slash is
+    /// the site's canonical form, as in `/i/`.
+    static func make(token: String) -> URL {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = host
+        components.path = "/\(firestorePath)/\(token)/"
+        return components.url!
+    }
+
+    /// The token of a Firestore invitation link: `https://<host>/s/<token>/` or
+    /// `calarm://s/<token>`. Nil for anything else, including a token with the
+    /// wrong shape (the link arrives from outside the app).
+    static func firestoreToken(from url: URL) -> String? {
+        let segment: String?
+        if url.scheme?.lowercased() == scheme {
+            // In `calarm://s/<token>` the "s" parses as the host.
+            guard url.host()?.lowercased() == firestorePath else { return nil }
+            segment = url.pathComponents.first { $0 != "/" }
+        } else {
+            guard let urlHost = url.host(), urlHost == host || legacyHosts.contains(urlHost) else { return nil }
+            let parts = url.path().split(separator: "/")
+            guard parts.count >= 2, parts[0] == firestorePath else { return nil }
+            segment = String(parts[1])
+        }
+        guard let segment, InviteToken.isValid(segment) else { return nil }
+        return segment
+    }
+
     // MARK: - Reading
 
-    /// True when `url` is one of our invitation links, in either shape, so the
+    /// True when `url` is one of our invitation links, in any shape, so the
     /// app can claim it without trying to decode every URL it's handed.
     static func isInvite(_ url: URL) -> Bool {
-        dataSegment(of: url) != nil
+        dataSegment(of: url) != nil || firestoreToken(from: url) != nil
     }
 
     /// Whether an invitation link is for an alarm or a countdown.

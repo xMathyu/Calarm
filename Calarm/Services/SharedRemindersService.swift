@@ -2,14 +2,21 @@
 //  SharedRemindersService.swift
 //  Calarm
 //
-//  Wraps CloudKit sharing operations for Reminder records.
+//  Sharing of alarms and countdowns.
+//
+//  Since 1.1 new shares live in Firestore (`SharedRemindersService+Firestore`),
+//  so an iPhone can share with an Android phone. This file keeps the CloudKit
+//  side that existing shares still need: invitations already sent (`/i/`, `/c/`
+//  links) keep working, received CloudKit shares keep syncing until their owner
+//  migrates them, and an owner keeps writing to the CloudKit record while it has
+//  a `CKShare` (see «Migración desde CloudKit» in calarmi-firebase/DESIGN.md).
 //
 //  SwiftData persists Reminders to a CloudKit private database via NSPersistentCloudKitContainer
-//  under the hood. For sharing, we drop down to direct CloudKit APIs: create a CKShare anchored
-//  to a custom record zone, and present the share via UICloudSharingController / ShareLink.
+//  under the hood; that sync of the person's own alarms is untouched.
 //
 
 import CloudKit
+import FirebaseFirestore
 import Foundation
 import Observation
 import os
@@ -24,6 +31,15 @@ enum SharedRemindersError: LocalizedError {
     case shareURLUnavailable
     case shareCreationFailed(any Error)
     case acceptFailed(any Error)
+    /// Compilación sin `GoogleService-Info.plist`: Firebase no arrancó.
+    case firebaseUnavailable
+    case signInFailed(any Error)
+    /// Firestore exige el nombre de quien comparte o se une (lo ven los demás).
+    case nameRequired
+    /// La invitación no existe, se revocó o no es de un tipo que esta versión entienda.
+    case inviteInvalid
+    /// El share existe pero lo creó otra sesión (otro dispositivo de la cuenta).
+    case notShareOwner
 
     var errorDescription: String? {
         switch self {
@@ -37,6 +53,16 @@ enum SharedRemindersError: LocalizedError {
             return "Error al compartir: \(error.localizedDescription)"
         case .acceptFailed(let error):
             return "Error al aceptar la invitación: \(error.localizedDescription)"
+        case .firebaseUnavailable:
+            return appLocalized("Compartir no está disponible en esta versión de la app.")
+        case .signInFailed(let error):
+            return appLocalized("No se pudo conectar para compartir: \(error.localizedDescription)")
+        case .nameRequired:
+            return appLocalized("Primero escribe tu nombre: así te verán las personas con quienes compartes.")
+        case .inviteInvalid:
+            return appLocalized("Esta invitación ya no es válida. Pide que te la envíen otra vez.")
+        case .notShareOwner:
+            return appLocalized("Esta alarma se compartió desde otro dispositivo. Invita desde ese dispositivo.")
         }
     }
 }
@@ -64,6 +90,9 @@ struct ShareParticipantInfo: Identifiable {
     var participantID: String? = nil
     /// False while `name` is only the «Alguien» placeholder.
     var hasName: Bool = true
+    /// Firestore member (or trusted helper): their anonymous uid, the key to
+    /// remove them. Nil for a CloudKit participant.
+    var firebaseUID: String? = nil
 
     /// Localized acceptance label, e.g. "Aceptó" / "Pendiente".
     var statusLabel: String {
@@ -147,8 +176,32 @@ final class SharedRemindersService {
         sharesAwaitingName = []
         namedShareIDs = []
         await ShareNames.publishMine(in: waiting, container: cloudKitContainer)
+        // En Firestore el nombre va en cada share y lista de confianza (lo leen
+        // los demás de ahí, también desde Android).
+        await propagateMyNameToFirestore()
+        // Las invitaciones que esperaban el nombre para poder unirse.
+        let pending = invitesAwaitingName
+        invitesAwaitingName = []
+        for token in pending {
+            await resumeInvite?(token)
+        }
         await importAllSharedReminders()
     }
+
+    /// Invitaciones de Firestore abiertas sin nombre puesto: unirse exige uno
+    /// (las reglas lo piden), así que esperan a que la persona lo escriba.
+    @ObservationIgnored var invitesAwaitingName: [String] = []
+    /// Vuelve a abrir una invitación de Firestore (por su token). Lo pone
+    /// `CalarmApp`, que sabe repartir entre alarmas, cuentas y personas de confianza.
+    @ObservationIgnored var resumeInvite: ((String) async -> Void)?
+    /// La escucha de `shares where memberUids array-contains uid` mientras la
+    /// app está en pantalla (ver `startFirestoreListener`).
+    @ObservationIgnored var firestoreListener: (any ListenerRegistration)?
+    /// Pide el escaneo de CloudKit en la próxima pasada (`importAllSharedReminders`).
+    @ObservationIgnored var wantsCloudKitScan = false
+    /// La próxima pasada lee Firestore del servidor. Si solo la pidió la escucha
+    /// (que ya trajo lo último a la caché), lee la caché y no cuesta lecturas.
+    @ObservationIgnored var wantsFirestoreServerRead = false
 
     /// After a scan: this person's name goes on every received share they're
     /// in. The share records usually come with the zone's changes; any that
@@ -184,10 +237,14 @@ final class SharedRemindersService {
     /// Who shared each received alarm, as iCloud reported it during this
     /// session. Memory only: Apple's iCloud Extended Share Access entitlement,
     /// which makes these names readable at all, allows showing them but not
-    /// storing them.
+    /// storing them. (Firestore names are the app's own data and are also
+    /// kept in `FirestoreShareStore`.)
     @ObservationIgnored var ownerNames: [UUID: SharedByPerson] = [:]
 
-    private static let log = Logger(subsystem: "MathyuSolutions.Calarm", category: "sharing")
+    static let log = Logger(subsystem: "MathyuSolutions.Calarm", category: "sharing")
+
+    /// Internal (not private): the Firestore extension cancels alarms too.
+    var reminderScheduler: ReminderScheduler { scheduler }
 
     init(modelContainer: ModelContainer, scheduler: ReminderScheduler, containerIdentifier: String = "iCloud.MathyuSolutions.Calarm") {
         self.modelContainer = modelContainer
@@ -222,68 +279,9 @@ final class SharedRemindersService {
 
     // MARK: - Owner side
 
-    /// Prepares (creating if needed) a `CKShare` for the given reminder and returns it
-    /// together with the shared record's CKRecord. Used by ShareLink's preparation handler.
-    func prepareShare(for reminder: Reminder) async throws -> CKShare {
-        do {
-            try await ensureCloudKitAccountAvailable()
-            ShareDiagnostics.log("↗️ preparando share '\(reminder.title)'")
-
-            // Convert the reminder to a CKRecord stored in a dedicated, shareable zone.
-            let zone = try await ensureSharingZone()
-            let recordID = CKRecord.ID(recordName: reminder.id.uuidString, zoneID: zone.zoneID)
-            let database = cloudKitContainer.privateCloudDatabase
-
-            let record: CKRecord
-            if let existingRecord = try await fetchRootRecord(for: recordID) {
-                if let existingShare = try await fetchShare(attachedTo: existingRecord, database: database) {
-                    // La página de invitación lee la alarma de este registro: que
-                    // lleve lo último (y el `invitePreview`, si lo compartió una
-                    // versión anterior).
-                    writeFields(from: reminder, to: existingRecord)
-                    _ = try? await database.modifyRecords(saving: [existingRecord], deleting: [])
-                    let readyShare = try await prepareExistingShareForInvite(existingShare, database: database)
-                    ShareDiagnostics.log("✅ share existente listo (url=\(readyShare.url != nil))")
-                    return readyShare
-                }
-                record = existingRecord
-                writeFields(from: reminder, to: record)
-                ShareDiagnostics.log("↻ root record existente sin share; creando share")
-            } else {
-                record = makeRecord(from: reminder, recordID: recordID)
-            }
-
-            let share = CKShare(rootRecord: record, shareID: CKRecord.ID(
-                recordName: "share-\(reminder.id.uuidString)",
-                zoneID: zone.zoneID
-            ))
-            share[CKShare.SystemFieldKey.title] = reminder.title as CKRecordValue
-            share[CKShare.SystemFieldKey.shareType] = "com.mathyusolutions.calarm.reminder" as CKRecordValue
-            // Custom thumbnail so the rich link preview in iMessage/Mail shows the
-            // reminder's photo or its category icon — not the generic iCloud cloud.
-            if let thumbnail = makeShareThumbnail(for: reminder) {
-                share[CKShare.SystemFieldKey.thumbnailImageData] = thumbnail as CKRecordValue
-            }
-            // Anyone who receives the invite link must be able to open it. We deliver
-            // the raw share URL over Messages / the share sheet without adding each
-            // recipient as an explicit participant, so the share has to grant access
-            // to public (link-based) users. With `.none`, link recipients are denied
-            // with "Item Unavailable / you don't have permission to open it".
-            share.publicPermission = .readOnly
-
-            let results = try await database.modifyRecords(saving: [record, share], deleting: [])
-            let savedShare = try savedShare(from: results.saveResults, id: share.recordID)
-            let readyShare = try await shareWithInviteURL(savedShare, database: database)
-            ShareDiagnostics.log("✅ share creado (url=\(readyShare.url != nil))")
-            return readyShare
-        } catch let error as SharedRemindersError {
-            ShareDiagnostics.log("❌ preparar share: \(error.localizedDescription)")
-            throw error
-        } catch {
-            ShareDiagnostics.log("❌ preparar share: \(Self.diagnosticDescription(for: error))")
-            throw SharedRemindersError.shareCreationFailed(error)
-        }
-    }
+    // New invitations are Firestore shares (`prepareFirestoreInvite`). The
+    // CloudKit share of an alarm shared before 1.1 is still read here: its
+    // participants show in «Personas», and it gets every edit while it exists.
 
     /// Returns the existing `CKShare` for a reminder WITHOUT creating one, or
     /// `nil` if it hasn't been shared yet. Lets the detail view decide whether
@@ -374,6 +372,10 @@ final class SharedRemindersService {
     /// owner deleted it) or iCloud gives no name.
     func owner(ofReceived id: UUID) async -> SharedByPerson? {
         if let known = ownerNames[id] { return known }
+        // De Firestore: el nombre viene en el share y la app lo guarda.
+        if let entry = FirestoreShareStore.received(id) {
+            return entry.ownerName.map { SharedByPerson(name: $0, email: nil, phone: nil) }
+        }
         guard let record = try? await receivedRecord(id: id) else { return nil }
         return await owner(of: record)
     }
@@ -421,11 +423,22 @@ final class SharedRemindersService {
     /// their next scan). No-op for received shares or reminders that aren't shared.
     func pushUpdateIfShared(_ reminder: Reminder) async {
         guard !reminder.isReceivedShare else { return }
+        // Firestore: solo si esta sesión es la dueña (lo creó o lo migró aquí).
+        await pushFirestoreUpdate(reminder)
+        await writeCloudKitRecordIfShared(reminder)
+    }
+
+    /// CloudKit: mientras exista el registro del share de antes (con
+    /// participantes en versiones viejas, o un enlace `/i/` aún sin abrir), sigue
+    /// recibiendo cada cambio. El token de Firestore viaja dentro para que la app
+    /// nueva del otro lado se pase sola.
+    func writeCloudKitRecordIfShared(_ reminder: Reminder) async {
         let zoneID = CKRecordZone.ID(zoneName: Self.sharingZoneName, ownerName: CKCurrentUserDefaultName)
         let recordID = CKRecord.ID(recordName: reminder.id.uuidString, zoneID: zoneID)
         let database = cloudKitContainer.privateCloudDatabase
         guard let record = try? await database.record(for: recordID) else { return }
-        writeFields(from: reminder, to: record)
+        let token = FirestoreShareStore.owned(reminder.id)?.inviteToken ?? decodePayload(from: record).firebaseToken
+        writeFields(from: reminder, to: record, firebaseToken: token)
         _ = try? await database.modifyRecords(saving: [record], deleting: [])
         ShareDiagnostics.log("↻ push update '\(reminder.title)'")
     }
@@ -433,7 +446,9 @@ final class SharedRemindersService {
     /// If the owner deleted a shared reminder, remove its CloudKit record + share so
     /// participants lose access and their copy is reconciled away on next sync.
     /// Takes the id (not the `Reminder`) since the local object is deleted first.
+    /// Same for its Firestore share (and invitation, and photo).
     func deleteSharedRecord(forReminderID id: UUID) async {
+        await deleteFirestoreShare(id: id)
         let zoneID = CKRecordZone.ID(zoneName: Self.sharingZoneName, ownerName: CKCurrentUserDefaultName)
         let recordID = CKRecord.ID(recordName: id.uuidString, zoneID: zoneID)
         let database = cloudKitContainer.privateCloudDatabase
@@ -452,6 +467,11 @@ final class SharedRemindersService {
     /// Best effort: `scanSharedDatabase` retries for any deleted invitation whose
     /// record is still visible (offline at the time, or deleted before this existed).
     func leaveShare(forReminderID id: UUID) async {
+        // De Firestore: se quita de `members` (el dueño deja de verla en «Personas»).
+        if FirestoreShareStore.received(id) != nil {
+            await leaveFirestoreShare(id: id)
+            return
+        }
         do {
             if let record = try await receivedRecord(id: id) {
                 await leaveShare(of: record)
@@ -535,7 +555,7 @@ final class SharedRemindersService {
         do {
             let acceptedShare = try await cloudKitContainer.accept(metadata)
             ShareDiagnostics.log("✅ accept() OK")
-            let reminder = try await ingestSharedRecord(from: metadata)
+            let (reminder, record) = try await ingestSharedRecord(from: metadata)
             acceptErrorMessage = nil
             incomingShare = .accepted(
                 reminderID: reminder.id,
@@ -546,6 +566,12 @@ final class SharedRemindersService {
             ShareDiagnostics.log("✅ ingesta completa")
             announceMyself(in: acceptedShare)
             rememberOwner(of: acceptedShare, for: reminder.id)
+            // An old `/i/` link whose owner already moved the alarm to Firestore:
+            // straight over there, so it also syncs with Android.
+            if let token = decodePayload(from: record).firebaseToken {
+                let migration = CloudKitMigration(id: reminder.id, token: token, record: record)
+                Task { await migrateReceivedCloudKitShares([migration]) }
+            }
             Task { await releaseAcceptGuard(guardedID) }
         } catch {
             let wrapped = SharedRemindersError.acceptFailed(error)
@@ -620,52 +646,6 @@ final class SharedRemindersService {
 
     static let sharingZoneName = "SharedRemindersZone"
 
-    func ensureCloudKitAccountAvailable() async throws {
-        do {
-            switch try await cloudKitContainer.accountStatus() {
-            case .available:
-                return
-            case .noAccount, .restricted:
-                throw SharedRemindersError.noCloudKitAccount
-            case .couldNotDetermine, .temporarilyUnavailable:
-                throw SharedRemindersError.shareUnavailable
-            @unknown default:
-                throw SharedRemindersError.shareUnavailable
-            }
-        } catch let error as SharedRemindersError {
-            throw error
-        } catch {
-            throw SharedRemindersError.shareCreationFailed(error)
-        }
-    }
-
-    func ensureSharingZone() async throws -> CKRecordZone {
-        let zoneID = CKRecordZone.ID(zoneName: Self.sharingZoneName, ownerName: CKCurrentUserDefaultName)
-        let database = cloudKitContainer.privateCloudDatabase
-        do {
-            let existing = try await database.recordZone(for: zoneID)
-            return existing
-        } catch {
-            // Zone doesn't exist yet — create it.
-            let zone = CKRecordZone(zoneID: zoneID)
-            _ = try await database.modifyRecordZones(saving: [zone], deleting: [])
-            return zone
-        }
-    }
-
-    func prepareExistingShareForInvite(_ share: CKShare, database: CKDatabase) async throws -> CKShare {
-        // Shares created before public-link support used `.none`, which denies
-        // anyone opening the invite link ("Item Unavailable / no permission").
-        // Upgrade such a share in place so re-sharing an old alarm just works.
-        if share.publicPermission == .none {
-            share.publicPermission = .readOnly
-            let results = try await database.modifyRecords(saving: [share], deleting: [])
-            let savedShare = try savedShare(from: results.saveResults, id: share.recordID)
-            return try await shareWithInviteURL(savedShare, database: database)
-        }
-        return try await shareWithInviteURL(share, database: database)
-    }
-
     func fetchRootRecord(for recordID: CKRecord.ID) async throws -> CKRecord? {
         let database = cloudKitContainer.privateCloudDatabase
         do {
@@ -691,47 +671,13 @@ final class SharedRemindersService {
         }
     }
 
-    func savedShare(from saveResults: [CKRecord.ID: Result<CKRecord, any Error>], id: CKRecord.ID) throws -> CKShare {
-        guard let result = saveResults[id] else {
-            ShareDiagnostics.log("❌ guardar share: CloudKit no devolvió resultado")
-            throw SharedRemindersError.shareUnavailable
-        }
-        switch result {
-        case .success(let saved):
-            guard let share = saved as? CKShare else {
-                ShareDiagnostics.log("❌ guardar share: resultado no es CKShare")
-                throw SharedRemindersError.shareUnavailable
-            }
-            return share
-        case .failure(let error):
-            ShareDiagnostics.log("❌ guardar share: \(Self.diagnosticDescription(for: error))")
-            throw SharedRemindersError.shareCreationFailed(error)
-        }
-    }
-
-    func shareWithInviteURL(_ share: CKShare, database: CKDatabase) async throws -> CKShare {
-        // Every invitation (alarm, countdown, trusted people) comes through here:
-        // the owner's name goes on the share for whoever accepts it.
-        Task { await ShareNames.publishMine(in: [share], container: cloudKitContainer) }
-        if share.url != nil { return share }
-
-        if let fetched = try? await database.record(for: share.recordID) as? CKShare,
-           fetched.url != nil {
-            ShareDiagnostics.log("↻ share URL recuperado tras refetch")
-            return fetched
-        }
-
-        ShareDiagnostics.log("⚠️ share guardado sin URL")
-        throw SharedRemindersError.shareURLUnavailable
-    }
-
     func fetchExistingShare(for recordID: CKRecord.ID) async throws -> CKShare? {
         let database = cloudKitContainer.privateCloudDatabase
         guard let record = try await fetchRootRecord(for: recordID) else { return nil }
         return try await fetchShare(attachedTo: record, database: database)
     }
 
-    private static func isCKError(_ error: Error, _ code: CKError.Code) -> Bool {
+    static func isCKError(_ error: Error, _ code: CKError.Code) -> Bool {
         let nsError = error as NSError
         return nsError.domain == CKError.errorDomain && nsError.code == code.rawValue
     }
@@ -745,20 +691,14 @@ final class SharedRemindersService {
         return "\(nsError.domain) \(nsError.code): \(nsError.localizedDescription)"
     }
 
-    private func makeRecord(from reminder: Reminder, recordID: CKRecord.ID) -> CKRecord {
-        let record = CKRecord(recordType: "CalarmSharedReminder", recordID: recordID)
-        writeFields(from: reminder, to: record)
-        return record
-    }
-
     /// Writes a reminder's data onto a (new or existing) shared record. Reused when
     /// the owner edits a shared reminder so the same record is updated in place,
     /// preserving its `CKShare` association.
-    func writeFields(from reminder: Reminder, to record: CKRecord) {
+    func writeFields(from reminder: Reminder, to record: CKRecord, firebaseToken: String? = nil) {
         // Authoritative copy: a single versioned JSON envelope (the `payload` Bytes
         // field). Adding a new shared property means adding a field to `SharePayload`
         // and bumping its version — never another CloudKit schema change.
-        if let data = try? JSONEncoder().encode(makePayload(from: reminder)) {
+        if let data = try? JSONEncoder().encode(makePayload(from: reminder, firebaseToken: firebaseToken)) {
             record["payload"] = data as CKRecordValue
         }
         // Also mirror the core values into the original discrete columns. These
@@ -799,7 +739,7 @@ final class SharedRemindersService {
     /// Builds the current-version envelope from a reminder. Denormalizes the
     /// custom category (color/icon) so the recipient — who won't have it in their
     /// own catalog — can reconstruct it.
-    func makePayload(from reminder: Reminder) -> SharePayload {
+    func makePayload(from reminder: Reminder, firebaseToken: String? = nil) -> SharePayload {
         var custom: SharePayload.CustomCategoryInfo?
         if let cid = reminder.customCategoryID,
            let cat = CategoryStore.shared?.customCategory(id: cid) {
@@ -837,7 +777,9 @@ final class SharedRemindersService {
             invitePreview: InvitePreview(
                 reminder: reminder,
                 style: CategoryStore.shared?.style(for: reminder) ?? CategoryStyle(builtin: reminder.category)
-            )
+            ),
+            firebaseToken: firebaseToken,
+            tone: reminder.toneRaw.isEmpty ? nil : reminder.toneRaw
         )
     }
 
@@ -914,7 +856,7 @@ final class SharedRemindersService {
     /// Ingests the shared record behind an accepted invitation and returns the
     /// local reminder it became.
     @MainActor
-    private func ingestSharedRecord(from metadata: CKShare.Metadata) async throws -> Reminder {
+    private func ingestSharedRecord(from metadata: CKShare.Metadata) async throws -> (Reminder, CKRecord) {
         // A zone-wide share (delegation) has no root record — bail out instead of
         // crashing on the implicitly-unwrapped `rootRecordID`. Such shares are
         // routed to DelegationService upstream; this is just a safety net.
@@ -940,7 +882,9 @@ final class SharedRemindersService {
         let context = modelContainer.mainContext
         // No change notification here: the person is accepting the invitation and
         // sees the alarm as it is now.
-        let applied = applyRecord(record, in: context).reminder
+        guard let applied = applyRecord(record, in: context)?.reminder else {
+            throw SharedRemindersError.shareUnavailable
+        }
         if let owner = Self.person(metadata.ownerIdentity) {
             ownerNames[applied.id] = owner
         }
@@ -950,7 +894,7 @@ final class SharedRemindersService {
         try context.save()
         CategoryStore.shared?.reload()
         ShareDiagnostics.log("✅ ingest: reminder guardado '\(applied.title)'")
-        return applied
+        return (applied, record)
     }
 
     /// Right after accepting, the shared record can take a moment to appear in
@@ -974,18 +918,26 @@ final class SharedRemindersService {
         throw SharedRemindersError.shareUnavailable
     }
 
-    /// Scans the shared database for `CalarmSharedReminder` records and imports
-    /// any found. This is the RELIABLE path: it runs on launch / activation and
-    /// doesn't depend on the `userDidAcceptCloudKitShareWith` callback, which iOS
-    /// frequently fails to deliver to SwiftUI apps. Accepting a share (tapping
-    /// "Open") makes the owner's zone appear in the recipient's shared database,
-    /// so we just read whatever is there.
+    /// Scans for received shares and imports what's found: CloudKit's shared
+    /// database (invitations from before 1.1, until their owner migrates them)
+    /// and Firestore (`syncFirestoreShares`). This is the RELIABLE path: it
+    /// runs on launch / activation and after a push, and doesn't depend on the
+    /// `userDidAcceptCloudKitShareWith` callback, which iOS frequently fails to
+    /// deliver to SwiftUI apps. Accepting a share (tapping "Open") makes the
+    /// owner's zone appear in the recipient's shared database, so we just read
+    /// whatever is there.
     ///
     /// One scan at a time: launch alone starts two (`.task` and the first
     /// `.active`), and a push can add a third. Overlapping scans can both find a
     /// record missing and both insert it — a duplicate alarm. A request that
     /// arrives mid-scan is folded into one more pass, so no change is missed.
-    func importAllSharedReminders() async {
+    ///
+    /// `cloudKit: false` skips the CloudKit half: a Firestore push or the
+    /// Firestore listener only need the other one. `firestoreSource: .cache`
+    /// reads what the listener just brought instead of asking the server again.
+    func importAllSharedReminders(cloudKit: Bool = true, firestoreSource: FirestoreSource = .default) async {
+        if cloudKit { wantsCloudKitScan = true }
+        if firestoreSource != .cache { wantsFirestoreServerRead = true }
         if let running = scanTask {
             rescanRequested = true
             await running.value
@@ -994,7 +946,11 @@ final class SharedRemindersService {
         let task = Task {
             repeat {
                 rescanRequested = false
-                await scanSharedDatabase()
+                let includeCloudKit = wantsCloudKitScan
+                let source: FirestoreSource = wantsFirestoreServerRead ? .default : .cache
+                wantsCloudKitScan = false
+                wantsFirestoreServerRead = false
+                await scanAll(includeCloudKit: includeCloudKit, firestoreSource: source)
             } while rescanRequested
             // Same step as the last check, so no request slips in between.
             scanTask = nil
@@ -1003,23 +959,83 @@ final class SharedRemindersService {
         await task.value
     }
 
-    private func scanSharedDatabase() async {
+    /// What a CloudKit scan found. Nil from `scanSharedDatabase` when it failed:
+    /// then nothing it would have reported can be taken as deleted.
+    struct CloudKitScan {
+        /// Alarm records present (unreadable ones count for both kinds).
+        var alarmIDs: Set<UUID> = []
+        var countdownIDs: Set<UUID> = []
+        /// The shares behind what's imported, to publish this person's name there.
+        var shareRecords: [CKShare] = []
+        var shareIDs: Set<CKRecord.ID> = []
+        /// Received records whose owner already created the Firestore share.
+        var migrations: [CloudKitMigration] = []
+    }
+
+    struct CloudKitMigration {
+        var id: UUID
+        var token: String
+        var record: CKRecord
+    }
+
+    /// One pass: CloudKit (optional), Firestore, then what each source says is
+    /// gone — each only for its own copies (`ShareMigration.staleReceived`).
+    private func scanAll(includeCloudKit: Bool, firestoreSource: FirestoreSource) async {
+        let context = modelContainer.mainContext
+        // Before the sync adds the new ones: a copy that came from Firestore is
+        // only Firestore's to remove.
+        let tracked = FirestoreShareStore.receivedIDs
+        let cloudKit = includeCloudKit ? await scanSharedDatabase() : nil
+        let firestore = await syncFirestoreShares(source: firestoreSource)
+        await removeStaleCopies(
+            cloudKitPresent: cloudKit?.alarmIDs,
+            firestorePresent: firestore,
+            tracked: tracked,
+            in: context
+        )
+        removeStaleCountdowns(
+            cloudKitPresent: cloudKit?.countdownIDs,
+            firestorePresent: firestore,
+            tracked: tracked,
+            in: context
+        )
+        if let firestore {
+            // Lo que se está aceptando sigue siendo de Firestore aunque esta
+            // lectura no lo traiga: si el dueño lo borró justo entonces, la
+            // próxima pasada (ya sin la guarda) lo quita.
+            FirestoreShareStore.keepReceived(firestore.union(acceptingIDs))
+        }
+        guard let cloudKit else { return }
+        // What came from Firestore counts as present: those entries aren't
+        // CloudKit's to prune.
+        let firestoreKnown = firestore ?? FirestoreShareStore.receivedIDs
+        // Drop tombstones whose owner record is gone, so a fresh re-invite with
+        // the same id can be accepted again. Countdown ids count too, or their
+        // tombstones would be dropped on every scan.
+        DeletedSharesStore.prune(presentIDs: cloudKit.alarmIDs.union(cloudKit.countdownIDs).union(firestoreKnown))
+        // Same for the recipient's personal avisos — a re-share starts fresh.
+        ShareLeadTimesStore.prune(presentIDs: cloudKit.alarmIDs.union(firestoreKnown))
+        ShareChangeNotifier.prune(presentIDs: cloudKit.alarmIDs.union(firestoreKnown))
+        await publishMyName(
+            found: cloudKit.shareRecords.filter { cloudKit.shareIDs.contains($0.recordID) },
+            referenced: cloudKit.shareIDs
+        )
+        // The owner already moved these to Firestore: join there, leave the CKShare.
+        await migrateReceivedCloudKitShares(cloudKit.migrations)
+    }
+
+    private func scanSharedDatabase() async -> CloudKitScan? {
         let database = cloudKitContainer.sharedCloudDatabase
         do {
             let zones = try await database.allRecordZones()
             ShareDiagnostics.log("scan: \(zones.count) zona(s) compartida(s)")
             let context = modelContainer.mainContext
+            var scan = CloudKitScan()
             var imported = 0
             var skipped = 0
-            var presentIDs: Set<UUID> = []
             var rescheduled: [(reminder: Reminder, record: CKRecord)] = []
             // Shared countdowns live in the same zones, as their own record type.
             var countdownRecords: [CKRecord] = []
-            var countdownIDs: Set<UUID> = []
-            // The shares behind what's imported, to publish this person's name
-            // there (`publishMyName`). Share records often come with the changes.
-            var shareRecords: [CKShare] = []
-            var importedShareIDs: Set<CKRecord.ID> = []
             for zone in zones {
                 // SAFETY: never ingest the delegation zone here. Those records are
                 // someone else's alarms that this device (acting as a helper) only
@@ -1027,7 +1043,7 @@ final class SharedRemindersService {
                 // on the helper's phone. They're handled separately by DelegationService.
                 guard zone.zoneID.zoneName != DelegationService.zoneName else { continue }
                 // Read EVERY page: a record left on a later page would look deleted
-                // to `reconcileDeletedShares` — copy removed, "deleted" notice sent.
+                // to `removeStaleCopies` — copy removed, "deleted" notice sent.
                 var token: CKServerChangeToken?
                 var moreComing = true
                 while moreComing {
@@ -1038,33 +1054,39 @@ final class SharedRemindersService {
                             // instead of treating it as deleted. Its type is unknown,
                             // so it counts for alarms and countdowns alike.
                             if let id = UUID(uuidString: ckRecordID.recordName) {
-                                presentIDs.insert(id)
-                                countdownIDs.insert(id)
+                                scan.alarmIDs.insert(id)
+                                scan.countdownIDs.insert(id)
                             }
                             continue
                         }
                         let record = modification.record
                         if let share = record as? CKShare {
-                            shareRecords.append(share)
+                            scan.shareRecords.append(share)
                             continue
                         }
                         if record.recordType == Self.countdownRecordType {
                             let id = candidateLocalID(for: record)
-                            countdownIDs.insert(id)
+                            scan.countdownIDs.insert(id)
                             // Removed from the list on this account: out of the share,
                             // and never imported again (see the alarm case below).
                             if DeletedSharesStore.contains(id) {
                                 skipped += 1
                                 await leaveShare(of: record)
-                            } else {
-                                countdownRecords.append(record)
-                                if let shareID = record.share?.recordID { importedShareIDs.insert(shareID) }
+                                continue
                             }
+                            if let token = countdownPayload(from: record)?.firebaseToken {
+                                scan.migrations.append(CloudKitMigration(id: id, token: token, record: record))
+                            }
+                            // Already moved to Firestore (the CloudKit exit is pending):
+                            // the Firestore copy is the one that counts.
+                            guard FirestoreShareStore.received(id) == nil else { continue }
+                            countdownRecords.append(record)
+                            if let shareID = record.share?.recordID { scan.shareIDs.insert(shareID) }
                             continue
                         }
                         guard record.recordType == "CalarmSharedReminder" else { continue }
                         let recordID = candidateLocalID(for: record)
-                        presentIDs.insert(recordID)
+                        scan.alarmIDs.insert(recordID)
                         // Skip invitations the recipient deleted — re-importing them
                         // would make a deleted share reappear on every launch.
                         if DeletedSharesStore.contains(recordID) {
@@ -1077,9 +1099,13 @@ final class SharedRemindersService {
                             await leaveShare(of: record)
                             continue
                         }
-                        let applied = applyRecord(record, in: context)
+                        if let token = decodePayload(from: record).firebaseToken {
+                            scan.migrations.append(CloudKitMigration(id: recordID, token: token, record: record))
+                        }
+                        guard FirestoreShareStore.received(recordID) == nil else { continue }
+                        guard let applied = applyRecord(record, in: context) else { continue }
                         if applied.scheduleChanged { rescheduled.append((applied.reminder, record)) }
-                        if let shareID = record.share?.recordID { importedShareIDs.insert(shareID) }
+                        if let shareID = record.share?.recordID { scan.shareIDs.insert(shareID) }
                         imported += 1
                     }
                     token = changes.changeToken
@@ -1099,25 +1125,12 @@ final class SharedRemindersService {
             } else {
                 ShareDiagnostics.log("scan: sin recordatorios compartidos\(skipped > 0 ? " (\(skipped) borrado(s) ignorado(s))" : "")")
             }
-            // Scan completed without error → safe to remove copies the owner
-            // deleted or unshared (their record is no longer present), and any
-            // copy of an invitation the person deleted.
-            await removeStaleCopies(presentIDs: presentIDs, in: context)
-            applyReceivedCountdowns(countdownRecords, presentIDs: countdownIDs, in: context)
-            // Drop tombstones whose owner record is gone, so a fresh re-invite with
-            // the same id can be accepted again. Countdown ids count too, or their
-            // tombstones would be dropped on every scan.
-            DeletedSharesStore.prune(presentIDs: presentIDs.union(countdownIDs))
-            // Same for the recipient's personal avisos — a re-share starts fresh.
-            ShareLeadTimesStore.prune(presentIDs: presentIDs)
-            ShareChangeNotifier.prune(presentIDs: presentIDs)
-            await publishMyName(
-                found: shareRecords.filter { importedShareIDs.contains($0.recordID) },
-                referenced: importedShareIDs
-            )
+            applyReceivedCountdowns(countdownRecords, in: context)
+            return scan
         } catch {
             Self.log.error("importAllSharedReminders failed: \(error.localizedDescription, privacy: .public)")
             ShareDiagnostics.log("❌ scan error: \(error.localizedDescription)")
+            return nil
         }
     }
 
@@ -1131,16 +1144,23 @@ final class SharedRemindersService {
 
     /// Upserts a shared `CalarmSharedReminder` CKRecord into a local `Reminder`
     /// (marked as a received share). Caller is responsible for saving the context.
-    /// Returns the local reminder, and whether the owner changed its schedule
-    /// since this device last saw the record.
-    private func applyRecord(_ record: CKRecord, in context: ModelContext) -> (reminder: Reminder, scheduleChanged: Bool) {
+    private func applyRecord(_ record: CKRecord, in context: ModelContext) -> (reminder: Reminder, scheduleChanged: Bool)? {
         let payload = decodePayload(from: record)
-        let customCategoryID = ensureCustomCategory(payload.customCategory, in: context)
         // Reuse the record name as the local UUID so importing twice updates the
         // reminder in place instead of duplicating it.
         let localID = UUID(uuidString: record.recordID.recordName)
             ?? UUID(uuidString: payload.id)
             ?? UUID()
+        return applyReceivedPayload(payload, localID: localID, in: context)
+    }
+
+    /// Upserts a received alarm (from a CloudKit record or a Firestore share)
+    /// into a local `Reminder` marked as a received share. Caller is responsible
+    /// for saving the context. Returns the local reminder, and whether the owner
+    /// changed its schedule since this device last saw it; nil if the id belongs
+    /// to one of this person's own alarms, which a received copy never overwrites.
+    func applyReceivedPayload(_ payload: SharePayload, localID: UUID, in context: ModelContext) -> (reminder: Reminder, scheduleChanged: Bool)? {
+        let customCategoryID = ensureCustomCategory(payload.customCategory, in: context)
         // There can be several: each device inserts its own copy when its scan
         // runs before SwiftData has synced the other device's (or the app's own,
         // after a reinstall), and a CloudKit-synced store can't enforce a unique
@@ -1153,8 +1173,9 @@ final class SharedRemindersService {
         let matches = (try? context.fetch(descriptor)) ?? []
         let reminder: Reminder
         if let oldest = matches.first {
+            guard oldest.isReceivedShare else { return nil }
             reminder = oldest
-            for duplicate in matches.dropFirst() {
+            for duplicate in matches.dropFirst() where duplicate.isReceivedShare {
                 context.delete(duplicate)
             }
             if matches.count > 1 {
@@ -1169,19 +1190,32 @@ final class SharedRemindersService {
         return (reminder, scheduleChanged)
     }
 
-    /// Removes local received-share reminders whose shared record is no longer
-    /// present (owner deleted it or stopped sharing) and tells the person; and
-    /// removes, quietly, every copy of an invitation the person deleted — one that
-    /// SwiftData synced back from another device, or a duplicate left behind.
-    /// Cancels their alarms. Only call after a SUCCESSFUL scan, never on error, so
-    /// a transient fetch failure can't wipe valid copies.
-    private func removeStaleCopies(presentIDs: Set<UUID>, in context: ModelContext) async {
+    /// Removes local received-share reminders whose source says they're gone
+    /// (owner deleted it, stopped sharing, or took this person off) and tells the
+    /// person; and removes, quietly, every copy of an invitation the person
+    /// deleted — one that SwiftData synced back from another device, or a
+    /// duplicate left behind. Cancels their alarms. A source whose read failed
+    /// (`nil`) can't remove anything, so a transient fetch failure can't wipe
+    /// valid copies.
+    private func removeStaleCopies(
+        cloudKitPresent: Set<UUID>?,
+        firestorePresent: Set<UUID>?,
+        tracked: Set<UUID>,
+        in context: ModelContext
+    ) async {
         let descriptor = FetchDescriptor<Reminder>(predicate: #Predicate { $0.isReceivedShare })
-        guard let received = try? context.fetch(descriptor) else { return }
-        let deletedByMe = received.filter { DeletedSharesStore.contains($0.id) }
-        let deletedByOwner = received.filter {
-            !presentIDs.contains($0.id) && !DeletedSharesStore.contains($0.id) && !acceptingIDs.contains($0.id)
-        }
+        guard let received = try? context.fetch(descriptor), !received.isEmpty else { return }
+        let local = Set(received.map(\.id))
+        let stale = ShareMigration.staleReceived(
+            local: local,
+            cloudKitPresent: cloudKitPresent,
+            firestorePresent: firestorePresent,
+            firestoreTracked: tracked,
+            accepting: acceptingIDs,
+            tombstoned: local.filter(DeletedSharesStore.contains)
+        )
+        let deletedByMe = received.filter { stale.byMe.contains($0.id) }
+        let deletedByOwner = received.filter { stale.byOwner.contains($0.id) }
         if !deletedByMe.isEmpty {
             ShareDiagnostics.log("🧹 scan: \(deletedByMe.count) copia(s) de invitaciones borradas")
         }
@@ -1200,10 +1234,11 @@ final class SharedRemindersService {
         if !deletedByOwner.isEmpty {
             ShareDiagnostics.log("🗑️ scan: \(deletedByOwner.count) compartido(s) eliminado(s) por el dueño")
         }
-        // The share is gone, so iCloud can't say who owned it anymore: the name
-        // is known only if this session already read it.
+        // A CloudKit share that's gone can't say who owned it anymore: the name
+        // is known only if this session already read it. Firestore's is kept.
         for notice in notices {
-            await ShareChangeNotifier.notifyDeleted(notice, ownerName: ownerNames[notice.id]?.name)
+            let owner = ownerNames[notice.id]?.name ?? FirestoreShareStore.received(notice.id)?.ownerName
+            await ShareChangeNotifier.notifyDeleted(notice, ownerName: owner)
         }
     }
 
@@ -1242,35 +1277,18 @@ final class SharedRemindersService {
             reminder.leadTimes = ownerLeadTimes
         }
         reminder.isEnabled = payload.isEnabled
+        // El tono: en una recibida es de quien la recibe (como sus avisos); en las
+        // alarmas propias que edita una persona de confianza, el que ella elija
+        // (solo los que trae la app; sin tono, se queda el que había).
+        if !markAsReceivedShare, let raw = payload.tone, let tone = AlarmTone(rawValue: raw),
+           AlarmTone.builtins.contains(tone) {
+            reminder.tone = tone
+        }
         reminder.updatedAt = payload.updatedAt ?? Date()
         reminder.isReceivedShare = markAsReceivedShare
     }
 
-    // MARK: - Share thumbnail
-
-    /// Produces a square PNG used as the rich-link preview in Messages, Mail,
-    /// AirDrop, etc. Uses the reminder's photo if present, otherwise renders a
-    /// circle with the category's tint + symbol so the preview matches the
-    /// in-app avatar instead of showing Apple's generic iCloud icon.
-    private func makeShareThumbnail(for reminder: Reminder) -> Data? {
-        let tint = reminder.category.tint
-        // Prefer the user-attached photo when available.
-        if reminder.iconKind == .photo,
-           let data = reminder.photoData,
-           let image = UIImage(data: data) {
-            return resized(image, to: 256).pngData()
-        }
-        if reminder.iconKind == .emoji, let emoji = reminder.symbolName, !emoji.isEmpty {
-            return renderIconThumbnail(tint: tint) {
-                Text(emoji).font(.system(size: 150))
-            }
-        }
-        return renderIconThumbnail(tint: tint) {
-            Image(systemName: reminder.symbolName ?? reminder.category.defaultSymbol)
-                .font(.system(size: 128, weight: .semibold))
-                .foregroundStyle(.white)
-        }
-    }
+    // MARK: - Photo thumbnail
 
     /// Center-crops + scales `image` to `size × size`. Keeps the thumbnail tight
     /// to where the subject lives without distortion.
@@ -1286,27 +1304,6 @@ final class SharedRemindersService {
             )
             image.draw(in: CGRect(origin: origin, size: drawSize))
         }
-    }
-
-    /// Renders a tinted square badge with arbitrary icon content (SF Symbol or
-    /// emoji) to PNG data for use as the share thumbnail.
-    func renderIconThumbnail<Content: View>(tint: Color, @ViewBuilder content: () -> Content) -> Data? {
-        let view = ZStack {
-            RoundedRectangle(cornerRadius: 56, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [tint, tint.opacity(0.72)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-            content()
-        }
-        .frame(width: 256, height: 256)
-
-        let renderer = ImageRenderer(content: view)
-        renderer.scale = 2.0
-        return renderer.uiImage?.pngData()
     }
 }
 
@@ -1361,6 +1358,15 @@ struct SharePayload: Codable {
     /// CloudKit para dibujar un enlace que solo lleva el token del share.
     /// Opcional/ausente en payloads de versiones anteriores a la 1.0.18.
     var invitePreview: InvitePreview? = nil
+    /// 1.1: el token de la invitación de Firestore que el dueño creó para este
+    /// mismo share (DESIGN.md › «Migración desde CloudKit»). Un invitado con la
+    /// app nueva se une con él en Firestore y sale del `CKShare`; uno con la
+    /// vieja lo ignora y sigue por CloudKit. También va en los registros de la
+    /// zona de delegación (el de la invitación a personas de confianza).
+    var firebaseToken: String? = nil
+    /// 1.1: el tono (`AlarmTone.rawValue`), para Firestore y la delegación.
+    /// Solo los tonos que trae la app; uno importado no existe en otro teléfono.
+    var tone: String? = nil
 
     struct CustomCategoryInfo: Codable {
         var id: String

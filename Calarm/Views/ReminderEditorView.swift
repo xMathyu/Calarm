@@ -109,7 +109,9 @@ struct ReminderEditorView: View {
 
     // Sharing for an EXISTING alarm (tap-to-edit replaced the old detail view):
     // owner sees invite/manage/participants; recipient sees who shared it.
-    @State private var existingShare: CKShare?
+    /// Owner: whether it's shared (Firestore and/or a CloudKit share from
+    /// before 1.1) and with whom.
+    @State private var shareOverview: SharedRemindersService.ShareOverview?
     @State private var participants: [ShareParticipantInfo] = []
     @State private var sharedBy: SharedByPerson?
     @State private var showingManageSheet = false
@@ -321,13 +323,12 @@ struct ReminderEditorView: View {
                 if editingReminder == nil { dismiss() }
                 else { Task { await refreshShare() } }
             }
-            // Native CloudKit sharing management for an already-shared alarm.
+            // Who has it, remove someone, stop sharing.
             .sheet(isPresented: $showingManageSheet, onDismiss: { Task { await refreshShare() } }) {
-                if let share = existingShare {
-                    CloudSharingView(
-                        share: share,
-                        container: CKContainer(identifier: sharedService.containerIdentifier)
-                    ) { showingManageSheet = false }
+                if let overview = shareOverview, let r = targetReminder {
+                    ShareManageView(itemID: r.id, overview: overview) {
+                        await sharedService.shareOverview(forReminder: r)
+                    }
                 }
             }
             .sheet(item: $countdownSeed) { seed in
@@ -343,6 +344,10 @@ struct ReminderEditorView: View {
                 Text(shareError ?? "")
             }
             .task { await refreshShare() }
+            // Someone joined or left (push or the live Firestore listener).
+            .onReceive(NotificationCenter.default.publisher(for: .calarmSharedDataChanged)) { _ in
+                Task { await refreshShare() }
+            }
         }
     }
 
@@ -790,7 +795,7 @@ struct ReminderEditorView: View {
             }
             .disabled(isPreparingShare || isTitleEmpty)
 
-            if existingShare != nil {
+            if shareOverview?.isShared == true {
                 Button {
                     Haptics.light()
                     showingManageSheet = true
@@ -882,14 +887,11 @@ struct ReminderEditorView: View {
             sharedBy = await sharedService.owner(ofReceived: r.id)
             return
         }
-        let share = await sharedService.existingShare(for: r)
-        existingShare = share
-        // Los nombres que cada invitado publicó (iCloud no da el de quien entra
-        // por el enlace); mientras llegan, la lista ya se ve.
-        participants = share.map { sharedService.participantInfos(of: $0).filter { !$0.isOwner } } ?? []
-        if let share {
-            participants = await sharedService.namedParticipantInfos(of: share).filter { !$0.isOwner }
-        }
+        // Firestore members (their names come with the share) plus, for an
+        // alarm shared before 1.1, the CloudKit participants still there.
+        let overview = await sharedService.shareOverview(forReminder: r)
+        shareOverview = overview
+        participants = overview.people
     }
 
     /// Prepares the share for an existing alarm and opens the share sheet.
@@ -902,30 +904,11 @@ struct ReminderEditorView: View {
         isPreparingShare = true
         defer { isPreparingShare = false }
         do {
-            let share = try await sharedService.prepareShare(for: r)
-            guard let url = share.url else {
-                shareError = SharedRemindersError.shareURLUnavailable.errorDescription
-                return
-            }
-            existingShare = share
-            // Wrap the CloudKit share in a Calarm link so the invitation
-            // previews with the alarm's name and time, and so whoever doesn't
-            // have the app yet lands on a page that offers it. Falling back to
-            // the raw share URL keeps invites working if encoding ever fails.
-            // Usually the link is just the share's token and the website reads the
-            // alarm from CloudKit. The rest only fills the JSON link built when
-            // the share URL has an odd shape: the card shows the alarm as the
-            // list does (`InvitePreview`), and a photo travels as a thumbnail.
+            // The Firestore share and its invitation: the link is
+            // `…/s/<token>/`, whose page shows the alarm (from `invites/{token}`)
+            // and offers the app — on iPhone or Android — to whoever doesn't have it.
+            let inviteURL = try await sharedService.prepareFirestoreInvite(for: r)
             let preview = InvitePreview(reminder: r, style: categoryStore.style(for: r))
-            let inviteURL = InviteLink.make(
-                title: r.title,
-                date: r.date,
-                tintHex: preview.tintHex,
-                emoji: preview.emoji,
-                symbol: preview.symbol,
-                photo: r.iconKind == .photo ? r.photoData.flatMap(InvitePhoto.thumbnail(from:)) : nil,
-                shareURL: url
-            ) ?? url
             pendingInvite = InviteDelivery(
                 title: r.title,
                 url: inviteURL,

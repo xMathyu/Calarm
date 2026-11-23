@@ -3,11 +3,10 @@
 //  Calarm
 //
 //  Editor a trusted helper uses to create/edit an alarm FOR a principal. It writes
-//  a `SharePayload` straight into the principal's shared zone (never a local
+//  a `SharePayload` straight into the principal's list (never a local
 //  `Reminder`), so the alarm rings on the principal's phone, not the helper's.
 //
 
-import CloudKit
 import SwiftUI
 
 struct DelegationHelperEditorView: View {
@@ -104,9 +103,11 @@ struct DelegationHelperEditorView: View {
             customCategory: nil,
             photoThumbnail: isPhoto ? existing?.payload.photoThumbnail : nil,
             // Este editor no toca el reto para apagar: se conserva el que tuviera.
-            challengeData: existing?.payload.challengeData
+            challengeData: existing?.payload.challengeData,
+            // Ni el tono.
+            tone: existing?.payload.tone
         )
-        await delegation.helperUpsert(payload, in: principal.zoneID, existingRecordID: existing?.recordID)
+        await delegation.helperUpsert(payload, for: principal, existing: existing)
         Haptics.success()
         isSaving = false
         dismiss()
