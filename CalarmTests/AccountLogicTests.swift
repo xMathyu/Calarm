@@ -2,8 +2,9 @@
 //  AccountLogicTests.swift
 //  CalarmTests
 //
-//  La cuenta obligatoria (calarmi-firebase/DESIGN.md › «Identidad»): el orden en
-//  que se elige el nombre (con los relés de Apple), qué mensaje sale de cada
+//  La cuenta obligatoria (calarmi-firebase/DESIGN.md › «Identidad»): el nombre
+//  que ya tiene la cuenta no se toca, y el orden en que se elige si no tiene
+//  (con los relés de Apple), qué mensaje sale de cada
 //  error de Apple, Google, Firebase y Functions (y que cancelar no diga nada), y
 //  cuándo un inicio de sesión es un «cambio de cuenta». Sin red ni SDK.
 //
@@ -17,32 +18,35 @@ struct AccountLogicTests {
     // MARK: - Nombre
 
     private static func resolve(
-        provider: String? = nil,
         display: String? = nil,
+        provider: String? = nil,
         legacy: String? = nil,
         email: String? = nil
     ) -> String {
         AccountNaming.resolve(
-            providerName: provider,
             currentDisplayName: display,
+            providerName: provider,
             legacyName: legacy,
             email: email,
             fallback: "Usuario de Calarmi"
         )
     }
 
-    @Test func providerNameComesFirst() {
-        #expect(Self.resolve(provider: "Ana García", display: "Ana", legacy: "Anita", email: "ana@gmail.com") == "Ana García")
+    @Test func anExistingDisplayNameIsNeverOverwritten() {
+        // Editado en Ajustes u otro dispositivo: ni Google, ni Apple, ni el
+        // «Nombre» de «Crear cuenta» lo pisan.
+        #expect(Self.resolve(display: "Mati", provider: "Mathias Yu", legacy: "Mathyu", email: "mathyu@gmail.com") == "Mati")
+        #expect(Self.resolve(display: "  Mati ", provider: "Otro") == "Mati")
     }
 
-    @Test func thenFirebaseDisplayName() {
-        #expect(Self.resolve(provider: nil, display: "Ana", legacy: "Anita", email: "ana@gmail.com") == "Ana")
+    @Test func newAccountsTakeTheProviderName() {
+        #expect(Self.resolve(display: nil, provider: "Ana García", legacy: "Anita", email: "ana@gmail.com") == "Ana García")
         // Lo que no es un nombre (vacío o solo espacios) no cuenta.
-        #expect(Self.resolve(provider: "   ", display: "Ana", legacy: "Anita") == "Ana")
+        #expect(Self.resolve(display: "   ", provider: "Ana García", legacy: "Anita") == "Ana García")
     }
 
     @Test func thenTheNameFromBefore() {
-        #expect(Self.resolve(display: "", legacy: "  Anita  ", email: "ana@gmail.com") == "Anita")
+        #expect(Self.resolve(display: "", provider: "  ", legacy: "  Anita  ", email: "ana@gmail.com") == "Anita")
     }
 
     @Test func thenTheEmailBeforeTheAt() {

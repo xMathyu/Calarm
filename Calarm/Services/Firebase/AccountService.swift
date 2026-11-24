@@ -378,12 +378,13 @@ final class AccountService {
         defaults.set(user.uid, forKey: Self.lastUIDKey)
         ShareDiagnostics.log("🔑 cuenta: sesión iniciada con \(provider)\(decision == .cleanUp ? " (otra cuenta)" : "")")
 
-        // El nombre de antes solo vale si es de esta persona: la versión anterior
-        // (sin «último usuario») o esta misma cuenta.
+        // El `displayName` que ya tenga la cuenta no se toca (DESIGN.md). Si no
+        // tiene, el nombre de antes solo vale si es de esta persona: la versión
+        // anterior (sin «último usuario») o esta misma cuenta.
         let legacyName = lastUID == nil || lastUID == user.uid ? ShareNames.myName : nil
         let name = AccountNaming.resolve(
-            providerName: providerName,
             currentDisplayName: user.displayName,
+            providerName: providerName,
             legacyName: legacyName,
             email: user.email,
             fallback: appLocalized("Usuario de Calarmi")

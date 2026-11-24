@@ -20,23 +20,27 @@ enum AccountNaming {
     /// un código al azar, no un nombre.
     static let appleRelayDomain = "privaterelay.appleid.com"
 
-    /// El nombre con el que la persona aparece ante los demás, el primero que
-    /// exista (DESIGN.md › «El nombre sale de la cuenta»):
-    /// 1. el que da el proveedor al iniciar sesión (Google, Apple la primera vez,
-    ///    el campo «Nombre» de «Crear cuenta»);
-    /// 2. el `displayName` que ya tenía el usuario de Firebase;
+    /// El nombre con el que la persona aparece ante los demás (DESIGN.md › «El
+    /// nombre sale de la cuenta»). Si el usuario de Firebase ya tiene
+    /// `displayName` (otro dispositivo, otro inicio de sesión o editado en
+    /// Ajustes), es ese y no se toca: el del proveedor no pisa un nombre
+    /// editado. Solo en una cuenta nueva o sin `displayName`, el primero que
+    /// exista:
+    /// 1. el que da el proveedor (Google, Apple la primera vez, el campo
+    ///    «Nombre» de «Crear cuenta»);
     /// 3. el que el teléfono guardaba de antes (`ShareNames.myName`);
     /// 4. la parte del correo antes de la `@`, con mayúscula inicial (salvo los
     ///    relés de Apple);
     /// 5. «Usuario de Calarmi», en el idioma de la app.
+    /// (El 2, el `displayName` existente, ahora va antes de toda la lista.)
     static func resolve(
-        providerName: String?,
         currentDisplayName: String?,
+        providerName: String?,
         legacyName: String?,
         email: String?,
         fallback: String
     ) -> String {
-        for candidate in [providerName, currentDisplayName, legacyName] {
+        for candidate in [currentDisplayName, providerName, legacyName] {
             if let name = FirestoreMapping.validName(candidate) { return name }
         }
         return name(fromEmail: email) ?? fallback
