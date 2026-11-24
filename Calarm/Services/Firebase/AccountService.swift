@@ -76,6 +76,10 @@ final class AccountService {
     @ObservationIgnored private var authListener: AuthStateDidChangeListenerHandle?
     /// El nonce del «Continuar con Apple» en curso, sin hash (Apple recibe su SHA-256).
     @ObservationIgnored private var appleNonce: String?
+    /// La escritura del nombre al entrar (perfil de Auth, `users/{uid}`, lo
+    /// compartido): un cambio de nombre en Ajustes espera a que termine, o el
+    /// nombre de la cuenta pisaría al recién escrito.
+    @ObservationIgnored private var nameWrite: Task<Void, Never>?
 
     init(sharing: SharedRemindersService, delegation: DelegationService, settings: AppSettings) {
         self.sharing = sharing
@@ -390,10 +394,16 @@ final class AccountService {
 
         let sharing = sharing
         let onSignedIn = onSignedIn
-        Task {
+        let previous = nameWrite
+        let write = Task {
+            await previous?.value
             await Self.saveDisplayName(name, for: user)
             await sharing.accountNameDidChange(name, changed: changed)
             refreshUser()
+        }
+        nameWrite = write
+        Task {
+            await write.value
             await FirebaseSession.shared.didSignIn()
             await onSignedIn?()
         }
@@ -435,9 +445,16 @@ final class AccountService {
         #endif
         guard let current = Auth.auth().currentUser, !current.isAnonymous else { return }
         user?.name = name
-        await Self.saveDisplayName(name, for: current)
-        await sharing.accountNameDidChange(name, changed: true)
-        refreshUser()
+        let previous = nameWrite
+        let sharing = sharing
+        let write = Task {
+            await previous?.value
+            await Self.saveDisplayName(name, for: current)
+            await sharing.accountNameDidChange(name, changed: true)
+            refreshUser()
+        }
+        nameWrite = write
+        await write.value
     }
 
     // MARK: - Cerrar sesión
