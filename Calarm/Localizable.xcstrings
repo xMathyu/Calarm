@@ -16038,7 +16038,8 @@
             "value" : "Qual é o seu nome?"
           }
         }
-      }
+      },
+      "extractionState" : "stale"
     },
     "Tu nombre" : {
       "localizations" : {
@@ -16082,7 +16083,8 @@
             "value" : "É assim que as pessoas que compartilham alarmes e contagens regressivas com você vão te ver. Você pode mudar isso nos Ajustes."
           }
         }
-      }
+      },
+      "extractionState" : "stale"
     },
     "Así te ven las personas con las que compartes alarmas y cuentas regresivas. iCloud no le da tu nombre a Calarmi, por eso se pide aquí." : {
       "localizations" : {
@@ -16104,7 +16106,8 @@
             "value" : "É assim que as pessoas com quem você compartilha alarmes e contagens regressivas te veem. O iCloud não passa seu nome para o Calarmi, por isso ele é pedido aqui."
           }
         }
-      }
+      },
+      "extractionState" : "stale"
     },
     "Crear cuenta regresiva" : {
       "localizations" : {
@@ -16170,7 +16173,8 @@
             "value" : "ou digite"
           }
         }
-      }
+      },
+      "extractionState" : "stale"
     },
     "Apple no compartió tu nombre. Escríbelo aquí." : {
       "localizations" : {
@@ -16192,7 +16196,8 @@
             "value" : "A Apple não compartilhou seu nome. Digite aqui."
           }
         }
-      }
+      },
+      "extractionState" : "stale"
     },
     "Compartir no está disponible en esta versión de la app." : {
       "localizations" : {
@@ -16236,7 +16241,8 @@
             "value" : "Não foi possível conectar para compartilhar: %@"
           }
         }
-      }
+      },
+      "extractionState" : "stale"
     },
     "Primero escribe tu nombre: así te verán las personas con quienes compartes." : {
       "localizations" : {
@@ -16258,7 +16264,8 @@
             "value" : "Primeiro digite seu nome: é assim que as pessoas com quem você compartilha vão te ver."
           }
         }
-      }
+      },
+      "extractionState" : "stale"
     },
     "Esta invitación ya no es válida. Pide que te la envíen otra vez." : {
       "localizations" : {
@@ -16410,6 +16417,908 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quem tem deixará de recebê-lo. Sua cópia continua."
+          }
+        }
+      }
+    },
+    "El correo o la contraseña no son correctos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The email or password is incorrect."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El correo o la contraseña no son correctos."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O e-mail ou a senha estão incorretos."
+          }
+        }
+      }
+    },
+    "Ya hay una cuenta con este correo. Inicia sesión con él." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There's already an account with this email. Sign in with it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya hay una cuenta con este correo. Inicia sesión con él."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já existe uma conta com este e-mail. Entre com ele."
+          }
+        }
+      }
+    },
+    "Esa contraseña es muy fácil de adivinar. Usa al menos 8 caracteres." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That password is too easy to guess. Use at least 8 characters."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esa contraseña es muy fácil de adivinar. Usa al menos 8 caracteres."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essa senha é muito fácil de adivinhar. Use pelo menos 8 caracteres."
+          }
+        }
+      }
+    },
+    "Revisa el correo: no parece válido." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check the email: it doesn't look valid."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisa el correo: no parece válido."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confira o e-mail: ele não parece válido."
+          }
+        }
+      }
+    },
+    "No hay conexión. Revisa tu internet e inténtalo de nuevo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No connection. Check your internet and try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay conexión. Revisa tu internet e inténtalo de nuevo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conexão. Confira sua internet e tente de novo."
+          }
+        }
+      }
+    },
+    "Demasiados intentos. Espera unos minutos e inténtalo de nuevo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Too many attempts. Wait a few minutes and try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demasiados intentos. Espera unos minutos e inténtalo de nuevo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentativas demais. Espere alguns minutos e tente de novo."
+          }
+        }
+      }
+    },
+    "Esta cuenta está desactivada." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This account is disabled."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta cuenta está desactivada."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta conta está desativada."
+          }
+        }
+      }
+    },
+    "Este correo ya tiene una cuenta. Entra con el método que usaste para crearla." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This email already has an account. Sign in the way you did when you created it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este correo ya tiene una cuenta. Entra con el método que usaste para crearla."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este e-mail já tem uma conta. Entre com o método que você usou para criá-la."
+          }
+        }
+      }
+    },
+    "Iniciar sesión no está disponible en esta versión de la app." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signing in isn't available in this version of the app."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar sesión no está disponible en esta versión de la app."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não é possível entrar nesta versão do app."
+          }
+        }
+      }
+    },
+    "No se pudo iniciar sesión. Inténtalo de nuevo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't sign in. Try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo iniciar sesión. Inténtalo de nuevo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível entrar. Tente de novo."
+          }
+        }
+      }
+    },
+    "Usuario de Calarmi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calarmi user"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuario de Calarmi"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuário do Calarmi"
+          }
+        }
+      }
+    },
+    "No se pudo borrar la cuenta. Inténtalo de nuevo en unos minutos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't delete the account. Try again in a few minutes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo borrar la cuenta. Inténtalo de nuevo en unos minutos."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível apagar a conta. Tente de novo em alguns minutos."
+          }
+        }
+      }
+    },
+    "Inicia sesión para compartir." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to share."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión para compartir."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entre na sua conta para compartilhar."
+          }
+        }
+      }
+    },
+    "Inicia sesión en Calarmi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to Calarmi"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión en Calarmi"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entre no Calarmi"
+          }
+        }
+      }
+    },
+    "Con tu cuenta, quienes comparten alarmas contigo ven tu nombre, desde un iPhone o un Android. Tus alarmas se quedan en este iPhone y suenan aunque no haya conexión." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With your account, the people who share alarms with you see your name, from an iPhone or an Android. Your alarms stay on this iPhone and ring even without a connection."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con tu cuenta, quienes comparten alarmas contigo ven tu nombre, desde un iPhone o un Android. Tus alarmas se quedan en este iPhone y suenan aunque no haya conexión."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com sua conta, quem compartilha alarmes com você vê o seu nome, de um iPhone ou de um Android. Seus alarmes ficam neste iPhone e tocam mesmo sem conexão."
+          }
+        }
+      }
+    },
+    "Continuar con Google" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue with Google"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar con Google"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar com o Google"
+          }
+        }
+      }
+    },
+    "Continuar con correo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue with email"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar con correo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar com e-mail"
+          }
+        }
+      }
+    },
+    "A esta compilación le falta la configuración de Firebase (GoogleService-Info.plist). Tus alarmas siguen sonando." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This build is missing the Firebase configuration (GoogleService-Info.plist). Your alarms keep ringing."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A esta compilación le falta la configuración de Firebase (GoogleService-Info.plist). Tus alarmas siguen sonando."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta compilação está sem a configuração do Firebase (GoogleService-Info.plist). Seus alarmes continuam tocando."
+          }
+        }
+      }
+    },
+    "Política de privacidad" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Política de privacidad"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Política de Privacidade"
+          }
+        }
+      }
+    },
+    "Iniciar sesión" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign In"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar sesión"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrar"
+          }
+        }
+      }
+    },
+    "Crear cuenta" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Account"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear cuenta"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar conta"
+          }
+        }
+      }
+    },
+    "Correo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Correo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-mail"
+          }
+        }
+      }
+    },
+    "Contraseña" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contraseña"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senha"
+          }
+        }
+      }
+    },
+    "La contraseña, de al menos 8 caracteres. Tu nombre es el que ven quienes comparten contigo; tu correo no se muestra a nadie." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The password needs at least 8 characters. Your name is what the people who share with you see; your email isn't shown to anyone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La contraseña, de al menos 8 caracteres. Tu nombre es el que ven quienes comparten contigo; tu correo no se muestra a nadie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A senha precisa de pelo menos 8 caracteres. Seu nome é o que vê quem compartilha com você; seu e-mail não aparece para ninguém."
+          }
+        }
+      }
+    },
+    "¿Olvidaste tu contraseña?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forgot your password?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Olvidaste tu contraseña?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esqueceu a senha?"
+          }
+        }
+      }
+    },
+    "Correo y contraseña" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email and Password"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Correo y contraseña"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-mail e senha"
+          }
+        }
+      }
+    },
+    "Revisa tu correo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check Your Email"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisa tu correo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confira seu e-mail"
+          }
+        }
+      }
+    },
+    "Si %@ tiene una cuenta en Calarmi, te llegará un enlace para elegir una contraseña nueva." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If %@ has a Calarmi account, you'll get a link to choose a new password."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si %@ tiene una cuenta en Calarmi, te llegará un enlace para elegir una contraseña nueva."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se %@ tiver uma conta no Calarmi, você vai receber um link para escolher uma nova senha."
+          }
+        }
+      }
+    },
+    "Escribe tu correo arriba y vuelve a tocar «¿Olvidaste tu contraseña?»." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter your email above and tap “Forgot your password?” again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe tu correo arriba y vuelve a tocar «¿Olvidaste tu contraseña?»."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite seu e-mail acima e toque de novo em “Esqueceu a senha?”."
+          }
+        }
+      }
+    },
+    "Así te ven las personas con las que compartes alarmas y cuentas regresivas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is how the people you share alarms and countdowns with see you."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Así te ven las personas con las que compartes alarmas y cuentas regresivas."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É assim que as pessoas com quem você compartilha alarmes e contagens regressivas te veem."
+          }
+        }
+      }
+    },
+    "Inicio de sesión" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign-In Method"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicio de sesión"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forma de entrar"
+          }
+        }
+      }
+    },
+    "Tu correo no se muestra a nadie ni viaja con lo que compartes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your email isn't shown to anyone and doesn't travel with what you share."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu correo no se muestra a nadie ni viaja con lo que compartes."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu e-mail não aparece para ninguém nem vai junto com o que você compartilha."
+          }
+        }
+      }
+    },
+    "Cerrar sesión" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign Out"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar sesión"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sair"
+          }
+        }
+      }
+    },
+    "Tus alarmas se quedan en este iPhone y siguen sonando." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your alarms stay on this iPhone and keep ringing."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus alarmas se quedan en este iPhone y siguen sonando."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus alarmes ficam neste iPhone e continuam tocando."
+          }
+        }
+      }
+    },
+    "Borrar cuenta" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Account"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar cuenta"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar conta"
+          }
+        }
+      }
+    },
+    "Borra tu cuenta y lo que compartes con otras personas. Las alarmas de este iPhone se quedan." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deletes your account and what you share with other people. The alarms on this iPhone stay."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borra tu cuenta y lo que compartes con otras personas. Las alarmas de este iPhone se quedan."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apaga sua conta e o que você compartilha com outras pessoas. Os alarmes deste iPhone ficam."
+          }
+        }
+      }
+    },
+    "Cuenta" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conta"
+          }
+        }
+      }
+    },
+    "¿Cerrar sesión?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign Out?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cerrar sesión?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sair da conta?"
+          }
+        }
+      }
+    },
+    "¿Borrar tu cuenta?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Your Account?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Borrar tu cuenta?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar sua conta?"
+          }
+        }
+      }
+    },
+    "Se borran tu cuenta y lo que compartes; las alarmas de este teléfono se quedan." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your account and what you share are deleted; the alarms on this phone stay."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se borran tu cuenta y lo que compartes; las alarmas de este teléfono se quedan."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua conta e o que você compartilha são apagados; os alarmes deste celular ficam."
+          }
+        }
+      }
+    },
+    "No se pudo borrar la cuenta" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Delete the Account"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo borrar la cuenta"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível apagar a conta"
           }
         }
       }
