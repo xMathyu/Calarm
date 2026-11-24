@@ -20,6 +20,7 @@
 //
 
 import CloudKit
+import FirebaseAuth
 import FirebaseFirestore
 import Foundation
 import SwiftData
@@ -47,15 +48,20 @@ extension SharedRemindersService {
 
     // MARK: - Identidad
 
-    /// La sesión y el nombre que exigen las reglas para compartir o unirse. Sin
-    /// nombre abre la hoja «¿Cómo te llamas?».
+    /// La cuenta y el nombre que exigen las reglas para compartir o unirse. El
+    /// nombre es el de la cuenta (su copia en `ShareNames`); con cuenta siempre
+    /// hay uno (DESIGN.md › «Identidad»).
     func sharingIdentity() async throws -> (uid: String, name: String) {
-        guard let name = FirestoreMapping.validName(ShareNames.myName) else {
-            asksForName = true
-            throw SharedRemindersError.nameRequired
-        }
-        let uid = try await FirebaseSession.shared.signIn()
+        let uid = try FirebaseSession.shared.requireUID()
+        let name = FirestoreMapping.validName(ShareNames.myName)
+            ?? FirestoreMapping.validName(Auth.auth().currentUser?.displayName)
+            ?? appLocalized("Usuario de Calarmi")
         return (uid, name)
+    }
+
+    /// Con cuenta: lo que hace falta para unirse en Firestore o migrar.
+    var hasSharingIdentity: Bool {
+        FirebaseSession.shared.uid != nil
     }
 
     // MARK: - Dueño: contenido
@@ -415,7 +421,7 @@ extension SharedRemindersService {
     func removeParticipant(_ person: ShareParticipantInfo, from overview: ShareOverview, id: UUID) async throws {
         if let memberUID = person.firebaseUID {
             guard let entry = FirestoreShareStore.owned(id) else { return }
-            let uid = try await FirebaseSession.shared.signIn()
+            let uid = try FirebaseSession.shared.requireUID()
             try await shareRef(entry.docID).updateData([
                 FieldPath(["members", memberUID]): FieldValue.delete(),
                 "memberUids": FieldValue.arrayRemove([memberUID]),
@@ -521,11 +527,14 @@ extension SharedRemindersService {
         let identity: (uid: String, name: String)
         do {
             identity = try await sharingIdentity()
-        } catch SharedRemindersError.nameRequired {
-            // Se une en cuanto escriba su nombre (la hoja ya está abierta).
-            if !invitesAwaitingName.contains(invite.token) { invitesAwaitingName.append(invite.token) }
-            if !silent { incomingShare = nil }
-            ShareDiagnostics.log("⏸️ invitación en espera del nombre")
+        } catch SharedRemindersError.signInRequired {
+            // Se une en cuanto inicie sesión (la pantalla ya está delante). Una
+            // migración silenciosa no espera: la próxima pasada la reintenta.
+            if !silent {
+                if !invitesAwaitingSignIn.contains(invite.token) { invitesAwaitingSignIn.append(invite.token) }
+                incomingShare = nil
+            }
+            ShareDiagnostics.log("⏸️ invitación en espera de la cuenta")
             return
         } catch {
             if !silent { reportAcceptFailure(error) }
@@ -870,6 +879,47 @@ extension SharedRemindersService {
         firestoreListener = nil
     }
 
+    // MARK: - Cambio de cuenta
+
+    /// Otra cuenta entró en este teléfono, o se borró la cuenta (DESIGN.md ›
+    /// «Cambio de cuenta»): se van las copias de lo que compartieron con la
+    /// anterior por Firestore (y sus alarmas); lo propio que estaba compartido
+    /// se queda como propio sin compartir (el share sigue siendo de la otra
+    /// cuenta). Lo de CloudKit no se toca: es de la cuenta de iCloud, no de esta.
+    func forgetFirebaseAccount() async {
+        stopFirestoreListener()
+        invitesAwaitingSignIn = []
+        let received = FirestoreShareStore.receivedIDs
+        let context = modelContainer.mainContext
+        var removed = 0
+        if !received.isEmpty {
+            let alarms = (try? context.fetch(FetchDescriptor<Reminder>(predicate: #Predicate { $0.isReceivedShare }))) ?? []
+            for reminder in alarms where received.contains(reminder.id) {
+                await reminderScheduler.cancelAlarms(forReminderID: reminder.id)
+                context.delete(reminder)
+                removed += 1
+            }
+            let countdowns = (try? context.fetch(FetchDescriptor<CountdownEvent>(predicate: #Predicate { $0.isReceivedShare }))) ?? []
+            for event in countdowns where received.contains(event.id) {
+                context.delete(event)
+                removed += 1
+            }
+            try? context.save()
+            CategoryStore.shared?.reload()
+            for id in received { ownerNames[id] = nil }
+        }
+        let owned = FirestoreShareStore.owned.count
+        FirestoreShareStore.received = [:]
+        FirestoreShareStore.owned = [:]
+        ShareDiagnostics.log("🔄 cambio de cuenta: \(removed) copia(s) recibida(s) quitada(s), \(owned) propia(s) sin compartir")
+    }
+
+    /// Si este teléfono recuerda algo de Firestore (lo compartido o recibido
+    /// con alguna cuenta).
+    static var hasFirestoreState: Bool {
+        !FirestoreShareStore.owned.isEmpty || !FirestoreShareStore.received.isEmpty
+    }
+
     // MARK: - Nombre
 
     /// El nombre nuevo, en todo lo de Firestore donde aparece: el perfil, cada
@@ -923,7 +973,7 @@ extension SharedRemindersService {
                 firebaseToken: migration.token,
                 deletedByMe: DeletedSharesStore.contains(migration.id),
                 alreadyOnFirestore: FirestoreShareStore.received(migration.id) != nil,
-                hasName: FirestoreMapping.validName(ShareNames.myName) != nil,
+                hasName: hasSharingIdentity,
                 firebaseAvailable: FirebaseSession.shared.isConfigured
             )
             switch step {
@@ -954,7 +1004,7 @@ extension SharedRemindersService {
     /// los invitados con la app vieja (y los enlaces `/i/`, `/c/` aún sin abrir)
     /// siguen por ahí, y `pushUpdateIfShared` le sigue escribiendo cada cambio.
     func migrateOwnedCloudKitShares() async {
-        guard FirebaseSession.shared.isConfigured, FirestoreMapping.validName(ShareNames.myName) != nil else { return }
+        guard FirebaseSession.shared.isConfigured, hasSharingIdentity else { return }
         let zoneID = CKRecordZone.ID(zoneName: Self.sharingZoneName, ownerName: CKCurrentUserDefaultName)
         let database = cloudKitContainer.privateCloudDatabase
         var records: [CKRecord] = []

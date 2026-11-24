@@ -33,9 +33,9 @@ enum SharedRemindersError: LocalizedError {
     case acceptFailed(any Error)
     /// Compilación sin `GoogleService-Info.plist`: Firebase no arrancó.
     case firebaseUnavailable
-    case signInFailed(any Error)
-    /// Firestore exige el nombre de quien comparte o se une (lo ven los demás).
-    case nameRequired
+    /// Compartir y unirse exigen la cuenta (la pantalla de inicio de sesión la
+    /// pide; esto cubre lo que llega justo antes o después).
+    case signInRequired
     /// La invitación no existe, se revocó o no es de un tipo que esta versión entienda.
     case inviteInvalid
     /// El share existe pero lo creó otra sesión (otro dispositivo de la cuenta).
@@ -55,10 +55,8 @@ enum SharedRemindersError: LocalizedError {
             return "Error al aceptar la invitación: \(error.localizedDescription)"
         case .firebaseUnavailable:
             return appLocalized("Compartir no está disponible en esta versión de la app.")
-        case .signInFailed(let error):
-            return appLocalized("No se pudo conectar para compartir: \(error.localizedDescription)")
-        case .nameRequired:
-            return appLocalized("Primero escribe tu nombre: así te verán las personas con quienes compartes.")
+        case .signInRequired:
+            return appLocalized("Inicia sesión para compartir.")
         case .inviteInvalid:
             return appLocalized("Esta invitación ya no es válida. Pide que te la envíen otra vez.")
         case .notShareOwner:
@@ -137,60 +135,61 @@ final class SharedRemindersService {
     }
     var incomingShare: IncomingShareStatus?
 
-    /// The person has no name yet: `ContentView` shows the «¿Cómo te llamas?»
-    /// sheet, which can't be dismissed without one. Without it, whoever shares
-    /// with them sees «Alguien»: iCloud never gives the name of someone who
-    /// joined through the invitation link (see `ShareNames`). New people set it
-    /// in the onboarding; this catches everyone who was already using the app.
-    var asksForName = false
-
-    /// Re-checked on launch, on every return to the app and when iCloud brings
-    /// a name set on another device (which closes the sheet).
-    func refreshNameRequirement() {
-        asksForName = ShareNames.myName == nil
-    }
-    /// Shares joined while the person had no name yet: it gets published there
-    /// as soon as they type it.
+    /// CloudKit shares joined while the person had no name yet (an invitation
+    /// accepted before signing in): it gets published there once the account
+    /// gives one. The name comes from the account (`AccountService`), and
+    /// `ShareNames` keeps a copy for CloudKit, where iCloud never gives the
+    /// name of someone who joined through the invitation link.
     @ObservationIgnored private var sharesAwaitingName: [CKShare] = []
     /// Received shares whose name publishing already ran this session, so the
     /// scan doesn't fetch them again every time.
     @ObservationIgnored private var namedShareIDs: Set<CKRecord.ID> = []
 
     /// Right after joining a share (alarm, countdown or trusted-people list):
-    /// publish this person's name there, or ask for it.
+    /// publish this person's name there, or once the account gives one.
     func announceMyself(in share: CKShare) {
         guard ShareNames.myName != nil else {
             sharesAwaitingName.append(share)
-            asksForName = true
             return
         }
         Task { await ShareNames.publishMine(in: [share], container: cloudKitContainer) }
     }
 
-    /// The name typed in the alert or in Settings: saved, then published on
-    /// every share this person is in (the scan finds the received ones).
-    func saveMyName(_ name: String) async {
-        await ShareNames.setMyName(name, container: cloudKitContainer)
-        asksForName = ShareNames.myName == nil
+    /// The account's name (at sign-in, or edited in Ajustes › Cuenta): kept in
+    /// `ShareNames` for CloudKit, then everywhere others read it —
+    /// `users/{uid}`, every Firestore share and trusted-people list, and the
+    /// CloudKit shares this person is in (the scan finds the received ones).
+    /// `changed: false` (the same name as before) only writes the profile.
+    func accountNameDidChange(_ name: String, changed: Bool) async {
+        if changed || ShareNames.myName == nil {
+            await ShareNames.setMyName(name, container: cloudKitContainer)
+        }
         let waiting = sharesAwaitingName
         sharesAwaitingName = []
-        namedShareIDs = []
         await ShareNames.publishMine(in: waiting, container: cloudKitContainer)
+        guard changed else {
+            await FirebaseSession.shared.updateProfile()
+            return
+        }
+        namedShareIDs = []
         // En Firestore el nombre va en cada share y lista de confianza (lo leen
-        // los demás de ahí, también desde Android).
+        // los demás de ahí, también desde Android). Incluye `users/{uid}`.
         await propagateMyNameToFirestore()
-        // Las invitaciones que esperaban el nombre para poder unirse.
-        let pending = invitesAwaitingName
-        invitesAwaitingName = []
+    }
+
+    /// Las invitaciones de Firestore que esperaban la cuenta (abiertas antes de
+    /// iniciar sesión): ahora sí se unen.
+    func resumeInvitesAwaitingSignIn() async {
+        let pending = invitesAwaitingSignIn
+        invitesAwaitingSignIn = []
         for token in pending {
             await resumeInvite?(token)
         }
-        await importAllSharedReminders()
     }
 
-    /// Invitaciones de Firestore abiertas sin nombre puesto: unirse exige uno
-    /// (las reglas lo piden), así que esperan a que la persona lo escriba.
-    @ObservationIgnored var invitesAwaitingName: [String] = []
+    /// Invitaciones de Firestore abiertas sin sesión: unirse exige la cuenta
+    /// (las reglas lo piden), así que esperan a que la persona inicie sesión.
+    @ObservationIgnored var invitesAwaitingSignIn: [String] = []
     /// Vuelve a abrir una invitación de Firestore (por su token). Lo pone
     /// `CalarmApp`, que sabe repartir entre alarmas, cuentas y personas de confianza.
     @ObservationIgnored var resumeInvite: ((String) async -> Void)?
@@ -205,13 +204,11 @@ final class SharedRemindersService {
 
     /// After a scan: this person's name goes on every received share they're
     /// in. The share records usually come with the zone's changes; any that
-    /// didn't are fetched once per session. With no name yet, it's asked once.
+    /// didn't are fetched once per session. With no name yet (not signed in),
+    /// the next scan after signing in does it.
     private func publishMyName(found shares: [CKShare], referenced shareIDs: Set<CKRecord.ID>) async {
         guard !shareIDs.isEmpty || !shares.isEmpty else { return }
-        guard ShareNames.myName != nil else {
-            asksForName = true
-            return
-        }
+        guard ShareNames.myName != nil else { return }
         var all = shares.filter { !namedShareIDs.contains($0.recordID) }
         let missing = shareIDs.subtracting(shares.map(\.recordID)).subtracting(namedShareIDs)
         if !missing.isEmpty,

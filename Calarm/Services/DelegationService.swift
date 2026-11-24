@@ -230,7 +230,7 @@ final class DelegationService {
     func removeHelper(_ person: ShareParticipantInfo) async {
         if let helperUID = person.firebaseUID {
             guard let uid = firestorePrincipalUID,
-                  let name = FirestoreMapping.validName(ShareNames.myName)
+                  let name = try? await sharing.sharingIdentity().name
             else { return }
             do {
                 try await db.collection("delegations").document(uid).updateData([
@@ -288,13 +288,26 @@ final class DelegationService {
         }
     }
 
+    /// Otra cuenta entró en este teléfono, o se borró la cuenta (DESIGN.md ›
+    /// «Cambio de cuenta»): la lista de Firestore era de la anterior, así que
+    /// este teléfono la olvida (sus ayudantes siguen en esa cuenta, no en esta).
+    /// La lista de CloudKit de antes de la 1.1 es de la cuenta de iCloud y sigue
+    /// igual. Devuelve si queda una (y la delegación debe seguir encendida).
+    func forgetFirebaseAccount() async -> Bool {
+        UserDefaults.standard.removeObject(forKey: Self.inviteTokenKey)
+        UserDefaults.standard.removeObject(forKey: Self.firestoreUIDKey)
+        UserDefaults.standard.removeObject(forKey: Self.lastPulledKey)
+        let keepsCloudKitList = await existingZoneShare() != nil
+        ShareDiagnostics.log("🔄 cambio de cuenta: lista de confianza de Firestore olvidada\(keepsCloudKitList ? " (sigue la de iCloud)" : "")")
+        return keepsCloudKitList
+    }
+
     /// Principal on a version before 1.1: create the Firestore list and put its
     /// token in every CloudKit record, so helpers with the new app move over.
     /// The CloudKit share stays for helpers still on old versions.
     func migrateCloudKitDelegationIfNeeded() async {
         guard firestorePrincipalUID == nil,
-              FirebaseSession.shared.isConfigured,
-              FirestoreMapping.validName(ShareNames.myName) != nil,
+              sharing.hasSharingIdentity,
               await existingZoneShare() != nil
         else { return }
         do {
@@ -764,8 +777,7 @@ final class DelegationService {
     /// the principal wrote in the zone's records, then leaves the CloudKit share.
     /// True when the zone was moved.
     private func migrateHelperZone(_ zoneID: CKRecordZone.ID) async -> Bool {
-        guard FirebaseSession.shared.isConfigured,
-              FirestoreMapping.validName(ShareNames.myName) != nil,
+        guard sharing.hasSharingIdentity,
               let token = await cloudKitReminders(in: zoneID, includeDeleted: true)
                 .lazy.compactMap(\.payload.firebaseToken).first(where: InviteToken.isValid)
         else { return false }

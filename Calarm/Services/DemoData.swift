@@ -36,7 +36,9 @@ enum DemoData {
     /// Screen to open straight away, from `-demoScreen <name>`: list, editor,
     /// recurrence, tones, assistant, settings, helpers, calendar (month view),
     /// agenda (the events list), onboarding, countdowns (the Cuenta regresiva
-    /// tab), countdownDetail, countdownEditor, countdownNew.
+    /// tab), countdownDetail, countdownEditor, countdownNew, account (Ajustes ›
+    /// Cuenta, with a made-up account), signIn and signInEmail (the sign-in
+    /// screen, which every other screen skips).
     /// Driving the captures this way keeps them deterministic — no tapping, same
     /// frame every run, in whichever language the app was launched with.
     static var requestedScreen: String? {
@@ -88,7 +90,7 @@ enum DemoData {
         // itself skip it — unless the run is specifically about the welcome
         // slides (`-demoScreen onboarding`).
         settings.onboardingCompleted = requestedScreen != "onboarding"
-        // Sin nombre sale la hoja obligatoria «¿Cómo te llamas?» encima de todo.
+        // El nombre de la cuenta de mentira de las capturas (Ajustes › Cuenta).
         if ShareNames.myName == nil {
             ShareNames.setForDemo(t("Ana", "Ana", "Ana"))
         }

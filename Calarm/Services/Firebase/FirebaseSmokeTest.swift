@@ -3,19 +3,21 @@
 //  Calarm
 //
 //  `-firebaseSmokeTest` (solo DEBUG): recorre contra el proyecto real lo que el
-//  dueño hace en Firestore — sesión anónima, compartir una alarma con foto,
-//  editarla, ver a quién se unió, quitarlo, la lista de personas de confianza
-//  con un cambio de un ayudante — y lo borra todo al final (share, invitaciones,
-//  perfil y el usuario anónimo). El otro lado (unirse, salir, editar como
-//  ayudante) lo hace un segundo usuario por la API REST, con las mismas reglas.
-//  Cada paso sale por consola como «SMOKE …».
+//  dueño hace en Firestore — compartir una alarma con foto, editarla, ver a
+//  quién se unió, quitarlo, la lista de personas de confianza con un cambio de
+//  un ayudante — y lo borra al final (share, invitaciones y lista). El otro lado
+//  (unirse, salir, editar como ayudante) lo hace un segundo usuario por la API
+//  REST, con las mismas reglas. Cada paso sale por consola como «SMOKE …».
+//
+//  Ya no hay sesiones anónimas: necesita una cuenta de prueba con la sesión ya
+//  iniciada en este simulador (la cuenta y su perfil no se borran). Con
+//  `-firebaseEmulators`, contra el Local Emulator Suite.
 //
 //  Úsalo en un simulador aparte: comparte TODAS las alarmas locales con la
 //  lista de confianza mientras dura.
 //
 
 #if DEBUG
-import FirebaseAuth
 import FirebaseFirestore
 import SwiftData
 import UIKit
@@ -23,27 +25,6 @@ import UIKit
 enum FirebaseSmokeTest {
     static var isRequested: Bool {
         ProcessInfo.processInfo.arguments.contains("-firebaseSmokeTest")
-    }
-
-    /// `-firebaseSmokeCleanup`: solo borra el perfil y el usuario anónimo de este
-    /// simulador (tras probar el lado del invitado con `-demoOpenURL calarm://s/…`).
-    static var isCleanupRequested: Bool {
-        ProcessInfo.processInfo.arguments.contains("-firebaseSmokeCleanup")
-    }
-
-    @MainActor
-    static func cleanUpUser() async {
-        guard let uid = FirebaseSession.shared.uid else {
-            say("cleanup: sin sesión")
-            return
-        }
-        try? await FirebaseSession.shared.db.collection("users").document(uid).delete()
-        do {
-            try await Auth.auth().currentUser?.delete()
-            say("cleanup: anonymous user deleted")
-        } catch {
-            say("cleanup: delete failed \(error.localizedDescription)")
-        }
     }
 
     static let title = "ZZ Prueba Firebase (borrar)"
@@ -64,9 +45,8 @@ enum FirebaseSmokeTest {
         let db = FirebaseSession.shared.db
         var reminder: Reminder?
         do {
-            if ShareNames.myName == nil { ShareNames.setForDemo("Smoke iOS") }
-            let uid = try await FirebaseSession.shared.signIn()
-            say("signin ok uid=\(uid)")
+            let uid = try FirebaseSession.shared.requireUID()
+            say("session ok uid=\(uid)")
 
             // 1. Compartir una alarma con foto.
             let alarm = Reminder(
@@ -164,15 +144,6 @@ enum FirebaseSmokeTest {
         }
         if let token = delegationToken {
             try? await db.collection("invites").document(token).delete()
-        }
-        if let uid = FirebaseSession.shared.uid {
-            try? await db.collection("users").document(uid).delete()
-            do {
-                try await Auth.auth().currentUser?.delete()
-                say("anonymous user deleted")
-            } catch {
-                say("anonymous user delete failed: \(error.localizedDescription)")
-            }
         }
         say("DONE")
     }

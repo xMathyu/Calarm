@@ -14,8 +14,8 @@ import Foundation
 /// invitación: desde iOS 26 un participante que se une con la URL del share es
 /// anónimo, y ni la hoja de Apple de «Gestionar» lo muestra (comprobado con dos
 /// cuentas el 2026-11-21, aun con el entitlement `icloud-extended-share-access`).
-/// Por eso cada persona escribe el suyo una vez en Calarmi y su app lo publica en
-/// la base PÚBLICA del contenedor, en un registro por cada sitio que ocupa en un
+/// Por eso la app de cada persona publica su nombre en la base PÚBLICA del
+/// contenedor, en un registro por cada sitio que ocupa en un
 /// share (`p-<participantID>`, el mismo id que ve la otra persona) y otro con su
 /// usuario de iCloud (`u-<userRecordName>`). La app del otro lado lo busca por
 /// esos ids. Solo quien creó el registro puede cambiarlo (rol `_creator`).
@@ -23,6 +23,12 @@ import Foundation
 /// Es un tipo de registro nuevo (`CalarmPersonName`, campo `name` STRING): hay
 /// que desplegar el esquema a Production antes de publicar la versión, o las
 /// escrituras fallan (sin romper nada más: los nombres simplemente no salen).
+///
+/// Desde la cuenta obligatoria (calarmi-firebase/DESIGN.md › «Identidad») el
+/// nombre sale de la cuenta y ya no se pregunta: `myName` es su copia (la pone
+/// `AccountService` al iniciar sesión y al cambiarlo en Ajustes › Cuenta), que
+/// lee todo lo compartido. El que hubiera de una versión anterior es el tercer
+/// candidato al elegir el nombre de la cuenta.
 @MainActor
 enum ShareNames {
     static let recordType = "CalarmPersonName"
@@ -37,7 +43,8 @@ enum ShareNames {
     /// recordName → nombre publicado, para no reescribir en cada escaneo.
     private static let publishedKey = "calarm.profile.publishedNames"
 
-    /// El nombre que la persona eligió, o nil si aún no puso ninguno.
+    /// El nombre de la cuenta (o el que la persona escribió en una versión
+    /// anterior), o nil si no hay ninguno.
     static var myName: String? {
         let raw = NSUbiquitousKeyValueStore.default.string(forKey: cloudKey)
             ?? UserDefaults.standard.string(forKey: localKey)
@@ -60,15 +67,8 @@ enum ShareNames {
     }
 
     #if DEBUG
-    /// `-demoNoName`: como alguien que nunca puso nombre (el de iCloud
-    /// key-value sobrevive a desinstalar la app).
-    static func forgetForDemo() {
-        NSUbiquitousKeyValueStore.default.removeObject(forKey: cloudKey)
-        UserDefaults.standard.removeObject(forKey: localKey)
-    }
-
-    /// Los datos de demostración traen nombre: si no, la hoja obligatoria
-    /// «¿Cómo te llamas?» tapa las capturas de la tienda (`-demoScreen`).
+    /// Los datos de demostración traen nombre: el de la cuenta de mentira de las
+    /// capturas de la tienda (`AccountService.demoUser`).
     static func setForDemo(_ name: String) {
         UserDefaults.standard.set(name, forKey: localKey)
     }

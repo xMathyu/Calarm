@@ -21,6 +21,7 @@ struct CalarmApp: App {
     @State private var delegationService: DelegationService
     @State private var categoryStore: CategoryStore
     @State private var challengeCoordinator: ChallengeCoordinator
+    @State private var accountService: AccountService
     @State private var localization = LocalizationManager.shared
 
     private let alarmScheduler: AlarmScheduler
@@ -46,6 +47,10 @@ struct CalarmApp: App {
         self._sharedRemindersService = State(initialValue: sharedRemindersService)
         let delegationService = DelegationService(modelContainer: modelContainer, sharing: sharedRemindersService, scheduler: reminderScheduler)
         self._delegationService = State(initialValue: delegationService)
+        // La cuenta obligatoria. Arranca Firebase (antes que el AppDelegate) y
+        // decide si la pantalla de inicio de sesión tapa la app.
+        let accountService = AccountService(sharing: sharedRemindersService, delegation: delegationService, settings: settings)
+        self._accountService = State(initialValue: accountService)
         self._categoryStore = State(initialValue: CategoryStore(context: modelContainer.mainContext))
         let challengeCoordinator = ChallengeCoordinator(
             alarmScheduler: alarmScheduler,
@@ -114,12 +119,26 @@ struct CalarmApp: App {
         AppDelegate.remoteChangeHandler = resyncSharedData
         // An invitation deleted on another device of this iCloud account: the
         // re-scan drops this device's copy too.
-        // Same channel (iCloud key-value) carries the name set on another device:
-        // the «¿Cómo te llamas?» sheet closes on its own when it arrives.
         DeletedSharesStore.startSyncing(onChange: {
-            sharedRemindersService.refreshNameRequirement()
             await resyncSharedData(nil)
         })
+
+        // Right after signing in (DESIGN.md › «Identidad»): what launch couldn't
+        // do without an account — read Firestore, move CloudKit shares over,
+        // listen live, join the invitations opened before signing in — and the
+        // trusted-people list. Alarms never waited for any of this.
+        accountService.onSignedIn = {
+            await sharedRemindersService.importAllSharedReminders()
+            await sharedRemindersService.migrateOwnedCloudKitShares()
+            sharedRemindersService.startFirestoreListener()
+            await sharedRemindersService.resumeInvitesAwaitingSignIn()
+            if settings.delegationEnabled {
+                await delegationService.migrateCloudKitDelegationIfNeeded()
+                await delegationService.pullPrincipalChanges()
+                await delegationService.reconcileUp()
+            }
+            await Self.syncAllReminders(in: modelContainer, with: reminderScheduler)
+        }
 
         // Los widgets leen un resumen que escribe la app: se rehace tras cada
         // guardado de SwiftData (editor, lista, asistente, Siri, cuentas
@@ -138,9 +157,6 @@ struct CalarmApp: App {
         #if DEBUG
         if DemoData.isRequested {
             DemoData.seed(into: modelContainer, settings: settings)
-        }
-        if ProcessInfo.processInfo.arguments.contains("-demoNoName") {
-            ShareNames.forgetForDemo()
         }
         // `-demoAlarmIn <segundos>`: una alarma de prueba que suena dentro de
         // tanto, para ver sonar una alarma de verdad (p. ej. tras `-demoLoseAlarms`).
@@ -169,6 +185,7 @@ struct CalarmApp: App {
             .environment(delegationService)
             .environment(categoryStore)
             .environment(challengeCoordinator)
+            .environment(accountService)
             .modelContainer(modelContainer)
             .preferredColorScheme(settings.appearance.preferredColorScheme)
             .tint(settings.accentColor)
@@ -200,8 +217,8 @@ struct CalarmApp: App {
             #endif
             .task {
                 UIApplication.shared.installGlobalKeyboardDismissGesture()
-                // A Firestore invitation opened before the person had a name
-                // resumes once they type it (`saveMyName`).
+                // A Firestore invitation opened before signing in resumes once
+                // the person does (`AccountService.onSignedIn`).
                 sharedRemindersService.resumeInvite = { token in
                     await acceptFirestoreInvite(token)
                 }
@@ -217,8 +234,6 @@ struct CalarmApp: App {
                 // Aparte: el aviso del permiso espera a que la persona conteste, y
                 // el arranque de abajo no tiene por qué esperarla.
                 Task { await requestCalendarAccessIfNeeded() }
-                // Sin nombre, la hoja «¿Cómo te llamas?» (ver `ShareNames`).
-                sharedRemindersService.refreshNameRequirement()
                 #if DEBUG
                 // `-demoLoseAlarms`: el sistema «pierde» las alarmas y el store no
                 // se entera, como en el iPhone de Mathyu (2026-11-21). El sync de
@@ -233,10 +248,6 @@ struct CalarmApp: App {
                 #if DEBUG
                 if args.contains("-demoLoseAlarms") || args.contains("-demoAlarmCount") {
                     ShareDiagnostics.log("🧪 AlarmKit tiene \(alarmScheduler.systemAlarmCount) alarma(s)")
-                }
-                // `-demoAskName`: la hoja «¿Cómo te llamas?», como sin nombre puesto.
-                if args.contains("-demoAskName") {
-                    sharedRemindersService.asksForName = true
                 }
                 #endif
                 // Si arranca con una alarma con reto sonando, el reto sale ya.
@@ -278,9 +289,6 @@ struct CalarmApp: App {
                         container: modelContainer
                     )
                 }
-                if FirebaseSmokeTest.isCleanupRequested {
-                    await FirebaseSmokeTest.cleanUpUser()
-                }
                 #endif
                 if settings.delegationEnabled {
                     await delegationService.migrateCloudKitDelegationIfNeeded()
@@ -309,7 +317,6 @@ struct CalarmApp: App {
                 }
                 if newPhase == .active, settings.onboardingCompleted {
                     challengeCoordinator.presentIfAlerting()
-                    sharedRemindersService.refreshNameRequirement()
                     Task { await syncAllReminders() }
                     Task { await teamsCoordinator?.sync() }
                     // Re-scan on foreground — this is when a freshly accepted
@@ -396,6 +403,8 @@ struct CalarmApp: App {
     /// e invitaciones.
     @MainActor
     private func handleOpenURL(_ url: URL) {
+        // El regreso del inicio de sesión de Google.
+        if accountService.handle(url) { return }
         // El botón «Resolver» de la Live Activity de una alarma con reto.
         if let alarmID = ChallengeRequest.alarmID(from: url) {
             challengeCoordinator.present(alarmID: alarmID)
@@ -428,6 +437,19 @@ struct CalarmApp: App {
     @MainActor
     private func acceptFirestoreInvite(_ token: String) async {
         ShareDiagnostics.log("📥 invitación recibida (Firestore)")
+        // Joining needs the account: it waits until the person signs in (the
+        // sign-in screen is up), and then `onSignedIn` resumes it.
+        guard FirebaseSession.shared.uid != nil else {
+            if FirebaseSession.shared.isConfigured {
+                if !sharedRemindersService.invitesAwaitingSignIn.contains(token) {
+                    sharedRemindersService.invitesAwaitingSignIn.append(token)
+                }
+                ShareDiagnostics.log("⏸️ invitación en espera de la cuenta")
+            } else {
+                sharedRemindersService.reportAcceptFailure(SharedRemindersError.firebaseUnavailable)
+            }
+            return
+        }
         // Feedback from the first instant, as with the CloudKit links.
         sharedRemindersService.beginAcceptingShare()
         do {
@@ -438,10 +460,10 @@ struct CalarmApp: App {
                 sharedRemindersService.clearIncomingShare()
                 do {
                     try await delegationService.joinFirestoreDelegation(invite)
-                } catch SharedRemindersError.nameRequired {
-                    // Joins once the person types their name (the sheet is up).
-                    if !sharedRemindersService.invitesAwaitingName.contains(token) {
-                        sharedRemindersService.invitesAwaitingName.append(token)
+                } catch SharedRemindersError.signInRequired {
+                    // Joins once the person signs in (the screen is up).
+                    if !sharedRemindersService.invitesAwaitingSignIn.contains(token) {
+                        sharedRemindersService.invitesAwaitingSignIn.append(token)
                     }
                 }
             case .alarm, .countdown:

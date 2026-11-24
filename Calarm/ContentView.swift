@@ -10,6 +10,7 @@ struct ContentView: View {
     @Environment(AppSettings.self) private var settings
     @Environment(ChallengeCoordinator.self) private var challenges
     @Environment(SharedRemindersService.self) private var sharedService
+    @Environment(AccountService.self) private var account
 
     let alarmScheduler: AlarmScheduler
     let onTeamsToggleChanged: (Bool) -> Void
@@ -33,6 +34,32 @@ struct ContentView: View {
     #endif
 
     var body: some View {
+        // Sin cuenta, solo la pantalla de inicio de sesión (DESIGN.md ›
+        // «Identidad»): nada de la app debajo, ni siquiera lo que abre un widget.
+        // Lo que suena no depende de esto.
+        ZStack {
+            if account.requiresSignIn {
+                SignInView()
+                    .transition(.opacity)
+            } else {
+                tabs
+                    .transition(.opacity)
+            }
+        }
+        .animation(DS.Motion.smooth, value: account.requiresSignIn)
+        // La pantalla del reto: aparece cuando suena una alarma con reto y solo
+        // se va al resolverlo (o al posponer, si la alarma lo permite). Fuera de
+        // la condición de arriba: una alarma suena y se apaga también sin sesión.
+        .fullScreenCover(item: Binding(
+            get: { challenges.session },
+            set: { if $0 == nil { challenges.sessionAlarmEnded() } }
+        )) { session in
+            ChallengeView(mode: .alarm(session))
+        }
+    }
+
+    @ViewBuilder
+    private var tabs: some View {
         TabView(selection: $selection) {
             Tab("Alarmas", systemImage: "bell.fill", value: TabID.alarms) {
                 RemindersListView()
@@ -57,16 +84,9 @@ struct ContentView: View {
                 )
             }
         }
+        // La bienvenida, ya con la cuenta: la primera pantalla es la de iniciar sesión.
         .sheet(isPresented: .constant(!settings.onboardingCompleted)) {
             OnboardingView(alarmScheduler: alarmScheduler)
-        }
-        // La pantalla del reto: aparece cuando suena una alarma con reto y solo
-        // se va al resolverlo (o al posponer, si la alarma lo permite).
-        .fullScreenCover(item: Binding(
-            get: { challenges.session },
-            set: { if $0 == nil { challenges.sessionAlarmEnded() } }
-        )) { session in
-            ChallengeView(mode: .alarm(session))
         }
         .modifier(DemoScreenModifier(selection: $selection))
         .onReceive(NotificationCenter.default.publisher(for: .calarmOpenReminder)) { _ in
@@ -109,20 +129,6 @@ struct ContentView: View {
             default:
                 break
             }
-        }
-        // Everyone needs a name: whoever shares with this person would see
-        // «Alguien» otherwise, since iCloud doesn't give it (see `ShareNames`).
-        // New people set it in the onboarding; this sheet catches everyone who
-        // was already using the app, and can't be closed without one.
-        .sheet(isPresented: Binding(
-            get: { sharedService.asksForName && settings.onboardingCompleted },
-            set: { _ in }
-        )) {
-            NameEntryView { name in
-                Task { await sharedService.saveMyName(name) }
-                sharedService.asksForName = false
-            }
-            .interactiveDismissDisabled()
         }
         .task(id: sharedService.incomingShare) {
             guard let status = sharedService.incomingShare else { return }
@@ -208,7 +214,7 @@ private struct DemoScreenModifier: ViewModifier {
             case "calendar", "agenda": selection = .calendar
             case "countdowns", "countdownDetail", "countdownEditor", "countdownNew", "countdownReceived": selection = .countdowns
             case "assistant": selection = .assistant
-            case "settings", "helpers": selection = .settings
+            case "settings", "helpers", "account": selection = .settings
             default: break
             }
         }
