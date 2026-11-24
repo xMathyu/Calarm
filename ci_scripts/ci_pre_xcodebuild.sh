@@ -59,13 +59,18 @@ echo "✓ Set CURRENT_PROJECT_VERSION = $BUILD_NUMBER in $UPDATED_COUNT build co
 # Configuración de Firebase (lo compartido vive en Firestore desde la 1.1). El
 # repo es público, así que el archivo no está en git: Xcode Cloud lo escribe
 # desde la variable secreta GOOGLE_SERVICE_INFO_PLIST_BASE64 (el plist en
-# base64: `base64 -i GoogleService-Info.plist | pbcopy`). Sin él la app arranca
-# pero no puede compartir, así que una compilación de Xcode Cloud sin la
-# variable falla aquí en vez de llegar a TestFlight rota.
+# base64: `base64 -i GoogleService-Info.plist | pbcopy`). Sin él no se puede
+# iniciar sesión, y la cuenta es obligatoria, así que una compilación de Xcode
+# Cloud sin la variable falla aquí en vez de llegar a TestFlight rota. El plist
+# tiene que traer CLIENT_ID y REVERSED_CLIENT_ID («Continuar con Google»).
 GOOGLE_PLIST="$REPO_PATH/Calarm/GoogleService-Info.plist"
 if [ -n "${GOOGLE_SERVICE_INFO_PLIST_BASE64:-}" ]; then
     echo "$GOOGLE_SERVICE_INFO_PLIST_BASE64" | base64 --decode > "$GOOGLE_PLIST"
     plutil -lint "$GOOGLE_PLIST"
+    if ! /usr/libexec/PlistBuddy -c "Print :CLIENT_ID" "$GOOGLE_PLIST" >/dev/null 2>&1; then
+        echo "✗ El GoogleService-Info.plist de GOOGLE_SERVICE_INFO_PLIST_BASE64 no trae CLIENT_ID: bájalo otra vez de la consola de Firebase (con Google como proveedor activo) y actualiza la variable"
+        exit 1
+    fi
     echo "✓ GoogleService-Info.plist escrito desde GOOGLE_SERVICE_INFO_PLIST_BASE64"
 elif [ -f "$GOOGLE_PLIST" ]; then
     echo "▸ GoogleService-Info.plist ya presente"

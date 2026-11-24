@@ -966,18 +966,20 @@ Inglés:
 Desde la 1.1 las alarmas y cuentas regresivas **compartidas** y las personas de confianza viven en
 Firebase (proyecto `calarmi`, Firestore en `nam5`, Google como proveedor), para compartir con Android
 (contrato: `calarmi-firebase/DESIGN.md`). Las alarmas propias NO cambian: siguen solo en el
-teléfono + iCloud privado. Nada llega a Firebase hasta que la persona usa algo compartido (invitar,
-aceptar, personas de confianza, o una invitación de CloudKit que migra): ahí se abre una sesión
-**anónima** de Firebase Auth. No hay Analytics ni Crashlytics (no van en el binario).
+teléfono + iCloud privado. **La cuenta es obligatoria** (DESIGN.md › «Identidad»): la primera
+pantalla pide «Continuar con Apple», «Continuar con Google» o correo y contraseña, también a quien
+actualiza desde la 1.0.19. Ya no hay sesiones anónimas. No hay Analytics ni Crashlytics (no van en
+el binario).
 
 Qué se guarda en Firebase y qué hay que declarar en App Store Connect → App Privacy (todo
-**App Functionality**, **asociado al usuario** —el uid anónimo—, **sin tracking**):
+**App Functionality**, **asociado al usuario** —su uid—, **sin tracking**):
 
 | Categoría (ASC) | Dato | Dónde | Cambio respecto a 1.0.19 |
 |---|---|---|---|
-| Contact Info → **Name** | El nombre que pone la persona | `users/{uid}.name`, `members`/`helpers` de cada share o lista, `ownerName` de sus invitaciones | Ya declarado; ahora también en servidores de Google (Firebase), no solo en CloudKit |
-| Identifiers → **User ID** | uid anónimo de Firebase Auth | `users/{uid}`, `memberUids`, `helperUids`, `updatedBy` | **Nuevo: declarar** |
-| Identifiers → **Device ID** | Token de push de FCM (e ID de instalación de Firebase) | `users/{uid}.tokens` | **Nuevo: declarar** (solo de quien comparte) |
+| Contact Info → **Name** | El nombre de la cuenta (de Apple, Google o el que escribe al crearla; se cambia en Ajustes › Cuenta) | Perfil de Firebase Auth, `users/{uid}.name`, `members`/`helpers` de cada share o lista, `ownerName` de sus invitaciones | Ya declarado; ahora también en servidores de Google (Firebase), no solo en CloudKit |
+| Contact Info → **Email Address** | El correo de la cuenta (el de Apple puede ser un relé) | Solo Firebase Auth: nunca en Firestore ni a la vista de otros | **Nuevo: declarar** |
+| Identifiers → **User ID** | uid de Firebase Auth | `users/{uid}`, `memberUids`, `helperUids`, `updatedBy` | **Nuevo: declarar** (de todos) |
+| Identifiers → **Device ID** | Token de push de FCM (e ID de instalación de Firebase) | `users/{uid}.tokens` | **Nuevo: declarar** |
 | User Content → **Photos or Videos** | La foto de una alarma o cuenta compartida (JPEG ≤ 1080 px; miniatura ≤ 60 KB en la invitación) | `shares/{id}/photo/current`, `invites/{token}.photo`, `delegations/{uid}/reminders` | **Cambia**: antes solo local / iCloud; ahora sale del dispositivo si se comparte |
 | User Content → **Other User Content** | Título, notas, fechas, repetición, avisos, categoría, ícono, reto y tono de lo compartido; idioma y zona horaria de la vista previa | `shares/{id}`, `invites/{token}`, `delegations/{uid}/reminders` | **Nuevo: declarar** |
 
@@ -985,8 +987,11 @@ Qué se guarda en Firebase y qué hay que declarar en App Store Connect → App 
   público de iCloud), y la web la usa para la vista previa: título, fecha, nombre de quien invita y
   miniatura.
 - Al dejar de compartir o borrar, el share, su foto y la invitación (revocada) se borran; al salir,
-  la persona se quita de `members`. El usuario anónimo y `users/{uid}` no se borran solos (no
-  activar la limpieza automática de anónimos: rompería lo compartido).
+  la persona se quita de `members`. **Borrar la cuenta** está en Ajustes › Cuenta (lo exige la App
+  Store): con Apple revoca su token y la función `deleteAccount` borra lo compartido, `users/{uid}`
+  y el usuario; las alarmas del teléfono se quedan.
+- Revisión de la App Store: con la cuenta obligatoria hay que dar a App Review una cuenta de
+  prueba (correo y contraseña) en App Store Connect → App Review Information.
 - **Política de privacidad (web)**: añadir Firebase/Google como encargado del tratamiento de lo
   compartido, los datos de la tabla, que la invitación es legible con el enlace y cómo pedir el
   borrado.
