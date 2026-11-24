@@ -53,6 +53,14 @@
 				<string>calarm</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>MathyuSolutions.Calarm.google-signin</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.587317030511-q8hipp3fh1c52su77r4qssu3cun6ccs7</string>
+			</array>
+		</dict>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
