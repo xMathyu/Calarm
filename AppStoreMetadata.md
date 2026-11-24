@@ -511,6 +511,71 @@ Alemán:
 • Behoben: Auf einem iPhone, dessen Sprache Calarm nicht spricht, erschien die App halb auf Spanisch, mit englischen Datumsangaben. Jetzt erscheint sie vollständig auf Englisch
 ```
 
+## Versión 1.1 (2026-11-24): cuenta obligatoria
+
+La 1.0.19 no llegó a enviarse: sus notas van dentro de la 1.1. Build de Xcode Cloud > 83.
+
+### What's New (1.1)
+
+Español:
+```
+• Ahora inicias sesión con Apple, Google o tu correo. Tu nombre sale de tu cuenta y lo cambias en Ajustes › Cuenta, donde también puedes cerrar sesión o borrar tu cuenta.
+• Compartir alarmas y cuentas regresivas, y las personas de confianza, ahora van con tu cuenta.
+• Nuevo: desde una alarma de cumpleaños, aniversario o pago, crea con un toque una cuenta regresiva de los días que faltan.
+• Tus alarmas siguen en tu iPhone y suenan aunque no haya conexión.
+```
+
+Inglés:
+```
+• You now sign in with Apple, Google or your email. Your name comes from your account and you can change it in Settings › Account, where you can also sign out or delete your account.
+• Sharing alarms and countdowns, and trusted helpers, now work through your account.
+• New: from a birthday, anniversary or payment alarm, create a countdown of the days left with one tap.
+• Your alarms stay on your iPhone and ring even without a connection.
+```
+
+Alemán:
+```
+• Du meldest dich jetzt mit Apple, Google oder deiner E-Mail an. Dein Name kommt aus deinem Konto; ändern kannst du ihn unter Einstellungen › Konto, wo du dich auch abmelden oder dein Konto löschen kannst.
+• Wecker und Countdowns teilen sowie Vertrauenspersonen laufen jetzt über dein Konto.
+• Neu: Erstelle mit einem Tipp aus einem Geburtstags-, Jahrestags- oder Zahlungswecker einen Countdown der verbleibenden Tage.
+• Deine Wecker bleiben auf deinem iPhone und klingeln auch ohne Verbindung.
+```
+
+Portugués:
+```
+• Agora você entra com a Apple, o Google ou seu e-mail. Seu nome vem da sua conta e você o muda em Ajustes › Conta, onde também pode sair ou apagar sua conta.
+• Compartilhar alarmes e contagens regressivas, e as pessoas de confiança, agora funcionam com a sua conta.
+• Novo: a partir de um alarme de aniversário, data especial ou pagamento, crie com um toque uma contagem regressiva dos dias que faltam.
+• Seus alarmes continuam no seu iPhone e tocam mesmo sem conexão.
+```
+
+### Descripción: lo que cambia respecto de la 1.0.18
+
+La línea de iCloud y el bloque «sin servidores nuestros» ya no son ciertos con la cuenta:
+
+| Locale | Antes | Ahora |
+|---|---|---|
+| es-MX | Se sincronizan por tu iCloud. Sin cuenta nueva, sin contraseña nueva. | Se sincronizan solas por tu iCloud privado, sin configurar nada. |
+| es-MX | SIN ANUNCIOS, SIN SEGUIMIENTO, SIN SERVIDORES NUESTROS | SIN ANUNCIOS NI SEGUIMIENTO |
+| es-MX | Tus alarmas son tuyas. No hay registro, no hay analítica de terceros, no vendemos nada. | Tus alarmas son tuyas y se quedan en tu iPhone. Inicias sesión con Apple, Google o tu correo; fuera del iPhone solo guardamos tu cuenta y lo que decides compartir. Sin analítica de terceros, y puedes borrar tu cuenta desde la app. |
+| en-US | They sync through your own iCloud. No new account, no new password. | They sync on their own through your private iCloud, with nothing to set up. |
+| en-US | NO ADS, NO TRACKING, NO SERVERS OF OURS | NO ADS, NO TRACKING |
+| en-US | Your alarms are yours. No sign-up, no third-party analytics, nothing to sell. | Your alarms are yours and stay on your iPhone. Sign in with Apple, Google or your email; off your iPhone we only keep your account and what you choose to share. No third-party analytics, and you can delete your account from the app. |
+| pt-BR | Sincronizam pelo seu iCloud. Sem conta nova, sem senha nova. | Sincronizam sozinhos pelo seu iCloud privado, sem configurar nada. |
+| pt-BR | SEM ANÚNCIOS, SEM RASTREAMENTO, SEM SERVIDORES NOSSOS | SEM ANÚNCIOS NEM RASTREAMENTO |
+| pt-BR | Seus alarmes são seus. Sem cadastro, sem análise de terceiros, não vendemos nada. | Seus alarmes são seus e ficam no seu iPhone. Entre com a Apple, o Google ou seu e-mail; fora do iPhone só guardamos sua conta e o que você decide compartilhar. Sem análise de terceiros, e você pode apagar sua conta pelo app. |
+| de-DE | Sie synchronisieren sich über deine eigene iCloud. Kein neues Konto, kein neues Passwort. | Sie synchronisieren sich von selbst über deine private iCloud, ohne Einrichtung. |
+| de-DE | KEINE WERBUNG, KEIN TRACKING, KEINE SERVER VON UNS | KEINE WERBUNG, KEIN TRACKING |
+| de-DE | Deine Alarme gehören dir. Keine Anmeldung, keine Analyse durch Dritte, nichts zu verkaufen. | Deine Alarme gehören dir und bleiben auf deinem iPhone. Melde dich mit Apple, Google oder deiner E-Mail an; außerhalb des iPhones speichern wir nur dein Konto und was du teilst. Keine Analyse durch Dritte, und du kannst dein Konto in der App löschen. |
+
+### Notas para App Review (1.1)
+
+Ver el texto enviado en App Store Connect › App Review Information. Argumento de la regla 5.1.1(v):
+las funciones centrales dependen de la cuenta (compartir entre personas en iPhone y Android con
+avisos push, personas de confianza que administran alarmas ajenas); hay Sign in with Apple; borrar
+la cuenta está en Ajustes › Cuenta; las alarmas viven en el teléfono y suenan sin sesión. Cuenta de
+prueba: `calarmi-firebase/.secrets/review-account.txt` (la contraseña la escribe Mathyu en ASC).
+
 ## What's New (1.0.19)
 
 Español:
